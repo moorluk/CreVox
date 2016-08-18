@@ -13,7 +13,6 @@ public class WorldEditor : Editor {
     {
         View,
         Paint,
-        Erase,
     }
 
     private EditMode selectedEditMode;
@@ -78,12 +77,12 @@ public class WorldEditor : Editor {
         switch (selectedEditMode)
         {
             case EditMode.Paint:
-            case EditMode.Erase:
                 Tools.current = Tool.None;
                 break;
             case EditMode.View:
             default:
                 Tools.current = Tool.View;
+                //Tools.viewTool = ViewTool.Orbit;
                 break;
         }
         if (selectedEditMode != currentEditMode)
@@ -96,7 +95,7 @@ public class WorldEditor : Editor {
     private void EventHandler()
     {
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
-        Vector3 mousePosition = Event.current.mousePosition;
+        int button = Event.current.button;
         //Debug.LogFormat("MousePos: {0}", mousePosition);
 
         //DrawMarker();
@@ -104,26 +103,25 @@ public class WorldEditor : Editor {
         switch (currentEditMode)
         {
             case EditMode.Paint:
-                DrawMarker(false);
+                if (button == 0)
+                    DrawMarker(false);
+                else if (button == 1)
+                    DrawMarker(true);
                 if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag)
                 {
-                    Paint(false);
+                    if (button == 0)
+                        Paint(false);
+                    else if (button == 1) {
+                        Paint(true);
+                        Event.current.Use();
+                    }
                 }
 				if (Event.current.type == EventType.MouseUp) {
 					UpdateDirtyChunks();
 				}
+                
                 break;
 
-            case EditMode.Erase:
-                DrawMarker(true);
-                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag)
-                {
-					Paint(true);
-                }
-				if (Event.current.type == EventType.MouseUp) {
-					UpdateDirtyChunks();
-				}
-                break;
             case EditMode.View:
             default:
                 break;
@@ -149,7 +147,7 @@ public class WorldEditor : Editor {
 
     private void Paint(bool isErase)
     {
-        RaycastHit vHit, gHit;
+        RaycastHit gHit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
         bool isHit = Physics.Raycast(worldRay, out gHit, 1 << LayerMask.NameToLayer("Editor"));
         WorldPos pos;
