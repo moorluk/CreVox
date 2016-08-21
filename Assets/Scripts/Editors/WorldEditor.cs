@@ -18,16 +18,19 @@ public class WorldEditor : Editor {
     private EditMode selectedEditMode;
     private EditMode currentEditMode;
 
+    private PaletteItem _itemSelected;
+    private Texture2D _itemPreview;
+    private LevelPiece _pieceSelected;
+
     public void OnEnable()
     {
         world = (World)target;
-        //LastTool = Tools.current;
-        //Tools.current = Tool.None;
+        SubscribeEvents();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
-        //Tools.current = LastTool;
+        UnsubscribeEvents();
     }
 
     void OnSceneGUI()
@@ -54,7 +57,47 @@ public class WorldEditor : Editor {
         {
             world.Init();
         }
-        SceneView.RepaintAll();
+        DrawPieceSelectedGUI();
+
+        if (GUI.changed)
+        {
+            EditorUtility.SetDirty(world);
+        }
+        //SceneView.RepaintAll();
+    }
+
+    private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
+    {
+        _itemSelected = item;
+        _itemPreview = preview;
+        _pieceSelected = (LevelPiece)item.GetComponent<LevelPiece>();
+        Repaint();
+    }
+
+    private void SubscribeEvents()
+    {
+        PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+    }
+
+    private void UnsubscribeEvents()
+    {
+        PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+    }
+
+    private void DrawPieceSelectedGUI()
+    {
+        EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
+        //EditorGUILayout.LabelField("Piece Selected", _titleStyle);
+        if (_pieceSelected == null)
+        {
+            EditorGUILayout.HelpBox("No piece selected!", MessageType.Info);
+        }
+        else {
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.LabelField(new GUIContent(_itemPreview), GUILayout.Height(40));
+            EditorGUILayout.LabelField(_itemSelected.itemName);
+            EditorGUILayout.EndVertical();
+        }
     }
 
     private void DrawModeGUI()
