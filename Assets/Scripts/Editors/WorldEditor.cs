@@ -12,7 +12,8 @@ public class WorldEditor : Editor {
     public enum EditMode
     {
         View,
-        Paint,
+        Voxel,
+        Object,
     }
 
     private EditMode selectedEditMode;
@@ -119,8 +120,10 @@ public class WorldEditor : Editor {
     {
         switch (selectedEditMode)
         {
-            case EditMode.Paint:
+            case EditMode.Voxel:
+            case EditMode.Object:
                 Tools.current = Tool.None;
+                
                 break;
             case EditMode.View:
             default:
@@ -145,17 +148,21 @@ public class WorldEditor : Editor {
 
         switch (currentEditMode)
         {
-            case EditMode.Paint:
+            case EditMode.Voxel:
+                Debug.Log(button.ToString());
                 if (button == 0)
                     DrawMarker(false);
-                else if (button == 1)
+                else if (button <= 1)
+                {
                     DrawMarker(true);
+                }
                 if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag)
                 {
                     if (button == 0)
                         Paint(false);
                     else if (button == 1) {
                         Paint(true);
+                        Tools.viewTool = ViewTool.None;
                         Event.current.Use();
                     }
                 }
@@ -163,6 +170,11 @@ public class WorldEditor : Editor {
 					UpdateDirtyChunks();
 				}
                 
+                break;
+
+            case EditMode.Object:
+                
+
                 break;
 
             case EditMode.View:

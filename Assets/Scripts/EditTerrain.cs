@@ -52,6 +52,18 @@ public static class EditTerrain
         pos.z *= Block.d;
         return GetBlockPos(pos);
     }
+
+    public static WorldPos GetGridPos(Vector3 pos)
+    {
+        WorldPos gridPos = new WorldPos(
+            Mathf.RoundToInt(pos.x % Block.w),
+            Mathf.RoundToInt(pos.y % Block.h),
+            Mathf.RoundToInt(pos.z % Block.d)
+            );
+
+        return gridPos;
+    }
+
     static float MoveWithinBlock(float pos, float norm, bool adjacent = false)
     {
         if (pos - (int)pos == 0.5f || pos - (int)pos == -0.5f)
