@@ -187,8 +187,8 @@ public class WorldEditor : Editor {
                 break;
 
             case EditMode.Object:
-                
-
+                DrawGridMarker();
+                //PlaceObject();
                 break;
 
             case EditMode.View:
@@ -210,6 +210,24 @@ public class WorldEditor : Editor {
             float z = pos.z * Block.d;
             //float x = Mathf.FloorToInt((hitInfo.point.x + Block.hw) / Block.w) * Block.w;
             Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 2f);
+            SceneView.RepaintAll();
+        }
+    }
+
+    private void DrawGridMarker()
+    {
+        update = true;
+        RaycastHit hit;
+        Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+        if (Physics.Raycast(worldRay, out hit, 1 << LayerMask.NameToLayer("Editor")))
+        {
+            WorldPos pos = EditTerrain.GetBlockPos(hit, true);
+            WorldPos gPos = EditTerrain.GetGridPos(hit.point);
+            float x = pos.x * Block.w + gPos.x -1;
+            float y = pos.y * Block.h + gPos.y -1;
+            float z = pos.z * Block.d + gPos.z -1;
+            Debug.Log("wpos: " + pos.ToString() + "gPos: " + gPos.ToString());
+            Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 1f);
             SceneView.RepaintAll();
         }
     }
@@ -236,6 +254,18 @@ public class WorldEditor : Editor {
                 chunk.UpdateMeshFilter();
                 SceneView.RepaintAll();
             }
+        }
+    }
+
+    private void PlaceObject()
+    {
+        RaycastHit gHit;
+        Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+        bool isHit = Physics.Raycast(worldRay, out gHit, 1 << LayerMask.NameToLayer("Editor"));
+        WorldPos pos;
+
+        if (isHit)
+        {
         }
     }
 

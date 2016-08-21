@@ -56,11 +56,10 @@ public static class EditTerrain
     public static WorldPos GetGridPos(Vector3 pos)
     {
         WorldPos gridPos = new WorldPos(
-            Mathf.RoundToInt(pos.x % Block.w),
-            Mathf.RoundToInt(pos.y % Block.h),
-            Mathf.RoundToInt(pos.z % Block.d)
+            Mathf.RoundToInt((pos.x+Block.hw)% Block.w),
+            Mathf.RoundToInt((pos.y+Block.hh)% Block.h),
+            Mathf.RoundToInt((pos.z+Block.hd)% Block.d)
             );
-
         return gridPos;
     }
 
