@@ -41,22 +41,32 @@ public class WorldEditor : Editor {
     }
 
     public override void OnInspectorGUI()
-    {
-        EditorGUIUtility.labelWidth = 50;
-        EditorGUILayout.BeginHorizontal("Box");
-        EditorGUILayout.LabelField("Chunk Count", EditorStyles.boldLabel, GUILayout.Width(90));
-        world.chunkX = EditorGUILayout.IntField("X", world.chunkX, GUILayout.Width(80));
-        world.chunkY = EditorGUILayout.IntField("Y", world.chunkY, GUILayout.Width(80));
-        world.chunkZ = EditorGUILayout.IntField("Z", world.chunkZ, GUILayout.Width(80));
-        GUILayout.EndHorizontal();
+	{
+		//修改成適應視窗寬度
+		float lw = 60;
+		float w = (Screen.width - 20 - lw) / 3 - 8;
+		EditorGUIUtility.labelWidth = 20;
 
-        EditorGUILayout.LabelField("Chunk Prefab", EditorStyles.boldLabel);
-        world.chunkPrefab = EditorGUILayout.ObjectField(world.chunkPrefab, typeof(GameObject), false) as GameObject;
+		GUILayout.BeginVertical (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20));
+		EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
+		GUILayout.BeginHorizontal ();
+		EditorGUILayout.LabelField ("Prefab", GUILayout.Width (lw));
+		world.chunkPrefab = EditorGUILayout.ObjectField (world.chunkPrefab, typeof(GameObject), false) as GameObject;
+		GUILayout.EndHorizontal ();
 
-        if (GUILayout.Button("Init"))
-        {
-            world.Init();
-        }
+		GUILayout.BeginHorizontal ();
+		EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
+		world.chunkX = EditorGUILayout.IntField ("X", world.chunkX, GUILayout.Width (w));
+		world.chunkY = EditorGUILayout.IntField ("Y", world.chunkY, GUILayout.Width (w));
+		world.chunkZ = EditorGUILayout.IntField ("Z", world.chunkZ, GUILayout.Width (w));
+		GUILayout.EndHorizontal ();
+		GUILayout.EndVertical ();
+
+		if (GUILayout.Button ("Init"))
+		{
+			world.Init ();
+		}
+
         DrawPieceSelectedGUI();
 
         if (GUI.changed)
@@ -85,7 +95,8 @@ public class WorldEditor : Editor {
     }
 
     private void DrawPieceSelectedGUI()
-    {
+	{
+		GUILayout.BeginVertical (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20));
         EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
         //EditorGUILayout.LabelField("Piece Selected", _titleStyle);
         if (_pieceSelected == null)
@@ -97,7 +108,8 @@ public class WorldEditor : Editor {
             EditorGUILayout.LabelField(new GUIContent(_itemPreview), GUILayout.Height(40));
             EditorGUILayout.LabelField(_itemSelected.itemName);
             EditorGUILayout.EndVertical();
-        }
+		}
+		GUILayout.EndVertical ();
     }
 
     private void DrawModeGUI()
@@ -108,8 +120,10 @@ public class WorldEditor : Editor {
         {
             modeLabels.Add(mode.ToString());
         }
+		float ButtonW = 90;
+
         Handles.BeginGUI();
-        GUILayout.BeginArea(new Rect(10f, 10f, 360, 40f));
+		GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 40f)); //根據選項數量決定寬度
         selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
         GUILayout.EndArea();
         Handles.EndGUI();
