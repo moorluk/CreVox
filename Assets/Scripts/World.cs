@@ -10,11 +10,20 @@ public class World : MonoBehaviour {
     public int chunkZ = 1;
     public GameObject chunkPrefab;
     public GameObject ruler;
-    MeshCollider bColl;
+	public MeshCollider mColl;
+
+	//VoxelLayer------
+	public GameObject layerRuler; 
+	public BoxCollider bColl;
+	public int editY;
+	public bool pointer;
+	public Color YColor;
+	//----------------
 
     public void Init()
     {
         CreateRuler();
+		CreateLevelRuler();
         CreateChunks();
     }
 
@@ -23,8 +32,8 @@ public class World : MonoBehaviour {
         ruler = new GameObject("Ruler");
         ruler.layer = LayerMask.NameToLayer("Editor");
         ruler.transform.parent = transform;
-        MeshCollider f = ruler.AddComponent<MeshCollider>();
-        f.hideFlags = HideFlags.HideInHierarchy;
+		mColl = ruler.AddComponent<MeshCollider>();
+		mColl.hideFlags = HideFlags.HideInHierarchy;
 
         MeshData meshData = new MeshData();
         float x = -Block.hw;
@@ -39,29 +48,13 @@ public class World : MonoBehaviour {
         meshData.AddVertex(new Vector3(w, 0, z));
         meshData.AddQuadTriangles();
 
-        f.sharedMesh = null;
+		mColl.sharedMesh = null;
         Mesh cmesh = new Mesh();
         cmesh.vertices = meshData.colVertices.ToArray();
         cmesh.triangles = meshData.colTriangles.ToArray();
         cmesh.RecalculateNormals();
 
-        f.sharedMesh = cmesh;
-    }
-
-    void OnDrawGizmos()
-    {
-        float x = -Block.hw;
-        float z = -Block.hd;
-        float w = chunkX * Chunk.chunkSize * Block.w + x;
-        float d = chunkZ * Chunk.chunkSize * Block.d + z;
-        Vector3 v1 = new Vector3(x, 0, z);
-        Vector3 v2 = new Vector3(x, 0, d);
-        Vector3 v3 = new Vector3(w, 0, d);
-        Vector3 v4 = new Vector3(w, 0, z);
-        Gizmos.DrawLine(v1, v2);
-        Gizmos.DrawLine(v2, v3);
-        Gizmos.DrawLine(v3, v4);
-        Gizmos.DrawLine(v4, v1);
+		mColl.sharedMesh = cmesh;
     }
 
     void CreateChunks()
@@ -79,19 +72,6 @@ public class World : MonoBehaviour {
         }
     }
 
-    public void ChangeEditY(int _y)
-    {
-        //bColl.center = Vector3.up * _y * Block.h;
-    }
-
-    // Use this for initialization
-
-	
-	// Update is called once per frame
-	void Update () {
-        
-    }
-
     public void CreateChunk(int x, int y, int z)
     {
         WorldPos worldPos = new WorldPos(x, y, z);
@@ -102,6 +82,7 @@ public class World : MonoBehaviour {
                         Quaternion.Euler(Vector3.zero)
                     ) as GameObject;
         newChunkObject.transform.parent = transform;
+		newChunkObject.name = "Chunk("+x/16+","+y/16+","+z/16+")" ;
 
         Chunk newChunk = newChunkObject.GetComponent<Chunk>();
 
@@ -123,6 +104,7 @@ public class World : MonoBehaviour {
             }
         }
     }
+
     public void DestroyChunk(int x, int y, int z)
     {
         Chunk chunk = null;
@@ -173,6 +155,81 @@ public class World : MonoBehaviour {
             chunk.SetBlock(x - chunk.pos.x, y - chunk.pos.y, z - chunk.pos.z, block);
             chunk.update = true;
         }
-    }
+	}
 
+	void OnDrawGizmos()
+	{
+		float x = -Block.hw;
+		float z = -Block.hd;
+		float w = chunkX * Chunk.chunkSize * Block.w + x;
+		float d = chunkZ * Chunk.chunkSize * Block.d + z;
+		Vector3 v1 = new Vector3 (x, 0, z);
+		Vector3 v2 = new Vector3 (x, 0, d);
+		Vector3 v3 = new Vector3 (w, 0, d);
+		Vector3 v4 = new Vector3 (w, 0, z);
+		Gizmos.DrawLine (v1, v2);
+		Gizmos.DrawLine (v2, v3);
+		Gizmos.DrawLine (v3, v4);
+		Gizmos.DrawLine (v4, v1);
+		//VoxelLayer------
+		Gizmos.color = YColor;
+		if (pointer) {
+				DrawGizmoLayer (editY);
+		}
+		Gizmos.DrawWireCube(
+			transform.position + new Vector3(
+				chunkX * 16f * Block.hw - Block.hw,
+				chunkY * 16f * Block.hh - Block.hh, 
+				chunkZ * 16f * Block.hd - Block.hd),
+			new Vector3(
+				chunkX * 16f * Block.w, 
+				chunkY * 16f * Block.h, 
+				chunkZ * 16f * Block.d)
+		);
+		//----------------
+	}
+
+	//VoxelLayer------
+	void CreateLevelRuler()
+	{
+		YColor = new Color ((20 + (editY % 10) * 20) / 255f, (200 - Mathf.Abs ((editY % 10) - 5) * 20) / 255f, (200 - (editY % 10) * 20) / 255f, 0.4f);
+		layerRuler = new GameObject ("LevelRuler");
+		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
+		layerRuler.transform.parent = transform;
+		bColl = layerRuler.AddComponent<BoxCollider> ();
+		bColl.size = new Vector3 (chunkX * 16f * Block.w, 0f, chunkZ * 16f * Block.d);
+		bColl.hideFlags = HideFlags.HideInHierarchy;
+		ChangeEditY (0);
+	}
+
+	public void DrawGizmoLayer(int _y)
+	{
+		Gizmos.color = YColor;
+		Gizmos.DrawCube (
+			transform.position + new Vector3(
+				chunkX * 16f * Block.hw - Block.hw,
+				editY * Block.h, 
+				chunkZ * 16f * Block.hd - Block.hd),
+			new Vector3(
+				chunkX * 16f * Block.w, 
+				Block.h+0.1f, 
+				chunkZ * 16f * Block.d)
+		);
+	}
+
+	public void ChangeEditY(int _y) {
+		editY = _y;
+		YColor = new Color (
+			(20  + (editY % 10) * 20) / 255f, 
+			(200 - Mathf.Abs ((editY % 10) - 5) * 20) / 255f, 
+			(200 - (editY % 10) * 20) / 255f, 
+			0.4f
+		);
+		bColl.center = transform.position + new Vector3 (
+			chunkX * 16f * Block.hw - Block.hw , 
+			editY * Block.h, 
+			chunkZ * 16f * Block.hd - Block.hd
+		);
+	}
+	//----------------
 }

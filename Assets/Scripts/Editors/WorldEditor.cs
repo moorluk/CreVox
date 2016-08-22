@@ -9,10 +9,16 @@ public class WorldEditor : Editor {
     bool update = false;
     bool disable = false;
 
+	//VoxelLayer------
+	private int editY = 0;
+	private bool showPointer = true;
+	//----------------
+
     public enum EditMode
     {
         View,
         Voxel,
+		VoxelLayer,//VoxelLayer------
         Object,
     }
 
@@ -99,7 +105,6 @@ public class WorldEditor : Editor {
 	{
 		GUILayout.BeginVertical (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20));
         EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
-        //EditorGUILayout.LabelField("Piece Selected", _titleStyle);
         if (_pieceSelected == null)
         {
             EditorGUILayout.HelpBox("No piece selected!", MessageType.Info);
@@ -127,14 +132,37 @@ public class WorldEditor : Editor {
 		GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 40f)); //根據選項數量決定寬度
         selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
         GUILayout.EndArea();
-        Handles.EndGUI();
-    }
+
+		//VoxelLayer------
+		if (selectedEditMode == EditMode.VoxelLayer) {
+			DrawLayerModeGUI ();
+			world.pointer = showPointer?true:false;
+		} else
+			world.pointer = false;
+		//----------------
+		Handles.EndGUI();
+	}
+
+	//VoxelLayer------
+	private void DrawLayerModeGUI()
+	{
+		GUILayout.BeginArea (new Rect (10f, 55f, 360f, 20f));
+		GUILayout.BeginHorizontal ();
+		GUILayout.Box ("Current Edit Y :" + world.editY);
+		if (GUILayout.Button (showPointer ? "Hide Pointer" : "Show Pointer", GUILayout.Width (120))) {
+			showPointer = !showPointer;
+		}
+		GUILayout.EndHorizontal ();
+		GUILayout.EndArea ();
+	}
+	//----------------
 
     private void ModeHandler()
     {
         switch (selectedEditMode)
         {
             case EditMode.Voxel:
+			case EditMode.VoxelLayer: //VoxelLayer------
             case EditMode.Object:
                 Tools.current = Tool.None;
                 
@@ -185,9 +213,43 @@ public class WorldEditor : Editor {
 				}
                 
                 break;
+		//VoxelLayer------
+		case EditMode.VoxelLayer: 
+			if (!Event.current.alt) {
+				if (button == 0)
+					DrawLayerMarker (false);
+				else if (button <= 1)
+					DrawLayerMarker (true);
 
-            case EditMode.Object:
-                DrawGridMarker();
+				if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+					if (button == 0)
+						PaintLayer (false);
+					else if (button == 1) {
+						PaintLayer (true);
+						Tools.viewTool = ViewTool.None;
+						Event.current.Use ();
+					}
+				}
+
+				if (Event.current.type == EventType.ScrollWheel) {
+					if (Event.current.delta.y < 0)
+						editY++;
+					if (Event.current.delta.y > 0)
+						editY--;
+					editY = Mathf.Clamp (editY, 0, world.chunkY * 16 - 1);
+					world.ChangeEditY (editY);
+					Event.current.Use ();
+				}
+
+				if (Event.current.type == EventType.MouseUp) {
+					UpdateDirtyChunks ();
+				}
+			}
+			break;
+		//----------------
+
+		case EditMode.Object:
+			DrawGridMarker ();
                 //PlaceObject();
                 break;
 
@@ -202,7 +264,7 @@ public class WorldEditor : Editor {
         update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        if (Physics.Raycast(worldRay, out hit, 1 << LayerMask.NameToLayer("Editor")))
+		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("Editor")))
         {
             WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
             float x = pos.x * Block.w;
@@ -214,12 +276,30 @@ public class WorldEditor : Editor {
         }
     }
 
+	//VoxelLayer------
+	private void DrawLayerMarker(bool isErase)
+	{
+		update = true;
+		RaycastHit hit;
+		Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("EditorLevel")))
+		{
+			WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
+			float x = pos.x * Block.w;
+			float y = pos.y * Block.h;
+			float z = pos.z * Block.d;
+			Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 2f);
+			SceneView.RepaintAll();
+		}
+	}
+	//----------------
+
     private void DrawGridMarker()
     {
         update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        if (Physics.Raycast(worldRay, out hit, 1 << LayerMask.NameToLayer("Editor")))
+		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("Editor")))
         {
             WorldPos pos = EditTerrain.GetBlockPos(hit, true);
             WorldPos gPos = EditTerrain.GetGridPos(hit.point);
@@ -236,7 +316,7 @@ public class WorldEditor : Editor {
     {
         RaycastHit gHit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        bool isHit = Physics.Raycast(worldRay, out gHit, 1 << LayerMask.NameToLayer("Editor"));
+        bool isHit = Physics.Raycast(worldRay, out gHit, 500f, 1 << LayerMask.NameToLayer("Editor"));
         WorldPos pos;
 
         if (isHit)
@@ -257,11 +337,38 @@ public class WorldEditor : Editor {
         }
     }
 
+	//VoxelLayer------
+	private void PaintLayer(bool isErase)
+	{
+		RaycastHit gHit;
+		Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		bool isHit = Physics.Raycast(worldRay, out gHit, 500f, 1 << LayerMask.NameToLayer("EditorLevel"));
+		WorldPos pos;
+
+		if (isHit)
+		{
+			//Debug.Log("GHIT!");
+			pos = EditTerrain.GetBlockPos(gHit, isErase ? false : true);
+			//Debug.Log(pos.ToString());
+
+			world.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
+			Chunk chunk = world.GetChunk(pos.x, pos.y, pos.z);
+
+			if (chunk) {
+				if(!dirtyChunks.ContainsKey(pos))
+					dirtyChunks.Add(pos, chunk);
+				chunk.UpdateMeshFilter();
+				SceneView.RepaintAll();
+			}
+		}
+	}
+	//----------------
+
     private void PlaceObject()
     {
         RaycastHit gHit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-        bool isHit = Physics.Raycast(worldRay, out gHit, 1 << LayerMask.NameToLayer("Editor"));
+		bool isHit = Physics.Raycast(worldRay, out gHit, 500f, 1 << LayerMask.NameToLayer("Editor"));
         WorldPos pos;
 
         if (isHit)
