@@ -54,6 +54,7 @@ public class Chunk : MonoBehaviour
     {
         if (InRange(x) && InRange(y) && InRange(z))
         {
+            if(blocks[x, y, z] != null) blocks[x, y, z].Destroy();
             blocks[x, y, z] = block;
         }
         else

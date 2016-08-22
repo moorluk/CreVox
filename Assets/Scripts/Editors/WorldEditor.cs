@@ -191,7 +191,7 @@ public class WorldEditor : Editor {
         switch (currentEditMode)
         {
             case EditMode.Voxel:
-                Debug.Log(button.ToString());
+                //Debug.Log(button.ToString());
                 if (button == 0)
                     DrawMarker(false);
                 else if (button <= 1)
@@ -249,8 +249,20 @@ public class WorldEditor : Editor {
 		//----------------
 
 		case EditMode.Object:
-			DrawGridMarker ();
-                //PlaceObject();
+                if (Event.current.type == EventType.MouseDown)
+                {
+                    if (button == 0)
+                        PlaceObject(false);
+                    else if (button == 1)
+                    {
+                        PlaceObject(true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use();
+                    }
+                    //PlaceObject();
+                }
+                DrawGridMarker ();
+                
                 break;
 
             case EditMode.View:
@@ -296,18 +308,29 @@ public class WorldEditor : Editor {
 
     private void DrawGridMarker()
     {
+        if (_pieceSelected == null) return;
+
         update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("Editor")))
+
+        if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("Editor")))
         {
+            if (hit.normal.y <= 0) return;
             WorldPos pos = EditTerrain.GetBlockPos(hit, true);
             WorldPos gPos = EditTerrain.GetGridPos(hit.point);
+            gPos.y = 0;
             float x = pos.x * Block.w + gPos.x -1;
             float y = pos.y * Block.h + gPos.y -1;
             float z = pos.z * Block.d + gPos.z -1;
             Debug.Log("wpos: " + pos.ToString() + "gPos: " + gPos.ToString());
-            Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 1f);
+            LevelPiece.PivotType pivot = (_pieceSelected.isStair) ? LevelPiece.PivotType.Edge : _pieceSelected.pivot;
+            if (CheckPlaceable((int)gPos.x, (int)gPos.z, pivot ))
+            {
+                Handles.color = Color.red;
+                Handles.RectangleCap(0, new Vector3(x, y, z), Quaternion.Euler(90, 0, 0), 0.5f);
+                Handles.color = Color.white;
+            }
             SceneView.RepaintAll();
         }
     }
@@ -364,16 +387,89 @@ public class WorldEditor : Editor {
 	}
 	//----------------
 
-    private void PlaceObject()
+    private void PlaceObject(bool isErase)
     {
+        if (_pieceSelected == null) return;
         RaycastHit gHit;
+        bool canPlace = false;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		bool isHit = Physics.Raycast(worldRay, out gHit, 500f, 1 << LayerMask.NameToLayer("Editor"));
-        WorldPos pos;
 
         if (isHit)
         {
+            if (gHit.normal.y <= 0) return;
+            WorldPos bPos = EditTerrain.GetBlockPos(gHit, true);
+            WorldPos gPos = EditTerrain.GetGridPos(gHit.point);
+            gPos.y = 0;
+            int gx = gPos.x;
+            int gz = gPos.z;
+            if (_pieceSelected.isStair)
+            {
+                if(CheckPlaceable(gx, gz, LevelPiece.PivotType.Edge))
+                {
+                    if (gPos.x == 0 && gPos.z == 1)
+                        bPos.x -= 1;
+                    if (gPos.x == 2 && gPos.z == 1)
+                        bPos.x += 1;
+                    if (gPos.x == 1 && gPos.z == 0)
+                        bPos.z -= 1;
+                    if (gPos.x == 1 && gPos.z == 2)
+                        bPos.z += 1;
+                    bPos.y -= 1;
+                    canPlace = true;
+                }
+            }
+            if (CheckPlaceable(gx, gz, _pieceSelected.pivot))
+            {
+                canPlace = true;
+            }
+
+            if (canPlace)
+            {
+                PlacePiece(bPos, gPos, isErase);
+                SceneView.RepaintAll();
+            }
         }
+    }
+
+    private bool CheckPlaceable(int x, int z, LevelPiece.PivotType pType)
+    {
+        if (pType == LevelPiece.PivotType.Grid)
+            return true;
+        else if (pType == LevelPiece.PivotType.Center && (x * z) == 1)
+            return true;
+        else if (pType == LevelPiece.PivotType.Vertex && (x + z) % 2 == 0 && x*z != 1)
+            return true;
+        else if (pType == LevelPiece.PivotType.Edge && (x + z) % 2 == 1)
+            return true;
+
+        return false;
+    }
+
+    private void PlacePiece(WorldPos bPos, WorldPos gPos, bool isErase)
+    {
+        GameObject obj = null;
+        BlockAir block = world.GetBlock(bPos.x, bPos.y, bPos.z) as BlockAir;
+        if (block == null) return;
+
+        //float x = bPos.x * Block.w + gPos.x - 1;
+        //float y = bPos.y * Block.h + gPos.y - 1;
+        //float z = bPos.z * Block.d + gPos.z - 1;
+        Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
+
+        float x = bPos.x * Block.w + pos.x;
+        float y = bPos.y * Block.h + pos.y;
+        float z = bPos.z * Block.d + pos.z;
+
+        if (!isErase)
+        {
+            obj = PrefabUtility.InstantiatePrefab(_pieceSelected.gameObject) as GameObject;
+            obj.transform.parent = world.transform;
+            obj.transform.position = new Vector3(x, y, z);
+            obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
+        }
+
+        block.SetPart(gPos.x, gPos.z, obj);
     }
 
 	private void UpdateDirtyChunks() {
@@ -382,6 +478,47 @@ public class WorldEditor : Editor {
 		}
 		dirtyChunks.Clear ();
 	}
+
+    private int GetPieceAngle(int x, int z)
+    {
+        if(x == 0 && z >= 1)
+            return 90;
+        if(z == 2 && x >= 1)
+            return 180;
+        if (x == 2 && z <= 1)
+            return 270;
+        return 0;
+    }
+
+    private Vector3 GetPieceOffset(int x, int z)
+    {
+        Vector3 offset = Vector3.zero;
+        float hw = Block.hw;
+        float hh = Block.hh;
+        float hd = Block.hd;
+
+        if (x == 0 && z == 0)
+            return new Vector3(-hw, -hh, -hd);
+        if (x == 1 && z ==0)
+            return new Vector3(0, -hh, -hd);
+        if (x == 2 && z == 0)
+            return new Vector3(hw, -hh, -hd);
+
+        if (x == 0 && z == 1)
+            return new Vector3(-hw, -hh, 0);
+        if (x == 1 && z == 1)
+            return new Vector3(0, -hh, 0);
+        if (x == 2 && z == 1)
+            return new Vector3(hw, -hh, 0);
+
+        if (x == 0 && z == 2)
+            return new Vector3(-hw, -hh, hd);
+        if (x == 1 && z == 2)
+            return new Vector3(0, -hh, hd);
+        if (x == 2 && z == 2)
+            return new Vector3(hw, -hh, hd);
+        return offset;
+    }
 }
 
 /*

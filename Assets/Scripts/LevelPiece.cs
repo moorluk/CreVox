@@ -12,6 +12,7 @@ public class LevelPiece : MonoBehaviour {
     }
 
     public PivotType pivot;
+    public bool isStair = false;
 
 	// Use this for initialization
 	void Start () {

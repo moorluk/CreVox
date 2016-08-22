@@ -141,7 +141,8 @@ public class World : MonoBehaviour {
         }
         else
         {
-            return new BlockAir();
+            //return new BlockAir();
+            return null;
         }
 
     }
@@ -163,10 +164,10 @@ public class World : MonoBehaviour {
 		float z = -Block.hd;
 		float w = chunkX * Chunk.chunkSize * Block.w + x;
 		float d = chunkZ * Chunk.chunkSize * Block.d + z;
-		Vector3 v1 = new Vector3 (x, 0, z);
-		Vector3 v2 = new Vector3 (x, 0, d);
-		Vector3 v3 = new Vector3 (w, 0, d);
-		Vector3 v4 = new Vector3 (w, 0, z);
+		Vector3 v1 = new Vector3 (x, -Block.hh, z);
+		Vector3 v2 = new Vector3 (x, -Block.hh, d);
+		Vector3 v3 = new Vector3 (w, -Block.hh, d);
+		Vector3 v4 = new Vector3 (w, -Block.hh, z);
 		Gizmos.DrawLine (v1, v2);
 		Gizmos.DrawLine (v2, v3);
 		Gizmos.DrawLine (v3, v4);
