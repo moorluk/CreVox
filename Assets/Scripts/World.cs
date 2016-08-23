@@ -7,21 +7,21 @@ public class World : MonoBehaviour {
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
     public int chunkX = 1;
     public int chunkY = 1;
-    public int chunkZ = 1;
-    public GameObject chunkPrefab;
-    public GameObject ruler;
-	public MeshCollider mColl;
+	public int chunkZ = 1;
 
-	//VoxelLayer------
-	public GameObject layerRuler; 
-	public BoxCollider bColl;
+    public GameObject chunkPrefab;
+	GameObject ruler;
+	GameObject layerRuler; 
+
+	MeshCollider mColl;
+	BoxCollider bColl;
+
 	public int editY;
 	public bool pointer;
-	public Color YColor;
-	//----------------
+	private Color YColor;
 
     public void Init()
-    {
+	{
         CreateRuler();
 		CreateLevelRuler();
         CreateChunks();
@@ -127,6 +127,7 @@ public class World : MonoBehaviour {
 
         return containerChunk;
     }
+
     public Block GetBlock(int x, int y, int z)
     {
         Chunk containerChunk = GetChunk(x, y, z);
@@ -179,13 +180,13 @@ public class World : MonoBehaviour {
 		}
 		Gizmos.DrawWireCube(
 			transform.position + new Vector3(
-				chunkX * 16f * Block.hw - Block.hw,
-				chunkY * 16f * Block.hh - Block.hh, 
-				chunkZ * 16f * Block.hd - Block.hd),
+				chunkX * Chunk.chunkSize * Block.hw - Block.hw,
+				chunkY * Chunk.chunkSize * Block.hh - Block.hh, 
+				chunkZ * Chunk.chunkSize * Block.hd - Block.hd),
 			new Vector3(
-				chunkX * 16f * Block.w, 
-				chunkY * 16f * Block.h, 
-				chunkZ * 16f * Block.d)
+				chunkX * Chunk.chunkSize * Block.w, 
+				chunkY * Chunk.chunkSize * Block.h, 
+				chunkZ * Chunk.chunkSize * Block.d)
 		);
 		//----------------
 	}
@@ -213,7 +214,7 @@ public class World : MonoBehaviour {
 				chunkZ * 16f * Block.hd - Block.hd),
 			new Vector3(
 				chunkX * 16f * Block.w, 
-				Block.h+0.1f, 
+				Block.h + 0.1f, 
 				chunkZ * 16f * Block.d)
 		);
 	}
