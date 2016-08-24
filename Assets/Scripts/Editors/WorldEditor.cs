@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 using UnityEditor;
 
 [CustomEditor(typeof(World))]
 public class WorldEditor : Editor {
     World world;
-	Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk>();
-    bool update = false;
-    bool disable = false;
+	Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk>(); 
+	int cx = 1;
+	int cy = 1;
+	int cz = 1;
 
 	//VoxelLayer------
 	private int editY = 0;
@@ -63,15 +65,30 @@ public class WorldEditor : Editor {
 
 		GUILayout.BeginHorizontal ();
 		EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
-		world.chunkX = EditorGUILayout.IntField ("X", world.chunkX, GUILayout.Width (w));
-		world.chunkY = EditorGUILayout.IntField ("Y", world.chunkY, GUILayout.Width (w));
-		world.chunkZ = EditorGUILayout.IntField ("Z", world.chunkZ, GUILayout.Width (w));
+		cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
+		cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
+		cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
 		GUILayout.EndHorizontal ();
 		GUILayout.EndVertical ();
 
 		if (GUILayout.Button ("Init"))
 		{
-			world.Init ();
+			world.Reset ();
+			world.Init (cx, cy, cz);
+		}
+
+		if (GUILayout.Button ("Save"))
+		{
+			Serialization.SaveWorld (world);
+			//Debug.Log (path);
+		}
+
+		if (GUILayout.Button ("Load"))
+		{
+			Save save = Serialization.LoadWorld (world);
+			if(save != null)
+				BuildWorld (save);
+			//Debug.Log (path);
 		}
 
         DrawPieceSelectedGUI();
@@ -273,7 +290,7 @@ public class WorldEditor : Editor {
 
     private void DrawMarker(bool isErase)
     {
-        update = true;
+        //update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("Editor")))
@@ -291,7 +308,7 @@ public class WorldEditor : Editor {
 	//VoxelLayer------
 	private void DrawLayerMarker(bool isErase)
 	{
-		update = true;
+		//update = true;
 		RaycastHit hit;
 		Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		if (Physics.Raycast(worldRay, out hit, 500f, 1 << LayerMask.NameToLayer("EditorLevel")))
@@ -310,7 +327,7 @@ public class WorldEditor : Editor {
     {
         if (_pieceSelected == null) return;
 
-        update = true;
+        //update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
@@ -426,7 +443,7 @@ public class WorldEditor : Editor {
 
             if (canPlace)
             {
-                PlacePiece(bPos, gPos, isErase);
+				PlacePiece(bPos, gPos, isErase ? null : _pieceSelected);
                 SceneView.RepaintAll();
             }
         }
@@ -446,30 +463,51 @@ public class WorldEditor : Editor {
         return false;
     }
 
-    private void PlacePiece(WorldPos bPos, WorldPos gPos, bool isErase)
+	private void BuildWorld(Save _save) {
+		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem>(PaletteWindow.GetLevelPiecePath());
+		world.Reset ();
+		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
+
+		foreach (var block in _save.blocks) {
+			world.SetBlock (block.Key.x, block.Key.y, block.Key.z, block.Value);
+            BlockAir bAir = block.Value as BlockAir;
+            if (bAir != null) {
+				for (int i = 0; i < bAir.pieceNames.Length; i++) {
+					foreach (var item in items) {
+						if (item.name == bAir.pieceNames[i]) {
+							PlacePiece (block.Key, new WorldPos (i%3, 0, (int)(i/3)), item.gameObject.GetComponent<LevelPiece> ());
+						}
+					}
+				}
+			}
+			Debug.Log ("Load: " + block.Key.ToString ());
+		}
+
+		world.UpdateChunks ();
+		SceneView.RepaintAll();
+	}
+
+	private void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)
     {
         GameObject obj = null;
         BlockAir block = world.GetBlock(bPos.x, bPos.y, bPos.z) as BlockAir;
         if (block == null) return;
 
-        //float x = bPos.x * Block.w + gPos.x - 1;
-        //float y = bPos.y * Block.h + gPos.y - 1;
-        //float z = bPos.z * Block.d + gPos.z - 1;
         Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
 
         float x = bPos.x * Block.w + pos.x;
         float y = bPos.y * Block.h + pos.y;
         float z = bPos.z * Block.d + pos.z;
 
-        if (!isErase)
+		if (_piece != null)
         {
-            obj = PrefabUtility.InstantiatePrefab(_pieceSelected.gameObject) as GameObject;
+			obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
             obj.transform.parent = world.transform;
             obj.transform.position = new Vector3(x, y, z);
             obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
         }
 
-        block.SetPart(gPos.x, gPos.z, obj);
+        block.SetPart(bPos, gPos, obj);
     }
 
 	private void UpdateDirtyChunks() {
@@ -520,148 +558,4 @@ public class WorldEditor : Editor {
         return offset;
     }
 }
-
-/*
-using UnityEngine;
-using System.Collections;
-using System;
-using UnityEditor;
-
-[CustomEditor(typeof(VoxelMap))]
-public class VoxelMapEditor : Editor
-{
-    VoxelMap voxelMap;
-	VoxelGrid voxelGrid;
-	private int editY = 0;
-
-    public void OnEnable()
-    {
-        voxelMap = (VoxelMap)target;
-    }
-
-	void OnSceneGUI()
-	{
-		int controlID = GUIUtility.GetControlID (FocusType.Passive);
-		Event e = Event.current;
-
-		if (e.control) {
-			if (e.type == EventType.MouseDown)
-			{
-				Event.current.Use();
-				bool state = false;
-				if (e.button == 0)
-					state = true;
-				else if (e.button == 1)
-					state = false;
-
-				Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
-				RaycastHit hitInfo;
-
-				if (Physics.Raycast (worldRay, out hitInfo)) {
-					if (hitInfo.collider.gameObject.name == target.name) {
-						Vector3 pos = hitInfo.collider.gameObject.transform.InverseTransformPoint (hitInfo.point);
-						if (state)
-							voxelMap.EditEdge (pos, Tile.eEdgeType.STAIR);
-						else
-							voxelMap.EditEdge(pos, Tile.eEdgeType.NONE);
-					}
-				}
-				GUIUtility.hotControl = 0;
-				Event.current.Use ();
-			}
-		}
-
-		if (e.alt) {
-            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button <= 1)
-            {
-                Event.current.Use();
-                bool state = false;
-                if (e.button == 0)
-                    state = true;
-                else if (e.button == 1)
-                    state = false;
-
-                Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
-				RaycastHit hitInfo;
-
-				if (Physics.Raycast (worldRay, out hitInfo)) {
-					if (hitInfo.collider.gameObject.name == target.name) {
-						Vector3 pos = hitInfo.collider.gameObject.transform.InverseTransformPoint (hitInfo.point);
-                        if (state)
-						    voxelMap.EditEdge (pos, Tile.eEdgeType.RAIL);
-                        else
-                            voxelMap.EditEdge(pos, Tile.eEdgeType.NONE);
-                    }
-				}
-				GUIUtility.hotControl = 0;
-				Event.current.Use ();
-			}
-		}
-		if (e.shift) {
-			
-				
-			if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button <= 1) {
-				Event.current.Use ();
-				bool state = false;
-				if (e.button == 0)
-					state = true;
-				else if (e.button == 1)
-					state = false;
-			
-				Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
-				RaycastHit hitInfo;
-
-				if (Physics.Raycast (worldRay, out hitInfo)) {
-					if (hitInfo.collider.gameObject.name == target.name) {
-						voxelMap.EditVoxel (hitInfo.collider.gameObject.transform.InverseTransformPoint (hitInfo.point), state);
-					}
-				}
-				GUIUtility.hotControl = 0;
-                Event.current.Use ();
-			}
-
-			if (e.type == EventType.ScrollWheel) {
-				Debug.Log (e.delta.ToString ());
-				if (e.delta.y< 0)
-                    editY++;
-				if (e.delta.y > 0)
-					editY--;
-
-				editY = Mathf.Clamp (editY, 0, voxelMap.yCount - 1);
-				voxelMap.ChangeEditY (editY);
-				Event.current.Use ();
-			}
-		}
-	}
-
-    public override void OnInspectorGUI()
-{
-    GUILayout.BeginHorizontal();
-    GUILayout.Label(" Width ");
-    voxelMap.xCount = EditorGUILayout.IntField(voxelMap.xCount, GUILayout.Width(40));
-    GUILayout.Label(" Depth ");
-    voxelMap.zCount = EditorGUILayout.IntField(voxelMap.zCount, GUILayout.Width(40));
-    GUILayout.Label(" Height ");
-    voxelMap.yCount = EditorGUILayout.IntField(voxelMap.yCount, GUILayout.Width(40));
-    GUILayout.EndHorizontal();
-
-    GUILayout.BeginHorizontal();
-    voxelMap.tileSize = EditorGUILayout.Vector3Field("Tile Size", voxelMap.tileSize);
-    GUILayout.EndHorizontal();
-
-    //增加讀tile的相關設定
-    voxelMap.tilePath = EditorGUILayout.TextField("Tile Path", voxelMap.tilePath);
-    voxelMap.oldCode = EditorGUILayout.Toggle("is Old Code?", voxelMap.oldCode);
-
-    GUILayout.BeginHorizontal();
-    if (GUILayout.Button("Init"))
-    {
-        voxelMap.Init();
-    }
-    GUILayout.EndHorizontal();
-
-    EditorGUILayout.IntField("Edit Y", voxelMap.editY);
-
-    SceneView.RepaintAll();
-}
-}*/
+	

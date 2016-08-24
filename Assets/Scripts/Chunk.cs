@@ -8,7 +8,7 @@ using UnityEditor;
 [RequireComponent(typeof(MeshCollider))]
 public class Chunk : MonoBehaviour
 {
-    private Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
+    public Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
     public static int chunkSize = 16;
     public bool update = true;
     MeshFilter filter;
@@ -24,6 +24,11 @@ public class Chunk : MonoBehaviour
         coll.hideFlags = HideFlags.HideInHierarchy;
         UpdateChunk();
     }
+
+	public void Destroy() {
+		foreach (var block in blocks)
+			block.Destroy ();
+	}
 
     // Use this for initialization
     void Start()

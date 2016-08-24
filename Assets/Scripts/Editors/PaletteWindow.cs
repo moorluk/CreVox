@@ -10,7 +10,7 @@ public class PaletteWindow : EditorWindow {
     private List<string> _categoryLabels;
     private PaletteItem.Category _categorySelected;
 
-    private string _path = "Assets/Prefabs/LevelPieces";
+    private static string _path = "Assets/Prefabs/LevelPieces";
     private List<PaletteItem> _items;
     private Dictionary<PaletteItem.Category, List<PaletteItem>> _categorizedItems;
     private Dictionary<PaletteItem, Texture2D> _previews;
@@ -26,6 +26,10 @@ public class PaletteWindow : EditorWindow {
         instance = (PaletteWindow)EditorWindow.GetWindow(typeof(PaletteWindow));
         instance.titleContent = new GUIContent("Palette");
     }
+
+	public static string GetLevelPiecePath() {
+		return _path;
+	}
 
     private void Update()
     {

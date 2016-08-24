@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
+using System;
 //using System.Collections;
 //using System.Collections.Generic;
 
+[Serializable]
 public class BlockAir : Block
 {
+	public string[] pieceNames;
+	[NonSerialized]
     private GameObject[] parts;
+	[NonSerialized]
     private GameObject node;
-    WorldPos pos;
    
     public BlockAir()
         : base()
@@ -31,7 +35,6 @@ public class BlockAir : Block
     public override MeshData Blockdata
         (Chunk chunk, int x, int y, int z, MeshData meshData)
     {
-        pos = new WorldPos(x, y, z);
         return meshData;
     }
     public override bool IsSolid(Block.Direction direction)
@@ -39,14 +42,18 @@ public class BlockAir : Block
         return false;
     }
 
-    public void SetPart(int x, int z, GameObject go)
+    public void SetPart(WorldPos bPos, WorldPos gPos, GameObject go)
     {
+        int x = gPos.x;
+        int z = gPos.z;
+
         if (parts == null)
         {
             node = new GameObject();
-            node.name = pos.ToString();
+            node.name = bPos.ToString();
             node.transform.parent = go.transform.parent;
             parts = new GameObject[9];
+			pieceNames = new string[9];
         }
         if(go != null)
             go.transform.parent = node.transform;
@@ -57,5 +64,9 @@ public class BlockAir : Block
             Debug.Log("Delete parts:" + x.ToString() + "," + z.ToString());
         }
         parts[z * 3 + x] = go;
+        if (go == null)
+            pieceNames[z * 3 + x] = "";
+        else
+            pieceNames [z * 3 + x] = go.GetComponent<PaletteItem> ().name;
     }
 }

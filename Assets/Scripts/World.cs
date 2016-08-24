@@ -20,20 +20,38 @@ public class World : MonoBehaviour {
 	public Color YColor;
 	//----------------
 
-    public void Init()
+	public void Init(int _chunkX, int _chunkY, int _chunkZ)
     {
+		chunkX = _chunkX;
+		chunkY = _chunkY;
+		chunkZ = _chunkZ;
+
         CreateRuler();
 		CreateLevelRuler();
         CreateChunks();
     }
 
+	public void Reset() {
+		if (chunks != null) {
+			DestoryChunks ();
+			chunks.Clear ();
+		}
+		Object.DestroyImmediate (ruler);
+		Object.DestroyImmediate (layerRuler);
+		mColl = null;
+		bColl = null;
+		editY = 0;
+	}
+
     void CreateRuler()
     {
-        ruler = new GameObject("Ruler");
-        ruler.layer = LayerMask.NameToLayer("Editor");
-        ruler.transform.parent = transform;
-		mColl = ruler.AddComponent<MeshCollider>();
+		//if (ruler != null) {
+		ruler = new GameObject ("Ruler");
+		ruler.layer = LayerMask.NameToLayer ("Editor");
+		ruler.transform.parent = transform;
+		mColl = ruler.AddComponent<MeshCollider> ();
 		mColl.hideFlags = HideFlags.HideInHierarchy;
+		//}
 
         MeshData meshData = new MeshData();
         float x = -Block.hw;
@@ -57,6 +75,20 @@ public class World : MonoBehaviour {
 		mColl.sharedMesh = cmesh;
     }
 
+	public void UpdateChunks()
+	{
+		for (int x = 0; x < chunkX; x++)
+		{
+			for (int y = 0; y < chunkY; y++)
+			{
+				for (int z = 0; z < chunkZ; z++)
+				{
+					GetChunk (x * 16, y * 16, z * 16).UpdateChunk ();
+				}
+			}
+		}
+	}
+
     void CreateChunks()
     {
         for (int x = 0; x < chunkX; x++)
@@ -71,6 +103,21 @@ public class World : MonoBehaviour {
             }
         }
     }
+
+	void DestoryChunks()
+	{
+		for (int x = 0; x < chunkX; x++)
+		{
+			for (int y = 0; y < chunkY; y++)
+			{
+				for (int z = 0; z < chunkZ; z++)
+				{
+					DestroyChunk(x * 16, y * 16, z * 16);
+					//GetChunk(x * 16, y * 16, z * 16).Init();
+				}
+			}
+		}
+	}
 
     public void CreateChunk(int x, int y, int z)
     {
@@ -109,8 +156,14 @@ public class World : MonoBehaviour {
     {
         Chunk chunk = null;
         if (chunks.TryGetValue(new WorldPos(x, y, z), out chunk))
-        {
+		{
+			#if UNITY_EDITOR
+			Debug.Log("Destroy " + chunk.gameObject.name);
+			Object.DestroyImmediate(chunk.gameObject);
+			#else
             Object.Destroy(chunk.gameObject);
+			#endif
+			chunk.Destroy();
             chunks.Remove(new WorldPos(x, y, z));
         }
     }
@@ -198,6 +251,7 @@ public class World : MonoBehaviour {
 		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
 		layerRuler.transform.parent = transform;
 		bColl = layerRuler.AddComponent<BoxCollider> ();
+	
 		bColl.size = new Vector3 (chunkX * 16f * Block.w, 0f, chunkZ * 16f * Block.d);
 		bColl.hideFlags = HideFlags.HideInHierarchy;
 		ChangeEditY (0);

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+
+[Serializable]
 public class Block
 {
     const float tileSize = 0.25f;
