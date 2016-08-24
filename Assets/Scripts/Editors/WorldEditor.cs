@@ -58,10 +58,10 @@ public class WorldEditor : Editor {
 
 		GUILayout.BeginVertical (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20));
 		EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
-		GUILayout.BeginHorizontal ();
-		EditorGUILayout.LabelField ("Prefab", GUILayout.Width (lw));
-		world.chunkPrefab = EditorGUILayout.ObjectField (world.chunkPrefab, typeof(GameObject), false) as GameObject;
-		GUILayout.EndHorizontal ();
+		//GUILayout.BeginHorizontal ();
+		//EditorGUILayout.LabelField ("Prefab", GUILayout.Width (lw));
+		//world.chunkPrefab = EditorGUILayout.ObjectField (world.chunkPrefab, typeof(GameObject), false) as GameObject;
+		//GUILayout.EndHorizontal ();
 
 		GUILayout.BeginHorizontal ();
 		EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
@@ -69,27 +69,34 @@ public class WorldEditor : Editor {
 		cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
 		cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
 		GUILayout.EndHorizontal ();
-		GUILayout.EndVertical ();
+        if (GUILayout.Button("Init"))
+        {
+            world.Reset();
+            world.Init(cx, cy, cz);
+        }
+        GUILayout.EndVertical ();
 
-		if (GUILayout.Button ("Init"))
-		{
-			world.Reset ();
-			world.Init (cx, cy, cz);
-		}
+        GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(Screen.width - 20));
+        EditorGUILayout.LabelField("Save & Load", EditorStyles.boldLabel);
 
-		if (GUILayout.Button ("Save"))
-		{
-			Serialization.SaveWorld (world);
-			//Debug.Log (path);
-		}
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Save"))
+        {
+            Serialization.SaveWorld(world);
+        }
+        if (GUILayout.Button("Load"))
+        {
+            Save save = Serialization.LoadWorld(world);
+            if (save != null)
+                BuildWorld(save);
+            //Debug.Log (path);
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.EndVertical();
 
-		if (GUILayout.Button ("Load"))
-		{
-			Save save = Serialization.LoadWorld (world);
-			if(save != null)
-				BuildWorld (save);
-			//Debug.Log (path);
-		}
+
+
+
 
         DrawPieceSelectedGUI();
 

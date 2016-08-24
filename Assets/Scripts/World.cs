@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ public class World : MonoBehaviour {
     public int chunkY = 1;
 	public int chunkZ = 1;
 
-    public GameObject chunkPrefab;
+    private GameObject chunkPrefab;
 	GameObject ruler;
 	GameObject layerRuler; 
 
@@ -22,6 +23,12 @@ public class World : MonoBehaviour {
 
     public void Init(int _chunkX, int _chunkY, int _chunkZ)
     {
+#if UNITY_EDITOR
+        chunkPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/chunk.prefab");
+#else
+        chunkPrefab = Resources.Load("Prefabs/chunk") as GameObject;
+#endif
+
         chunkX = _chunkX;
         chunkY = _chunkY;
         chunkZ = _chunkZ;
