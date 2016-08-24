@@ -203,36 +203,33 @@ public class WorldEditor : Editor {
         int button = Event.current.button;
         //Debug.LogFormat("MousePos: {0}", mousePosition);
 
-        //DrawMarker();
-
-        switch (currentEditMode)
-        {
-            case EditMode.Voxel:
-                //Debug.Log(button.ToString());
-                if (button == 0)
-                    DrawMarker(false);
-                else if (button <= 1)
-                {
-                    DrawMarker(true);
-                }
-                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag)
-                {
-                    if (button == 0)
-                        Paint(false);
-                    else if (button == 1) {
-                        Paint(true);
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use();
-                    }
-                }
-				if (Event.current.type == EventType.MouseUp) {
-					UpdateDirtyChunks();
+		//DrawMarker();
+		
+		if (!Event.current.alt) {
+			switch (currentEditMode) {
+			case EditMode.Voxel:
+				//Debug.Log(button.ToString());
+				if (button == 0)
+					DrawMarker (false);
+				else if (button <= 1) {
+					DrawMarker (true);
 				}
-                
-                break;
-		//VoxelLayer------
-		case EditMode.VoxelLayer: 
-			if (!Event.current.alt) {
+				if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+					if (button == 0)
+						Paint (false);
+					else if (button == 1) {
+						Paint (true);
+						Tools.viewTool = ViewTool.None;
+						Event.current.Use ();
+					}
+				}
+				if (Event.current.type == EventType.MouseUp) {
+					UpdateDirtyChunks ();
+				}               
+				break;
+
+			//VoxelLayer------
+			case EditMode.VoxelLayer: 
 				if (button == 0)
 					DrawLayerMarker (false);
 				else if (button <= 1)
@@ -261,31 +258,28 @@ public class WorldEditor : Editor {
 				if (Event.current.type == EventType.MouseUp) {
 					UpdateDirtyChunks ();
 				}
-			}
-			break;
-		//----------------
+				break;
+			//----------------
 
-		case EditMode.Object:
-                if (Event.current.type == EventType.MouseDown)
-                {
-                    if (button == 0)
-                        PlaceObject(false);
-                    else if (button == 1)
-                    {
-                        PlaceObject(true);
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use();
-                    }
-                    //PlaceObject();
-                }
-                DrawGridMarker ();
+			case EditMode.Object:
+				if (Event.current.type == EventType.MouseDown) {
+					if (button == 0)
+						PlaceObject (false);
+					else if (button == 1) {
+						PlaceObject (true);
+						Tools.viewTool = ViewTool.None;
+						Event.current.Use ();
+					}
+				}
+				DrawGridMarker ();
                 
                 break;
 
             case EditMode.View:
             default:
                 break;
-        }
+			}
+		}
     }
 
     private void DrawMarker(bool isErase)
