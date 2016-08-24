@@ -156,7 +156,13 @@ public class World : MonoBehaviour {
         Chunk chunk = null;
         if (chunks.TryGetValue(new WorldPos(x, y, z), out chunk))
         {
+#if UNITY_EDITOR
+            Debug.Log("Destroy " + chunk.gameObject.name);
+            Object.DestroyImmediate(chunk.gameObject);
+#else
             Object.Destroy(chunk.gameObject);
+#endif
+            chunk.Destroy();
             chunks.Remove(new WorldPos(x, y, z));
         }
     }
