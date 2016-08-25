@@ -267,7 +267,6 @@ public class World : MonoBehaviour {
 	{
 		layerRuler = new GameObject ("LevelRuler");
 		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
-		layerRuler.tag = "VoxelEditor";
 		layerRuler.transform.parent = transform;
 		layerRuler.hideFlags = HideFlags.HideInHierarchy;
 		bColl = layerRuler.AddComponent<BoxCollider> ();

@@ -248,7 +248,7 @@ public class WorldEditor : Editor {
 				else if (button <= 1) {
 					DrawMarker (true);
 				}
-				if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+				if (Event.current.type == EventType.MouseDown /*|| Event.current.type == EventType.MouseDrag*/) {
 					if (button == 0)
 						Paint (false);
 					else if (button == 1) {
