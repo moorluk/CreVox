@@ -1,0 +1,126 @@
+fileFormatVersion: 2
+guid: 3862a88c477ed7f418cbd5bf520185fe
+timeCreated: 1472100958
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Voxel
+    100004: Voxel001
+    100006: Wall
+    100008: Fence_StairR
+    100010: Fence_StairL
+    100012: Stair
+    100014: Fence
+    100016: FenceSeprator
+    100018: WallSeprator
+    400000: //RootNode
+    400002: Voxel
+    400004: Voxel001
+    400006: Wall
+    400008: Fence_StairR
+    400010: Fence_StairL
+    400012: Stair
+    400014: Fence
+    400016: FenceSeprator
+    400018: WallSeprator
+    2300000: Voxel
+    2300002: Voxel001
+    2300004: Wall
+    2300006: Fence_StairR
+    2300008: Fence_StairL
+    2300010: Stair
+    2300012: Fence
+    2300014: FenceSeprator
+    2300016: WallSeprator
+    3300000: Voxel
+    3300002: Voxel001
+    3300004: Wall
+    3300006: Fence_StairR
+    3300008: Fence_StairL
+    3300010: Stair
+    3300012: Fence
+    3300014: FenceSeprator
+    3300016: WallSeprator
+    4300000: Voxel
+    4300002: Voxel001
+    4300004: Wall
+    4300006: Fence_StairR
+    4300008: Fence_StairL
+    4300010: Stair
+    4300012: Fence
+    4300014: FenceSeprator
+    4300016: WallSeprator
+    6400000: Fence
+    6400002: Fence_StairL
+    6400004: Fence_StairR
+    6400006: Stair
+    6400008: Voxel
+    6400010: Wall
+    6400012: FenceSeprator
+    6400014: WallSeprator
+  materials:
+    importMaterials: 1
+    materialName: 1
+    materialSearch: 2
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

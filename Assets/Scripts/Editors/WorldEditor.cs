@@ -318,7 +318,7 @@ public class WorldEditor : Editor {
         //update = true;
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		if (Physics.Raycast(worldRay, out hit, editDis, 1 << LayerMask.NameToLayer("Editor")))
+		if (Physics.Raycast(worldRay, out hit, editDis, 1 << LayerMask.NameToLayer("Editor")) && !isErase)
         {
             WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
             float x = pos.x * Block.w;
@@ -328,8 +328,10 @@ public class WorldEditor : Editor {
 
 			//BoxCursor------
 			//Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 2f);
-			world.useBox = isErase ? false : true;
-			BoxCursorUtils.UpdateBox(world.box, new Vector3(x, y, z),hit.normal);
+			if (hit.collider.gameObject.tag == "VoxelEditorBase") {
+				hit.normal = Vector3.zero;
+			}
+			BoxCursorUtils.UpdateBox(world.box, new Vector3(x, y, z), hit.normal);
 			//---------------
             SceneView.RepaintAll();
 		} else {
@@ -347,12 +349,12 @@ public class WorldEditor : Editor {
 		if (Physics.Raycast (worldRay, out hit, editDis, 1 << LayerMask.NameToLayer ("EditorLevel"))) {
 			WorldPos pos = EditTerrain.GetBlockPos (hit, false);
 			float x = pos.x * Block.w;
-			float y = (pos.y + 1.0f) * Block.h;
+			float y = (pos.y - 1) * Block.h;
 			float z = pos.z * Block.d;
 			//BoxCursor------
 			//Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 2f);
 			world.useBox = true;
-			BoxCursorUtils.UpdateBox (world.box, new Vector3 (x, y, z), Vector3.up);
+			BoxCursorUtils.UpdateBox (world.box, new Vector3 (x, y, z), Vector3.zero);
 			SceneView.RepaintAll ();
 			//---------------
 		} else {
@@ -400,9 +402,7 @@ public class WorldEditor : Editor {
 
         if (isHit)
         {
-            //Debug.Log("GHIT!");
             pos = EditTerrain.GetBlockPos(gHit, isErase ? false : true);
-            //Debug.Log(pos.ToString());
 
             world.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
             Chunk chunk = world.GetChunk(pos.x, pos.y, pos.z);
@@ -426,9 +426,8 @@ public class WorldEditor : Editor {
 
 		if (isHit)
 		{
-			//Debug.Log("GHIT!");
+			gHit.point = gHit.point + new Vector3 (0f, -Block.h, 0f);
 			pos = EditTerrain.GetBlockPos(gHit, isErase ? false : true);
-			//Debug.Log(pos.ToString());
 
 			world.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
 			Chunk chunk = world.GetChunk(pos.x, pos.y, pos.z);

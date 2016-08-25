@@ -8,7 +8,7 @@ public class BoxCursorUtils {
 		GameObject bCursor;
 		BoxCursor cur = EditorUtils.GetAssetsWithScript<BoxCursor>("Assets")[0];
 		bCursor = PrefabUtility.InstantiatePrefab (cur.gameObject ) as GameObject;
-		bCursor.transform.parent = _Parent;
+//		bCursor.transform.parent = _Parent;
 		bCursor.transform.localScale = _CursorSize;
 		bCursor.hideFlags = HideFlags.HideInHierarchy;
 		UpdateBox (bCursor, _Parent.position,Vector3.up);
@@ -20,6 +20,7 @@ public class BoxCursorUtils {
 		
 		//切換箭頭顯示方向
 		BoxCursor dir = box.GetComponent<BoxCursor> ();
+		dir.Center.SetActive (_dir == Vector3.zero);
 		dir.Xplus.SetActive (_dir.x > 0);
 		dir.Xminor.SetActive (_dir.x < 0);
 		dir.Yplus.SetActive (_dir.y > 0);

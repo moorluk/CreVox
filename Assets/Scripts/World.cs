@@ -65,6 +65,7 @@ public class World : MonoBehaviour {
     {
         ruler = new GameObject("Ruler");
         ruler.layer = LayerMask.NameToLayer("Editor");
+		ruler.tag = "VoxelEditorBase";
         ruler.transform.parent = transform;
 		ruler.hideFlags = HideFlags.HideInHierarchy;
 		mColl = ruler.AddComponent<MeshCollider>();
@@ -73,13 +74,13 @@ public class World : MonoBehaviour {
         float x = -Block.hw;
         float y = -Block.hh;
         float z = -Block.hd;
-        float w = chunkX * Chunk.chunkSize * Block.w+x;
-        float d = chunkZ * Chunk.chunkSize * Block.d+z;
+		float w = chunkX * Chunk.chunkSize * Block.w + x;
+		float d = chunkZ * Chunk.chunkSize * Block.d + z;
         meshData.useRenderDataForCol = true;
-        meshData.AddVertex(new Vector3(x, 0, z));
-        meshData.AddVertex(new Vector3(x, 0, d));
-        meshData.AddVertex(new Vector3(w, 0, d));
-        meshData.AddVertex(new Vector3(w, 0, z));
+        meshData.AddVertex(new Vector3(x, y, z));
+        meshData.AddVertex(new Vector3(x, y, d));
+        meshData.AddVertex(new Vector3(w, y, d));
+        meshData.AddVertex(new Vector3(w, y, z));
         meshData.AddQuadTriangles();
 
 		mColl.sharedMesh = null;
@@ -266,6 +267,7 @@ public class World : MonoBehaviour {
 	{
 		layerRuler = new GameObject ("LevelRuler");
 		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
+		layerRuler.tag = "VoxelEditor";
 		layerRuler.transform.parent = transform;
 		layerRuler.hideFlags = HideFlags.HideInHierarchy;
 		bColl = layerRuler.AddComponent<BoxCollider> ();
@@ -306,7 +308,7 @@ public class World : MonoBehaviour {
 		);
 		bColl.center = transform.position + new Vector3 (
 			chunkX * Chunk.chunkSize * Block.hw - Block.hw , 
-			editY * Block.h, 
+			editY * Block.h + Block.hh, 
 			chunkZ * Chunk.chunkSize * Block.hd - Block.hd
 		);
 	}
