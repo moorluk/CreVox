@@ -100,7 +100,7 @@ public class World : MonoBehaviour {
             {
                 for (int z = 0; z < chunkZ; z++)
                 {
-                    GetChunk(x * 16, y * 16, z * 16).UpdateChunk();
+					GetChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize).UpdateChunk();
                 }
             }
         }
@@ -114,8 +114,8 @@ public class World : MonoBehaviour {
             {
                 for (int z = 0; z < chunkZ; z++)
                 {
-                    CreateChunk(x * 16, y * 16, z * 16);
-                    GetChunk(x * 16, y * 16, z * 16).Init();
+                    CreateChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize);
+                    GetChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize).Init();
                 }
             }
         }
@@ -129,7 +129,7 @@ public class World : MonoBehaviour {
             {
                 for (int z = 0; z < chunkZ; z++)
                 {
-                    DestroyChunk(x * 16, y * 16, z * 16);
+                    DestroyChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize);
                 }
             }
         }
@@ -156,11 +156,11 @@ public class World : MonoBehaviour {
         chunks.Add(worldPos, newChunk);
 
         //Add the following:
-        for (int xi = 0; xi < 16; xi++)
+        for (int xi = 0; xi < Chunk.chunkSize; xi++)
         {
-            for (int yi = 0; yi < 16; yi++)
+            for (int yi = 0; yi < Chunk.chunkSize; yi++)
             {
-                for (int zi = 0; zi < 16; zi++)
+                for (int zi = 0; zi < Chunk.chunkSize; zi++)
                 {
                     SetBlock(x + xi, y + yi, z + zi, new BlockAir());
                 }
@@ -268,7 +268,7 @@ public class World : MonoBehaviour {
 		layerRuler = new GameObject ("LevelRuler");
 		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
 		layerRuler.transform.parent = transform;
-		layerRuler.hideFlags = HideFlags.HideInHierarchy;
+//		layerRuler.hideFlags = HideFlags.HideInHierarchy;
 		bColl = layerRuler.AddComponent<BoxCollider> ();
 		bColl.size = new Vector3 (chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
 		ChangeEditY (0);

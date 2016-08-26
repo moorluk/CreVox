@@ -24,7 +24,7 @@ public class WorldEditor : Editor {
     {
         View,
         Voxel,
-		VoxelLayer,//VoxelLayer------
+		VoxelLayer,
         Object,
     }
 
@@ -177,10 +177,12 @@ public class WorldEditor : Editor {
 			if (GUILayout.Button ("↑")) {
 				fixY++;
 				world.ChangeEditY (fixY);
+				fixY = world.editY;
 			}
 			if (GUILayout.Button ("↓")) {
 				fixY--;
 				world.ChangeEditY (fixY);
+				fixY = world.editY;
 			}
 			if (GUILayout.Button (showPointer ? "Hide Pointer" : "Show Pointer")) {
 				showPointer = !showPointer;
@@ -282,6 +284,7 @@ public class WorldEditor : Editor {
 						if (Event.current.delta.y > 0)
 							fixY--;
 						world.ChangeEditY (fixY);
+						fixY = world.editY;
 						Event.current.Use ();
 					}
 				}
@@ -319,7 +322,7 @@ public class WorldEditor : Editor {
         RaycastHit hit;
         Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		if (Physics.Raycast(worldRay, out hit, editDis, 1 << LayerMask.NameToLayer("Editor")) && !isErase)
-        {
+		{
             WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
             float x = pos.x * Block.w;
             float y = pos.y * Block.h;
@@ -347,9 +350,10 @@ public class WorldEditor : Editor {
 		RaycastHit hit;
 		Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 		if (Physics.Raycast (worldRay, out hit, editDis, 1 << LayerMask.NameToLayer ("EditorLevel"))) {
-			WorldPos pos = EditTerrain.GetBlockPos (hit, false);
+			hit.point += new Vector3 (0f, -Block.h, 0f);
+			WorldPos pos = EditTerrain.GetBlockPos (hit, true);
 			float x = pos.x * Block.w;
-			float y = (pos.y - 1) * Block.h;
+			float y = pos.y * Block.h;
 			float z = pos.z * Block.d;
 			//BoxCursor------
 			//Handles.CubeCap(0, new Vector3(x, y, z), Quaternion.identity, 2f);
@@ -427,17 +431,17 @@ public class WorldEditor : Editor {
 		if (isHit)
 		{
 			gHit.point = gHit.point + new Vector3 (0f, -Block.h, 0f);
-			pos = EditTerrain.GetBlockPos(gHit, isErase ? false : true);
+			pos = EditTerrain.GetBlockPos(gHit, true);
 
 			world.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
 			Chunk chunk = world.GetChunk(pos.x, pos.y, pos.z);
 
-			if (chunk) {
-				if(!dirtyChunks.ContainsKey(pos))
-					dirtyChunks.Add(pos, chunk);
+//			if (chunk) {
+//				if(!dirtyChunks.ContainsKey(pos))
+//					dirtyChunks.Add(pos, chunk);
 				chunk.UpdateMeshFilter();
 				SceneView.RepaintAll();
-			}
+//			}
 		}
 	}
 	//----------------
