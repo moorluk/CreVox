@@ -47,6 +47,8 @@ public class BlockAir : Block
         int x = gPos.x;
         int z = gPos.z;
 
+		int id = z * 3 + x;
+
         if (parts == null)
         {
             node = new GameObject();
@@ -55,18 +57,28 @@ public class BlockAir : Block
             parts = new GameObject[9];
 			pieceNames = new string[9];
         }
-        if(go != null)
-            go.transform.parent = node.transform;
+//        if(go != null)
+//            go.transform.parent = node.transform;
 
-        if (parts[z * 3 + x] != null)
+		if (parts[id] != null)
         {
-            GameObject.DestroyImmediate(parts[z * 3 + x]);
-            Debug.Log("Delete parts:" + x.ToString() + "," + z.ToString());
+			GameObject.DestroyImmediate(parts[id]);
+//            Debug.Log("Delete parts:" + x.ToString() + "," + z.ToString());
         }
-        parts[z * 3 + x] = go;
-        if (go == null)
-            pieceNames[z * 3 + x] = "";
-        else
-            pieceNames [z * 3 + x] = go.GetComponent<PaletteItem> ().name;
+
+		if (go == null) {
+			pieceNames [id] = null;
+			parts [id] = null;
+		} else {
+			go.transform.parent = node.transform;
+			parts [id] = go;
+			pieceNames [id] = go.GetComponent<PaletteItem> ().name;
+		}
+
+//        parts[z * 3 + x] = go;
+//        if (go == null)
+//            pieceNames[z * 3 + x] = "";
+//        else
+//            pieceNames [z * 3 + x] = go.GetComponent<PaletteItem> ().name;
     }
 }

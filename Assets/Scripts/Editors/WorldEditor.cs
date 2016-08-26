@@ -436,12 +436,12 @@ public class WorldEditor : Editor {
 			world.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
 			Chunk chunk = world.GetChunk(pos.x, pos.y, pos.z);
 
-//			if (chunk) {
-//				if(!dirtyChunks.ContainsKey(pos))
-//					dirtyChunks.Add(pos, chunk);
+			if (chunk) {
+				if(!dirtyChunks.ContainsKey(pos))
+					dirtyChunks.Add(pos, chunk);
 				chunk.UpdateMeshFilter();
 				SceneView.RepaintAll();
-//			}
+			}
 		}
 	}
 	//----------------
@@ -506,27 +506,41 @@ public class WorldEditor : Editor {
     }
 
 	private void BuildWorld(Save _save) {
-		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem>(PaletteWindow.GetLevelPiecePath());
+		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
 		world.Reset ();
 		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
 
 		foreach (var block in _save.blocks) {
-			world.SetBlock (block.Key.x, block.Key.y, block.Key.z, block.Value);
-            BlockAir bAir = block.Value as BlockAir;
-            if (bAir != null) {
+//			world.SetBlock (block.Key.x, block.Key.y, block.Key.z, block.Value);
+			BlockAir bAir = block.Value as BlockAir;
+//            if (bAir != null) {
+//				for (int i = 0; i < bAir.pieceNames.Length; i++) {
+//					foreach (var item in items) {
+//						if (item.name == bAir.pieceNames[i]) {
+//							PlacePiece (block.Key, new WorldPos (i%3, 0, (int)(i/3)), item.gameObject.GetComponent<LevelPiece> ());
+//						}
+//					}
+//				}
+		}
+
+		foreach (var blockPair in _save.blocks) {
+			Block block = blockPair.Value;
+			BlockAir bAir = block as BlockAir;
+			if (bAir != null) {
+				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
 				for (int i = 0; i < bAir.pieceNames.Length; i++) {
-					foreach (var item in items) {
-						if (item.name == bAir.pieceNames[i]) {
-							PlacePiece (block.Key, new WorldPos (i%3, 0, (int)(i/3)), item.gameObject.GetComponent<LevelPiece> ());
+					for (int k = 0; k < items.Count; k++) {
+						if (bAir.pieceNames [i] == items [k].name) {
+							PlacePiece (blockPair.Key, new WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
+							break;
 						}
 					}
 				}
-			}
-			Debug.Log ("Load: " + block.Key.ToString ());
+			} else
+				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
 		}
-
 		world.UpdateChunks ();
-		SceneView.RepaintAll();
+		SceneView.RepaintAll ();
 	}
 
 	private void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)

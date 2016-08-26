@@ -28,7 +28,7 @@ public class World : MonoBehaviour {
     public void Init(int _chunkX, int _chunkY, int _chunkZ)
     {
 #if UNITY_EDITOR
-        chunkPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/chunk.prefab");
+		chunkPrefab = EditorUtils.GetAssetsWithScript<Chunk>("Assets")[0].gameObject;
 #else
         chunkPrefab = Resources.Load("Prefabs/chunk") as GameObject;
 #endif
@@ -268,7 +268,7 @@ public class World : MonoBehaviour {
 		layerRuler = new GameObject ("LevelRuler");
 		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
 		layerRuler.transform.parent = transform;
-//		layerRuler.hideFlags = HideFlags.HideInHierarchy;
+		layerRuler.hideFlags = HideFlags.HideInHierarchy;
 		bColl = layerRuler.AddComponent<BoxCollider> ();
 		bColl.size = new Vector3 (chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
 		ChangeEditY (0);
