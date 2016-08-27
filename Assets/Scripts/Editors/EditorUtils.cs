@@ -2,6 +2,8 @@
 using UnityEditor;
 using System.Collections.Generic;
 
+namespace CreVox{
+
 public static class EditorUtils
 {
     public static List<T> GetListFromEnum<T>()
@@ -36,4 +38,5 @@ public static class EditorUtils
         }
         return assetList;
     }
+}
 }

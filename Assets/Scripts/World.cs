@@ -3,6 +3,8 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
+namespace CreVox{
+
 [SelectionBase]
 public class World : MonoBehaviour {
     public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
@@ -324,4 +326,5 @@ public class World : MonoBehaviour {
 		}
 	}
 	//---------------
+}
 }

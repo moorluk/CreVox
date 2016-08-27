@@ -3,6 +3,8 @@ using UnityEditor;
 using System.Collections;
 using System;
 
+namespace CreVox{
+
 [Serializable]
 public struct WorldPos
 {
@@ -39,4 +41,5 @@ public struct WorldPos
     {
         return (x.ToString() + ", " + y.ToString() + ", " + z.ToString());
     }
+}
 }

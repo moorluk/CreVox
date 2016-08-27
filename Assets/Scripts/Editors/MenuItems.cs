@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
+namespace CreVox{
+
 public static class MenuItems
 {
     /*[MenuItem("Tools/Level Creator/New Level Scene")]
@@ -15,4 +17,5 @@ public static class MenuItems
         PaletteWindow.ShowPalette();
     }
 
+}
 }

@@ -2,6 +2,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
+namespace CreVox{
+	
 public class MeshData
 {
     public List<Vector3> vertices = new List<Vector3>();
@@ -50,4 +53,5 @@ public class MeshData
             colTriangles.Add(tri - (vertices.Count - colVertices.Count));
         }
     }
+}
 }

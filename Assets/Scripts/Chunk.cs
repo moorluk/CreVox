@@ -3,6 +3,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 
+namespace CreVox{
+
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
@@ -157,4 +159,5 @@ public class Chunk : MonoBehaviour
 		
 		coll.sharedMesh = cmesh;
 	}
+}
 }

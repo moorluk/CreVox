@@ -2,6 +2,8 @@
 using UnityEditor;
 using System.Collections.Generic;
 
+namespace CreVox{
+
 public class PaletteWindow : EditorWindow {
 
     public static PaletteWindow instance;
@@ -167,4 +169,5 @@ public class PaletteWindow : EditorWindow {
             }
         }
     }
+}
 }

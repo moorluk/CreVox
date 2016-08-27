@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+namespace CreVox{
+
 [Serializable]
 public class Save{
 	public int chunkX;
@@ -55,4 +57,5 @@ public class Save{
 			}
 		}
 	}
+}
 }

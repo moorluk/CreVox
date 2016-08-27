@@ -6,6 +6,8 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 
+namespace CreVox{
+
 public static class Serialization {
 	public static string saveFolderName = "Assets/saveData";
 
@@ -63,4 +65,5 @@ public static class Serialization {
 		}*/
 		return save;
 	}
+}
 }

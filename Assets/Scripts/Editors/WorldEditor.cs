@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using UnityEditor;
 
+namespace CreVox{
+
 [CustomEditor(typeof(World))]
 public class WorldEditor : Editor {
     World world;
@@ -614,4 +616,4 @@ public class WorldEditor : Editor {
         return offset;
     }
 }
-	
+}

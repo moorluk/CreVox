@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 
+namespace CreVox{
+
 [Serializable]
 public class Block
 {
@@ -190,4 +192,5 @@ public class Block
         return tile;
     }
 
+}
 }

@@ -3,6 +3,8 @@ using System;
 //using System.Collections;
 //using System.Collections.Generic;
 
+namespace CreVox{
+
 [Serializable]
 public class BlockAir : Block
 {
@@ -81,4 +83,5 @@ public class BlockAir : Block
 //        else
 //            pieceNames [z * 3 + x] = go.GetComponent<PaletteItem> ().name;
     }
+}
 }

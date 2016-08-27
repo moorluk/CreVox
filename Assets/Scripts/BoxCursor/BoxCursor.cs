@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+namespace CreVox{
+
 public class BoxCursor : MonoBehaviour {
 	public GameObject Center;
 	public GameObject Xplus;
@@ -8,4 +10,5 @@ public class BoxCursor : MonoBehaviour {
 	public GameObject Yminor;
 	public GameObject Zplus;
 	public GameObject Zminor;
+}
 }

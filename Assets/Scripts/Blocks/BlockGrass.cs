@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+
+namespace CreVox{
+	
 public class BlockGrass : Block
 {
     public BlockGrass()
@@ -24,4 +27,5 @@ public class BlockGrass : Block
         tile.y = 0;
         return tile;
     }
+}
 }

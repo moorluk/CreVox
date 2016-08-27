@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+namespace CreVox{
+
 public class PaletteItem : MonoBehaviour {
 #if UNITY_EDITOR
     public enum Category
@@ -23,4 +25,5 @@ public class PaletteItem : MonoBehaviour {
 	void Update () {
 	
 	}
+}
 }

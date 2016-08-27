@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace CreVox{
+
 public static class EditTerrain
 {
     public static Block GetBlock(RaycastHit hit, bool adjacent = false)
@@ -79,4 +81,5 @@ public static class EditTerrain
 
         return (float)pos;
     }
+}
 }

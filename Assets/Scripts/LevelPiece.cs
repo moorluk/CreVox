@@ -2,6 +2,8 @@
 using System.Collections;
 using System;
 
+namespace CreVox{
+
 public class LevelPiece : MonoBehaviour {
 
     public enum PivotType
@@ -24,4 +26,5 @@ public class LevelPiece : MonoBehaviour {
 	void Update () {
 	
 	}
+}
 }

@@ -2,6 +2,8 @@
 //using System.Collections;
 using UnityEditor;
 
+namespace CreVox{
+
 public class BoxCursorUtils {
 
 	public static GameObject CreateBoxCursor(Transform _Parent,Vector3 _CursorSize){
@@ -28,4 +30,5 @@ public class BoxCursorUtils {
 		dir.Zplus.SetActive (_dir.z > 0);
 		dir.Zminor.SetActive (_dir.z < 0);
 	}
+}
 }
