@@ -512,19 +512,6 @@ public class WorldEditor : Editor {
 		world.Reset ();
 		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
 
-		foreach (var block in _save.blocks) {
-//			world.SetBlock (block.Key.x, block.Key.y, block.Key.z, block.Value);
-			BlockAir bAir = block.Value as BlockAir;
-//            if (bAir != null) {
-//				for (int i = 0; i < bAir.pieceNames.Length; i++) {
-//					foreach (var item in items) {
-//						if (item.name == bAir.pieceNames[i]) {
-//							PlacePiece (block.Key, new WorldPos (i%3, 0, (int)(i/3)), item.gameObject.GetComponent<LevelPiece> ());
-//						}
-//					}
-//				}
-		}
-
 		foreach (var blockPair in _save.blocks) {
 			Block block = blockPair.Value;
 			BlockAir bAir = block as BlockAir;
