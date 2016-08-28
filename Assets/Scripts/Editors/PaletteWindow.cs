@@ -58,6 +58,7 @@ public class PaletteWindow : EditorWindow {
     {
         DrawTabs();
         DrawScroll();
+		DrawFunction();
     }
 
     private void InitCategories()
@@ -90,6 +91,27 @@ public class PaletteWindow : EditorWindow {
             _categorizedItems[item.category].Add(item);
         }
     }
+
+	private void DrawFunction()
+	{
+		EditorGUILayout.BeginHorizontal ("Box");
+		if (GUILayout.Button ("Select Path", GUILayout.Width (80))) 
+		{
+			_path = EditorUtility.OpenFolderPanel ("Select Pieces' Path", "", "Assets/Prefabs/LevelPieces");
+			int sep = _path.IndexOf ("Assets/");
+			_path = _path.Substring (sep);
+			Debug.Log (_path);
+			InitCategories ();
+			InitContent ();
+		}
+		EditorGUILayout.LabelField (_path);
+		if(GUILayout.Button("Refresh Preview",GUILayout.Width(110)))
+		{
+			InitCategories();
+			InitContent();
+		}
+		EditorGUILayout.EndHorizontal ();
+	}
 
     private void DrawTabs()
     {

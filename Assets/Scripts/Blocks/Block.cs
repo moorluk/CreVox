@@ -169,28 +169,36 @@ public class Block
         return meshData;
     }
 
-    public virtual Vector2[] FaceUVs(Direction direction)
-    {
-        Vector2[] UVs = new Vector2[4];
-        Tile tilePos = TexturePosition(direction);
-        UVs[0] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y);
-        UVs[1] = new Vector2(tileSize * tilePos.x + tileSize,
-            tileSize * tilePos.y + tileSize);
-        UVs[2] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y + tileSize);
-        UVs[3] = new Vector2(tileSize * tilePos.x,
-            tileSize * tilePos.y);
-        return UVs;
-    }
+		public virtual Vector2[] FaceUVs(Direction direction)
+		{
+			Vector2[] UVs = new Vector2[4];
+			Tile tilePos = TexturePosition (direction);
+			switch (direction) {
+			default:
+				UVs [0] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y);
+				UVs [1] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y + tileSize * Block.h);
+				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.h);
+				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				return UVs;
+				break;
 
-    public virtual Tile TexturePosition(Direction direction)
-    {
-        Tile tile = new Tile();
-        tile.x = 0;
-        tile.y = 0;
-        return tile;
-    }
+			case Direction.up:
+			case Direction.down:
+				UVs [0] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y);
+				UVs [1] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y + tileSize * Block.d);
+				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.d);
+				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				return UVs;
+				break;
+			}
+		}
 
-}
+		public virtual Tile TexturePosition(Direction direction)
+		{
+			Tile tile = new Tile();
+			tile.x = 1;
+			tile.y = 1;
+			return tile;
+		}
+	}
 }
