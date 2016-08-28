@@ -54,18 +54,6 @@ namespace CreVox{
             ModeHandler();
             EventHandler();
         }
-<<<<<<< HEAD
-		//Load old .bin files
-		if (GUILayout.Button("LoadOld"))
-		{
-			global::Save save = SerializationOld.LoadWorld(world);
-			if (save != null)
-				BuildWorldOld(save);
-		}
-        GUILayout.EndHorizontal();
-        GUILayout.EndVertical();
-=======
->>>>>>> Dev
 
         public override void OnInspectorGUI()
 	    {
@@ -110,7 +98,13 @@ namespace CreVox{
                     SceneView.RepaintAll();
                     //Debug.Log (path);
             }
-
+            //Load old .bin files
+            if (GUILayout.Button("LoadOld"))
+            {
+                global::Save save = SerializationOld.LoadWorld(world);
+                if (save != null)
+                    BuildWorldOld(save);
+            }
             if (GUILayout.Button("Test"))
             {
                 Serialization.SaveWorld(world, "Assets/Resources/testmap.bytes");
@@ -532,55 +526,6 @@ namespace CreVox{
             return false;
         }
     
-        /*
-	private void BuildWorld(Save _save) {
-		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
-		world.Reset ();
-		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
-
-		foreach (var blockPair in _save.blocks) {
-			Block block = blockPair.Value;
-			BlockAir bAir = block as BlockAir;
-			if (bAir != null) {
-				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
-				for (int i = 0; i < bAir.pieceNames.Length; i++) {
-					for (int k = 0; k < items.Count; k++) {
-						if (bAir.pieceNames [i] == items [k].name) {
-							PlacePiece (blockPair.Key, new WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
-							break;
-						}
-					}
-				}
-			} else
-				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
-		}
-		world.UpdateChunks ();
-	}
-
-	private void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)
-    {
-        GameObject obj = null;
-        BlockAir block = world.GetBlock(bPos.x, bPos.y, bPos.z) as BlockAir;
-        if (block == null) return;
-
-        Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
-
-        float x = bPos.x * Block.w + pos.x;
-        float y = bPos.y * Block.h + pos.y;
-        float z = bPos.z * Block.d + pos.z;
-
-		if (_piece != null)
-        {
-			obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
-            obj.transform.parent = world.transform;
-            obj.transform.position = new Vector3(x, y, z);
-            obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
-        }
-
-        block.SetPart(bPos, gPos, obj);
-    }
-
-<<<<<<< HEAD
 	private void BuildWorldOld(global::Save _save) {
 		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
 		world.Reset ();
@@ -629,15 +574,6 @@ namespace CreVox{
 		block.SetPart(bPos, gPos, obj);
 	}
 
-	private void UpdateDirtyChunks() {
-		foreach (KeyValuePair<WorldPos, Chunk> c in dirtyChunks) {
-			c.Value.UodateMeshCollider();
-		}
-		dirtyChunks.Clear ();
-	}
-
-=======
->>>>>>> Dev
     private int GetPieceAngle(int x, int z)
     {
         if(x == 0 && z >= 1)
@@ -677,6 +613,6 @@ namespace CreVox{
         if (x == 2 && z == 2)
             return new Vector3(hw, -hh, hd);
         return offset;
-    }*/
+    }
     }
 }
