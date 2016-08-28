@@ -97,6 +97,13 @@ public class WorldEditor : Editor {
                 BuildWorld(save);
             //Debug.Log (path);
         }
+		//Load old .bin files
+		if (GUILayout.Button("LoadOld"))
+		{
+			global::Save save = SerializationOld.LoadWorld(world);
+			if (save != null)
+				BuildWorldOld(save);
+		}
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 
@@ -554,6 +561,54 @@ public class WorldEditor : Editor {
 
         block.SetPart(bPos, gPos, obj);
     }
+
+	private void BuildWorldOld(global::Save _save) {
+		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
+		world.Reset ();
+		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
+
+		foreach (var blockPair in _save.blocks) {
+			global::Block block = blockPair.Value;
+			global::BlockAir bAir = block as global::BlockAir;
+			if (bAir != null) {
+				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
+				for (int i = 0; i < bAir.pieceNames.Length; i++) {
+					for (int k = 0; k < items.Count; k++) {
+						if (bAir.pieceNames [i] == items [k].name) {
+							PlacePieceOld (blockPair.Key, new global::WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
+							break;
+						}
+					}
+				}
+			} else
+				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
+		}
+		world.UpdateChunks ();
+		SceneView.RepaintAll ();
+	}
+
+	private void PlacePieceOld(global::WorldPos bPos, global::WorldPos gPos, LevelPiece _piece)
+	{
+		GameObject obj = null;
+		global::BlockAir block = (global::Block)world.GetBlock(bPos.x, bPos.y, bPos.z) as global::BlockAir;
+		if (block == null) return;
+
+		Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
+
+		float x = bPos.x * Block.w + pos.x;
+		float y = bPos.y * Block.h + pos.y;
+		float z = bPos.z * Block.d + pos.z;
+
+		if (_piece != null)
+		{
+			obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
+			obj.transform.parent = world.transform;
+			obj.transform.position = new Vector3(x, y, z);
+			obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
+		}
+
+		block.SetPart(bPos, gPos, obj);
+	}
 
 	private void UpdateDirtyChunks() {
 		foreach (KeyValuePair<WorldPos, Chunk> c in dirtyChunks) {
