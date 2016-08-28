@@ -22,7 +22,7 @@ public class Save{
 				for (int z = 0; z < chunkZ; z++) {
 					Debug.Log ("Add chunk: " + x.ToString() + "," + y.ToString() + "," + z.ToString());
 					Chunk chunk = world.GetChunk (x* Chunk.chunkSize, y* Chunk.chunkSize, z* Chunk.chunkSize);
-					AddChunk (x, y, z, chunk);
+					if(chunk) AddChunk (x, y, z, chunk);
 				}
 			}
 		}

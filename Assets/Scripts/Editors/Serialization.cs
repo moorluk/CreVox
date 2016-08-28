@@ -8,62 +8,72 @@ using System.Runtime.Serialization;
 
 namespace CreVox{
 
-public static class Serialization {
-	public static string saveFolderName = "Assets/saveData";
+    public static class Serialization {
+	    public static string saveFolderName = "Assets/saveData";
 
-	public static string GetSaveLocation()
-	{
-		string saveLocation = saveFolderName + "/";
+	    public static string GetSaveLocation()
+	    {
+		    string saveLocation = saveFolderName + "/";
 
-		if (!Directory.Exists (saveLocation))
-			Directory.CreateDirectory (saveLocation);
+		    if (!Directory.Exists (saveLocation))
+			    Directory.CreateDirectory (saveLocation);
 
-		return EditorUtility.SaveFilePanel ("save map", saveLocation, "world", "bin");
-	}
+		    return EditorUtility.SaveFilePanel ("save map", saveLocation, "world", "bin");
+	    }
 
-	public static string GetLoadLocation()
-	{
-		string loadLocation = saveFolderName + "/";
+	    public static string GetLoadLocation()
+	    {
+		    string loadLocation = saveFolderName + "/";
 
-		if (!Directory.Exists (loadLocation))
-			Directory.CreateDirectory (loadLocation);
+		    if (!Directory.Exists (loadLocation))
+			    Directory.CreateDirectory (loadLocation);
 
-		return EditorUtility.OpenFilePanel ("load map", loadLocation, "bin");
-	}
+		    return EditorUtility.OpenFilePanel ("load map", loadLocation, "bin");
+	    }
 
-	public static void SaveWorld(World world)
-	{
-		string saveFile = GetSaveLocation ();
+	    public static void SaveWorld(World world, string _path = null)
+	    {
+            string saveFile;
+            if (_path == null)
+                saveFile = GetSaveLocation();
+            else
+                saveFile = _path;
 
-		Save save = new Save (world);
-		if (save.blocks.Count == 0)
-			return;
+            Debug.Log("Save path: " + saveFile);
 
-		IFormatter formatter = new BinaryFormatter ();
-		FileStream stream = new FileStream (saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
-		formatter.Serialize (stream, save);
-		stream.Close ();
-	}
+            Save save = new Save (world);
+		    if (save.blocks.Count == 0)
+			    return;
 
-	public static Save LoadWorld(World world) {
-		string loadFile = GetLoadLocation ();
-		if (!File.Exists (loadFile) || loadFile == null)
-			return null;
+		    IFormatter formatter = new BinaryFormatter ();
+		    FileStream stream = new FileStream (saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
+		    formatter.Serialize (stream, save);
+		    stream.Close ();
+	    }
 
-		IFormatter formatter = new BinaryFormatter ();
-		FileStream stream = new FileStream (loadFile, FileMode.Open);
+	    public static Save LoadWorld() {
+		    string loadFile = GetLoadLocation ();
+		    if (!File.Exists (loadFile) || loadFile == null)
+			    return null;
 
-		Save save = (Save)formatter.Deserialize (stream);
-		stream.Close ();
+		    IFormatter formatter = new BinaryFormatter ();
+		    FileStream stream = new FileStream (loadFile, FileMode.Open);
 
-		/*world.Reset ();
-		world.Init (save.chunkX, save.chunkY, save.chunkZ);
+		    Save save = (Save)formatter.Deserialize (stream);
+		    stream.Close ();
+		    return save;
+	    }
 
-		foreach (var block in save.blocks) {
-			world.SetBlock (block.Key.x, block.Key.y, block.Key.z, block.Value);
-			Debug.Log ("Load: " + block.Key.ToString ());
-		}*/
-		return save;
-	}
-}
+        public static Save LoadRTWorld(string path)
+        {
+            TextAsset ta = Resources.Load(path) as TextAsset;
+
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new MemoryStream(ta.bytes);
+
+            Save save = (Save)formatter.Deserialize(stream);
+            stream.Close();
+            return save;
+        }
+    }
 }

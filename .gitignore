@@ -5,6 +5,7 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
+Standard Assets/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -39,5 +40,8 @@ Thumbs.db
 *.log #log files, for some plugins
 *.pyc #python bytecode cache, for some plugins.
 sysinfo.txt #Unity3D Generated File On Crash Reports
+<<<<<<< HEAD
 Assets/Standard Assets/
+=======
+>>>>>>> Dev
 Assets/Standard Assets.meta
