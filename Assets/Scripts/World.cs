@@ -27,41 +27,59 @@ public class World : MonoBehaviour {
 	public bool pointer;
 	private Color YColor;
 
-    public void Init(int _chunkX, int _chunkY, int _chunkZ)
-    {
-#if UNITY_EDITOR
-		chunkPrefab = EditorUtils.GetAssetsWithScript<Chunk>("Assets")[0].gameObject;
-#else
-        chunkPrefab = Resources.Load("Prefabs/chunk") as GameObject;
-#endif
-
-        chunkX = _chunkX;
-        chunkY = _chunkY;
-        chunkZ = _chunkZ;
-
-        CreateRuler();
-        CreateLevelRuler();
-		CreateChunks();
-		//BoxCursor------
-		if (!box) {
-			box = BoxCursorUtils.CreateBoxCursor (this.transform,new Vector3(Block.w,Block.h,Block.d));
-		}
-		//---------------
-    }
-
-    public void Reset()
-    {
-        if (chunks != null)
+        void Start()
         {
-            DestoryChunks();
-            chunks.Clear();
+            Reset();
+            Save save = Serialization.LoadRTWorld("testmap");
+            Init(save.chunkX, save.chunkY, save.chunkZ);
+            BuildWorld(save);
         }
-        Object.DestroyImmediate(ruler);
-        Object.DestroyImmediate(layerRuler);
-        mColl = null;
-        bColl = null;
-        editY = 0;
-    }
+
+        public void Init(int _chunkX, int _chunkY, int _chunkZ)
+        {
+    //#if UNITY_EDITOR
+    //		chunkPrefab = EditorUtils.GetAssetsWithScript<Chunk>("Assets")[0].gameObject;
+    //#else
+            chunkPrefab = Resources.Load("prefabs/chunk") as GameObject;
+    //#endif
+
+            chunkX = _chunkX;
+            chunkY = _chunkY;
+            chunkZ = _chunkZ;
+
+            CreateRuler();
+            CreateLevelRuler();
+		    CreateChunks();
+		    //BoxCursor------
+		    if (!box) {
+			    box = BoxCursorUtils.CreateBoxCursor (this.transform,new Vector3(Block.w,Block.h,Block.d));
+		    }
+		    //---------------
+        }
+
+        public void Reset()
+        {
+            if (chunks != null)
+            {
+                DestoryChunks();
+                chunks.Clear();
+            }
+
+            for (int i = transform.childCount - 1; i > 0; i--)
+            {
+                Debug.Log("delete " + transform.GetChild(i).gameObject.name);
+                Object.DestroyImmediate(transform.GetChild(i).gameObject);
+            }
+
+            if (ruler)
+                Object.DestroyImmediate(ruler);
+            if(layerRuler)
+                Object.DestroyImmediate(layerRuler);
+
+            mColl = null;
+            bColl = null;
+            editY = 0;
+        }
 
     void CreateRuler()
     {
@@ -325,6 +343,119 @@ public class World : MonoBehaviour {
 			}
 		}
 	}
-	//---------------
-}
+        //---------------
+
+        public void BuildWorld(Save _save)
+        {
+            //#if UNITY_EDITOR
+            //            List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem>(PaletteWindow.GetLevelPiecePath());
+            //#else
+            PaletteItem[] itemArray = Resources.LoadAll< PaletteItem>("LevelPieces");
+            //PaletteItem[] itemArray = Resources.FindObjectsOfTypeAll(typeof(PaletteItem)) as PaletteItem[];
+//#endif
+
+            Reset();
+            Init(_save.chunkX, _save.chunkY, _save.chunkZ);
+
+            foreach (var blockPair in _save.blocks)
+            {
+                Block block = blockPair.Value;
+                BlockAir bAir = block as BlockAir;
+                if (bAir != null)
+                {
+                    SetBlock(blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir());
+                    for (int i = 0; i < bAir.pieceNames.Length; i++)
+                    {
+/*#if UNITY_EDITOR
+                        for (int k = 0; k < items.Count; k++)
+                        {
+                            if (bAir.pieceNames[i] == items[k].name)
+                            {
+                                PlacePiece(blockPair.Key, new WorldPos(i % 3, 0, (int)(i / 3)), items[k].gameObject.GetComponent<LevelPiece>());
+                                break;
+                            }
+                        }
+#else*/
+                        for (int k = 0; k < itemArray.Length; k++)
+                        {
+                            if (bAir.pieceNames[i] == itemArray[k].name)
+                            {
+                                PlacePiece(blockPair.Key, new WorldPos(i % 3, 0, (int)(i / 3)), itemArray[k].gameObject.GetComponent<LevelPiece>());
+                                break;
+                            }
+                        }
+//#endif
+                    }
+                }
+                else
+                    SetBlock(blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
+            }
+            UpdateChunks();
+            
+        }
+
+        public void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)
+        {
+            GameObject obj = null;
+            BlockAir block = GetBlock(bPos.x, bPos.y, bPos.z) as BlockAir;
+            if (block == null) return;
+
+            Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
+
+            float x = bPos.x * Block.w + pos.x;
+            float y = bPos.y * Block.h + pos.y;
+            float z = bPos.z * Block.d + pos.z;
+
+            if (_piece != null)
+            {
+                obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
+                obj.transform.parent = transform;
+                obj.transform.position = new Vector3(x, y, z);
+                obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
+            }
+
+            block.SetPart(bPos, gPos, obj);
+        }
+
+        private Vector3 GetPieceOffset(int x, int z)
+        {
+            Vector3 offset = Vector3.zero;
+            float hw = Block.hw;
+            float hh = Block.hh;
+            float hd = Block.hd;
+
+            if (x == 0 && z == 0)
+                return new Vector3(-hw, -hh, -hd);
+            if (x == 1 && z == 0)
+                return new Vector3(0, -hh, -hd);
+            if (x == 2 && z == 0)
+                return new Vector3(hw, -hh, -hd);
+
+            if (x == 0 && z == 1)
+                return new Vector3(-hw, -hh, 0);
+            if (x == 1 && z == 1)
+                return new Vector3(0, -hh, 0);
+            if (x == 2 && z == 1)
+                return new Vector3(hw, -hh, 0);
+
+            if (x == 0 && z == 2)
+                return new Vector3(-hw, -hh, hd);
+            if (x == 1 && z == 2)
+                return new Vector3(0, -hh, hd);
+            if (x == 2 && z == 2)
+                return new Vector3(hw, -hh, hd);
+            return offset;
+        }
+
+        private int GetPieceAngle(int x, int z)
+        {
+            if (x == 0 && z >= 1)
+                return 90;
+            if (z == 2 && x >= 1)
+                return 180;
+            if (x == 2 && z <= 1)
+                return 270;
+            return 0;
+        }
+    }
 }

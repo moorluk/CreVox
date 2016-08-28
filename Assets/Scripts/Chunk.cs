@@ -37,11 +37,11 @@ public class Chunk : MonoBehaviour
     {
         filter = gameObject.GetComponent<MeshFilter>();
         coll = gameObject.GetComponent<MeshCollider>();
-        //UpdateChunk();
+        UpdateChunk();
     }
 
     //Update is called once per frame
-    void Update()
+    void Update1()
     {
         if (update)
         {
