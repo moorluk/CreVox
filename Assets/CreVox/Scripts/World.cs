@@ -18,6 +18,7 @@ public class World : MonoBehaviour {
 	//BoxCursor------
 	public GameObject box = null;
 	public bool useBox = false; 
+	public float editDis = 120f;
 	//---------------
 
 	MeshCollider mColl;
@@ -25,7 +26,7 @@ public class World : MonoBehaviour {
 
 	public int editY;
 	public bool pointer;
-	private Color YColor;
+	public Color YColor;
 
         void Start()
         {

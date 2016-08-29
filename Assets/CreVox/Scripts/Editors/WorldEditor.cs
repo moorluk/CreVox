@@ -18,10 +18,6 @@ namespace CreVox{
 	    private bool showPointer = true;
 	    //----------------
 
-	    //BoxCursor------
-	    private float editDis = 90f;
-	    //---------------
-
         public enum EditMode
         {
             View,
@@ -169,12 +165,17 @@ namespace CreVox{
 		    float ButtonW = 90;
 
             Handles.BeginGUI();
-		    GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 40f)); //根據選項數量決定寬度
-            selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
-            GUILayout.EndArea();
+			GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 60f),"","Box"); //根據選項數量決定寬度
+			selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
+			EditorGUILayout.BeginHorizontal ();
+			world.editDis = EditorGUILayout.Slider ("Edibable Distance",world.editDis, 90f, 1000f);
+			EditorGUILayout.EndHorizontal ();
+			GUILayout.EndArea();
 
-		    //VoxelLayer------
-		    DrawLayerModeGUI ();
+			//VoxelLayer------
+			GUILayout.BeginArea (new Rect (10f, 75f, ButtonW*2 + 10, 65f));
+			DrawLayerModeGUI ();
+			GUILayout.EndArea ();
 		    //----------------
 		    Handles.EndGUI();
 	    }
@@ -183,27 +184,26 @@ namespace CreVox{
 	    private void DrawLayerModeGUI()
 	    {
 		    if (selectedEditMode == EditMode.VoxelLayer) {
-			    GUILayout.BeginArea (new Rect (10f, 55f, 360f, 43f),"","Box");
-			    EditorGUILayout.BeginHorizontal ();
-			    EditorGUILayout.LabelField ("Current Y :" + world.editY,GUILayout.Width(90));
-			    if (GUILayout.Button ("↑")) {
+				EditorGUILayout.BeginHorizontal ("Box",GUILayout.Width(90));
+				GUI.color = world.YColor;
+				EditorGUILayout.BeginVertical();
+				if (GUILayout.Button ("↑",GUILayout.Width(85))) {
 				    fixY++;
 				    world.ChangeEditY (fixY);
 				    fixY = world.editY;
-			    }
-			    if (GUILayout.Button ("↓")) {
+				}
+				EditorGUILayout.LabelField ("Current Y : " + world.editY,GUILayout.Width(85));
+				if (GUILayout.Button ("↓",GUILayout.Width(85))) {
 				    fixY--;
 				    world.ChangeEditY (fixY);
 				    fixY = world.editY;
 			    }
-			    if (GUILayout.Button (showPointer ? "Hide Pointer" : "Show Pointer")) {
+				EditorGUILayout.EndVertical ();
+
+				if (GUILayout.Button (showPointer ? "Hide\n Pointer" : "Show\n Pointer",GUILayout.ExpandHeight(true))) {
 				    showPointer = !showPointer;
 			    }
 			    EditorGUILayout.EndHorizontal ();
-			    EditorGUILayout.BeginHorizontal ();
-			    editDis = EditorGUILayout.Slider ("Edibable Distance",editDis, 90f, 1000f);
-			    EditorGUILayout.EndHorizontal ();
-			    GUILayout.EndArea ();
 
 			    world.pointer = showPointer?true:false;
 		    } else
@@ -333,7 +333,7 @@ namespace CreVox{
             //update = true;
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		    if (Physics.Raycast(worldRay, out hit, editDis, 1 << LayerMask.NameToLayer("Editor")) && !isErase)
+			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Editor")) && !isErase)
 		    {
                 WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
                 float x = pos.x * Block.w;
@@ -361,7 +361,7 @@ namespace CreVox{
 		    //update = true;
 		    RaycastHit hit;
 		    Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		    if (Physics.Raycast (worldRay, out hit, editDis, 1 << LayerMask.NameToLayer ("EditorLevel"))) {
+			if (Physics.Raycast (worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer ("EditorLevel"))) {
 			    hit.point += new Vector3 (0f, -Block.h, 0f);
 			    WorldPos pos = EditTerrain.GetBlockPos (hit, true);
 			    float x = pos.x * Block.w;
@@ -388,7 +388,7 @@ namespace CreVox{
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
-            if (Physics.Raycast(worldRay, out hit, editDis, 1 << LayerMask.NameToLayer("Editor")))
+			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Editor")))
             {
                 if (hit.normal.y <= 0) return;
                 WorldPos pos = EditTerrain.GetBlockPos(hit, true);
@@ -413,7 +413,7 @@ namespace CreVox{
         {
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-            bool isHit = Physics.Raycast(worldRay, out gHit, editDis, 1 << LayerMask.NameToLayer("Editor"));
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Editor"));
             WorldPos pos;
 
             if (isHit)
@@ -437,7 +437,7 @@ namespace CreVox{
 	    {
 		    RaycastHit gHit;
 		    Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		    bool isHit = Physics.Raycast(worldRay, out gHit, editDis, 1 << LayerMask.NameToLayer("EditorLevel"));
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("EditorLevel"));
 		    WorldPos pos;
 
 		    if (isHit)
@@ -464,7 +464,7 @@ namespace CreVox{
             RaycastHit gHit;
             bool canPlace = false;
             Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-		    bool isHit = Physics.Raycast(worldRay, out gHit, editDis, 1 << LayerMask.NameToLayer("Editor"));
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Editor"));
 
             if (isHit)
             {
