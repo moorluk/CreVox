@@ -99,7 +99,7 @@ namespace CreVox{
             {
                 global::Save save = SerializationOld.LoadWorld(world);
                 if (save != null)
-                    BuildWorldOld(save);
+                    world.BuildWorldOld(save);
             }
             if (GUILayout.Button("Test"))
             {
@@ -525,94 +525,5 @@ namespace CreVox{
 
             return false;
         }
-    
-	private void BuildWorldOld(global::Save _save) {
-		List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
-		world.Reset ();
-		world.Init (_save.chunkX, _save.chunkY, _save.chunkZ);
-
-		foreach (var blockPair in _save.blocks) {
-			global::Block block = blockPair.Value;
-			global::BlockAir bAir = block as global::BlockAir;
-			if (bAir != null) {
-				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
-				for (int i = 0; i < bAir.pieceNames.Length; i++) {
-					for (int k = 0; k < items.Count; k++) {
-						if (bAir.pieceNames [i] == items [k].name) {
-							PlacePieceOld (blockPair.Key, new global::WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
-							break;
-						}
-					}
-				}
-			} else
-				world.SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
-		}
-		world.UpdateChunks ();
-		SceneView.RepaintAll ();
-	}
-
-	private void PlacePieceOld(global::WorldPos bPos, global::WorldPos gPos, LevelPiece _piece)
-	{
-		GameObject obj = null;
-		global::BlockAir block = (global::Block)world.GetBlock(bPos.x, bPos.y, bPos.z) as global::BlockAir;
-		if (block == null) return;
-
-		Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
-
-		float x = bPos.x * Block.w + pos.x;
-		float y = bPos.y * Block.h + pos.y;
-		float z = bPos.z * Block.d + pos.z;
-
-		if (_piece != null)
-		{
-			obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
-			obj.transform.parent = world.transform;
-			obj.transform.position = new Vector3(x, y, z);
-			obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
-		}
-
-		block.SetPart(bPos, gPos, obj);
-	}
-
-    private int GetPieceAngle(int x, int z)
-    {
-        if(x == 0 && z >= 1)
-            return 90;
-        if(z == 2 && x >= 1)
-            return 180;
-        if (x == 2 && z <= 1)
-            return 270;
-        return 0;
-    }
-
-    private Vector3 GetPieceOffset(int x, int z)
-    {
-        Vector3 offset = Vector3.zero;
-        float hw = Block.hw;
-        float hh = Block.hh;
-        float hd = Block.hd;
-
-        if (x == 0 && z == 0)
-            return new Vector3(-hw, -hh, -hd);
-        if (x == 1 && z ==0)
-            return new Vector3(0, -hh, -hd);
-        if (x == 2 && z == 0)
-            return new Vector3(hw, -hh, -hd);
-
-        if (x == 0 && z == 1)
-            return new Vector3(-hw, -hh, 0);
-        if (x == 1 && z == 1)
-            return new Vector3(0, -hh, 0);
-        if (x == 2 && z == 1)
-            return new Vector3(hw, -hh, 0);
-
-        if (x == 0 && z == 2)
-            return new Vector3(-hw, -hh, hd);
-        if (x == 1 && z == 2)
-            return new Vector3(0, -hh, hd);
-        if (x == 2 && z == 2)
-            return new Vector3(hw, -hh, hd);
-        return offset;
-    }
     }
 }

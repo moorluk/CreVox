@@ -351,7 +351,7 @@ public class World : MonoBehaviour {
             //#if UNITY_EDITOR
             //            List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem>(PaletteWindow.GetLevelPiecePath());
             //#else
-            PaletteItem[] itemArray = Resources.LoadAll< PaletteItem>("LevelPieces");
+			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>("Prefabs/LevelPieces");
             //PaletteItem[] itemArray = Resources.FindObjectsOfTypeAll(typeof(PaletteItem)) as PaletteItem[];
 //#endif
 
@@ -395,6 +395,31 @@ public class World : MonoBehaviour {
             
         }
 
+		public void BuildWorldOld(global::Save _save) {
+			List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
+			Reset ();
+			Init (_save.chunkX, _save.chunkY, _save.chunkZ);
+
+			foreach (var blockPair in _save.blocks) {
+				global::Block block = blockPair.Value;
+				global::BlockAir bAir = block as global::BlockAir;
+				if (bAir != null) {
+					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
+					for (int i = 0; i < bAir.pieceNames.Length; i++) {
+						for (int k = 0; k < items.Count; k++) {
+							if (bAir.pieceNames [i] == items [k].name) {
+								PlacePieceOld (blockPair.Key, new global::WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
+								break;
+							}
+						}
+					}
+				} else
+					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, (Block)block);
+			}
+			UpdateChunks ();
+			SceneView.RepaintAll ();
+		}
+
         public void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)
         {
             GameObject obj = null;
@@ -417,6 +442,35 @@ public class World : MonoBehaviour {
 
             block.SetPart(bPos, gPos, obj);
         }
+
+		private void PlacePieceOld(global::WorldPos bPos, global::WorldPos gPos, LevelPiece _piece)
+		{
+			GameObject obj = null;
+			BlockAir block = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
+			Debug.Log ("Block bTempIn : " + block);
+			//			global::Block bTempOut = bTempIn as global::Block;
+			//			Debug.Log ("global::Block bTempOut : " + bTempOut);
+			//			global::BlockAir block = bTempIn as global::BlockAir;
+			//			Debug.Log ("global::BlockAir block : " + block);
+			Debug.Log (_piece.gameObject);
+			if (block == null) return;
+
+			Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
+
+			float x = bPos.x * Block.w + pos.x;
+			float y = bPos.y * Block.h + pos.y;
+			float z = bPos.z * Block.d + pos.z;
+
+			if (_piece != null)
+			{
+				obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
+				obj.transform.parent = transform;
+				obj.transform.position = new Vector3(x, y, z);
+				obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
+			}
+
+			block.SetPartOld(bPos, gPos, obj);
+		}
 
         private Vector3 GetPieceOffset(int x, int z)
         {

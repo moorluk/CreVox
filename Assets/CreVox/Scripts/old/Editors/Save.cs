@@ -41,8 +41,8 @@ public class Save {
 					if (block == null)
 						add = false;
 
-					if (block is BlockAir) {
-						BlockAir bAir = (BlockAir)block;
+					if (block is global::BlockAir) {
+						global::BlockAir bAir = (global::BlockAir)block;
 						if (bAir.pieceNames != null)
 							add = (bAir.pieceNames.Length > 0) ? true : false;
 					} else

@@ -82,6 +82,37 @@ public class BlockAir : Block
 //            pieceNames[z * 3 + x] = "";
 //        else
 //            pieceNames [z * 3 + x] = go.GetComponent<PaletteItem> ().name;
-    }
+		}
+
+		public void SetPartOld(global::WorldPos bPos, global::WorldPos gPos, GameObject go)
+		{
+			int x = gPos.x;
+			int z = gPos.z;
+
+			int id = z * 3 + x;
+
+			if (parts == null)
+			{
+				node = new GameObject();
+				node.name = bPos.ToString();
+				node.transform.parent = go.transform.parent;
+				parts = new GameObject[9];
+				pieceNames = new string[9];
+			}
+
+			if (parts[id] != null)
+			{
+				GameObject.DestroyImmediate(parts[id]);
+			}
+
+			if (go == null) {
+				pieceNames [id] = null;
+				parts [id] = null;
+			} else {
+				go.transform.parent = node.transform;
+				parts [id] = go;
+				pieceNames [id] = go.GetComponent<PaletteItem> ().name;
+			}
+		}
 }
 }
