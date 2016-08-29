@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 namespace CreVox{
 
     public static class Serialization {
-	    public static string saveFolderName = "Assets/saveData";
+	    public static string saveFolderName = "Assets/Crevox/saveData";
 
 	    public static string GetSaveLocation()
 	    {

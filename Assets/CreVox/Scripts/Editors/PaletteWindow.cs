@@ -12,7 +12,7 @@ public class PaletteWindow : EditorWindow {
     private List<string> _categoryLabels;
     private PaletteItem.Category _categorySelected;
 
-    private static string _path = "Assets/Resources/LevelPieces";
+    private static string _path = "Assets/Resources/Prefabs/LevelPieces";
     private List<PaletteItem> _items;
     private Dictionary<PaletteItem.Category, List<PaletteItem>> _categorizedItems;
     private Dictionary<PaletteItem, Texture2D> _previews;
@@ -97,7 +97,7 @@ public class PaletteWindow : EditorWindow {
 		EditorGUILayout.BeginHorizontal ("Box");
 		if (GUILayout.Button ("Select Path", GUILayout.Width (80))) 
 		{
-			_path = EditorUtility.OpenFolderPanel ("Select Pieces' Path", "", "Assets/Prefabs/LevelPieces");
+			_path = EditorUtility.OpenFolderPanel ("Select Pieces' Path", "", _path);
 			int sep = _path.IndexOf ("Assets/");
 			_path = _path.Substring (sep);
 			Debug.Log (_path);
