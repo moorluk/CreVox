@@ -306,7 +306,7 @@ public class World : MonoBehaviour {
 					if (GetBlock (xi, editY, zi) == null) {
 						cSize = 0.1f;
 					} else {
-						cSize = GetBlock (xi, editY, zi).GetType () != typeof(Block) ? 0.3f : 1.01f;
+						cSize = GetBlock (xi, editY, zi).GetType () == typeof(BlockAir) ? 0.4f : 1.01f;
 					}
 
 					Gizmos.DrawCube (
