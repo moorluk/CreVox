@@ -15,6 +15,7 @@ ModelImporter:
     100014: Fence
     100016: FenceSeprator
     100018: WallSeprator
+    100020: StairCorner
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -25,6 +26,7 @@ ModelImporter:
     400014: Fence
     400016: FenceSeprator
     400018: WallSeprator
+    400020: StairCorner
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -34,6 +36,7 @@ ModelImporter:
     2300012: Fence
     2300014: FenceSeprator
     2300016: WallSeprator
+    2300018: StairCorner
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -43,6 +46,7 @@ ModelImporter:
     3300012: Fence
     3300014: FenceSeprator
     3300016: WallSeprator
+    3300018: StairCorner
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -52,6 +56,7 @@ ModelImporter:
     4300012: Fence
     4300014: FenceSeprator
     4300016: WallSeprator
+    4300018: StairCorner
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
@@ -60,6 +65,7 @@ ModelImporter:
     6400010: Wall
     6400012: FenceSeprator
     6400014: WallSeprator
+    6400016: StairCorner
   materials:
     importMaterials: 1
     materialName: 1
