@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 
-namespace CreVox{
+namespace CreVox
+{
 
-public class BoxCursor : MonoBehaviour {
-	public GameObject Center;
-	public GameObject Xplus;
-	public GameObject Xminor;
-	public GameObject Yplus;
-	public GameObject Yminor;
-	public GameObject Zplus;
-	public GameObject Zminor;
-}
+	public class BoxCursor : MonoBehaviour
+	{
+		public GameObject Center;
+		public GameObject Xplus;
+		public GameObject Xminor;
+		public GameObject Yplus;
+		public GameObject Yminor;
+		public GameObject Zplus;
+		public GameObject Zminor;
+	}
 }
