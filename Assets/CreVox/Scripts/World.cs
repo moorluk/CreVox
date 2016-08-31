@@ -5,28 +5,32 @@ using System.Collections.Generic;
 
 namespace CreVox{
 
-[SelectionBase]
-public class World : MonoBehaviour {
-    public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
-    public int chunkX = 1;
-    public int chunkY = 1;
-	public int chunkZ = 1;
+	[SelectionBase]
+	public class World : MonoBehaviour
+	{
+		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
+		public int chunkX = 1;
+		public int chunkY = 1;
+		public int chunkZ = 1;
 
-    private GameObject chunkPrefab;
-	GameObject ruler;
-	GameObject layerRuler; 
-	//BoxCursor------
-	public GameObject box = null;
-	public bool useBox = false; 
-	public float editDis = 120f;
-	//---------------
+		private GameObject chunkPrefab;
+		private GameObject ruler;
+		private GameObject layerRuler;
 
-	MeshCollider mColl;
-	BoxCollider bColl;
+		private MeshCollider mColl;
+		private BoxCollider bColl;
 
-	public int editY;
-	public bool pointer;
-	public Color YColor;
+		public string workFile;
+
+		//BoxCursor------
+		public GameObject box = null;
+		public bool useBox = false;
+		public float editDis = 120f;
+		//---------------
+
+		public int editY;
+		public bool pointer;
+		public Color YColor;
 
         void Start()
         {
@@ -68,7 +72,6 @@ public class World : MonoBehaviour {
 
             for (int i = transform.childCount - 1; i > 0; i--)
             {
-                Debug.Log("delete " + transform.GetChild(i).gameObject.name);
                 Object.DestroyImmediate(transform.GetChild(i).gameObject);
             }
 
@@ -112,6 +115,17 @@ public class World : MonoBehaviour {
 
 		mColl.sharedMesh = cmesh;
     }
+
+		void CreateLevelRuler ()
+		{
+			layerRuler = new GameObject ("LevelRuler");
+			layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
+			layerRuler.transform.parent = transform;
+			layerRuler.hideFlags = HideFlags.HideInHierarchy;
+			bColl = layerRuler.AddComponent<BoxCollider> ();
+			bColl.size = new Vector3 (chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
+			ChangeEditY (0);
+		}
 
     public void UpdateChunks()
     {
@@ -283,68 +297,56 @@ public class World : MonoBehaviour {
 		);
 	}
 
-	//VoxelLayer------
-	void CreateLevelRuler()
-	{
-		layerRuler = new GameObject ("LevelRuler");
-		layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
-		layerRuler.transform.parent = transform;
-		layerRuler.hideFlags = HideFlags.HideInHierarchy;
-		bColl = layerRuler.AddComponent<BoxCollider> ();
-		bColl.size = new Vector3 (chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
-		ChangeEditY (0);
-	}
 
-	public void DrawGizmoLayer(int _y)
-	{
-	Gizmos.color = YColor;
-		if (pointer) {
-			//
-			for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
-				for (int zi = 0; zi < chunkZ * Chunk.chunkSize; zi++) {
-					float cSize;
-					if (GetBlock (xi, editY, zi) == null) {
-						cSize = 0.1f;
-					} else {
-						cSize = GetBlock (xi, editY, zi).GetType () == typeof(BlockAir) ? 0.4f : 1.01f;
+		public void DrawGizmoLayer (int _y)
+		{
+			Gizmos.color = YColor;
+			if (pointer) {
+				//
+				for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
+					for (int zi = 0; zi < chunkZ * Chunk.chunkSize; zi++) {
+						float cSize;
+						if (GetBlock (xi, editY, zi) == null) {
+							cSize = 0.1f;
+						} else {
+							cSize = GetBlock (xi, editY, zi).GetType () == typeof(BlockAir) ? 0.4f : 1.01f;
+						}
+
+						Gizmos.DrawCube (
+							transform.position + new Vector3 (xi * Block.w, editY * Block.h, zi * Block.d), 
+							new Vector3 (Block.w * cSize, Block.h * cSize, Block.d * cSize));
 					}
-
-					Gizmos.DrawCube (
-						transform.position + new Vector3 (xi * Block.w, editY * Block.h, zi * Block.d), 
-						new Vector3 (Block.w * cSize, Block.h * cSize, Block.d * cSize));
 				}
 			}
 		}
-	}
 
-	public void ChangeEditY(int _y) {
-		_y = Mathf.Clamp (_y, 0, chunkY * Chunk.chunkSize - 1);
-		editY = _y;
-		YColor = new Color (
-			(20  + (editY % 10) * 20) / 255f, 
-			(200 - Mathf.Abs ((editY % 10) - 5) * 20) / 255f, 
-			(200 - (editY % 10) * 20) / 255f, 
-			0.4f
-		);
-		bColl.center = transform.position + new Vector3 (
-			chunkX * Chunk.chunkSize * Block.hw - Block.hw , 
-			editY * Block.h + Block.hh, 
-			chunkZ * Chunk.chunkSize * Block.hd - Block.hd
-		);
-	}
-	//----------------
-
-	//BoxCursor------
-	void DrawGizmoBoxCursor(){
-		if (box != null) {
-			if ( !Selection.Contains (gameObject.GetInstanceID ()) || Event.current.alt) {
-				box.SetActive (false);
-			} else {
-				box.SetActive (useBox);
+		void DrawGizmoBoxCursor ()
+		{
+			if (box != null) {
+				if (!Selection.Contains (gameObject.GetInstanceID ()) || Event.current.alt) {
+					box.SetActive (false);
+				} else {
+					box.SetActive (useBox);
+				}
 			}
 		}
-	}
-        //---------------
+
+		public void ChangeEditY (int _y)
+		{
+			_y = Mathf.Clamp (_y, 0, chunkY * Chunk.chunkSize - 1);
+			editY = _y;
+			YColor = new Color (
+				(20 + (editY % 10) * 20) / 255f, 
+				(200 - Mathf.Abs ((editY % 10) - 5) * 20) / 255f, 
+				(200 - (editY % 10) * 20) / 255f, 
+				0.4f
+			);
+			bColl.center = transform.position + new Vector3 (
+				chunkX * Chunk.chunkSize * Block.hw - Block.hw, 
+				editY * Block.h + Block.hh, 
+				chunkZ * Chunk.chunkSize * Block.hd - Block.hd
+			);
+		}
 
         public void BuildWorld(Save _save)
         {
@@ -389,36 +391,11 @@ public class World : MonoBehaviour {
                     }
                 }
                 else
-                    SetBlock(blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, block);
+					SetBlock(blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new Block());
             }
             UpdateChunks();
             
         }
-
-		public void BuildWorldOld(global::Save _save) {
-			List<PaletteItem> items = EditorUtils.GetAssetsWithScript<PaletteItem> (PaletteWindow.GetLevelPiecePath ());
-			Reset ();
-			Init (_save.chunkX, _save.chunkY, _save.chunkZ);
-
-			foreach (var blockPair in _save.blocks) {
-				global::Block block = blockPair.Value;
-				global::BlockAir bAir = block as global::BlockAir;
-				if (bAir != null) {
-					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new BlockAir ());
-					for (int i = 0; i < bAir.pieceNames.Length; i++) {
-						for (int k = 0; k < items.Count; k++) {
-							if (bAir.pieceNames [i] == items [k].name) {
-								PlacePieceOld (blockPair.Key, new global::WorldPos (i % 3, 0, (int)(i / 3)), items [k].gameObject.GetComponent<LevelPiece> ());
-								break;
-							}
-						}
-					}
-				} else
-					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, (Block)block);
-			}
-			UpdateChunks ();
-			SceneView.RepaintAll ();
-		}
 
         public void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)
         {
@@ -442,35 +419,6 @@ public class World : MonoBehaviour {
 
             block.SetPart(bPos, gPos, obj);
         }
-
-		private void PlacePieceOld(global::WorldPos bPos, global::WorldPos gPos, LevelPiece _piece)
-		{
-			GameObject obj = null;
-			BlockAir block = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
-			Debug.Log ("Block bTempIn : " + block);
-			//			global::Block bTempOut = bTempIn as global::Block;
-			//			Debug.Log ("global::Block bTempOut : " + bTempOut);
-			//			global::BlockAir block = bTempIn as global::BlockAir;
-			//			Debug.Log ("global::BlockAir block : " + block);
-			Debug.Log (_piece.gameObject);
-			if (block == null) return;
-
-			Vector3 pos = GetPieceOffset(gPos.x, gPos.z);
-
-			float x = bPos.x * Block.w + pos.x;
-			float y = bPos.y * Block.h + pos.y;
-			float z = bPos.z * Block.d + pos.z;
-
-			if (_piece != null)
-			{
-				obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
-				obj.transform.parent = transform;
-				obj.transform.position = new Vector3(x, y, z);
-				obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
-			}
-
-			block.SetPartOld(bPos, gPos, obj);
-		}
 
         private Vector3 GetPieceOffset(int x, int z)
         {

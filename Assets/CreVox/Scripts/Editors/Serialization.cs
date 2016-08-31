@@ -51,8 +51,14 @@ namespace CreVox{
 		    stream.Close ();
 	    }
 
-	    public static Save LoadWorld() {
-		    string loadFile = GetLoadLocation ();
+		public static Save LoadWorld(string _path = null) 
+		{
+		    string loadFile;
+			if (_path == null)
+				loadFile = GetLoadLocation();
+			else
+				loadFile = _path;
+			
 		    if (!File.Exists (loadFile) || loadFile == null)
 			    return null;
 

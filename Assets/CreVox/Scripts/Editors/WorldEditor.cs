@@ -64,10 +64,6 @@ namespace CreVox
 
 			GUILayout.BeginVertical (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20));
 			EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
-			//GUILayout.BeginHorizontal ();
-			//EditorGUILayout.LabelField ("Prefab", GUILayout.Width (lw));
-			//world.chunkPrefab = EditorGUILayout.ObjectField (world.chunkPrefab, typeof(GameObject), false) as GameObject;
-			//GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
@@ -75,6 +71,7 @@ namespace CreVox
 			cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
 			cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
 			GUILayout.EndHorizontal ();
+
 			if (GUILayout.Button ("Init")) {
 				world.Reset ();
 				world.Init (cx, cy, cz);
@@ -86,20 +83,15 @@ namespace CreVox
 
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button ("Save")) {
-				Serialization.SaveWorld (world);
+				world.workFile = Serialization.GetSaveLocation ();
+				Serialization.SaveWorld (world,world.workFile);
 			}
 			if (GUILayout.Button ("Load")) {
-				Save save = Serialization.LoadWorld ();
+				world.workFile = Serialization.GetLoadLocation ();
+				Save save = Serialization.LoadWorld (world.workFile);
 				if (save != null)
 					world.BuildWorld (save);
 				SceneView.RepaintAll ();
-				//Debug.Log (path);
-			}
-			//Load old .bin files
-			if (GUILayout.Button ("LoadOld")) {
-				global::Save save = SerializationOld.LoadWorld (world);
-				if (save != null)
-					world.BuildWorldOld (save);
 			}
 			if (GUILayout.Button ("Test")) {
 				Serialization.SaveWorld (world, "Assets/Resources/testmap.bytes");
@@ -107,6 +99,7 @@ namespace CreVox
 				EditorApplication.isPlaying = true;
 			}
 			GUILayout.EndHorizontal ();
+			EditorGUILayout.LabelField (world.workFile);
 			GUILayout.EndVertical ();
 
 			DrawPieceSelectedGUI ();
@@ -114,7 +107,6 @@ namespace CreVox
 			if (GUI.changed) {
 				EditorUtility.SetDirty (world);
 			}
-			//SceneView.RepaintAll();
 		}
 
 		private void UpdateCurrentPieceInstance (PaletteItem item, Texture2D preview)
@@ -179,15 +171,16 @@ namespace CreVox
 		private void DrawLayerModeGUI ()
 		{
 			if (selectedEditMode == EditMode.VoxelLayer) {
-				EditorGUILayout.BeginHorizontal ("Box", GUILayout.Width (90));
 				GUI.color = new Color (world.YColor.r, world.YColor.g, world.YColor.b, 1.0f);
+				EditorGUILayout.BeginHorizontal ("Box", GUILayout.Width (90));
+				GUI.color = Color.white;
 				EditorGUILayout.BeginVertical ();
 				if (GUILayout.Button ("▲", GUILayout.Width (85))) {
 					fixY++;
 					world.ChangeEditY (fixY);
 					fixY = world.editY;
 				}
-				EditorGUILayout.LabelField ("Current Y : " + world.editY, GUILayout.Width (85));
+				EditorGUILayout.LabelField ("","Layer : "+ world.editY, "TextField", GUILayout.Width (85));
 				if (GUILayout.Button ("▼", GUILayout.Width (85))) {
 					fixY--;
 					world.ChangeEditY (fixY);
@@ -302,9 +295,9 @@ namespace CreVox
 				case EditMode.Object:
 					if (Event.current.type == EventType.MouseDown) {
 						if (button == 0)
-							PlaceObject (false);
+							PaintPieces (false);
 						else if (button == 1) {
-							PlaceObject (true);
+							PaintPieces (true);
 							Tools.viewTool = ViewTool.None;
 							Event.current.Use ();
 						}
@@ -375,8 +368,7 @@ namespace CreVox
 		{
 			if (_pieceSelected == null)
 				return;
-
-			//update = true;
+			
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 
@@ -388,10 +380,12 @@ namespace CreVox
 				WorldPos pos = EditTerrain.GetBlockPos (hit, true);
 				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
 				gPos.y = 0;
+				Handles.color = Color.white;
+				Handles.RectangleCap (0, new Vector3 (pos.x * Block.w, pos.y * Block.h -1, pos.z * Block.d), Quaternion.Euler (90, 0, 0), Block.hw);
 				float x = pos.x * Block.w + gPos.x - 1;
 				float y = pos.y * Block.h + gPos.y - 1;
 				float z = pos.z * Block.d + gPos.z - 1;
-				Debug.Log ("wpos: " + pos.ToString () + "gPos: " + gPos.ToString ());
+
 				LevelPiece.PivotType pivot = (_pieceSelected.isStair) ? LevelPiece.PivotType.Edge : _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
@@ -449,7 +443,7 @@ namespace CreVox
 		}
 		//----------------
 
-		private void PlaceObject (bool isErase)
+		private void PaintPieces (bool isErase)
 		{
 			if (_pieceSelected == null)
 				return;

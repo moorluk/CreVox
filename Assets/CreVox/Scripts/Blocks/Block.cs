@@ -180,7 +180,6 @@ public class Block
 				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.h);
 				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
 				return UVs;
-				break;
 
 			case Direction.up:
 			case Direction.down:
@@ -189,7 +188,6 @@ public class Block
 				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.d);
 				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
 				return UVs;
-				break;
 			}
 		}
 
