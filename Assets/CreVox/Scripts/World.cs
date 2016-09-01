@@ -248,6 +248,10 @@ namespace CreVox
 
 		void OnDrawGizmos()
 		{
+			if (chunks.Count == 0)
+				Gizmos.color = Color.red;
+			else
+				Gizmos.color = Color.white;
 			float x = -Block.hw;
 			float z = -Block.hd;
 			float w = chunkX * Chunk.chunkSize * Block.w + x;
@@ -283,7 +287,9 @@ namespace CreVox
 
 		public void DrawGizmoLayer(int _y)
 		{
-			Gizmos.color = YColor;
+			if (chunks.Count != 0)
+				Gizmos.color = YColor;
+			
 			if (pointer) {
 				//
 				for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
