@@ -19,6 +19,10 @@ ModelImporter:
     100022: WindowX1.0
     100024: WindowX2.0
     100026: Door
+    100028: StairL
+    100030: StairR
+    100032: WallCorner
+    100034: WallHalf
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -33,6 +37,10 @@ ModelImporter:
     400022: WindowX1.0
     400024: WindowX2.0
     400026: Door
+    400028: StairL
+    400030: StairR
+    400032: WallCorner
+    400034: WallHalf
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -46,6 +54,10 @@ ModelImporter:
     2300020: WindowX1.0
     2300022: WindowX2.0
     2300024: Door
+    2300026: StairL
+    2300028: StairR
+    2300030: WallCorner
+    2300032: WallHalf
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -59,6 +71,10 @@ ModelImporter:
     3300020: WindowX1.0
     3300022: WindowX2.0
     3300024: Door
+    3300026: StairL
+    3300028: StairR
+    3300030: WallCorner
+    3300032: WallHalf
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -72,6 +88,10 @@ ModelImporter:
     4300020: WindowX1.0
     4300022: WindowX2.0
     4300024: Door
+    4300026: StairL
+    4300028: StairR
+    4300030: WallHalf
+    4300032: WallCorner
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
@@ -84,6 +104,10 @@ ModelImporter:
     6400018: WindowX1.0
     6400020: WindowX2.0
     6400022: Door
+    6400024: StairL
+    6400026: StairR
+    6400028: WallCorner
+    6400030: WallHalf
   materials:
     importMaterials: 1
     materialName: 1
