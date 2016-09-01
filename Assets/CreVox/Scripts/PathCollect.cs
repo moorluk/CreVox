@@ -7,6 +7,8 @@ namespace CreVox
 
 	public static class PathCollect
 	{
+		public static string rularTag = "VoxelEditorBase";
+
 		public static string editorPath = "Assets/Crevox";
 		public static string saveData = editorPath + "/saveData";
 

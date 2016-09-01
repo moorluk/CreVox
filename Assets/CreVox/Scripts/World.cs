@@ -87,8 +87,8 @@ namespace CreVox
 		void CreateRuler()
 		{
 			ruler = new GameObject("Ruler");
-			ruler.layer = LayerMask.NameToLayer("Editor");
-			ruler.tag = "VoxelEditorBase";
+			ruler.layer = LayerMask.NameToLayer("Floor");
+			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
 			ruler.hideFlags = HideFlags.HideInHierarchy;
 			mColl = ruler.AddComponent<MeshCollider>();
@@ -170,6 +170,7 @@ namespace CreVox
 				                            Quaternion.Euler(Vector3.zero)
 			                            ) as GameObject;
 			newChunkObject.transform.parent = transform;
+			newChunkObject.layer = LayerMask.NameToLayer("Floor");
 			newChunkObject.name = "Chunk(" + x / Chunk.chunkSize + "," + y / Chunk.chunkSize + "," + z / Chunk.chunkSize + ")";
 
 			Chunk newChunk = newChunkObject.GetComponent<Chunk>();

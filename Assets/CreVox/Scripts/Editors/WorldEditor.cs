@@ -15,7 +15,6 @@ namespace CreVox
 		int cy = 1;
 		int cz = 1;
 
-		string rularTag = "VoxelEditorBase";
 		WorldPos workpos;
 
 		private int fixY = 0;
@@ -99,7 +98,8 @@ namespace CreVox
 //				EditorApplication.isPlaying = true;
 //			}
 			GUILayout.EndHorizontal();
-			EditorGUILayout.LabelField("Working File : " + world.workFile.Substring(world.workFile.LastIndexOf("/") + 1));
+			if (world.workFile != null)
+				EditorGUILayout.LabelField("Working File : " + world.workFile.Substring(world.workFile.LastIndexOf("/") + 1));
 			GUILayout.EndVertical();
 
 			DrawPieceSelectedGUI();
@@ -313,13 +313,13 @@ namespace CreVox
 		{
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Editor")) && !isErase) {
+			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Floor")) && !isErase) {
 				WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
 				float x = pos.x * Block.w;
 				float y = pos.y * Block.h;
 				float z = pos.z * Block.d;
 
-				if (hit.collider.gameObject.tag == rularTag) {
+				if (hit.collider.gameObject.tag == PathCollect.rularTag) {
 					hit.normal = Vector3.zero;
 				}
 				BoxCursorUtils.UpdateBox(world.box, new Vector3(x, y, z), hit.normal);
@@ -359,10 +359,10 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 
-			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Editor"))) {
+			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Floor"))) {
 				if (hit.normal.y <= 0)
 					return;
-//				if (hit.collider.gameObject.tag == rularTag) return; 
+//				if (hit.collider.gameObject.tag == PathCollect.rularTag) return; 
 
 				WorldPos pos = EditTerrain.GetBlockPos(hit, true);
 				WorldPos gPos = EditTerrain.GetGridPos(hit.point);
@@ -387,7 +387,7 @@ namespace CreVox
 		{
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Editor"));
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Floor"));
 			WorldPos pos;
 
 			if (isHit) {
@@ -437,12 +437,12 @@ namespace CreVox
 			RaycastHit gHit;
 			bool canPlace = false;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Editor"));
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Floor"));
 
 			if (isHit) {
 				if (gHit.normal.y <= 0)
 					return;
-//				if (gHit.collider.gameObject.tag == rularTag)
+//				if (gHit.collider.gameObject.tag == PathCollect.rularTag)
 //					return; 
 				WorldPos bPos = EditTerrain.GetBlockPos(gHit, true);
 				WorldPos gPos = EditTerrain.GetGridPos(gHit.point);

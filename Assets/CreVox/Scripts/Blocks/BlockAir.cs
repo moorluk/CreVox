@@ -48,26 +48,30 @@ namespace CreVox
 			int z = gPos.z;
 
 			int id = z * 3 + x;
+			if (go != null) {
+				if (parts == null) {
+					node = new GameObject();
+					node.name = bPos.ToString();
+					node.transform.parent = go.transform.parent;
+					parts = new GameObject[9];
+					pieceNames = new string[9];
+				}
 
-			if (parts == null) {
-				node = new GameObject();
-				node.name = bPos.ToString();
-				node.transform.parent = go.transform.parent;
-				parts = new GameObject[9];
-				pieceNames = new string[9];
-			}
-
-			if (parts[id] != null) {
-				GameObject.DestroyImmediate(parts[id]);
-			}
-
-			if (go == null) {
-				pieceNames[id] = null;
-				parts[id] = null;
-			} else {
+				if (parts[id] != null) {
+					GameObject.DestroyImmediate(parts[id]);
+				}
+					
 				go.transform.parent = node.transform;
 				parts[id] = go;
 				pieceNames[id] = go.GetComponent<PaletteItem>().name;
+			} else {
+				if (parts != null) {
+					if (parts[id] != null) {
+						GameObject.DestroyImmediate(parts[id]);
+						pieceNames[id] = null;
+						parts[id] = null;
+					}
+				}
 			}
 		}
 	}
