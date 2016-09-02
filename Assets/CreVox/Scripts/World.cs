@@ -230,8 +230,7 @@ namespace CreVox
 
 				return block;
 			} else {
-				//return new BlockAir();
-				return null;
+				return new BlockAir();
 			}
 
 		}

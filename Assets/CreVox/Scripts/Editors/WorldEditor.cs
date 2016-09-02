@@ -93,11 +93,6 @@ namespace CreVox
 					world.BuildWorld(save);
 				SceneView.RepaintAll();
 			}
-//			if (GUILayout.Button ("Test")) {
-//				Serialization.SaveWorld (world, PathCollect.testmapPath);
-//				world.Reset ();
-//				EditorApplication.isPlaying = true;
-//			}
 			GUILayout.EndHorizontal();
 			if (world.workFile != null)
 				EditorGUILayout.LabelField("Working File : " + world.workFile.Substring(world.workFile.LastIndexOf("/") + 1));
@@ -224,8 +219,33 @@ namespace CreVox
 		{
 			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 			int button = Event.current.button;
-		
+
+			//EventHotkey()
+			if (Event.current.type == EventType.KeyDown) {
+				switch (Event.current.keyCode) {
+					case KeyCode.W:
+						fixY++;
+						world.ChangeEditY(fixY);
+						fixY = world.editY;
+						break;
+
+					case KeyCode.S:
+						fixY--;
+						world.ChangeEditY(fixY);
+						fixY = world.editY;
+						break;
+
+					case KeyCode.A:
+						;
+						break;
+
+					case KeyCode.D:
+						break;
+
+				}
+			}
 			if (!Event.current.alt) {
+				//DrawBoxcursor
 				switch (currentEditMode) {
 					case EditMode.Voxel:
 					case EditMode.VoxelLayer: 
@@ -237,6 +257,7 @@ namespace CreVox
 						break;
 				}
 
+				//
 				switch (currentEditMode) {
 					case EditMode.ObjectLayer:
 					case EditMode.VoxelLayer:
@@ -322,7 +343,10 @@ namespace CreVox
 		{
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("Floor")) && !isErase) {
+			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			bool isHit = Physics.Raycast(worldRay, out hit, world.editDis, _mask);
+
+			if (isHit && !isErase) {
 				WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
 				float x = pos.x * Block.w;
 				float y = pos.y * Block.h;
@@ -341,12 +365,13 @@ namespace CreVox
 
 		private void DrawLayerMarker()
 		{
-			//update = true;
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			if (Physics.Raycast(worldRay, out hit, world.editDis, 1 << LayerMask.NameToLayer("EditorLevel"))) {
-				hit.point += new Vector3(0f, -Block.h, 0f);
-				WorldPos pos = EditTerrain.GetBlockPos(hit, true);
+			LayerMask _mask = 1 << LayerMask.NameToLayer("EditorLevel");
+			bool isHit = Physics.Raycast(worldRay, out hit, world.editDis, _mask);
+
+			if (isHit) {
+				WorldPos pos = EditTerrain.GetBlockPos(hit, false);
 				float x = pos.x * Block.w;
 				float y = pos.y * Block.h;
 				float z = pos.z * Block.d;
@@ -364,26 +389,25 @@ namespace CreVox
 		{
 			if (_pieceSelected == null)
 				return;
-			
+			bool isNotLayer = (currentEditMode != EditMode.ObjectLayer);
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer("Floor") : 1 << LayerMask.NameToLayer("EditorLevel");
+			LayerMask _mask =  isNotLayer? 1 << LayerMask.NameToLayer("Floor") : 1 << LayerMask.NameToLayer("EditorLevel");
 			bool isHit = Physics.Raycast(worldRay, out hit, world.editDis, _mask);
 
 			if (isHit) {
 				if (hit.normal.y <= 0)
 					return;
-//				if (hit.collider.gameObject.tag == PathCollect.rularTag) return; 
 
-				WorldPos pos = EditTerrain.GetBlockPos(hit, true);
+				WorldPos pos = EditTerrain.GetBlockPos(hit, isNotLayer);
 				WorldPos gPos = EditTerrain.GetGridPos(hit.point);
-				gPos.y = 0;
+				gPos.y = isNotLayer? 0:2;
 				float x = pos.x * Block.w + gPos.x - 1;
 				float y = pos.y * Block.h + gPos.y - 1;
 				float z = pos.z * Block.d + gPos.z - 1;
 				
 				Handles.color = Color.white;
-				Handles.RectangleCap(0, new Vector3(pos.x * Block.w, pos.y * Block.h - 1, pos.z * Block.d), Quaternion.Euler(90, 0, 0), Block.hw);
+				Handles.RectangleCap(0, new Vector3(pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler(90, 0, 0), Block.hw);
 
 				LevelPiece.PivotType pivot = (_pieceSelected.isStair) ? LevelPiece.PivotType.Edge : _pieceSelected.pivot;
 				if (CheckPlaceable((int)gPos.x, (int)gPos.z, pivot)) {
@@ -391,6 +415,12 @@ namespace CreVox
 					Handles.RectangleCap(0, new Vector3(x, y, z), Quaternion.Euler(90, 0, 0), 0.5f);
 					Handles.color = Color.white;
 				}
+
+				world.useBox = true;
+				BoxCursorUtils.UpdateBox(world.box, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d), Vector3.zero);
+				SceneView.RepaintAll();
+			} else {
+				world.useBox = false;
 				SceneView.RepaintAll();
 			}
 		}
@@ -399,7 +429,8 @@ namespace CreVox
 		{
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, 1 << LayerMask.NameToLayer("Floor"));
+			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, _mask);
 			WorldPos pos;
 
 			if (isHit) {
@@ -446,22 +477,24 @@ namespace CreVox
 		{
 			if (_pieceSelected == null)
 				return;
-			RaycastHit gHit;
+			
 			bool canPlace = false;
+
+			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
 			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer("Floor") : 1 << LayerMask.NameToLayer("EditorLevel");
-			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis,  _mask);
+			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, _mask);
 
 			if (isHit) {
 				if (gHit.normal.y <= 0)
 					return;
-//				if (gHit.collider.gameObject.tag == PathCollect.rularTag)
-//					return; 
-				WorldPos bPos = EditTerrain.GetBlockPos(gHit, true);
+				
+				WorldPos bPos = EditTerrain.GetBlockPos(gHit, (currentEditMode == EditMode.Object));
 				WorldPos gPos = EditTerrain.GetGridPos(gHit.point);
 				gPos.y = 0;
 				int gx = gPos.x;
 				int gz = gPos.z;
+
 				if (_pieceSelected.isStair) {
 					if (CheckPlaceable(gx, gz, LevelPiece.PivotType.Edge)) {
 						if (gPos.x == 0 && gPos.z == 1)
@@ -476,6 +509,7 @@ namespace CreVox
 						canPlace = true;
 					}
 				}
+
 				if (CheckPlaceable(gx, gz, _pieceSelected.pivot)) {
 					canPlace = true;
 				}
