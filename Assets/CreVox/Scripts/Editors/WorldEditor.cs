@@ -23,10 +23,10 @@ namespace CreVox
 		public enum EditMode
 		{
 			View,
-			Voxel,
 			VoxelLayer,
-			Object,
-			ObjectLayer
+			Voxel,
+			ObjectLayer,
+			Object
 		}
 
 		private EditMode selectedEditMode;
@@ -172,13 +172,13 @@ namespace CreVox
 				GUI.color = Color.white;
 				EditorGUILayout.BeginVertical();
 				if (GUILayout.Button("▲", GUILayout.Width(85))) {
-					fixY++;
+					fixY = world.editY + 1;
 					world.ChangeEditY(fixY);
 					fixY = world.editY;
 				}
 				EditorGUILayout.LabelField("", "Layer : " + world.editY, "TextField", GUILayout.Width(85));
 				if (GUILayout.Button("▼", GUILayout.Width(85))) {
-					fixY--;
+					fixY = world.editY - 1;
 					world.ChangeEditY(fixY);
 					fixY = world.editY;
 				}
@@ -220,30 +220,6 @@ namespace CreVox
 			HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 			int button = Event.current.button;
 
-			//EventHotkey()
-			if (Event.current.type == EventType.KeyDown) {
-				switch (Event.current.keyCode) {
-					case KeyCode.W:
-						fixY++;
-						world.ChangeEditY(fixY);
-						fixY = world.editY;
-						break;
-
-					case KeyCode.S:
-						fixY--;
-						world.ChangeEditY(fixY);
-						fixY = world.editY;
-						break;
-
-					case KeyCode.A:
-						;
-						break;
-
-					case KeyCode.D:
-						break;
-
-				}
-			}
 			if (!Event.current.alt) {
 				//DrawBoxcursor
 				switch (currentEditMode) {
@@ -264,9 +240,9 @@ namespace CreVox
 						if (Event.current.shift) {
 							if (Event.current.type == EventType.ScrollWheel) {
 								if (Event.current.delta.y < 0)
-									fixY++;
+									fixY = world.editY + 1;
 								if (Event.current.delta.y > 0)
-									fixY--;
+									fixY = world.editY - 1;
 								world.ChangeEditY(fixY);
 								fixY = world.editY;
 								Event.current.Use();
@@ -332,9 +308,50 @@ namespace CreVox
                 
 						break;
 
-					case EditMode.View:
 					default:
 						break;
+				}
+			}
+
+			EventHotkey();
+
+		}
+
+		void EventHotkey()
+		{
+			int _index = (int)currentEditMode;
+			int _count = System.Enum.GetValues(typeof(EditMode)).Length - 1;
+
+			if (Event.current.type == EventType.KeyDown) {
+				switch (Event.current.keyCode) {
+					case KeyCode.W:
+						fixY = world.editY + 1;
+						world.ChangeEditY(fixY);
+						fixY = world.editY;
+						break;
+
+					case KeyCode.S:
+						fixY = world.editY - 1;
+						world.ChangeEditY(fixY);
+						fixY = world.editY;
+						break;
+
+					case KeyCode.A:
+						if (_index == 0)
+							currentEditMode = (EditMode)_count;
+						else
+							currentEditMode = (EditMode)(_index - 1);
+						Repaint();
+						break;
+
+					case KeyCode.D:
+						if (_index == _count)
+							currentEditMode = (EditMode)0;
+						else
+							currentEditMode = (EditMode)(_index + 1);
+						Repaint();
+						break;
+
 				}
 			}
 		}
@@ -343,7 +360,7 @@ namespace CreVox
 		{
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			LayerMask _mask = 1 << LayerMask.NameToLayer("Editor");
 			bool isHit = Physics.Raycast(worldRay, out hit, world.editDis, _mask);
 
 			if (isHit && !isErase) {
@@ -392,7 +409,7 @@ namespace CreVox
 			bool isNotLayer = (currentEditMode != EditMode.ObjectLayer);
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask =  isNotLayer? 1 << LayerMask.NameToLayer("Floor") : 1 << LayerMask.NameToLayer("EditorLevel");
+			LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer("Editor") : 1 << LayerMask.NameToLayer("EditorLevel");
 			bool isHit = Physics.Raycast(worldRay, out hit, world.editDis, _mask);
 
 			if (isHit) {
@@ -401,13 +418,14 @@ namespace CreVox
 
 				WorldPos pos = EditTerrain.GetBlockPos(hit, isNotLayer);
 				WorldPos gPos = EditTerrain.GetGridPos(hit.point);
-				gPos.y = isNotLayer? 0:2;
+				gPos.y = isNotLayer ? 0 : (int)Block.h;
 				float x = pos.x * Block.w + gPos.x - 1;
 				float y = pos.y * Block.h + gPos.y - 1;
 				float z = pos.z * Block.d + gPos.z - 1;
 				
 				Handles.color = Color.white;
 				Handles.RectangleCap(0, new Vector3(pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler(90, 0, 0), Block.hw);
+				Handles.DrawLine(hit.point, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
 
 				LevelPiece.PivotType pivot = (_pieceSelected.isStair) ? LevelPiece.PivotType.Edge : _pieceSelected.pivot;
 				if (CheckPlaceable((int)gPos.x, (int)gPos.z, pivot)) {
@@ -429,7 +447,7 @@ namespace CreVox
 		{
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			LayerMask _mask = 1 << LayerMask.NameToLayer("Editor");
 			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, _mask);
 			WorldPos pos;
 
@@ -482,7 +500,7 @@ namespace CreVox
 
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer("Floor") : 1 << LayerMask.NameToLayer("EditorLevel");
+			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer("Editor") : 1 << LayerMask.NameToLayer("EditorLevel");
 			bool isHit = Physics.Raycast(worldRay, out gHit, world.editDis, _mask);
 
 			if (isHit) {
