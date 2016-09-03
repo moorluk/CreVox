@@ -45,7 +45,7 @@ namespace CreVox
 				                 Block.h * blockPos.y,
 				                 Block.d * blockPos.z
 			                 );
-			Handles.DrawLine(posnew, pos);
+			//Handles.DrawLine(posnew, pos);
 
 			return blockPos;
 		}
