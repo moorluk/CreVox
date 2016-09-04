@@ -7,6 +7,7 @@ namespace CreVox
 {
 
 	[SelectionBase]
+	[ExecuteInEditMode]
 	public class World : MonoBehaviour
 	{
 		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
@@ -35,12 +36,27 @@ namespace CreVox
 
 		void Awake()
 		{
-			Reset();
-			Save save = Serialization.LoadRTWorld(PathCollect.testmap);
-			Init(save.chunkX, save.chunkY, save.chunkZ);
-			BuildWorld(save);
+			if (EditorApplication.isPlaying) {
+				Debug.LogWarning("LoadRTWorld in Play Mode : playing(" + EditorApplication.isPlaying + ")");
+				Reset();
+				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
+				Init(save.chunkX, save.chunkY, save.chunkZ);
+				BuildWorld(save);
+			}
 		}
 
+#if UNITY_EDITOR
+		void Start()
+		{
+			Object tmp = gameObject;
+			Object[] tmps;
+			tmps = new Object[1];
+			tmps[0] = tmp;
+			Selection.objects = tmps;
+			Selection.activeObject = tmps[0];
+		}
+#endif
+		
 		public void Init(int _chunkX, int _chunkY, int _chunkZ)
 		{
 //#if UNITY_EDITOR
@@ -87,7 +103,7 @@ namespace CreVox
 		void CreateRuler()
 		{
 			ruler = new GameObject("Ruler");
-			ruler.layer = LayerMask.NameToLayer("Floor");
+			ruler.layer = LayerMask.NameToLayer("Editor");
 			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
 			ruler.hideFlags = HideFlags.HideInHierarchy;
@@ -170,7 +186,14 @@ namespace CreVox
 				                            Quaternion.Euler(Vector3.zero)
 			                            ) as GameObject;
 			newChunkObject.transform.parent = transform;
+#if UNITY_EDITOR
+			if (EditorApplication.isPlaying)
+				newChunkObject.layer = LayerMask.NameToLayer("Floor");
+			else
+				newChunkObject.layer = LayerMask.NameToLayer("Editor");
+#else
 			newChunkObject.layer = LayerMask.NameToLayer("Floor");
+#endif
 			newChunkObject.name = "Chunk(" + x / Chunk.chunkSize + "," + y / Chunk.chunkSize + "," + z / Chunk.chunkSize + ")";
 
 			Chunk newChunk = newChunkObject.GetComponent<Chunk>();
@@ -294,11 +317,7 @@ namespace CreVox
 				for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
 					for (int zi = 0; zi < chunkZ * Chunk.chunkSize; zi++) {
 						float cSize;
-						if (GetBlock(xi, editY, zi) == null) {
-							cSize = 0.1f;
-						} else {
-							cSize = GetBlock(xi, editY, zi).GetType() == typeof(BlockAir) ? 0.4f : 1.01f;
-						}
+						cSize = GetBlock(xi, editY, zi).GetType() == typeof(BlockAir) ? 0.3f : 1.01f;
 
 						Gizmos.DrawCube(
 							transform.position + new Vector3(xi * Block.w, editY * Block.h, zi * Block.d), 

@@ -40,12 +40,6 @@ namespace CreVox
 				                    Mathf.RoundToInt(pos.y / Block.h),
 				                    Mathf.RoundToInt(pos.z / Block.d)
 			                    );
-			Vector3 posnew = new Vector3(
-				                 Block.w * blockPos.x,
-				                 Block.h * blockPos.y,
-				                 Block.d * blockPos.z
-			                 );
-			//Handles.DrawLine(posnew, pos);
 
 			return blockPos;
 		}
@@ -53,7 +47,6 @@ namespace CreVox
 		public static WorldPos GetBlockPos(RaycastHit hit, bool adjacent = false)
 		{
 			Vector3 pos = hit.point + hit.normal * (adjacent ? 0.5f : -0.5f);
-			Handles.DrawLine(hit.point, pos);
 			return GetBlockPos(pos);
 		}
 
