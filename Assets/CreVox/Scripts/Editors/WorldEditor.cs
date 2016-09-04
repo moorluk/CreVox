@@ -116,7 +116,10 @@ namespace CreVox
 		private void SubscribeEvents()
 		{
 			PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
-			EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnPlayModeChange);
+//			Debug.LogWarning(">>>  before : " + EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange"));
+			if (EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange") == false)
+				EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnPlayModeChange);
+//			Debug.LogWarning("<<<  after : " + EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange"));
 		}
 
 		private void UnsubscribeEvents()
@@ -564,12 +567,14 @@ namespace CreVox
 		public void OnPlayModeChange()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
+				Debug.LogWarning("Save before play : playing(" + EditorApplication.isPlaying + ")");
 				Serialization.SaveWorld(world, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
 				AssetDatabase.Refresh();
 				EditorApplication.isPlaying = true;
 			}
 
 			if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode) {
+				Debug.LogWarning("LoadRTWorld in Edit Mode : playing(" + EditorApplication.isPlaying + ")");
 				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
 				if (save != null)
 					world.BuildWorld(save);

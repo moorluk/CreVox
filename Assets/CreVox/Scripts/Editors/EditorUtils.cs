@@ -36,5 +36,20 @@ namespace CreVox
 			}
 			return assetList;
 		}
+
+		public static bool ChkCallback(EditorApplication.CallbackFunction _event, string _mathodName) {
+			bool result = false;
+			if (_event == null) {
+				Debug.Log(_event + " not exist...");
+				return result;
+			}
+
+			for (int i = 0; i < _event.GetInvocationList().Length; i++) {
+//				Debug.LogWarning(_event.GetInvocationList()[i].Method + " : " + i + "/" + _event.GetInvocationList().Length);
+				if (_event.GetInvocationList()[i].Method.ToString().Contains(_mathodName))
+					result = true;
+			}
+			return result;
+		}
 	}
 }

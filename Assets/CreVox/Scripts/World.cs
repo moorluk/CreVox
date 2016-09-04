@@ -7,6 +7,7 @@ namespace CreVox
 {
 
 	[SelectionBase]
+	[ExecuteInEditMode]
 	public class World : MonoBehaviour
 	{
 		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
@@ -35,12 +36,27 @@ namespace CreVox
 
 		void Awake()
 		{
-			Reset();
-			Save save = Serialization.LoadRTWorld(PathCollect.testmap);
-			Init(save.chunkX, save.chunkY, save.chunkZ);
-			BuildWorld(save);
+			if (EditorApplication.isPlaying) {
+				Debug.LogWarning("LoadRTWorld in Play Mode : playing(" + EditorApplication.isPlaying + ")");
+				Reset();
+				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
+				Init(save.chunkX, save.chunkY, save.chunkZ);
+				BuildWorld(save);
+			}
 		}
 
+#if UNITY_EDITOR
+		void Start()
+		{
+			Object tmp = gameObject;
+			Object[] tmps;
+			tmps = new Object[1];
+			tmps[0] = tmp;
+			Selection.objects = tmps;
+			Selection.activeObject = tmps[0];
+		}
+#endif
+		
 		public void Init(int _chunkX, int _chunkY, int _chunkZ)
 		{
 //#if UNITY_EDITOR
