@@ -43,15 +43,29 @@ namespace CreVox
 				Init(save.chunkX, save.chunkY, save.chunkZ);
 				BuildWorld(save);
 			}
+			if (EditorUtils.ChkEventCallback(EditorApplication.playmodeStateChanged, "OnBeforePlay") == false)
+				EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnBeforePlay);
 		}
 
 #if UNITY_EDITOR
+		public void OnBeforePlay()
+		{
+			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
+				Debug.LogWarning("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
+//				EditorApplication.isPlaying = false;
+				World tmp = (World)FindObjectOfType(typeof(World));
+//				Debug.LogWarning(tmp);
+				Serialization.SaveWorld(tmp, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
+				AssetDatabase.Refresh();
+				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnBeforePlay);
+			}
+		}
+
 		void Start()
 		{
-			Object tmp = gameObject;
 			Object[] tmps;
 			tmps = new Object[1];
-			tmps[0] = tmp;
+			tmps[0] = gameObject;
 			Selection.objects = tmps;
 			Selection.activeObject = tmps[0];
 		}

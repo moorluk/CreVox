@@ -37,7 +37,7 @@ namespace CreVox
 			return assetList;
 		}
 
-		public static bool ChkCallback(EditorApplication.CallbackFunction _event, string _mathodName) {
+		public static bool ChkEventCallback(EditorApplication.CallbackFunction _event, string _mathodName) {
 			bool result = false;
 			if (_event == null) {
 				Debug.Log(_event + " not exist...");

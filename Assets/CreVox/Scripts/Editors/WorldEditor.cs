@@ -36,7 +36,7 @@ namespace CreVox
 		private Texture2D _itemPreview;
 		private LevelPiece _pieceSelected;
 
-		public void OnEnable()
+		private void OnEnable()
 		{
 			world = (World)target;
 			SubscribeEvents();
@@ -105,29 +105,6 @@ namespace CreVox
 			}
 		}
 
-		private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
-		{
-			_itemSelected = item;
-			_itemPreview = preview;
-			_pieceSelected = (LevelPiece)item.GetComponent<LevelPiece>();
-			Repaint();
-		}
-
-		private void SubscribeEvents()
-		{
-			PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
-//			Debug.LogWarning(">>>  before : " + EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange"));
-			if (EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange") == false)
-				EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnPlayModeChange);
-//			Debug.LogWarning("<<<  after : " + EditorUtils.ChkCallback(EditorApplication.playmodeStateChanged, "OnPlayModeChange"));
-		}
-
-		private void UnsubscribeEvents()
-		{
-			PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
-			EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnPlayModeChange);
-		}
-
 		private void DrawPieceSelectedGUI()
 		{
 			GUILayout.BeginVertical(EditorStyles.helpBox, GUILayout.Width(Screen.width - 20));
@@ -141,6 +118,22 @@ namespace CreVox
 				EditorGUILayout.EndVertical();
 			}
 			GUILayout.EndVertical();
+		}
+
+		private void SubscribeEvents()
+		{
+			PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+			EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnPlayModeChange);
+			if (EditorUtils.ChkEventCallback(EditorApplication.playmodeStateChanged, "OnBeforePlay") == true)
+				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(world.OnBeforePlay);
+		}
+
+		private void UnsubscribeEvents()
+		{
+			PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+			EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnPlayModeChange);
+			if (EditorUtils.ChkEventCallback(EditorApplication.playmodeStateChanged, "OnBeforePlay") == false)
+				EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(world.OnBeforePlay);
 		}
 
 		private void DrawModeGUI()
@@ -427,12 +420,14 @@ namespace CreVox
 				float z = pos.z * Block.d + gPos.z - 1;
 				
 				Handles.color = Color.white;
+				Handles.lighting = true;
 				Handles.RectangleCap(0, new Vector3(pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler(90, 0, 0), Block.hw);
 				Handles.DrawLine(hit.point, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
 
 				LevelPiece.PivotType pivot = (_pieceSelected.isStair) ? LevelPiece.PivotType.Edge : _pieceSelected.pivot;
 				if (CheckPlaceable((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
+//					Gizmos.DrawCube(new Vector3(x, y, z), new Vector3(Block.w / 3, 0.01f, Block.d / 3));
 					Handles.RectangleCap(0, new Vector3(x, y, z), Quaternion.Euler(90, 0, 0), 0.5f);
 					Handles.color = Color.white;
 				}
@@ -564,10 +559,18 @@ namespace CreVox
 			return false;
 		}
 
-		public void OnPlayModeChange()
+		private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
+		{
+			_itemSelected = item;
+			_itemPreview = preview;
+			_pieceSelected = (LevelPiece)item.GetComponent<LevelPiece>();
+			Repaint();
+		}
+
+		private void OnPlayModeChange()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
-				Debug.LogWarning("Save before play : playing(" + EditorApplication.isPlaying + ")");
+				Debug.LogWarning("Save before play by Editor : playing(" + EditorApplication.isPlaying + ")");
 				Serialization.SaveWorld(world, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
 				AssetDatabase.Refresh();
 				EditorApplication.isPlaying = true;
