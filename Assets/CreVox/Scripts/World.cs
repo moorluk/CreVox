@@ -334,6 +334,8 @@ namespace CreVox
 				editY * Block.h + Block.hh, 
 				chunkZ * Chunk.chunkSize * Block.hd - Block.hd
 			);
+			if (chunks != null && chunks.Count > 0)
+				UpdateChunks ();
 		}
 
 		public void BuildWorld(Save _save)
@@ -398,8 +400,8 @@ namespace CreVox
 				obj.transform.position = new Vector3(x, y, z);
 				obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
 			}
-
-			block.SetPart(bPos, gPos, obj);
+				
+			block.SetPart(bPos, gPos, (obj != null) ? obj.GetComponent<LevelPiece>() : null);
 		}
 
 		private Vector3 GetPieceOffset(int x, int z)

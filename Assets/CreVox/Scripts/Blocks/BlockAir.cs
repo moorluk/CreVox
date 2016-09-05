@@ -12,10 +12,14 @@ namespace CreVox
 		private GameObject[] parts;
 		[NonSerialized]
 		private GameObject node;
+        [NonSerialized]
+        private bool[] isSolid = new bool[6];
 
-		public BlockAir()
+        public BlockAir()
 			: base()
 		{
+            for (int i = 0; i < isSolid.Length; i++)
+                isSolid[i] = false;
 		}
 
 		public override void Destroy()
@@ -39,20 +43,23 @@ namespace CreVox
 
 		public override bool IsSolid(Block.Direction direction)
 		{
-			return false;
+            return isSolid[(int)direction];
 		}
 
-		public void SetPart(WorldPos bPos, WorldPos gPos, GameObject go)
+		public void SetPart(WorldPos bPos, WorldPos gPos, LevelPiece piece)
 		{
+			GameObject go = (piece != null) ? piece.gameObject : null;
 			int x = gPos.x;
 			int z = gPos.z;
 
 			int id = z * 3 + x;
 			if (go != null) {
 				if (parts == null) {
-					node = new GameObject();
-					node.name = bPos.ToString();
-					node.transform.parent = go.transform.parent;
+					if (node == null) {
+						node = new GameObject ();
+						node.name = bPos.ToString ();
+						node.transform.parent = go.transform.parent;
+					}
 					parts = new GameObject[9];
 					pieceNames = new string[9];
 				}
@@ -64,15 +71,33 @@ namespace CreVox
 				go.transform.parent = node.transform;
 				parts[id] = go;
 				pieceNames[id] = go.GetComponent<PaletteItem>().name;
-			} else {
+                for(int i = 0; i < isSolid.Length; i++)
+                    isSolid[i] = piece.IsSolid((Block.Direction)i);
+
+            } else {
 				if (parts != null) {
 					if (parts[id] != null) {
-						GameObject.DestroyImmediate(parts[id]);
+                        for (int i = 0; i < isSolid.Length; i++)
+                            if (IsSolid((Block.Direction)i))
+                                isSolid[i] = false;
+                        GameObject.DestroyImmediate(parts[id]);
 						pieceNames[id] = null;
 						parts[id] = null;
 					}
 				}
 			}
+		}
+
+        public int GetPartAngle(int _x, int _y)
+        {
+            int id = _x + _y * 3;
+            GameObject part = parts[id];
+            return (part !=null) ? (int)(part.transform.eulerAngles.y + 360)%360 : -1;
+        }
+
+		public void ShowPiece(bool isHide) {
+			if (node)
+				node.SetActive (isHide);
 		}
 	}
 }

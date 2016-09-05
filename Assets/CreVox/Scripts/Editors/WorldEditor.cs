@@ -102,6 +102,7 @@ namespace CreVox
 
 			if (GUI.changed) {
 				EditorUtility.SetDirty(world);
+				world.UpdateChunks ();
 			}
 		}
 

@@ -32,8 +32,8 @@ namespace CreVox
         public GameObject[] camZonePreset = new GameObject[(int)CamZoneType.down + 1];
         private GameObject[] camZones = new GameObject[3 * 3];
 
-        public int[] obsLayer = new int[3 * 3];
-        public int[] sclLayer = new int[3 * 3];
+        public int[] obsLayer = new int[3 * 3]; //obstacle layer
+        public int[] sclLayer = new int[3 * 3]; //scroll layer
         public int[] adjLayer = new int[3 * 3];
         public int[] oldIDLayer = new int[3 * 3];
         public int[] idLayer = new int[3 * 3];
@@ -102,11 +102,17 @@ namespace CreVox
             UpdateObstacleLayer();
             //if (!oldPos.Equals(curPos)) {
             int offsetX = curPos.x - oldPos.x;
+			int offsetY = curPos.y - oldPos.y;
             int offsetZ = curPos.z - oldPos.z;
 
-            Debug.Log(curPos.ToString() + "; " + oldPos.ToString());
+            //Debug.Log(curPos.ToString() + "; " + oldPos.ToString());
 
-            if (offsetX != 0 || offsetZ != 0)
+
+			if (offsetY != 0) {
+				for (int i = 0; i < sclLayer.Length; i++)
+					sclLayer[i] = -1;
+			}	
+            else if (offsetX != 0 || offsetZ != 0)
                 UpdateScrollLayer(offsetX, offsetZ);
             UpdateAdjecentLayer(camDir[(1 + offsetX) + (1 + offsetZ) * 3]);
             CalcCamDir();
@@ -239,10 +245,11 @@ namespace CreVox
         void UpdateFront()
         {
             ResetAdjecentLayer(CamDirection.front);
-            Debug.Log("update front");
-            CreVox.BlockAir b = null;
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //Debug.Log("update front");
+            //CreVox.BlockAir b = null;
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+            if(!IsVisible(curPos.x - 1, curPos.y, curPos.z + 1, CamDirection.front, CamDirection.left))
             {
                 if (obsLayer[0 + 2 * 3] != 0)
                 {
@@ -251,8 +258,9 @@ namespace CreVox
                         adjLayer[1 + 2 * 3] |= (1 << (int)CamDirection.turn_left);
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x + 1, curPos.y, curPos.z + 1, CamDirection.front, CamDirection.right))
             {
                 if (obsLayer[2 + 2 * 3] != 0)
                 {
@@ -262,8 +270,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x - 1, curPos.y, curPos.z, CamDirection.front, CamDirection.left))
             {
                 if (obsLayer[0 + 1 * 3] != 0)
                 {
@@ -272,8 +281,9 @@ namespace CreVox
                         adjLayer[1 + 1 * 3] |= 1 << (int)CamDirection.turn_left;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x + 1, curPos.y, curPos.z, CamDirection.front, CamDirection.right))
             {
                 if (obsLayer[2 + 1 * 3] != 0)
                 {
@@ -283,8 +293,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 2) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x - 1, curPos.y, curPos.z - 1, CamDirection.front, CamDirection.left))
             {
                 if (obsLayer[0 + 0 * 3] != 0)
                 {
@@ -293,8 +304,9 @@ namespace CreVox
                         adjLayer[1 + 0 * 3] |= 1 << (int)CamDirection.turn_left;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 2) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x + 1, curPos.y, curPos.z - 1, CamDirection.front, CamDirection.right))
             {
                 if (obsLayer[2 + 0 * 3] != 0)
                 {
@@ -304,8 +316,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z - 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z - 2) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x, curPos.y, curPos.z - 1, CamDirection.front))
             {
                 if (obsLayer[1 + 0 * 3] != 0) adjLayer[1 + 0 * 3] = (1 << (int)CamDirection.turn_none) + (1 << (int)CamDirection.front);
             }
@@ -314,9 +327,10 @@ namespace CreVox
         void UpdateBack()
         {
             ResetAdjecentLayer(CamDirection.back);
-            CreVox.BlockAir b = null;
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //CreVox.BlockAir b = null;
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z - 1, CamDirection.back, CamDirection.right))
             {
                 if (obsLayer[0 + 0 * 3] != 0)
                 {
@@ -325,8 +339,9 @@ namespace CreVox
                         adjLayer[1 + 0 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z - 1, CamDirection.back, CamDirection.left))
             {
                 if (obsLayer[2 + 0 * 3] != 0)
                 {
@@ -336,8 +351,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z, CamDirection.back, CamDirection.right))
             {
                 if (obsLayer[0 + 1 * 3] != 0)
                 {
@@ -346,8 +362,9 @@ namespace CreVox
                         adjLayer[1 + 1 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z, CamDirection.back, CamDirection.left))
             {
                 if (obsLayer[2 + 1 * 3] != 0)
                 {
@@ -357,8 +374,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z + 1, CamDirection.back, CamDirection.right))
             {
                 if (obsLayer[0 + 2 * 3] != 0)
                 {
@@ -367,8 +385,9 @@ namespace CreVox
                         adjLayer[1 + 2 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z + 1, CamDirection.back, CamDirection.left))
             {
                 if (obsLayer[2 + 2 * 3] != 0)
                 {
@@ -378,8 +397,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z + 2) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x, curPos.y, curPos.z + 1, CamDirection.back))
             {
                 if (obsLayer[1 + 2 * 3] != 0) adjLayer[1 + 2 * 3] = (1 << (int)CamDirection.turn_none) + (1 << (int)CamDirection.back);
             }
@@ -388,9 +408,10 @@ namespace CreVox
         void UpdateRight()
         {
             ResetAdjecentLayer(CamDirection.right);
-            CreVox.BlockAir b = null;
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //CreVox.BlockAir b = null;
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z + 1, CamDirection.right, CamDirection.left))
             {
                 if (obsLayer[2 + 2 * 3] != 0)
                 {
@@ -399,8 +420,9 @@ namespace CreVox
                         adjLayer[2 + 1 * 3] |= 1 << (int)CamDirection.turn_left;
                 }
             }
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z - 1, CamDirection.right, CamDirection.right))
             {
                 if (obsLayer[2 + 0 * 3] != 0)
                 {
@@ -410,8 +432,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x, curPos.y, curPos.z + 1, CamDirection.right, CamDirection.left))
             {
                 if (obsLayer[1 + 2 * 3] != 0)
                 {
@@ -420,8 +443,9 @@ namespace CreVox
                         adjLayer[1 + 1 * 3] |= 1 << (int)CamDirection.turn_left;
                 }
             }
-            b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x, curPos.y, curPos.z - 1, CamDirection.right, CamDirection.right))
             {
                 if (obsLayer[1 + 0 * 3] != 0)
                 {
@@ -431,8 +455,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z + 1, CamDirection.right, CamDirection.left))
             {
                 if (obsLayer[0 + 2 * 3] != 0)
                 {
@@ -441,8 +466,9 @@ namespace CreVox
                         adjLayer[0 + 1 * 3] |= 1 << (int)CamDirection.turn_left;
                 }
             }
-            b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z - 1, CamDirection.right, CamDirection.right))
             {
                 if (obsLayer[0 + 0 * 3] != 0)
                 {
@@ -452,8 +478,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x - 1, curPos.y, curPos.z, CamDirection.right))
             {
                 if (obsLayer[0 + 1 * 3] != 0) adjLayer[0 + 1 * 3] = (1 << (int)CamDirection.turn_none) + (1 << (int)CamDirection.right);
             }
@@ -462,9 +489,10 @@ namespace CreVox
         void UpdateLeft()
         {
             ResetAdjecentLayer(CamDirection.left);
-            CreVox.BlockAir b = null;
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //CreVox.BlockAir b = null;
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z + 1, CamDirection.left, CamDirection.right))
             {
                 if (obsLayer[0 + 2 * 3] != 0)
                 {
@@ -473,8 +501,9 @@ namespace CreVox
                         adjLayer[0 + 1 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x - 1, curPos.y, curPos.z - 1, CamDirection.left, CamDirection.left))
             {
                 if (obsLayer[0 + 0 * 3] != 0)
                 {
@@ -484,8 +513,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x, curPos.y, curPos.z + 1, CamDirection.left, CamDirection.right))
             {
                 if (obsLayer[1 + 2 * 3] != 0)
                 {
@@ -494,8 +524,9 @@ namespace CreVox
                         adjLayer[1 + 1 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x, curPos.y, curPos.z - 1, CamDirection.left, CamDirection.left))
             {
                 if (obsLayer[1 + 0 * 3] != 0)
                 {
@@ -505,8 +536,9 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z + 1, CamDirection.left, CamDirection.right))
             {
                 if (obsLayer[2 + 2 * 3] != 0)
                 {
@@ -515,8 +547,9 @@ namespace CreVox
                         adjLayer[2 + 1 * 3] |= 1 << (int)CamDirection.turn_right;
                 }
             }
-            b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
+            //if (b == null)
+			if (!IsVisible(curPos.x + 1, curPos.y, curPos.z - 1, CamDirection.left, CamDirection.left))
             {
                 if (obsLayer[2 + 0 * 3] != 0)
                 {
@@ -526,11 +559,66 @@ namespace CreVox
                 }
             }
 
-            b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z) as CreVox.BlockAir;
-            if (b == null)
+            //b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z) as CreVox.BlockAir;
+            //if (b == null)
+            if (!IsVisible(curPos.x + 1, curPos.y, curPos.z, CamDirection.left))
             {
                 if (obsLayer[2 + 1 * 3] != 0) adjLayer[2 + 1 * 3] = (1 << (int)CamDirection.turn_none) + (1 << (int)CamDirection.left);
             }
+        }
+
+        private bool IsVisible(int _x, int _y, int _z, CamDirection _dir, CamDirection _lr = CamDirection.front)
+        {
+            CreVox.BlockAir b = null;
+            CreVox.BlockAir bb = null;
+            b = world.GetBlock(_x, _y, _z) as CreVox.BlockAir;
+			Debug.Log ("checke visible " + _x.ToString () + "," + _y.ToString () + "," + _z.ToString ());
+
+            if (_dir == CamDirection.front)
+            {
+                if (b == null || b.IsSolid(Block.Direction.south)) return false;
+
+                bb = world.GetBlock(_x, _y, _z-1) as CreVox.BlockAir;
+
+                if (bb == null) return false;
+                if (bb.IsSolid(Block.Direction.north)) return false;
+                if (_lr == CamDirection.left && bb.IsSolid(Block.Direction.east)) return false;
+                if (_lr == CamDirection.right && bb.IsSolid(Block.Direction.west)) return false;
+            }
+            if (_dir == CamDirection.back)
+            {
+				if (b == null || b.IsSolid(Block.Direction.north)) return false;
+
+				bb = world.GetBlock(_x, _y, _z + 1) as CreVox.BlockAir;
+
+				if (bb == null) return false;
+				if (bb.IsSolid(Block.Direction.south)) return false;
+				if (_lr == CamDirection.left && bb.IsSolid(Block.Direction.west)) return false;
+				if (_lr == CamDirection.right && bb.IsSolid(Block.Direction.east)) return false;
+            }
+            if (_dir == CamDirection.left)
+            {
+				if (b == null || b.IsSolid(Block.Direction.east)) return false;
+
+				bb = world.GetBlock(_x+1, _y, _z) as CreVox.BlockAir;
+
+				if (bb == null) return false;
+				if (bb.IsSolid(Block.Direction.west)) return false;
+				if (_lr == CamDirection.left && bb.IsSolid(Block.Direction.north)) return false;
+				if (_lr == CamDirection.right && bb.IsSolid(Block.Direction.south)) return false;
+            }
+            if (_dir == CamDirection.right)
+            {
+				if (b == null || b.IsSolid(Block.Direction.west)) return false;
+
+				bb = world.GetBlock(_x+1, _y, _z) as CreVox.BlockAir;
+
+				if (bb == null) return false;
+				if (bb.IsSolid(Block.Direction.east)) return false;
+				if (_lr == CamDirection.left && bb.IsSolid(Block.Direction.south)) return false;
+				if (_lr == CamDirection.right && bb.IsSolid(Block.Direction.north)) return false;
+            }
+            return true;
         }
 
         float GetAngle(int _dir)
