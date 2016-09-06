@@ -111,7 +111,6 @@ namespace CreVox
 
 			mColl = null;
 			bColl = null;
-			editY = 0;
 		}
 
 		void CreateRuler()
@@ -120,7 +119,7 @@ namespace CreVox
 			ruler.layer = LayerMask.NameToLayer("Editor");
 			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
-			ruler.hideFlags = HideFlags.HideInHierarchy;
+//			ruler.hideFlags = HideFlags.HideInHierarchy;
 			mColl = ruler.AddComponent<MeshCollider>();
 
 			MeshData meshData = new MeshData();
@@ -150,10 +149,10 @@ namespace CreVox
 			layerRuler = new GameObject("LevelRuler");
 			layerRuler.layer = LayerMask.NameToLayer("EditorLevel");
 			layerRuler.transform.parent = transform;
-			layerRuler.hideFlags = HideFlags.HideInHierarchy;
+//			layerRuler.hideFlags = HideFlags.HideInHierarchy;
 			bColl = layerRuler.AddComponent<BoxCollider>();
 			bColl.size = new Vector3(chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
-			ChangeEditY(0);
+			ChangeEditY(editY);
 		}
 
 		public void UpdateChunks()
@@ -233,10 +232,14 @@ namespace CreVox
 			Chunk chunk = null;
 			if (chunks.TryGetValue(new WorldPos(x, y, z), out chunk)) {
 #if UNITY_EDITOR
-				Debug.Log("Destroy " + chunk.gameObject.name);
-				Object.DestroyImmediate(chunk.gameObject);
+				if(chunk.gameObject){
+					Debug.Log("Destroy " + chunk.gameObject.name);
+					Object.DestroyImmediate(chunk.gameObject);
+				}
 #else
-            Object.Destroy(chunk.gameObject);
+				if(chunk.gameObject){
+            		Object.Destroy(chunk.gameObject);
+				}
 #endif
 				chunk.Destroy();
 				chunks.Remove(new WorldPos(x, y, z));

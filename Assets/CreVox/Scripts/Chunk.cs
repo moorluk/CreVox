@@ -75,8 +75,13 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						if (y <= world.editY)
+						if (!EditorApplication.isPlaying && y > world.editY) {
+						} else {
 							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+						}
+						
+//						if (y <= world.editY)
+//							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
 					}
 				}
 			}
@@ -104,13 +109,23 @@ namespace CreVox
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
 						BlockAir air = blocks [x, y, z] as BlockAir;
-						if (y <= world.editY) {
-							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+
+						if (!EditorApplication.isPlaying && y > world.editY) {
 							if (air != null)
-								air.ShowPiece (true);
-						} else if (air != null){
-							air.ShowPiece (false);
+								air.ShowPiece(false);
+						} else {
+							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+							if (air != null)
+								air.ShowPiece(true);
 						}
+
+//						if (y <= world.editY) {
+//							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+//							if (air != null)
+//								air.ShowPiece (true);
+//						} else if (air != null){
+//							air.ShowPiece (false);
+//						}
 					}
 				}
 			}

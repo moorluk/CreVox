@@ -12,8 +12,9 @@ namespace CreVox
 			GameObject bCursor;
 			BoxCursor cur = EditorUtils.GetAssetsWithScript<BoxCursor>(PathCollect.editorPath)[0];
 			bCursor = PrefabUtility.InstantiatePrefab(cur.gameObject) as GameObject;
+			bCursor.transform.SetParent(_Parent);
 			bCursor.transform.localScale = _CursorSize;
-			bCursor.hideFlags = HideFlags.HideInHierarchy;
+//			bCursor.hideFlags = HideFlags.HideInHierarchy;
 			UpdateBox(bCursor, _Parent.position, Vector3.up);
 			return bCursor;
 		}
