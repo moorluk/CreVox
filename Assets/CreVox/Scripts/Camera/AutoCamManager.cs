@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 namespace CreVox
 {
@@ -30,6 +31,7 @@ namespace CreVox
         }
 
         public GameObject[] camZonePreset = new GameObject[(int)CamZoneType.down + 1];
+		[SerializeField]
         private GameObject[] camZones = new GameObject[3 * 3];
 
         public int[] obsLayer = new int[3 * 3]; //obstacle layer
@@ -648,9 +650,10 @@ namespace CreVox
             Vector3 pos = new Vector3(curPos.x * Block.w, curPos.y * Block.h, curPos.z * Block.d);
             Color oldColor = Gizmos.color;
             Gizmos.DrawWireCube(pos, new Vector3(Block.w, Block.h, Block.d));
-            Gizmos.color = Color.red;
             for (int i = 0; i < camDir.Length; i++)
-            {
+			{
+				if(EditorApplication.isPlaying)
+					Gizmos.color = camZones[i].name.Contains("_F")?Color.green:Color.red;
                 CreVox.WorldPos wPos;
                 wPos.x = curPos.x + i % 3 - 1;
                 wPos.y = curPos.y;
@@ -690,6 +693,7 @@ namespace CreVox
             //camerazone setting
             DynamicCameraZone fZone = fGO.GetComponent<DynamicCameraZone>();
             DynamicCameraZone tZone = tGO.GetComponent<DynamicCameraZone>();
+			tZone.name = fZone.name;
             tZone.curve = fZone.curve;
             tZone.blendTime = fZone.blendTime;
 

@@ -8,6 +8,7 @@ namespace CreVox
 
 	[SelectionBase]
 	[ExecuteInEditMode]
+	[RequireComponent(typeof(AutoCamManager))]
 	public class World : MonoBehaviour
 	{
 		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
@@ -24,11 +25,9 @@ namespace CreVox
 
 		public string workFile;
 
-		//BoxCursor------
 		public GameObject box = null;
 		public bool useBox = false;
 		public float editDis = 120f;
-		//---------------
 
 		public int editY;
 		public bool pointer;
@@ -38,9 +37,7 @@ namespace CreVox
 		{
 			if (EditorApplication.isPlaying) {
 				Debug.LogWarning("LoadRTWorld in Play Mode : playing(" + EditorApplication.isPlaying + ")");
-				Reset();
 				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
-				Init(save.chunkX, save.chunkY, save.chunkZ);
 				BuildWorld(save);
 			}
 			if (EditorUtils.ChkEventCallback(EditorApplication.playmodeStateChanged, "OnBeforePlay") == false)
