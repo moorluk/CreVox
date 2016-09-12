@@ -163,32 +163,30 @@ namespace CreVox
 
 		private void DrawLayerModeGUI()
 		{
-			if (selectedEditMode == EditMode.VoxelLayer || selectedEditMode == EditMode.ObjectLayer) {
-				GUI.color = new Color(world.YColor.r, world.YColor.g, world.YColor.b, 1.0f);
-				EditorGUILayout.BeginHorizontal("Box", GUILayout.Width(90));
-				GUI.color = Color.white;
-				EditorGUILayout.BeginVertical();
-				if (GUILayout.Button("▲", GUILayout.Width(85))) {
-					fixY = world.editY + 1;
-					world.ChangeEditY(fixY);
-					fixY = world.editY;
-				}
-				EditorGUILayout.LabelField("", "Layer : " + world.editY, "TextField", GUILayout.Width(85));
-				if (GUILayout.Button("▼", GUILayout.Width(85))) {
-					fixY = world.editY - 1;
-					world.ChangeEditY(fixY);
-					fixY = world.editY;
-				}
-				EditorGUILayout.EndVertical();
+			GUI.color = new Color (world.YColor.r, world.YColor.g, world.YColor.b, 1.0f);
+			EditorGUILayout.BeginHorizontal ("Box", GUILayout.Width (90));
+			GUI.color = Color.white;
+			EditorGUILayout.BeginVertical ();
+			if (GUILayout.Button ("▲", GUILayout.Width (85))) {
+				fixY = world.editY + 1;
+				world.ChangeEditY (fixY);
+				fixY = world.editY;
+			}
+			EditorGUILayout.LabelField ("", "Layer : " + world.editY, "TextField", GUILayout.Width (85));
+			if (GUILayout.Button ("▼", GUILayout.Width (85))) {
+				fixY = world.editY - 1;
+				world.ChangeEditY (fixY);
+				fixY = world.editY;
+			}
+			EditorGUILayout.EndVertical ();
 
-				if (GUILayout.Button(showPointer ? "Hide\n Pointer" : "Show\n Pointer", GUILayout.ExpandHeight(true))) {
-					showPointer = !showPointer;
-				}
-				EditorGUILayout.EndHorizontal();
-				
-				world.pointer = showPointer ? true : false;
-			} else
-				world.pointer = false;
+			if (GUILayout.Button (showPointer ? "Hide\n Pointer" : "Show\n Pointer", GUILayout.ExpandHeight (true))) {
+				showPointer = !showPointer;
+				world.pointer = showPointer;
+				fixY = world.editY;
+				world.ChangeEditY (fixY);
+			}
+			EditorGUILayout.EndHorizontal ();
 		}
 
 		private void ModeHandler()
@@ -314,41 +312,47 @@ namespace CreVox
 
 		}
 
-		void EventHotkey()
+		void EventHotkey ()
 		{
 			int _index = (int)currentEditMode;
-			int _count = System.Enum.GetValues(typeof(EditMode)).Length - 1;
+			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
 
 			if (Event.current.type == EventType.KeyDown) {
 				switch (Event.current.keyCode) {
-					case KeyCode.W:
-						fixY = world.editY + 1;
-						world.ChangeEditY(fixY);
-						fixY = world.editY;
-						break;
+				case KeyCode.W:
+					fixY = world.editY + 1;
+					world.ChangeEditY (fixY);
+					fixY = world.editY;
+					break;
 
-					case KeyCode.S:
-						fixY = world.editY - 1;
-						world.ChangeEditY(fixY);
-						fixY = world.editY;
-						break;
+				case KeyCode.S:
+					fixY = world.editY - 1;
+					world.ChangeEditY (fixY);
+					fixY = world.editY;
+					break;
 
-					case KeyCode.A:
-						if (_index == 0)
-							currentEditMode = (EditMode)_count;
-						else
-							currentEditMode = (EditMode)(_index - 1);
-						Repaint();
-						break;
+				case KeyCode.A:
+					if (_index == 0)
+						currentEditMode = (EditMode)_count;
+					else
+						currentEditMode = (EditMode)(_index - 1);
+					Repaint ();
+					break;
 
-					case KeyCode.D:
-						if (_index == _count)
-							currentEditMode = (EditMode)0;
-						else
-							currentEditMode = (EditMode)(_index + 1);
-						Repaint();
-						break;
+				case KeyCode.D:
+					if (_index == _count)
+						currentEditMode = (EditMode)0;
+					else
+						currentEditMode = (EditMode)(_index + 1);
+					Repaint ();
+					break;
 
+				case KeyCode.E:
+					showPointer = !showPointer;
+					world.pointer = showPointer;
+					fixY = world.editY;
+					world.ChangeEditY (fixY);
+					break;
 				}
 			}
 		}
@@ -512,21 +516,6 @@ namespace CreVox
 				int gx = gPos.x;
 				int gz = gPos.z;
 
-				if (_pieceSelected.isStair) {
-					if (CheckPlaceable(gx, gz, LevelPiece.PivotType.Edge)) {
-						if (gPos.x == 0 && gPos.z == 1)
-							bPos.x -= 1;
-						if (gPos.x == 2 && gPos.z == 1)
-							bPos.x += 1;
-						if (gPos.x == 1 && gPos.z == 0)
-							bPos.z -= 1;
-						if (gPos.x == 1 && gPos.z == 2)
-							bPos.z += 1;
-						bPos.y -= 1;
-						canPlace = true;
-					}
-				}
-
 				if (CheckPlaceable(gx, gz, _pieceSelected.pivot)) {
 					canPlace = true;
 				}
@@ -571,14 +560,14 @@ namespace CreVox
 		private void OnPlayModeChange()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
-				Debug.LogWarning("Save before play by Editor : playing(" + EditorApplication.isPlaying + ")");
+				Debug.Log("Save before play by Editor : playing(" + EditorApplication.isPlaying + ")");
 				Serialization.SaveWorld(world, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
 				AssetDatabase.Refresh();
 				EditorApplication.isPlaying = true;
 			}
 
 			if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode) {
-				Debug.LogWarning("LoadRTWorld in Edit Mode : playing(" + EditorApplication.isPlaying + ")");
+				Debug.Log("LoadRTWorld in Edit Mode : playing(" + EditorApplication.isPlaying + ")");
 				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
 				if (save != null)
 					world.BuildWorld(save);
