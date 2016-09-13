@@ -34,7 +34,6 @@ namespace CreVox
 				block.Destroy();
 		}
 
-		// Use this for initialization
 		void Start()
 		{
 			filter = gameObject.GetComponent<MeshFilter>();
@@ -60,7 +59,6 @@ namespace CreVox
 			}
 		}
 
-		//new function
 		public static bool InRange(int index)
 		{
 			if (index < 0 || index >= chunkSize)
@@ -79,9 +77,6 @@ namespace CreVox
 						} else {
 							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
 						}
-						
-//						if (y <= world.editY)
-//							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
 					}
 				}
 			}
@@ -101,7 +96,6 @@ namespace CreVox
 			AssignCollisionMesh(meshData);
 		}
 
-		// Updates the chunk based on its contents
 		public void UpdateChunk()
 		{
 			MeshData meshData = new MeshData();
@@ -110,7 +104,7 @@ namespace CreVox
 					for (int z = 0; z < chunkSize; z++) {
 						BlockAir air = blocks [x, y, z] as BlockAir;
 
-						if (!EditorApplication.isPlaying && y > world.editY) {
+						if (!EditorApplication.isPlaying && world.pointer && y > world.editY) {
 							if (air != null)
 								air.ShowPiece(false);
 						} else {
@@ -118,22 +112,13 @@ namespace CreVox
 							if (air != null)
 								air.ShowPiece(true);
 						}
-
-//						if (y <= world.editY) {
-//							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
-//							if (air != null)
-//								air.ShowPiece (true);
-//						} else if (air != null){
-//							air.ShowPiece (false);
-//						}
 					}
 				}
 			}
 			AssignRenderMesh(meshData);
 			AssignCollisionMesh(meshData);
 		}
-		// Sends the calculated mesh information
-		// to the mesh and collision components
+
 		void AssignRenderMesh(MeshData meshData)
 		{
 #if UNITY_EDITOR

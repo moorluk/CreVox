@@ -16,7 +16,10 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 
+		public World self;
+
 		private GameObject chunkPrefab;
+		private GameObject pieces;
 		private GameObject ruler;
 		private GameObject layerRuler;
 
@@ -36,9 +39,11 @@ namespace CreVox
 		void Awake()
 		{
 			if (EditorApplication.isPlaying) {
-				Debug.LogWarning("LoadRTWorld in Play Mode : playing(" + EditorApplication.isPlaying + ")");
-				Save save = Serialization.LoadRTWorld(PathCollect.testmap);
-				BuildWorld(save);
+				Debug.Log ("LoadRTWorld in Play Mode : playing(" + EditorApplication.isPlaying + ")");
+				Save save = Serialization.LoadRTWorld (PathCollect.testmap);
+				BuildWorld (save);
+			} else {
+				self = this;
 			}
 			if (EditorUtils.ChkEventCallback(EditorApplication.playmodeStateChanged, "OnBeforePlay") == false)
 				EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction(OnBeforePlay);
@@ -48,11 +53,9 @@ namespace CreVox
 		public void OnBeforePlay()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
-				Debug.LogWarning("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
-//				EditorApplication.isPlaying = false;
-				World tmp = (World)FindObjectOfType(typeof(World));
-//				Debug.LogWarning(tmp);
-				Serialization.SaveWorld(tmp, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
+				Debug.Log ("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
+//				World tmp = (World)FindObjectOfType(typeof(World));
+				Serialization.SaveWorld(self, PathCollect.resourcesPath + PathCollect.testmap + ".bytes");
 				AssetDatabase.Refresh();
 				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnBeforePlay);
 			}
@@ -70,15 +73,14 @@ namespace CreVox
 		
 		public void Init(int _chunkX, int _chunkY, int _chunkZ)
 		{
-//#if UNITY_EDITOR
-//    		chunkPrefab = EditorUtils.GetAssetsWithScript<Chunk>("Assets")[0].gameObject;
-//#else
 			chunkPrefab = Resources.Load(PathCollect.chunk) as GameObject;
-//#endif
 
 			chunkX = _chunkX;
 			chunkY = _chunkY;
 			chunkZ = _chunkZ;
+
+			pieces = new GameObject("Pieces");
+			pieces.transform.parent = transform;
 
 			CreateRuler();
 			CreateLevelRuler();
@@ -101,6 +103,8 @@ namespace CreVox
 				Object.DestroyImmediate(transform.GetChild(i).gameObject);
 			}
 
+			if (pieces)
+				Object.DestroyImmediate(pieces);
 			if (ruler)
 				Object.DestroyImmediate(ruler);
 			if (layerRuler)
@@ -362,11 +366,13 @@ namespace CreVox
 				(200 - (editY % 10) * 20) / 255f, 
 				0.4f
 			);
-			bColl.center = transform.position + new Vector3(
-				chunkX * Chunk.chunkSize * Block.hw - Block.hw, 
-				editY * Block.h + Block.hh, 
-				chunkZ * Chunk.chunkSize * Block.hd - Block.hd
-			);
+			if (bColl) {
+				bColl.center = transform.position + new Vector3 (
+					chunkX * Chunk.chunkSize * Block.hw - Block.hw, 
+					editY * Block.h + Block.hh, 
+					chunkZ * Chunk.chunkSize * Block.hd - Block.hd
+				);
+			}
 			if (chunks != null && chunks.Count > 0)
 				UpdateChunks ();
 		}
