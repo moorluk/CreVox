@@ -9,93 +9,148 @@ namespace CreVox
 	public class AutoCamManagerEditor : Editor
 	{
 		AutoCamManager acm;
+		World world;
+
 		int[] _obs = new int[3 * 3];
 		int[] _scl = new int[3 * 3];
 		int[] _adj = new int[3 * 3];
 		int[] _dir = new int[3 * 3];
 		int[] _id = new int[3 * 3];
 
+		Color oldColor = Color.white;
+		float w = 55;
+
 		bool drawDef = false;
 
-		void Start ()
-		{
-		}
-
-		public override void OnInspectorGUI ()
-		{
+		void OnEnable(){
 			acm = (AutoCamManager)target;
+			world = acm.GetComponent<World> ();
 			_obs = acm.obsLayer;
 			_scl = acm.sclLayer;
 			_adj = acm.adjLayer;
 			_dir = acm.dirLayer;
 			_id = acm.idLayer;
+		}
 
+		public override void OnInspectorGUI ()
+		{
 			acm.mainDir = (CamDir)EditorGUILayout.EnumPopup (
-				EditorApplication.isPlaying ? "Main Direction" : "Start Direction",
-				acm.mainDir, 
-				GUILayout.Width (Screen.width - 60)
-			);
+				EditorApplication.isPlaying ? "Main Direction" : "Start Direction"
+				, acm.mainDir);
 
-			EditorGUILayout.BeginVertical ();
-			EditorGUILayout.BeginHorizontal ();
-			DrawZone (acm.Turn (6));
-			DrawZone (acm.Turn (7));
-			DrawZone (acm.Turn (8));
-			EditorGUILayout.EndHorizontal ();
-			EditorGUILayout.BeginHorizontal ();
-			DrawZone (acm.Turn (3));
-			DrawZone (acm.Turn (4));
-			DrawZone (acm.Turn (5));
-			EditorGUILayout.EndHorizontal ();
-			EditorGUILayout.BeginHorizontal ();
-			DrawZone (acm.Turn (0));
-			DrawZone (acm.Turn (1));
-			DrawZone (acm.Turn (2));
-			EditorGUILayout.EndHorizontal ();
-			EditorGUILayout.EndVertical ();
+			w = EditorGUILayout.Slider (w, 50, 100);
+			GUILayout.Space (5);
+			Rect n = GUILayoutUtility.GetLastRect ();
 
+			GUI.color = oldColor;
+			EditorGUI.DrawRect (new Rect (10, n.position.y + n.height, w * 3 + 95, w * 3 + 76), oldColor);
+
+			GUILayout.BeginVertical ();
+			GUILayout.BeginHorizontal ();
+			DrawBlock (acm.Turn (6));
+			DrawBlock (acm.Turn (7));
+			DrawBlock (acm.Turn (8));
+			GUILayout.EndHorizontal ();
+			GUILayout.BeginHorizontal ();
+			DrawBlock (acm.Turn (3));
+			DrawBlock (acm.Turn (4));
+			DrawBlock (acm.Turn (5));
+			GUILayout.EndHorizontal ();
+			GUILayout.BeginHorizontal ();
+			DrawBlock (acm.Turn (0));
+			DrawBlock (acm.Turn (1));
+			DrawBlock (acm.Turn (2));
+			GUILayout.EndHorizontal ();
+			GUILayout.EndVertical ();
+
+			GUILayout.Space (5);
 			drawDef = EditorGUILayout.Foldout (drawDef,"Default Inspector");
 			if (drawDef)
 				DrawDefaultInspector ();
 		}
 
+		void DrawCorner ()
+		{
+			GUILayout.Label (
+				""
+				, GUILayout.Height (5), GUILayout.Width (5)
+			);
+		}
+
+		void DrawEdge (float _height, float _width, WorldPos _pos, Block.Direction _dir)
+		{
+			GUI.color = world.GetBlock (_pos.x, _pos.y, _pos.z).IsSolid (_dir) ? Color.gray : oldColor;
+			EditorStyles.textArea.margin = new RectOffset(2,2,10,10);
+			GUILayout.TextArea (
+				_dir.ToString ()
+				, (GUI.color == oldColor) ? "Label" : "TextArea"
+				, GUILayout.Height (/*(GUI.color == oldColor) ? */_height/* : _height + 1*/), GUILayout.Width (_width)
+			);
+			GUI.color = oldColor;
+		}
+
 		void DrawZone (int _zone)
 		{
-			float w = (Screen.width - 60) / 3;
-			Color oldColor = GUI.color;
-			if (_zone == 4)
-				GUI.color = Color.yellow;
-			else
-				GUI.color = _obs [_zone] == 0 ? Color.gray : Color.white;
+			GUILayout.BeginVertical ();
+			float _h = w / 4 - 1;
 
-			EditorGUILayout.BeginVertical ("Box");
-
-			EditorGUILayout.LabelField (
-				"id:" + _id [_zone].ToString (),
-				EditorStyles.boldLabel,
-				GUILayout.Width (w)
+			GUILayout.TextArea (
+				"id:" + _id [_zone].ToString ()/* + " obs:" + _obs [_zone].ToString ()*/
+				, EditorStyles.miniTextField
+				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
 
-			if (_scl [_zone] < 0)
-				GUI.color = Color.gray;
-			EditorGUILayout.TextField (
-				"scr:" + _scl [_zone].ToString (),
-				GUILayout.Width (w));
-			GUI.color = oldColor;
-
-			EditorGUILayout.TextField (
-				"adj:" + _adj [_zone].ToString (),
-				GUILayout.Width (w)
+			GUI.color = (_scl [_zone] < 0) ? Color.red : oldColor;
+			GUILayout.TextArea (
+				"scr:" + _scl [_zone].ToString ()
+				,EditorStyles.miniTextField
+				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
 
-			EditorGUILayout.TextField (
-				"dir:" + _dir [_zone].ToString (), 
-				GUILayout.Width (w)
+			GUI.color = (_adj [_zone] != _dir [_zone]) ? Color.yellow : oldColor;
+			GUILayout.TextArea (
+				"adj:" + _adj [_zone].ToString ()
+				,EditorStyles.miniTextField
+				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
-
-			EditorGUILayout.EndVertical ();
 
 			GUI.color = oldColor;
+			GUILayout.TextArea (
+				"dir:" + _dir [_zone].ToString ()
+				,EditorStyles.miniTextField
+				, GUILayout.Width (w), GUILayout.Height (_h)
+			);
+
+			GUILayout.EndVertical ();
+		}
+
+		void DrawBlock (int _zone)
+		{
+			WorldPos _pos = acm.GetNeighbor (acm.curPos, _zone);
+
+			GUI.color = _obs [_zone] == 0 ? Color.gray : oldColor;			
+			GUILayout.BeginVertical ("Box", GUILayout.Width (w + 16),GUILayout.Height(w + 16));
+			GUI.color = oldColor;
+
+			GUILayout.BeginHorizontal ();
+			DrawCorner ();
+			DrawEdge (5, w,_pos,acm.Turn(Block.Direction.north));
+			DrawCorner ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			DrawEdge (w, 5,_pos,acm.Turn(Block.Direction.west));
+			DrawZone (_zone);
+			DrawEdge (w, 5,_pos,acm.Turn(Block.Direction.east));
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			DrawCorner ();
+			DrawEdge (5, w,_pos,acm.Turn(Block.Direction.south));
+			DrawCorner ();
+			GUILayout.EndHorizontal ();
+
+			GUILayout.EndVertical ();
 		}
 	}
 }

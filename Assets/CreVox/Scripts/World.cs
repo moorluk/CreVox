@@ -81,15 +81,15 @@ namespace CreVox
 
 			pieces = new GameObject("Pieces");
 			pieces.transform.parent = transform;
-
-			CreateRuler();
-			CreateLevelRuler();
+			
 			CreateChunks();
-			//BoxCursor------
-			if (!box) {
-				box = BoxCursorUtils.CreateBoxCursor(this.transform, new Vector3(Block.w, Block.h, Block.d));
+
+			if (!EditorApplication.isPlaying) {
+				CreateRuler ();
+				CreateLevelRuler ();
+				if (!box)
+					box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
 			}
-			//---------------
 		}
 
 		public void Reset()
@@ -435,12 +435,12 @@ namespace CreVox
 
 			if (_piece != null) {
 				obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
-				obj.transform.parent = transform;
+				obj.transform.parent = pieces.transform;
 				obj.transform.position = new Vector3(x, y, z);
 				obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);
 			}
 				
-			block.SetPart(bPos, gPos, (obj != null) ? obj.GetComponent<LevelPiece>() : null);
+			block.SetPiece(bPos, gPos, (obj != null) ? obj.GetComponent<LevelPiece>() : null);
 		}
 
 		private Vector3 GetPieceOffset(int x, int z)

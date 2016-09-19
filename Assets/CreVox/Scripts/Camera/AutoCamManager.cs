@@ -17,7 +17,7 @@ namespace CreVox
 
 	public enum CamDir
 	{
-		//none,
+		none = 0,
 		front = 1 << 0,
 		left = 1 << 1,
 		back = 1 << 2,
@@ -47,9 +47,9 @@ namespace CreVox
 
 		public Transform target;
 		private GameObject camNode;
-		private CreVox.WorldPos oldPos;
-		public CreVox.WorldPos curPos;
-		public CreVox.World world;
+		private WorldPos oldPos;
+		public WorldPos curPos;
+		public World world;
 
 		void Start ()
 		{
@@ -60,8 +60,6 @@ namespace CreVox
 
 			dirLayer [4] = (int)mainDir;
 
-//			UpdateObstacleLayer ();
-			//UpdateScrollLayer (99, 99);
 			UpdateAdjecentLayer ();				
 			for (int i = 0; i < sclLayer.Length; i++)
 				sclLayer [i] = -1;
@@ -110,27 +108,22 @@ namespace CreVox
 			int offsetY = curPos.y - oldPos.y;
 			int offsetZ = curPos.z - oldPos.z;
 
-			// /*270907n : 更新周邊 Voxel 阻擋資訊*/
 			UpdateObstacleLayer ();
 
-			// /*270907n : 確認位移*/
 			if (offsetY != 0) {
 				for (int i = 0; i < sclLayer.Length; i++)
 					sclLayer [i] = -1;
-			} else if (offsetX != 0 || offsetZ != 0)
+			} else if (offsetX != 0 || offsetZ != 0) 
 				UpdateScrollLayer (offsetX, offsetZ);
 
-			// /*270907n : 計算面向*/
 			mainDir = (CamDir)(dirLayer [4] & ((1 << 4) - 1));
 			UpdateAdjecentLayer ();
 
 			CalcCamDir ();
 
-			// /*270907n : 更新ID*/
 			if (offsetX != 0 || offsetZ != 0)
 				UpdateIDLayer (offsetX, offsetZ);
 						
-			// /*270907n : 更新鏡頭*/
 			UpdateCamZones ();
 			oldPos = curPos;
 		}
@@ -159,465 +152,143 @@ namespace CreVox
 					sclLayer [i] = dirLayer [x + z * 3];
 				} else
 					sclLayer [i] = -1;
+
 			}
-		}
-
-		public int Turn (int _index)
-		{
-			var srcIndex = new int[] {
-				0, 1, 2,
-				3, 4, 5,
-				6, 7, 8
-			};
-
-			int[] dstIndex = srcIndex;
-
-			switch (mainDir) {
-			case CamDir.front:
-				dstIndex = srcIndex;
-				break;
-
-			case CamDir.left:
-				dstIndex = new int[] {
-					2, 5, 8,
-					1, 4, 7,
-					0, 3, 6
-				};
-				break;
-
-			case CamDir.right:
-				dstIndex = new int[] {
-					6, 3, 0,
-					7, 4, 1,
-					8, 5, 2
-				};
-				break;
-
-			case CamDir.back:
-				dstIndex = new int[] {
-					8, 7, 6,
-					5, 4, 3,
-					2, 1, 0
-				};
-				break;
-			}
-
-			int result = dstIndex [srcIndex [_index]];
-			return result;
-		}
-		public CamDir Turn (CamDir _dir)
-		{
-			var srcDir = new CamDir[] {
-				CamDir.front,
-				CamDir.left,
-				CamDir.back,
-				CamDir.right
-			};
-
-			switch (mainDir) {
-			case CamDir.front:
-				break;
-
-			case CamDir.left:
-				srcDir = new CamDir[] {
-					CamDir.left,
-					CamDir.back,
-					CamDir.right,
-					CamDir.front
-				};
-				break;
-
-			case CamDir.back:
-				srcDir = new CamDir[] {
-					CamDir.back,
-					CamDir.right,
-					CamDir.front,
-					CamDir.left
-				};
-				break;
-
-			case CamDir.right:
-				srcDir = new CamDir[] {
-					CamDir.right,
-					CamDir.front,
-					CamDir.left,
-					CamDir.back
-				};
-				break;
-			}
-
-			CamDir result = _dir ;
-
-			for (int i = 0; i < 4; i++) {
-				if ((int)_dir == 1 << i) {
-					result = srcDir [i];
-				}
-			}
-
-			return result;
-		}
-		public Block.Direction Turn (Block.Direction _dir)
-		{
-			var srcDir = new Block.Direction[] {
-				Block.Direction.north,
-				Block.Direction.west,
-				Block.Direction.south,
-				Block.Direction.east
-			};
-
-			switch (mainDir) {
-			case CamDir.front:
-				break;
-
-			case CamDir.left:
-				srcDir = new Block.Direction[] {
-					Block.Direction.west,
-					Block.Direction.south,
-					Block.Direction.east,
-					Block.Direction.north
-				};
-				break;
-
-			case CamDir.back:
-				srcDir = new Block.Direction[] {
-					Block.Direction.south,
-					Block.Direction.east,
-					Block.Direction.north,
-					Block.Direction.west
-				};
-				break;
-
-			case CamDir.right:
-				srcDir = new Block.Direction[] {
-					Block.Direction.east,
-					Block.Direction.north,
-					Block.Direction.west,
-					Block.Direction.south
-				};
-				break;
-			}
-
-			Block.Direction result = _dir ;
-
-			for (int i = 0; i < 4; i++) {
-				if ((int)_dir == 1 << i) {
-					result = srcDir [i];
-				}
-			}
-
-			return result;
-		}
-		WorldPos GetNeighbor (WorldPos _base, int _index)
-		{
-			int _x = (_index % 3) - 1;
-			int _z = (int)(_index / 3) - 1;
-
-			WorldPos result;
-			result.x = _base.x + _x;
-			result.y = _base.y;
-			result.z = _base.z + _z;
-
-			return result;
 		}
 			
 		void UpdateAdjecentLayer ()
 		{
-//			if (((int)mainDir & (int)CamDir.front) != 0)
-//				UpdateFront ();
-//			if (((int)mainDir & (int)CamDir.left) != 0)
-//				UpdateLeft ();
-//			if (((int)mainDir & (int)CamDir.back) != 0)
-//				UpdateBack ();
-//			if (((int)mainDir & (int)CamDir.right) != 0)
-//				UpdateRight ();
-//		}
-//		
-//		void UpdateFront ()
-//		{
-//
-//			Debug.LogWarning ("Front:6 -> " + Turn (6));
-//			Debug.LogWarning ("Front:front -> " + Turn (CamDir.front));
 			ResetAdjecentLayer (mainDir);
 
-			// ↖
-			if (!IsVisible (GetNeighbor(curPos,Turn (6)), Turn (CamDir.left))) {
-				if (obsLayer [Turn (6)] != 0) {
-					adjLayer [Turn (6)] = (int)Turn (CamDir.left);
-					if (obsLayer [Turn (7)] != 0)
+			//↑
+			if (IsVisible (4,7)) {
+				// ↖
+				if (IsVisible (7, 3) == true) {
+					if (IsVisible (6, 1) == false) {
+						if (IsVisible (6, 7) == false) {
+							adjLayer [Turn (7)] |= (int)CamDir.turn_left;
+							adjLayer [Turn (6)] = (int)Turn (CamDir.left);
+						} else {
+							adjLayer [Turn (6)] |= (int)CamDir.to_wall;
+						}
+					} else if (IsVisible (4, 3) == false) {
 						adjLayer [Turn (7)] |= (int)CamDir.turn_left;
+						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.turn_left + (int)CamDir.turn_right;
+					}
+				} else {
+					if (IsVisible (6, 3) == true)
+						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
+					else if (IsVisible (4, 3) == false)
+						adjLayer [Turn (6)] = (int)Turn (CamDir.back);
 				}
-			}
 
-			// ↗
-			if (!IsVisible (GetNeighbor(curPos,Turn (8)), Turn (CamDir.right))) {
-				if (obsLayer [Turn (8)] != 0) {
-					adjLayer [Turn (8)] = (int)Turn (CamDir.right);
-					if (obsLayer [Turn (7)] != 0)
+				// ↗
+				if (IsVisible (7, 5) == true) {
+					if (IsVisible (8, 1) == false) {
+						if (IsVisible (8, 7) == false) {
+							adjLayer [Turn (7)] |= (int)CamDir.turn_right;
+							adjLayer [Turn (8)] = (int)Turn (CamDir.right);
+						} else {
+							adjLayer [Turn (8)] |= (int)CamDir.to_wall;
+						}
+					} else if (IsVisible (4, 5) == false) {
 						adjLayer [Turn (7)] |= (int)CamDir.turn_right;
-				}
-			}
-
-			// ↑
-			if (!IsVisible (GetNeighbor(curPos,Turn (7)), Turn (CamDir.front))) {
-				if (obsLayer [Turn (7)] != 0) {
-//					if (obsLayer [Turn (6)] == 0 && obsLayer [Turn (8)] == 0)
-						adjLayer [Turn (7)] = (int)Turn (CamDir.back) + (int)CamDir.to_wall;
+						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.turn_left + (int)CamDir.turn_right;
+					}
+				} else {
+					if (IsVisible (8, 5) == true)
+						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
+					else if (IsVisible (4, 5) == false)
+						adjLayer [Turn (8)] = (int)Turn (CamDir.back);
 				}
 			}
 
 			// ←
-			if (!IsVisible (GetNeighbor(curPos,Turn (3)), Turn (CamDir.left))) { 
-				if (obsLayer [Turn (3)] != 0) {
-					adjLayer [Turn (3)] = (int)Turn (CamDir.left);
-					adjLayer [Turn (4)] |= (int)CamDir.turn_left;
+			if (IsVisible (4, 3) == true) {
+				if (IsVisible (3, 1) == false) {
+					if (IsVisible (3, 7) == false) {
+						adjLayer [Turn (3)] = (int)Turn (CamDir.left);
+					} else {
+						adjLayer [Turn (3)] |= (int)CamDir.to_wall;
+					}
 				}
+				if (IsVisible (1, 3) == false && IsVisible (7, 3) == false) {
+					adjLayer [Turn (3)] = (int)Turn (CamDir.left) + (int)CamDir.turn_left + (int)CamDir.turn_right;
+				}
+				if (IsVisible (3, 7) == false && IsVisible(4, 7) == false) {
+					if (IsVisible (6, 7) == false) {
+						adjLayer [Turn (6)] = (int)Turn (CamDir.right);
+					} else {
+						adjLayer [Turn (6)] |= (int)CamDir.to_wall;
+					}
+				}
+			} else if (IsVisible (7, 3) == true && IsVisible (7, 1) == true) {
+				if (IsVisible (3, 3) == false)
+					adjLayer [Turn (3)] = (int)Turn (CamDir.back);
+				else
+					adjLayer [Turn (3)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
+			
 			}
 
 			// →
-			if (!IsVisible (GetNeighbor(curPos,Turn (5)), Turn (CamDir.right))) { 
-				if (obsLayer [Turn (5)] != 0) {
-					adjLayer [Turn (5)] = (int)Turn (CamDir.right);
-					adjLayer [Turn (4)] |= (int)CamDir.turn_right;
+			if (IsVisible (4, 5) == true) {
+				if (IsVisible (5, 1) == false) {
+					if (IsVisible (5, 7) == false) {
+						adjLayer [Turn (5)] = (int)Turn (CamDir.right);
+					} else {
+						adjLayer [Turn (5)] |= (int)CamDir.to_wall;
+					}
 				}
-			}
-
-			// ↙
-			if (!IsVisible (GetNeighbor(curPos,Turn (0)), Turn (CamDir.left))) { 
-				if (obsLayer [Turn (0)] != 0) {
-					adjLayer [Turn (0)] = (int)Turn (CamDir.left);
-					if (obsLayer [Turn (1)] != 0)
-						adjLayer [Turn (1)] |= (int)CamDir.turn_left;
+				if (IsVisible (1, 5) == false && IsVisible (7, 5) == false) {
+					adjLayer [Turn (5)] = (int)Turn (CamDir.right) + (int)CamDir.turn_left + (int)CamDir.turn_right;
 				}
-			}
-			// ↘
-			if (!IsVisible (GetNeighbor(curPos,Turn (2)), Turn (CamDir.right))) { 
-				if (obsLayer [Turn (2)] != 0) {
-					adjLayer [Turn (2)] = (int)Turn (CamDir.right);
-					if (obsLayer [Turn (1)] != 0)
-						adjLayer [Turn (1)] |= (int)CamDir.turn_right;
+				if (IsVisible (5, 7) == false && IsVisible(4, 7) == false) {
+					if (IsVisible (8, 7) == false) {
+						adjLayer [Turn (8)] = (int)Turn (CamDir.left);
+					} else {
+						adjLayer [Turn (8)] |= (int)CamDir.to_wall;
+					}
 				}
+			} else if (IsVisible (7, 5) == true && IsVisible (7, 1) == true){
+				if (IsVisible (5, 5) == false)
+					adjLayer [Turn (5)] = (int)Turn (CamDir.back);
+				else
+					adjLayer [Turn (5)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
 			}
 
 			// ↓
-			if (!IsVisible (GetNeighbor(curPos,Turn (1)), Turn(CamDir.front))) {
-				if (obsLayer [Turn (1)] != 0)
-					adjLayer [Turn (1)] = (int)Turn (CamDir.front) + (int)CamDir.to_wall;
-			}
-		}
-/*
-		void UpdateBack ()
-		{
-			Debug.LogWarning ("Back:6 -> " + Turn (6));
-			Debug.LogWarning ("Back:front -> " + Turn (CamDir.front));
-			ResetAdjecentLayer (mainDir);
-			//CreVox.BlockAir b = null;
-			//b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z - 1, CamDir.right)) {
-				if (obsLayer [0 + 0 * 3] != 0) {
-					adjLayer [0 + 0 * 3] = (int)CamDir.left;
-					if (obsLayer [1 + 0 * 3] != 0)
-						adjLayer [1 + 0 * 3] |= (int)CamDir.turn_right;
+			if (IsVisible (4,1) == true) {
+				if (IsVisible (1,1) == false) {
+					adjLayer [Turn (1)] |= (int)CamDir.to_wall;
 				}
-			}
-			//b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z - 1, CamDir.left)) {
-				if (obsLayer [2 + 0 * 3] != 0) {
-					adjLayer [2 + 0 * 3] = (int)CamDir.right;
-					if (obsLayer [1 + 0 * 3] != 0)
-						adjLayer [1 + 0 * 3] |= (int)CamDir.turn_left;
-				}
-			}
 
-			//b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z, CamDir.right)) {
-				if (obsLayer [0 + 1 * 3] != 0) {
-					adjLayer [0 + 1 * 3] = (int)CamDir.left;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_right;
+				// ↙
+				if (IsVisible (0, 5) == true
+				    && IsVisible (0, 1) == false) {
+					if (IsVisible (0, 7) == false) {
+						adjLayer [Turn (0)] = (int)Turn (CamDir.left);
+						if (IsVisible (1, 1) == true) {
+							adjLayer [Turn (1)] |= (int)CamDir.turn_left;
+						}
+					} else {
+						adjLayer [Turn (0)] |= (int)CamDir.to_wall;
+					}
 				}
-			}
-			//b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z, CamDir.left)) {
-				if (obsLayer [2 + 1 * 3] != 0) {
-					adjLayer [2 + 1 * 3] = (int)CamDir.right;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_left;
+				// ↘
+				if (IsVisible (2,3) == true
+				    && IsVisible (2, 1) == false) {
+					if (IsVisible (2, 7) == false) {
+						adjLayer [Turn (2)] = (int)Turn (CamDir.right);
+						if (IsVisible (1, 1) == true) {
+							adjLayer [Turn (1)] |= (int)CamDir.turn_right;
+						}
+					} else {
+						adjLayer [Turn (2)] |= (int)CamDir.to_wall;
+					}
 				}
-			}
-
-			//b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z + 1, CamDir.right)) {
-				if (obsLayer [0 + 2 * 3] != 0) {
-					adjLayer [0 + 2 * 3] = (int)CamDir.left;
-					if (obsLayer [1 + 2 * 3] != 0)
-						adjLayer [1 + 2 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-			//b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z + 1, CamDir.left)) {
-				if (obsLayer [2 + 2 * 3] != 0) {
-					adjLayer [2 + 2 * 3] = (int)CamDir.right;
-					if (obsLayer [1 + 2 * 3] != 0)
-						adjLayer [1 + 2 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x, curPos.y, curPos.z + 2) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x, curPos.y, curPos.z + 1)) {
-				if (obsLayer [1 + 2 * 3] != 0)
-					adjLayer [1 + 2 * 3] = ((int)CamDir.turn_none) + ((int)CamDir.back);
 			}
 		}
 
-		void UpdateRight ()
-		{
-			Debug.LogWarning ("Right:6 -> " + Turn (6));
-			Debug.LogWarning ("Right:front -> " + Turn (CamDir.front));
-			ResetAdjecentLayer (mainDir);
-			//CreVox.BlockAir b = null;
-			//b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z + 1, CamDir.left)) {
-				if (obsLayer [2 + 2 * 3] != 0) {
-					adjLayer [2 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [2 + 1 * 3] != 0)
-						adjLayer [2 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-			//b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z - 1, CamDir.right)) {
-				if (obsLayer [2 + 0 * 3] != 0) {
-					adjLayer [2 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [2 + 1 * 3] != 0)
-						adjLayer [2 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x, curPos.y, curPos.z + 1, CamDir.left)) {
-				if (obsLayer [1 + 2 * 3] != 0) {
-					adjLayer [1 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-			//b = world.GetBlock(curPos.x - 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x, curPos.y, curPos.z - 1, CamDir.right)) {
-				if (obsLayer [1 + 0 * 3] != 0) {
-					adjLayer [1 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z + 1, CamDir.left)) {
-				if (obsLayer [0 + 2 * 3] != 0) {
-					adjLayer [0 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [0 + 1 * 3] != 0)
-						adjLayer [0 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-			//b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z - 1, CamDir.right)) {
-				if (obsLayer [0 + 0 * 3] != 0) {
-					adjLayer [0 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [0 + 1 * 3] != 0)
-						adjLayer [0 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x - 2, curPos.y, curPos.z) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z)) {
-				if (obsLayer [0 + 1 * 3] != 0)
-					adjLayer [0 + 1 * 3] = ((int)CamDir.turn_none) + ((int)CamDir.right);
-			}
-		}
-
-		void UpdateLeft ()
-		{
-			Debug.LogWarning ("Left:6 -> " + Turn (6));
-			Debug.LogWarning ("Left:front -> " + Turn (CamDir.front));
-			ResetAdjecentLayer (mainDir);
-			//CreVox.BlockAir b = null;
-			//b = world.GetBlock(curPos.x, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z + 1, CamDir.right)) {
-				if (obsLayer [0 + 2 * 3] != 0) {
-					adjLayer [0 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [0 + 1 * 3] != 0)
-						adjLayer [0 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-			//b = world.GetBlock(curPos.x, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x - 1, curPos.y, curPos.z - 1, CamDir.left)) {
-				if (obsLayer [0 + 0 * 3] != 0) {
-					adjLayer [0 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [0 + 1 * 3] != 0)
-						adjLayer [0 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x, curPos.y, curPos.z + 1, CamDir.right)) {
-				if (obsLayer [1 + 2 * 3] != 0) {
-					adjLayer [1 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-			//b = world.GetBlock(curPos.x + 1, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x, curPos.y, curPos.z - 1, CamDir.left)) {
-				if (obsLayer [1 + 0 * 3] != 0) {
-					adjLayer [1 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [1 + 1 * 3] != 0)
-						adjLayer [1 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z + 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z + 1, CamDir.right)) {
-				if (obsLayer [2 + 2 * 3] != 0) {
-					adjLayer [2 + 2 * 3] = (int)CamDir.front;
-					if (obsLayer [2 + 1 * 3] != 0)
-						adjLayer [2 + 1 * 3] |= (int)CamDir.turn_right;
-				}
-			}
-			//b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z - 1) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z - 1, CamDir.left)) {
-				if (obsLayer [2 + 0 * 3] != 0) {
-					adjLayer [2 + 0 * 3] = (int)CamDir.back;
-					if (obsLayer [2 + 1 * 3] != 0)
-						adjLayer [2 + 1 * 3] |= (int)CamDir.turn_left;
-				}
-			}
-
-			//b = world.GetBlock(curPos.x + 2, curPos.y, curPos.z) as CreVox.BlockAir;
-			//if (b == null)
-			if (!IsVisible (curPos.x + 1, curPos.y, curPos.z)) {
-				if (obsLayer [2 + 1 * 3] != 0)
-					adjLayer [2 + 1 * 3] = ((int)CamDir.turn_none) + ((int)CamDir.left);
-			}
-		}
-*/
 		void ResetAdjecentLayer (CamDir _dir)
 		{
 			int v = (int)_dir;
@@ -626,65 +297,57 @@ namespace CreVox
 			}
 		}
 
+		private bool IsVisible(int _index,int _lookDirIndex)
+		{
+			WorldPos _pos = GetNeighbor (curPos, Turn (_index));
+			CamDir _lookDir = CamDir.front;
+			switch(_lookDirIndex){
+			case 7:
+				_lookDir = Turn (CamDir.front);
+				break;
+			case 3:
+				_lookDir = Turn (CamDir.left);
+				break;
+			case 1:
+				_lookDir = Turn (CamDir.back);
+				break;
+			case 5:
+				_lookDir = Turn (CamDir.right);
+				break;
+			}
+			return IsVisible (_pos, _lookDir);
+		}
+
 		private bool IsVisible (WorldPos _pos, CamDir _lookDir)
 		{
 			CreVox.BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
-
-			WorldPos backB_pos = GetNeighbor(_pos,Turn (1));
-			CreVox.BlockAir backB = world.GetBlock (backB_pos.x, backB_pos.y, backB_pos.z) as CreVox.BlockAir;
-
-//			if (mainDir == CamDir.front) {
-			if (centerB == null || centerB.IsSolid (Turn (Block.Direction.south)))
+			if (centerB == null)
 				return false;
-			if (backB == null)
-				return false;
-			if (backB.IsSolid (Block.Direction.north))
-				return false;
-			if (_lookDir == Turn (CamDir.left) && backB.IsSolid (Turn (Block.Direction.west)))
-				return false;
-			if (_lookDir == Turn (CamDir.right) && backB.IsSolid (Turn (Block.Direction.east)))
-				return false;
-//			}
-//
-//			if (mainDir == CamDir.back) {
-//				if (centerB == null || centerB.IsSolid (Block.Direction.north))
-//					return false;
-//				if (backB == null)
-//					return false;
-//				if (backB.IsSolid (Block.Direction.south))
-//					return false;
-//				if (_lookDir == CamDir.left && backB.IsSolid (Block.Direction.west))
-//					return false;
-//				if (_lookDir == CamDir.right && backB.IsSolid (Block.Direction.east))
-//					return false;
-//			}
-//
-//			if (mainDir == CamDir.left) {
-//				if (centerB == null || centerB.IsSolid (Block.Direction.east))
-//					return false;
-//				if (backB == null)
-//					return false;
-//				if (backB.IsSolid (Block.Direction.west))
-//					return false;
-//				if (_lookDir == CamDir.left && backB.IsSolid (Block.Direction.north))
-//					return false;
-//				if (_lookDir == CamDir.right && backB.IsSolid (Block.Direction.south))
-//					return false;
-//			}
-//
-//			if (mainDir == CamDir.right) {
-//				if (centerB == null || centerB.IsSolid (Block.Direction.west))
-//					return false;
-//				if (backB == null)
-//					return false;
-//				if (backB.IsSolid (Block.Direction.east))
-//					return false;
-//				if (_lookDir == CamDir.left && backB.IsSolid (Block.Direction.south))
-//					return false;
-//				if (_lookDir == CamDir.right && backB.IsSolid (Block.Direction.north))
-//					return false;
-//			}
-
+			
+			if (_lookDir == CamDir.front) {
+				WorldPos n = GetNeighbor (_pos, 7);
+				if (centerB.IsSolid (Block.Direction.north)
+					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
+					return false;
+			}
+			if (_lookDir == CamDir.left) {
+				WorldPos n = GetNeighbor (_pos, 3);
+				if (centerB.IsSolid (Block.Direction.west)
+					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
+					return false;
+			}
+			if (_lookDir == CamDir.back) {
+				WorldPos n = GetNeighbor (_pos, 1);
+				if (centerB.IsSolid (Block.Direction.south)
+					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
+					return false;
+			}
+			if (_lookDir == CamDir.right) {
+				WorldPos n = GetNeighbor (_pos, 5);
+				if (centerB.IsSolid (Block.Direction.east)
+					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
+					return false;
+			}
 			return true;
 		}
 
@@ -789,7 +452,7 @@ namespace CreVox
 			//safe frame
 			tDCam.minSafeFrameHorizon = fDCam.minSafeFrameHorizon;
 			tDCam.maxSafeFrameHorizon = fDCam.maxSafeFrameHorizon;
-			tDCam.minSafeFrameVertical = fDCam.minSafeFrameHorizon;
+			tDCam.minSafeFrameVertical = fDCam.minSafeFrameVertical;
 			tDCam.maxSafeFrameVertical = fDCam.maxSafeFrameVertical;
 
 			//camera
@@ -799,6 +462,165 @@ namespace CreVox
 			tCam.fieldOfView = fCam.fieldOfView;
 		}
 
+		public int Turn (int _index)
+		{
+			var srcIndex = new int[] {
+				0, 1, 2,
+				3, 4, 5,
+				6, 7, 8
+			};
+
+			int[] dstIndex = srcIndex;
+
+			switch (mainDir) {
+			case CamDir.front:
+				dstIndex = srcIndex;
+				break;
+
+			case CamDir.left:
+				dstIndex = new int[] {
+					2, 5, 8,
+					1, 4, 7,
+					0, 3, 6
+				};
+				break;
+
+			case CamDir.right:
+				dstIndex = new int[] {
+					6, 3, 0,
+					7, 4, 1,
+					8, 5, 2
+				};
+				break;
+
+			case CamDir.back:
+				dstIndex = new int[] {
+					8, 7, 6,
+					5, 4, 3,
+					2, 1, 0
+				};
+				break;
+			}
+
+			int result = dstIndex [srcIndex [_index]];
+			return result;
+		}
+		public CamDir Turn (CamDir _dir)
+		{
+			CamDir[] srcDir= new CamDir[4];
+
+			switch (mainDir) {
+			case CamDir.front:
+				srcDir = new CamDir[] {
+					CamDir.front,
+					CamDir.left,
+					CamDir.back,
+					CamDir.right
+				};
+				break;
+
+			case CamDir.left:
+				srcDir = new CamDir[] {
+					CamDir.left,
+					CamDir.back,
+					CamDir.right,
+					CamDir.front
+				};
+				break;
+
+			case CamDir.back:
+				srcDir = new CamDir[] {
+					CamDir.back,
+					CamDir.right,
+					CamDir.front,
+					CamDir.left
+				};
+				break;
+
+			case CamDir.right:
+				srcDir = new CamDir[] {
+					CamDir.right,
+					CamDir.front,
+					CamDir.left,
+					CamDir.back
+				};
+				break;
+			}
+
+			CamDir result = _dir ;
+
+			for (int i = 0; i < 4; i++) {
+				if ((int)_dir == 1 << i) {
+					result = srcDir [i];
+				}
+			}
+
+			return result;
+		}
+		public Block.Direction Turn (Block.Direction _dir)
+		{
+			Block.Direction[] srcDir = new Block.Direction[] {
+				Block.Direction.north,
+				Block.Direction.west,
+				Block.Direction.south,
+				Block.Direction.east
+			};
+			Block.Direction[] dstDir = new Block.Direction[4];
+
+			switch (mainDir) {
+			case CamDir.front:
+				dstDir = srcDir;
+				break;
+
+			case CamDir.left:
+				dstDir = new Block.Direction[] {
+					Block.Direction.west,
+					Block.Direction.south,
+					Block.Direction.east,
+					Block.Direction.north
+				};
+				break;
+
+			case CamDir.back:
+				dstDir = new Block.Direction[] {
+					Block.Direction.south,
+					Block.Direction.east,
+					Block.Direction.north,
+					Block.Direction.west
+				};
+				break;
+
+			case CamDir.right:
+				dstDir = new Block.Direction[] {
+					Block.Direction.east,
+					Block.Direction.north,
+					Block.Direction.west,
+					Block.Direction.south
+				};
+				break;
+			}
+
+			Block.Direction result = _dir ;
+
+			for (int i = 0; i < 4; i++) {
+				if (_dir == srcDir [i])
+					result = dstDir [i];
+			}
+
+			return result;
+		}
+		public WorldPos GetNeighbor (WorldPos _base, int _index)
+		{
+			int _x = (_index % 3) - 1;
+			int _z = (int)(_index / 3) - 1;
+
+			WorldPos result;
+			result.x = _base.x + _x;
+			result.y = _base.y;
+			result.z = _base.z + _z;
+
+			return result;
+		}			
 		float GetAngle (int _dir)
 		{
 			if ((_dir & (int)CamDir.front) != 0) {
@@ -829,12 +651,13 @@ namespace CreVox
 				wPos.x = curPos.x + i % 3 - 1;
 				wPos.y = curPos.y;
 				wPos.z = curPos.z + (int)(i / 3) - 1;
-				DrawCamDir (wPos, dirLayer [i]);
+				if (obsLayer [i] != 0)
+					DrawCamDir (wPos, dirLayer [i]);
 			}
 			Gizmos.color = oldColor;
 		}
 
-		void DrawCamDir (CreVox.WorldPos _pos, int _dir)
+		void DrawCamDir (WorldPos _pos, int _dir)
 		{
 			Vector3 v = new Vector3 (_pos.x * Block.w, _pos.y * Block.h, _pos.z * Block.d);
 			Gizmos.DrawCube (v, Vector3.one * 0.1f);

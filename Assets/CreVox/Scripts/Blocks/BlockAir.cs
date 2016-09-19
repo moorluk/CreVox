@@ -9,93 +9,105 @@ namespace CreVox
 	{
 		public string[] pieceNames;
 		[NonSerialized]
-		private GameObject[] parts;
+		private GameObject[] pieces;
 		[NonSerialized]
 		private GameObject node;
-        [NonSerialized]
-        private bool[] isSolid = new bool[6];
+		[NonSerialized]
+		private bool[] isSolid = new bool[6];
 
-        public BlockAir()
-			: base()
+		public BlockAir (): base ()
 		{
-            for (int i = 0; i < isSolid.Length; i++)
-                isSolid[i] = false;
+			for (int i = 0; i < isSolid.Length; i++)
+				isSolid [i] = false;
 		}
 
-		public override void Destroy()
+		public override void Destroy ()
 		{
-			if (parts != null) {
-				foreach (GameObject o in parts)
-					GameObject.DestroyImmediate(o);
+			if (pieces != null) {
+				foreach (GameObject o in pieces)
+					GameObject.DestroyImmediate (o);
 			}
 
 			if (node != null) {
-				GameObject.DestroyImmediate(node);
+				GameObject.DestroyImmediate (node);
 			}
-			base.Destroy();
+			base.Destroy ();
 		}
 
-		public override MeshData Blockdata
-        (Chunk chunk, int x, int y, int z, MeshData meshData)
+		public override MeshData Blockdata (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			return meshData;
 		}
 
-		public override bool IsSolid(Block.Direction direction)
+		public override bool IsSolid (Block.Direction direction)
 		{
-            return isSolid[(int)direction];
+			return isSolid [(int)direction];
 		}
 
-		public void SetPart(WorldPos bPos, WorldPos gPos, LevelPiece piece)
+		public void SetPiece (WorldPos bPos, WorldPos gPos, LevelPiece piece)
 		{
 			GameObject go = (piece != null) ? piece.gameObject : null;
 			int x = gPos.x;
 			int z = gPos.z;
-
 			int id = z * 3 + x;
+
 			if (go != null) {
-				if (parts == null) {
+				if (pieces == null) {
 					if (node == null) {
 						node = new GameObject ();
 						node.name = bPos.ToString ();
 						node.transform.parent = go.transform.parent;
 					}
-					parts = new GameObject[9];
+					pieces = new GameObject[9];
 					pieceNames = new string[9];
 				}
 
-				if (parts[id] != null) {
-					GameObject.DestroyImmediate(parts[id]);
+				if (pieces [id] != null) {
+					GameObject.DestroyImmediate (pieces [id]);
 				}
 					
 				go.transform.parent = node.transform;
-				parts[id] = go;
-				pieceNames[id] = go.GetComponent<PaletteItem>().name;
-                for(int i = 0; i < isSolid.Length; i++)
-                    isSolid[i] = piece.IsSolid((Block.Direction)i);
-
-            } else {
-				if (parts != null) {
-					if (parts[id] != null) {
-                        for (int i = 0; i < isSolid.Length; i++)
-                            if (IsSolid((Block.Direction)i))
-                                isSolid[i] = false;
-                        GameObject.DestroyImmediate(parts[id]);
-						pieceNames[id] = null;
-						parts[id] = null;
+				pieces [id] = go;
+				pieceNames [id] = go.GetComponent<PaletteItem> ().name;
+				SolidCheck ();
+			} else {
+				if (pieces != null) {
+					if (pieces [id] != null) {
+						GameObject.DestroyImmediate (pieces [id]);
+						pieceNames [id] = null;
+						pieces [id] = null;
+						SolidCheck ();
 					}
 				}
 			}
 		}
 
-        public int GetPartAngle(int _x, int _y)
-        {
-            int id = _x + _y * 3;
-            GameObject part = parts[id];
-            return (part !=null) ? (int)(part.transform.eulerAngles.y + 360)%360 : -1;
-        }
+		void SolidCheck()
+		{
+			for (int i = 0; i < isSolid.Length; i++) {
+				isSolid [i] = false;
+			}
 
-		public void ShowPiece(bool isHide) {
+			for (int p = 0; p < pieces.Length; p++) {
+				if (pieces [p] != null) {
+					for (int i = 0; i < isSolid.Length; i++) {
+						if (pieces [p].GetComponent<LevelPiece> ().IsSolid ((Block.Direction)i)) {
+							isSolid [i] = true;
+						}
+					}
+				}
+			}
+		}
+
+		public int GetPartAngle (int _x, int _y)
+		{
+			int id = _x + _y * 3;
+			GameObject part = pieces [id];
+			return (part != null) ? (int)(part.transform.eulerAngles.y + 360) % 360 : -1;
+		}
+
+		public void ShowPiece (bool isHide)
+		{
 			if (node)
 				node.SetActive (isHide);
 		}
