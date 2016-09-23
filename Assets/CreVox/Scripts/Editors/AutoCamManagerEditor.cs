@@ -34,7 +34,7 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-			acm.mainDir = (CamDir)EditorGUILayout.EnumPopup (
+			acm.mainDir = (AutoCamManager.CamDir)EditorGUILayout.EnumPopup (
 				EditorApplication.isPlaying ? "Main Direction" : "Start Direction"
 				, acm.mainDir);
 

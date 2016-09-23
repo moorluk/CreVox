@@ -4,40 +4,39 @@ using UnityEditor;
 
 namespace CreVox
 {
-	public enum CamZoneType
-	{
-		none,
-		front,
-		left,
-		right,
-		left_right,
-		up,
-		down,
-		back
-	}
-
-	public enum CamDir
-	{
-		none = 0,
-		front = 1 << 0,
-		left = 1 << 1,
-		back = 1 << 2,
-		right = 1 << 3,
-		turn_left = 1 << 4,
-		turn_right = 1 << 5,
-		turn_up = 1 << 6,
-		turn_down = 1 << 7,
-		turn_none = 1 << 8,
-		to_wall = 1 << 9
-	}
-
 	public class AutoCamManager : MonoBehaviour
 	{
+		enum CamZoneType
+		{
+			none,
+			front,
+			left,
+			right,
+			left_right,
+			up,
+			down,
+			back
+		}
+
+		public enum CamDir
+		{
+			//none = 0,
+			front = 1 << 0,
+			left = 1 << 1,
+			back = 1 << 2,
+			right = 1 << 3,
+			turn_left = 1 << 4,
+			turn_right = 1 << 5,
+			turn_up = 1 << 6,
+			turn_down = 1 << 7,
+			turn_none = 1 << 8,
+			to_wall = 1 << 9
+		}
+
 		public CamDir mainDir = CamDir.front;
 
-		[SerializeField]
-		private GameObject[] camZonePreset;
-		public GameObject[] camZones = new GameObject[3 * 3];
+		[SerializeField] GameObject[] camZonePreset;
+		[SerializeField] GameObject[] camZones = new GameObject[3 * 3];
 
 		public int[] obsLayer = new int[3 * 3];
 		public int[] sclLayer = new int[3 * 3];
@@ -118,7 +117,8 @@ namespace CreVox
 			} else if (offsetX != 0 || offsetZ != 0) 
 				UpdateScrollLayer (offsetX, offsetZ);
 
-			mainDir = (CamDir)(dirLayer [4] & ((1 << 4) - 1));
+			mainDir = Mathf.Clamp((CamDir)(dirLayer [4] % (1 << 4)/*& ((1 << 4) - 1)*/);
+
 			UpdateAdjecentLayer ();
 
 			CalcCamDir ();
@@ -136,7 +136,8 @@ namespace CreVox
 				int dx = curPos.x + i % 3 - 1;
 				int dz = curPos.z + (int)(i / 3) - 1;
 				CreVox.BlockAir b = world.GetBlock (dx, curPos.y, dz) as CreVox.BlockAir;
-				if (b != null)
+				CreVox.BlockAir g = world.GetBlock (dx, curPos.y-1, dz) as CreVox.BlockAir;
+				if (b != null && (g == null || g.IsSolid(Block.Direction.up) == true))
 					obsLayer [i] = 1;
 				else
 					obsLayer [i] = 0;
@@ -365,32 +366,31 @@ namespace CreVox
 		private bool IsVisible (WorldPos _pos, int _lookDirIndex)
 		{
 			CreVox.BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
-			CamDir _lookDir = Int2CamDir (_lookDirIndex);
 			if (centerB == null)
 				return false;
+
+			WorldPos n = GetNeighbor (_pos, _lookDirIndex);
+			if ( !world.GetBlock (n.x, n.y-1, n.z).IsSolid (Block.Direction.up))
+				return false;
 			
-			if (_lookDir == CamDir.front) {
-				WorldPos n = GetNeighbor (_pos, 7);
+			if (_lookDirIndex == 7) {
 				if (centerB.IsSolid (Block.Direction.north)
-					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
+				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
 					return false;
 			}
-			if (_lookDir == CamDir.left) {
-				WorldPos n = GetNeighbor (_pos, 3);
+			if (_lookDirIndex == 3) {
 				if (centerB.IsSolid (Block.Direction.west)
-					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
+				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
 					return false;
 			}
-			if (_lookDir == CamDir.back) {
-				WorldPos n = GetNeighbor (_pos, 1);
+			if (_lookDirIndex == 1) {
 				if (centerB.IsSolid (Block.Direction.south)
-					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
+				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
 					return false;
 			}
-			if (_lookDir == CamDir.right) {
-				WorldPos n = GetNeighbor (_pos, 5);
+			if (_lookDirIndex == 5) {
 				if (centerB.IsSolid (Block.Direction.east)
-					|| world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
+				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
 					return false;
 			}
 			return true;
@@ -683,24 +683,6 @@ namespace CreVox
 			}
 
 			return 0f;
-		}
-		private CamDir Int2CamDir (int _lookDirIndex) {
-			CamDir _lookDir = mainDir;
-			switch(_lookDirIndex){
-			case 7:
-				_lookDir = CamDir.front;
-				break;
-			case 3:
-				_lookDir = CamDir.left;
-				break;
-			case 1:
-				_lookDir = CamDir.back;
-				break;
-			case 5:
-				_lookDir = CamDir.right;
-				break;
-			}
-			return _lookDir;
 		}
 
 		void OnDrawGizmos ()
