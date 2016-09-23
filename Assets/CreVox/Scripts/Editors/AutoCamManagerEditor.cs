@@ -34,11 +34,14 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
+			GUILayout.BeginHorizontal ();
 			acm.mainDir = (AutoCamManager.CamDir)EditorGUILayout.EnumPopup (
 				EditorApplication.isPlaying ? "Main Direction" : "Start Direction"
 				, acm.mainDir);
+			EditorGUILayout.IntField ((int)acm.mainDir,GUILayout.Width(50));
+			GUILayout.EndHorizontal ();
 
-			w = EditorGUILayout.Slider (w, 50, 100);
+			w = EditorGUILayout.Slider ("DebugBlock Size",w, 50, 100);
 			GUILayout.Space (5);
 			Rect n = GUILayoutUtility.GetLastRect ();
 

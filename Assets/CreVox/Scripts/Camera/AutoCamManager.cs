@@ -117,7 +117,7 @@ namespace CreVox
 			} else if (offsetX != 0 || offsetZ != 0) 
 				UpdateScrollLayer (offsetX, offsetZ);
 
-			mainDir = Mathf.Clamp((CamDir)(dirLayer [4] % (1 << 4)/*& ((1 << 4) - 1)*/);
+			mainDir = (CamDir)Mathf.Clamp ((dirLayer [4] % (1 << 4)), 1, 1 << 3);
 
 			UpdateAdjecentLayer ();
 
