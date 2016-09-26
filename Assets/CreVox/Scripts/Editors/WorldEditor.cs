@@ -18,7 +18,6 @@ namespace CreVox
 		WorldPos workpos;
 
 		private int fixY = 0;
-		private bool showPointer = true;
 
 		public enum EditMode
 		{
@@ -180,9 +179,9 @@ namespace CreVox
 			}
 			EditorGUILayout.EndVertical ();
 
-			if (GUILayout.Button (showPointer ? "Hide\n Pointer" : "Show\n Pointer", GUILayout.ExpandHeight (true))) {
-				showPointer = !showPointer;
-				world.pointer = showPointer;
+			if (GUILayout.Button (world.pointer ? "Hide\n Pointer" : "Show\n Pointer", GUILayout.ExpandHeight (true))) {
+//				showPointer = !showPointer;
+				world.pointer = !world.pointer/*showPointer*/;
 				fixY = world.editY;
 				world.ChangeEditY (fixY);
 			}
@@ -228,26 +227,6 @@ namespace CreVox
 						break;
 				}
 
-				//
-				switch (currentEditMode) {
-					case EditMode.ObjectLayer:
-					case EditMode.VoxelLayer:
-						if (Event.current.shift) {
-							if (Event.current.type == EventType.ScrollWheel) {
-								if (Event.current.delta.y < 0)
-									fixY = world.editY + 1;
-								if (Event.current.delta.y > 0)
-									fixY = world.editY - 1;
-								world.ChangeEditY(fixY);
-								fixY = world.editY;
-								Event.current.Use();
-							}
-						}
-						break;
-
-					default:
-						break;
-				}
 
 				switch (currentEditMode) {
 					case EditMode.Voxel:
@@ -348,8 +327,8 @@ namespace CreVox
 					break;
 
 				case KeyCode.E:
-					showPointer = !showPointer;
-					world.pointer = showPointer;
+//				showPointer = !showPointer;
+					world.pointer = !world.pointer/*showPointer*/;
 					fixY = world.editY;
 					world.ChangeEditY (fixY);
 					break;

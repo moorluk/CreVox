@@ -73,7 +73,7 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						if (!EditorApplication.isPlaying && y > world.editY) {
+						if (!EditorApplication.isPlaying && world.pointer && y > world.editY) {
 						} else {
 							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
 						}

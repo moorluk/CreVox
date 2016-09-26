@@ -13,9 +13,14 @@ namespace CreVox
 	{
 		public static string saveFolderName = PathCollect.saveData;
 
-		public static string GetSaveLocation()
+		public static string GetSaveLocation(string _path = null)
 		{
-			string saveLocation = saveFolderName + "/";
+			string saveLocation;
+			if (_path != null)
+				saveLocation = _path;
+			else
+				saveLocation = saveFolderName + "/";
+			
 
 			if (!Directory.Exists(saveLocation))
 				Directory.CreateDirectory(saveLocation);
@@ -23,9 +28,13 @@ namespace CreVox
 			return EditorUtility.SaveFilePanel("save map", saveLocation, "world", "bin");
 		}
 
-		public static string GetLoadLocation()
+		public static string GetLoadLocation(string _path = null)
 		{
-			string loadLocation = saveFolderName + "/";
+			string loadLocation;
+			if (_path != null)
+				loadLocation = _path;
+			else
+				loadLocation = saveFolderName + "/";
 
 			if (!Directory.Exists(loadLocation))
 				Directory.CreateDirectory(loadLocation);
