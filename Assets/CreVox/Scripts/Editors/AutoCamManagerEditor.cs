@@ -22,7 +22,8 @@ namespace CreVox
 
 		bool drawDef = false;
 
-		void OnEnable(){
+		void OnEnable ()
+		{
 			acm = (AutoCamManager)target;
 			world = acm.GetComponent<World> ();
 			_obs = acm.obsLayer;
@@ -38,15 +39,15 @@ namespace CreVox
 			acm.mainDir = (AutoCamManager.CamDir)EditorGUILayout.EnumPopup (
 				EditorApplication.isPlaying ? "Main Direction" : "Start Direction"
 				, acm.mainDir);
-			EditorGUILayout.IntField ((int)acm.mainDir,GUILayout.Width(50));
+			EditorGUILayout.IntField ((int)acm.mainDir, GUILayout.Width (50));
 			GUILayout.EndHorizontal ();
 
-			w = EditorGUILayout.Slider ("DebugBlock Size",w, 50, 100);
+			w = EditorGUILayout.Slider ("DebugBlock Size", w, 50, 100);
 			GUILayout.Space (5);
 			Rect n = GUILayoutUtility.GetLastRect ();
 
 			GUI.color = oldColor;
-			EditorGUI.DrawRect (new Rect (10, n.position.y + n.height, w * 3 + 95, w * 3 + 76), oldColor);
+			EditorGUI.DrawRect (new Rect (10, n.position.y + n.height, w * 3 + 95, w * 3 + 63), oldColor);
 
 			GUILayout.BeginVertical ();
 			GUILayout.BeginHorizontal ();
@@ -67,7 +68,7 @@ namespace CreVox
 			GUILayout.EndVertical ();
 
 			GUILayout.Space (5);
-			drawDef = EditorGUILayout.Foldout (drawDef,"Default Inspector");
+			drawDef = EditorGUILayout.Foldout (drawDef, "Default Inspector");
 			if (drawDef)
 				DrawDefaultInspector ();
 		}
@@ -83,11 +84,11 @@ namespace CreVox
 		void DrawEdge (float _height, float _width, WorldPos _pos, Block.Direction _dir)
 		{
 			GUI.color = world.GetBlock (_pos.x, _pos.y, _pos.z).IsSolid (_dir) ? Color.gray : oldColor;
-			EditorStyles.textArea.margin = new RectOffset(2,2,10,10);
+			EditorStyles.textArea.margin = new RectOffset (2, 2, 10, 10);
 			GUILayout.TextArea (
 				_dir.ToString ()
 				, (GUI.color == oldColor) ? "Label" : "TextArea"
-				, GUILayout.Height (/*(GUI.color == oldColor) ? */_height/* : _height + 1*/), GUILayout.Width (_width)
+				, GUILayout.Height (_height), GUILayout.Width (_width)
 			);
 			GUI.color = oldColor;
 		}
@@ -106,21 +107,21 @@ namespace CreVox
 			GUI.color = (_scl [_zone] < 0) ? Color.red : oldColor;
 			GUILayout.TextArea (
 				"scr:" + _scl [_zone].ToString ()
-				,EditorStyles.miniTextField
+				, EditorStyles.miniTextField
 				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
 
 			GUI.color = (_adj [_zone] != _dir [_zone]) ? Color.yellow : oldColor;
 			GUILayout.TextArea (
 				"adj:" + _adj [_zone].ToString ()
-				,EditorStyles.miniTextField
+				, EditorStyles.miniTextField
 				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
 
 			GUI.color = oldColor;
 			GUILayout.TextArea (
 				"dir:" + _dir [_zone].ToString ()
-				,EditorStyles.miniTextField
+				, EditorStyles.miniTextField
 				, GUILayout.Width (w), GUILayout.Height (_h)
 			);
 
@@ -132,24 +133,26 @@ namespace CreVox
 			WorldPos _pos = acm.GetNeighbor (acm.curPos, _zone);
 
 			GUI.color = _obs [_zone] == 0 ? Color.gray : oldColor;			
-			GUILayout.BeginVertical ("Box", GUILayout.Width (w + 16),GUILayout.Height(w + 16));
+			GUILayout.BeginVertical (""
+				, (GUI.color == oldColor) ? "Label" : "TextArea"
+				, GUILayout.Width (w + 16), GUILayout.Height (w + 16));
 			GUI.color = oldColor;
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w,_pos,acm.Turn(Block.Direction.north));
+			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.north));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
-			DrawEdge (w, 5,_pos,acm.Turn(Block.Direction.west));
+			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.west));
 			DrawZone (_zone);
-			DrawEdge (w, 5,_pos,acm.Turn(Block.Direction.east));
+			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.east));
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w,_pos,acm.Turn(Block.Direction.south));
+			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.south));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 

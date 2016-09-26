@@ -112,6 +112,7 @@ namespace CreVox
 			UpdateObstacleLayer ();
 
 			if (offsetY != 0) {
+				UpdateScrollLayer (offsetX, offsetZ);
 				for (int i = 0; i < sclLayer.Length; i++)
 					sclLayer [i] = -1;
 			} else if (offsetX != 0 || offsetZ != 0) 
@@ -687,9 +688,7 @@ namespace CreVox
 
 		void OnDrawGizmos ()
 		{
-			Vector3 pos = new Vector3 (curPos.x * Block.w, curPos.y * Block.h, curPos.z * Block.d);
 			Color oldColor = Gizmos.color;
-			Gizmos.DrawWireCube (pos, new Vector3 (Block.w, Block.h, Block.d));
 			for (int i = 0; i < dirLayer.Length; i++) {
 				if (EditorApplication.isPlaying)
 					Gizmos.color = camZones [idLayer [i]].name.Contains ("_F") ? Color.green : Color.red;
