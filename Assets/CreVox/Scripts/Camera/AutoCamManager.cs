@@ -45,11 +45,11 @@ namespace CreVox
 		public int[] oldIDLayer = new int[3 * 3];
 		public int[] idLayer = new int[3 * 3];
 
-		public Transform target;
+		private Transform target;
 		private GameObject camNode;
 		private WorldPos oldPos;
 		public WorldPos curPos;
-		public World world;
+		private World world;
 
 		void Start ()
 		{
@@ -136,12 +136,12 @@ namespace CreVox
 			for (int i = 0; i < obsLayer.Length; i++) {
 				int dx = curPos.x + i % 3 - 1;
 				int dz = curPos.z + (int)(i / 3) - 1;
-				CreVox.BlockAir b = world.GetBlock (dx, curPos.y, dz) as CreVox.BlockAir;
-				CreVox.BlockAir g = world.GetBlock (dx, curPos.y-1, dz) as CreVox.BlockAir;
-				if (b != null && (g == null || g.IsSolid(Block.Direction.up) == true))
-					obsLayer [i] = 1;
-				else
+				BlockAir b = world.GetBlock (dx, curPos.y, dz) as CreVox.BlockAir;
+				WorldPos n = new WorldPos (dx, curPos.y, dz);
+				if(b == null || IsOutside(n))
 					obsLayer [i] = 0;
+				else
+					obsLayer [i] = 1;
 			}
 		}
 
@@ -180,9 +180,9 @@ namespace CreVox
 						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.turn_left + (int)CamDir.turn_right;
 					}
 				} else {
-					if (IsVisible (6, 3) == true)
-						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
-					else if (IsVisible (4, 3) == false)
+					if (IsVisible (6, 3) == true) {
+//						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
+					} else if (IsVisible (4, 3) == false)
 						adjLayer [Turn (6)] = (int)Turn (CamDir.back);
 				}
 
@@ -199,9 +199,9 @@ namespace CreVox
 						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.turn_left + (int)CamDir.turn_right;
 					}
 				} else {
-					if (IsVisible (8, 5) == true)
-						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
-					else if (IsVisible (4, 5) == false)
+					if (IsVisible (8, 5) == true){
+//						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
+					} else if (IsVisible (4, 5) == false)
 						adjLayer [Turn (8)] = (int)Turn (CamDir.back);
 				}
 			} else { 
@@ -303,9 +303,11 @@ namespace CreVox
 							adjLayer [Turn (1)] |= (int)CamDir.turn_left;
 					}
 				} else {
-					if (IsVisible (0, 3) == true)
-						adjLayer [Turn (0)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
-					else if (IsVisible (4, 3) == true)
+					//側向判斷
+//					if (IsVisible (0, 3) == true)
+//						adjLayer [Turn (0)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
+//					else if (IsVisible (4, 3) == true)
+					if (IsVisible (0, 3) == false && IsVisible (4, 3) == true)
 						adjLayer [Turn (0)] = (int)Turn (CamDir.back);
 				}
 
@@ -336,18 +338,41 @@ namespace CreVox
 							adjLayer [Turn (1)] |= (int)CamDir.turn_right;
 					}
 				} else {
-					if (IsVisible (2, 5) == true)
-						adjLayer [Turn (2)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
-					else if (IsVisible (4, 5) == true)
+					//側向判斷
+//					if (IsVisible (2, 5) == true)
+//						adjLayer [Turn (2)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
+//					else if (IsVisible (4, 5) == true)
+					if (IsVisible (2, 5) == false && IsVisible (4, 5) == true)
 						adjLayer [Turn (2)] = (int)Turn (CamDir.back);
 				}
-			} else {
-				// ↙
+			}
+			// ↙
+			if (IsVisible (0, 7) == true) {
 				if (IsVisible (0, 1) == false)
 					adjLayer [Turn (0)] |= (int)CamDir.to_wall;
-				// ↘
+				if (IsVisible (1, 3) == true && IsVisible (1, 1) == false && IsVisible (1, 7) == false) {
+					adjLayer [Turn (0)] |= (int)CamDir.turn_right;
+					adjLayer [Turn (1)] = (int)Turn (CamDir.right);
+					sclLayer [Turn (1)] = -1;
+					if (IsVisible (2, 3) == true && IsVisible (2, 1) == false && IsVisible (2, 7) == false) {
+						adjLayer [Turn (2)] = (int)Turn (CamDir.right);
+						sclLayer [Turn (2)] = -1;
+					}
+				}
+			}
+			// ↘
+			if (IsVisible (2, 7) == true) {
 				if (IsVisible (2, 1) == false)
 					adjLayer [Turn (2)] |= (int)CamDir.to_wall;
+				if (IsVisible (1, 5) == true && IsVisible (1, 1) == false && IsVisible (1, 7) == false) {
+					adjLayer [Turn (2)] |= (int)CamDir.turn_left;
+					adjLayer [Turn (1)] = (int)Turn (CamDir.left);
+					sclLayer [Turn (1)] = -1;
+					if (IsVisible (0, 5) == true && IsVisible (0, 1) == false && IsVisible (0, 7) == false) {
+						adjLayer [Turn (0)] = (int)Turn (CamDir.left);
+						sclLayer [Turn (0)] = -1;
+					}
+				}
 			}
 		}
 
@@ -359,21 +384,36 @@ namespace CreVox
 			}
 		}
 
-		private bool IsVisible(int _index, int _lookDirIndex)
+		bool IsOutside(WorldPos _pos)
+		{
+			BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;	
+			BlockAir downB = world.GetBlock (_pos.x, _pos.y - 1, _pos.z) as CreVox.BlockAir;	
+			if (downB != null && downB.pieceNames == null) {
+				if (centerB != null) {
+					if (centerB.pieceNames == null)
+						return true;
+					else if (centerB.pieceNames.Length < 1)
+						return true;
+				}
+			}
+			return false;
+		}
+		bool IsVisible(int _index, int _lookDirIndex)
 		{
 			WorldPos _pos = GetNeighbor (curPos, Turn (_index));
 			return IsVisible (_pos,Turn (_lookDirIndex));
 		}
-		private bool IsVisible (WorldPos _pos, int _lookDirIndex)
+		bool IsVisible (WorldPos _pos, int _lookDirIndex)
 		{
-			CreVox.BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
+			BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
+			WorldPos n = GetNeighbor (_pos, _lookDirIndex);
+
 			if (centerB == null)
 				return false;
 
-			WorldPos n = GetNeighbor (_pos, _lookDirIndex);
-			if ( !world.GetBlock (n.x, n.y-1, n.z).IsSolid (Block.Direction.up))
+			if (IsOutside (n))
 				return false;
-			
+
 			if (_lookDirIndex == 7) {
 				if (centerB.IsSolid (Block.Direction.north)
 				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
@@ -701,7 +741,6 @@ namespace CreVox
 			}
 			Gizmos.color = oldColor;
 		}
-
 		void DrawCamDir (WorldPos _pos, int _dir)
 		{
 			Vector3 v = new Vector3 (_pos.x * Block.w, _pos.y * Block.h, _pos.z * Block.d);
