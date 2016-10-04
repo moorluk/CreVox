@@ -14,17 +14,17 @@ namespace CreVox
 		public int chunkZ;
 		public Dictionary<WorldPos, Block> blocks = new Dictionary<WorldPos, Block>();
 
-		public Save(World world)
+		public Save(Volume volume)
 		{
-			chunkX = world.chunkX;
-			chunkY = world.chunkY;
-			chunkZ = world.chunkZ;
+			chunkX = volume.chunkX;
+			chunkY = volume.chunkY;
+			chunkZ = volume.chunkZ;
 
 			for (int x = 0; x < chunkX; x++) {
 				for (int y = 0; y < chunkY; y++) {
 					for (int z = 0; z < chunkZ; z++) {
 						//Debug.Log ("Add chunk: " + x.ToString() + "," + y.ToString() + "," + z.ToString());
-						Chunk chunk = world.GetChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize);
+						Chunk chunk = volume.GetChunk(x * Chunk.chunkSize, y * Chunk.chunkSize, z * Chunk.chunkSize);
 						if (chunk)
 							AddChunk(x, y, z, chunk);
 					}

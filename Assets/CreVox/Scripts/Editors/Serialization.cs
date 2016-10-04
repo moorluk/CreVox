@@ -20,12 +20,8 @@ namespace CreVox
 				saveLocation = _path;
 			else
 				saveLocation = saveFolderName + "/";
-			
 
-			if (!Directory.Exists(saveLocation))
-				Directory.CreateDirectory(saveLocation);
-
-			return EditorUtility.SaveFilePanel("save map", saveLocation, "world", "bin");
+			return EditorUtility.SaveFilePanel("save map", saveLocation, "volume", "bytes");
 		}
 
 		public static string GetLoadLocation(string _path = null)
@@ -36,13 +32,10 @@ namespace CreVox
 			else
 				loadLocation = saveFolderName + "/";
 
-			if (!Directory.Exists(loadLocation))
-				Directory.CreateDirectory(loadLocation);
-
-			return EditorUtility.OpenFilePanel("load map", loadLocation, "bin");
+			return EditorUtility.OpenFilePanel("load map", loadLocation, "bytes");
 		}
 
-		public static void SaveWorld(World world, string _path = null)
+		public static void SaveWorld(Volume volume, string _path = null)
 		{
 			string saveFile;
 			if (_path == null)
@@ -52,7 +45,7 @@ namespace CreVox
 
 			Debug.Log("Save path: " + saveFile);
 
-			Save save = new Save(world);
+			Save save = new Save(volume);
 			if (save.blocks.Count == 0)
 				return;
 
@@ -84,6 +77,7 @@ namespace CreVox
 		public static Save LoadRTWorld(string path)
 		{
 			TextAsset ta = Resources.Load(path) as TextAsset;
+			Debug.Log("Load path: " + path + " ---" + (ta != null?"Success":"Fail"));
 
 			IFormatter formatter = new BinaryFormatter();
 			Stream stream = new MemoryStream(ta.bytes);

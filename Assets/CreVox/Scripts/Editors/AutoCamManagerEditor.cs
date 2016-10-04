@@ -9,7 +9,6 @@ namespace CreVox
 	public class AutoCamManagerEditor : Editor
 	{
 		AutoCamManager acm;
-		World world;
 
 		int[] _obs = new int[3 * 3];
 		int[] _scl = new int[3 * 3];
@@ -25,7 +24,6 @@ namespace CreVox
 		void OnEnable ()
 		{
 			acm = (AutoCamManager)target;
-			world = acm.GetComponent<World> ();
 			_obs = acm.obsLayer;
 			_scl = acm.sclLayer;
 			_adj = acm.adjLayer;
@@ -36,7 +34,7 @@ namespace CreVox
 		public override void OnInspectorGUI ()
 		{
 			GUILayout.BeginHorizontal ();
-			acm.mainDir = (AutoCamManager.CamDir)EditorGUILayout.EnumPopup (
+			acm.mainDir = (CamDir)EditorGUILayout.EnumPopup (
 				EditorApplication.isPlaying ? "Main Direction" : "Start Direction"
 				, acm.mainDir);
 			EditorGUILayout.IntField ((int)acm.mainDir, GUILayout.Width (50));
@@ -83,7 +81,7 @@ namespace CreVox
 
 		void DrawEdge (float _height, float _width, WorldPos _pos, Block.Direction _dir)
 		{
-			GUI.color = world.GetBlock (_pos.x, _pos.y, _pos.z).IsSolid (_dir) ? Color.gray : oldColor;
+			GUI.color = acm.volume.GetBlock (_pos.x, _pos.y, _pos.z).IsSolid (_dir) ? Color.gray : oldColor;
 			EditorStyles.textArea.margin = new RectOffset (2, 2, 10, 10);
 			GUILayout.TextArea (
 				_dir.ToString ()
@@ -99,7 +97,7 @@ namespace CreVox
 			float _h = w / 4 - 1;
 
 			GUILayout.TextArea (
-				"id:" + _id [_zone].ToString ()/* + " obs:" + _obs [_zone].ToString ()*/
+				"id:" + _id [_zone].ToString ()
 				, EditorStyles.miniTextField
 				, GUILayout.Width (w), GUILayout.Height (_h)
 			);

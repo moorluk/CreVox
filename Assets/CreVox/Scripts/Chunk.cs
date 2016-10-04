@@ -17,7 +17,7 @@ namespace CreVox
 		MeshFilter filter;
 		MeshCollider coll;
 
-		public World world;
+		public Volume volume;
 		public WorldPos pos;
 
 		public void Init()
@@ -38,14 +38,14 @@ namespace CreVox
 		{
 			filter = gameObject.GetComponent<MeshFilter>();
 			coll = gameObject.GetComponent<MeshCollider>();
-			UpdateChunk();
+//			UpdateChunk();
 		}
 
 		public Block GetBlock(int x, int y, int z)
 		{
 			if (InRange(x) && InRange(y) && InRange(z))
 				return blocks[x, y, z];
-			return world.GetBlock(pos.x + x, pos.y + y, pos.z + z);
+			return volume.GetBlock(pos.x + x, pos.y + y, pos.z + z);
 		}
 
 		public void SetBlock(int x, int y, int z, Block block)
@@ -55,7 +55,7 @@ namespace CreVox
 					blocks[x, y, z].Destroy();
 				blocks[x, y, z] = block;
 			} else {
-				world.SetBlock(pos.x + x, pos.y + y, pos.z + z, block);
+				volume.SetBlock(pos.x + x, pos.y + y, pos.z + z, block);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						if (!EditorApplication.isPlaying && world.pointer && y > world.editY) {
+						if (!EditorApplication.isPlaying && volume.pointer && y > volume.editY) {
 						} else {
 							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
 						}
@@ -104,7 +104,7 @@ namespace CreVox
 					for (int z = 0; z < chunkSize; z++) {
 						BlockAir air = blocks [x, y, z] as BlockAir;
 
-						if (!EditorApplication.isPlaying && world.pointer && y > world.editY) {
+						if (!EditorApplication.isPlaying && volume.pointer && y > volume.editY) {
 							if (air != null)
 								air.ShowPiece(false);
 						} else {

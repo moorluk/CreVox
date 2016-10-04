@@ -71,21 +71,20 @@ namespace CreVox
 			}
 		}
 
-		private void InitContent()
+		private void InitContent ()
 		{
-			Debug.Log("InitContent called...");
+//			Debug.Log("InitContent called...");
 			// Set the ScrollList
-			_items = EditorUtils.GetAssetsWithScript<PaletteItem>(_path);
-			_categorizedItems = new Dictionary<PaletteItem.Category,
-        List<PaletteItem>>();
-			_previews = new Dictionary<PaletteItem, Texture2D>();
+			_items = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
+			_categorizedItems = new Dictionary<PaletteItem.Category,List<PaletteItem>> ();
+			_previews = new Dictionary<PaletteItem, Texture2D> ();
 			// Init the Dictionary
 			foreach (PaletteItem.Category category in _categories) {
-				_categorizedItems.Add(category, new List<PaletteItem>());
+				_categorizedItems.Add (category, new List<PaletteItem> ());
 			}
 			// Assign items to each category
 			foreach (PaletteItem item in _items) {
-				_categorizedItems[item.category].Add(item);
+				_categorizedItems [item.category].Add (item);
 			}
 		}
 

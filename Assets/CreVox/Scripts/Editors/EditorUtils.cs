@@ -44,9 +44,9 @@ namespace CreVox
 				return result;
 			}
 
-			for (int i = 0; i < _event.GetInvocationList().Length; i++) {
-//				Debug.LogWarning(_event.GetInvocationList()[i].Method + " : " + i + "/" + _event.GetInvocationList().Length);
-				if (_event.GetInvocationList()[i].Method.ToString().Contains(_mathodName))
+			for (int i = _event.GetInvocationList ().Length - 1; i > 0; i--) {
+				Debug.LogWarning (_event.GetInvocationList () [i].Method + " : " + i + "/" + _event.GetInvocationList ().Length);
+				if (_event.GetInvocationList () [i].Method.ToString ().Contains (_mathodName))
 					result = true;
 			}
 			return result;

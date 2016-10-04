@@ -4,34 +4,34 @@ using UnityEditor;
 
 namespace CreVox
 {
+	enum CamZoneType
+	{
+		none,
+		front,
+		left,
+		right,
+		left_right,
+		up,
+		down,
+		back
+	}
+
+	public enum CamDir
+	{
+		//none = 0,
+		front = 1 << 0,
+		left = 1 << 1,
+		back = 1 << 2,
+		right = 1 << 3,
+		turn_left = 1 << 4,
+		turn_right = 1 << 5,
+		turn_up = 1 << 6,
+		turn_down = 1 << 7,
+		turn_none = 1 << 8,
+		to_wall = 1 << 9
+	}
 	public class AutoCamManager : MonoBehaviour
 	{
-		enum CamZoneType
-		{
-			none,
-			front,
-			left,
-			right,
-			left_right,
-			up,
-			down,
-			back
-		}
-
-		public enum CamDir
-		{
-			//none = 0,
-			front = 1 << 0,
-			left = 1 << 1,
-			back = 1 << 2,
-			right = 1 << 3,
-			turn_left = 1 << 4,
-			turn_right = 1 << 5,
-			turn_up = 1 << 6,
-			turn_down = 1 << 7,
-			turn_none = 1 << 8,
-			to_wall = 1 << 9
-		}
 
 		public CamDir mainDir = CamDir.front;
 
@@ -47,15 +47,15 @@ namespace CreVox
 
 		private Transform target;
 		private GameObject camNode;
-		private WorldPos oldPos;
 		public WorldPos curPos;
-		private World world;
+		private WorldPos oldPos, localPos;
+		public Volume volume;
 
 		void Start ()
 		{
-			world = GetComponent<CreVox.World> ();
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
-			curPos = CreVox.EditTerrain.GetBlockPos (target.position);
+			volume = GetVolume (target.position);
+			curPos = EditTerrain.GetBlockPos (target.position);
 			oldPos = curPos;
 
 			dirLayer [4] = (int)mainDir;
@@ -104,40 +104,84 @@ namespace CreVox
 
 		void Update ()
 		{
-			curPos = CreVox.EditTerrain.GetBlockPos (target.position);
+			curPos = EditTerrain.GetBlockPos (target.position);
 			int offsetX = curPos.x - oldPos.x;
 			int offsetY = curPos.y - oldPos.y;
 			int offsetZ = curPos.z - oldPos.z;
+			int oldID = 4 - (offsetX + 3 * offsetZ);
+
+//			if (curPos.x > 15 * volume.chunkX || curPos.x < 0
+//			    || curPos.y > 15 * volume.chunkY || curPos.y < 0
+//			    || curPos.z > 15 * volume.chunkZ || curPos.z < 0) 
+				volume = GetVolume (target.position);
+			
+			localPos = EditTerrain.GetBlockPos (target.position, volume.transform.position);
 
 			UpdateObstacleLayer ();
 
-			if (offsetY != 0) {
+			if (offsetY != 0 || offsetX != 0 || offsetZ != 0) { 
+				Debug.Log (
+					volume.gameObject.name + " (" +
+					curPos.x + "," + curPos.y + "," + curPos.z + ") ,(" +
+					localPos.x + "," + localPos.y + "," + localPos.z + ")"
+				);
 				UpdateScrollLayer (offsetX, offsetZ);
-				for (int i = 0; i < sclLayer.Length; i++)
-					sclLayer [i] = -1;
-			} else if (offsetX != 0 || offsetZ != 0) 
-				UpdateScrollLayer (offsetX, offsetZ);
-
+				if (offsetY != 0 || dirLayer [4] % (1 << 4) != dirLayer [oldID] % (1 << 4)) {
+					for (int i = 0; i < sclLayer.Length; i++) {
+						if (i != oldID && i != 4)
+							sclLayer [i] = -1;
+					}
+				}
+			}
 			mainDir = (CamDir)Mathf.Clamp ((dirLayer [4] % (1 << 4)), 1, 1 << 3);
-
+				
 			UpdateAdjecentLayer ();
-
 			CalcCamDir ();
 
-			if (offsetX != 0 || offsetZ != 0)
+			if (offsetX != 0 || offsetZ != 0) {
+				Debug.LogWarning ("[" + oldID + "]:" + (dirLayer [oldID] % (1 << 4)) + "→[4]:" + (dirLayer [4] % (1 << 4)) + "\n---"
+				+ (dirLayer [4] % (1 << 4) != dirLayer [oldID] % (1 << 4) ? "U" : "Don't u") + "pdate all sclLayer.");
 				UpdateIDLayer (offsetX, offsetZ);
-						
+			}
+
 			UpdateCamZones ();
 			oldPos = curPos;
+		}
+
+		Volume GetVolume(Vector3 _pos)
+		{
+			RaycastHit hit;
+			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			bool isHit = Physics.Raycast (
+				             /*origin: */_pos, 
+				             /*direction: */Vector3.down,
+				             /*hitInfo: */out hit,
+				             /*maxDistance: */3f,
+				             /*layerMask: */_mask.value);
+
+			if (isHit) {
+				return hit.collider.transform.GetComponentInParent<Volume> ();
+			} else {
+				return volume;
+			}
 		}
 
 		void UpdateObstacleLayer ()
 		{
 			for (int i = 0; i < obsLayer.Length; i++) {
-				int dx = curPos.x + i % 3 - 1;
-				int dz = curPos.z + (int)(i / 3) - 1;
-				BlockAir b = world.GetBlock (dx, curPos.y, dz) as CreVox.BlockAir;
-				WorldPos n = new WorldPos (dx, curPos.y, dz);
+				int dx = localPos.x + i % 3 - 1;
+				int dy = localPos.y;
+				int dz = localPos.z + (int)(i / 3) - 1;
+				Volume v = volume;
+				WorldPos n = new WorldPos (dx, dy, dz);
+
+				// chkOutsideChunk
+//				if (dx > 15 || dx < 0 || dy > 15 || dy < 0 || dz > 15 || dz < 0) {
+//					v = GetVolume (target.position + new Vector3 ((i % 3 - 1) * Block.w, 0, ((int)(i / 3) - 1) * Block.d));
+//					n = EditTerrain.GetBlockPos (target.position, volume.transform.position);
+//				}
+
+				BlockAir b = v.GetBlock (n.x, n.y, n.z) as CreVox.BlockAir;
 				if(b == null || IsOutside(n))
 					obsLayer [i] = 0;
 				else
@@ -147,7 +191,7 @@ namespace CreVox
 
 		void UpdateScrollLayer (int _offsetX, int _offsetZ)
 		{
-			Debug.Log ("offset: " + _offsetX.ToString () + "," + _offsetZ.ToString ());
+//			Debug.Log ("offset: " + _offsetX.ToString () + "," + _offsetZ.ToString ());
 			for (int i = 0; i < sclLayer.Length; i++) {
 				int x = (i % 3) + _offsetX;
 				int z = (int)(i / 3) + _offsetZ;
@@ -163,6 +207,8 @@ namespace CreVox
 		void UpdateAdjecentLayer ()
 		{
 			ResetAdjecentLayer (mainDir);
+			if (IsVisible (4, 1) == false)
+				adjLayer [4] |= (int)CamDir.to_wall;
 
 			//↑
 			if (IsVisible (4, 7) == true) {
@@ -290,7 +336,7 @@ namespace CreVox
 					}
 					//側向判斷
 					if (IsVisible (4, 3) == false) {
-						WorldPos out0_1 = GetNeighbor (GetNeighbor (curPos, Turn(0)), Turn(1));
+						WorldPos out0_1 = GetNeighbor (GetNeighbor (localPos, Turn(0)), Turn(1));
 						if (IsVisible (out0_1, 5) == false) {
 							adjLayer [Turn (0)] = (int)Turn (CamDir.left);
 							if (IsVisible (0, 7) == true && IsVisible (3, 3) == false)
@@ -325,7 +371,7 @@ namespace CreVox
 					}
 					//側向判斷
 					if (IsVisible (4, 5) == false) {
-						WorldPos out2_1 = GetNeighbor (GetNeighbor (curPos, Turn(2)), Turn(1));
+						WorldPos out2_1 = GetNeighbor (GetNeighbor (localPos, Turn(2)), Turn(1));
 						if (IsVisible (out2_1, 3) == false) {
 							adjLayer [Turn (2)] = (int)Turn (CamDir.right);
 							if (IsVisible (2, 7) == true && IsVisible (5, 5) == false)
@@ -351,7 +397,8 @@ namespace CreVox
 				if (IsVisible (0, 1) == false)
 					adjLayer [Turn (0)] |= (int)CamDir.to_wall;
 				if (IsVisible (1, 3) == true && IsVisible (1, 1) == false && IsVisible (1, 7) == false) {
-					adjLayer [Turn (0)] |= (int)CamDir.turn_right;
+					if (IsVisible (0, 1) == true)
+						adjLayer [Turn (0)] |= (int)CamDir.turn_right;
 					adjLayer [Turn (1)] = (int)Turn (CamDir.right);
 					sclLayer [Turn (1)] = -1;
 					if (IsVisible (2, 3) == true && IsVisible (2, 1) == false && IsVisible (2, 7) == false) {
@@ -365,7 +412,8 @@ namespace CreVox
 				if (IsVisible (2, 1) == false)
 					adjLayer [Turn (2)] |= (int)CamDir.to_wall;
 				if (IsVisible (1, 5) == true && IsVisible (1, 1) == false && IsVisible (1, 7) == false) {
-					adjLayer [Turn (2)] |= (int)CamDir.turn_left;
+					if (IsVisible (2, 1) == true)
+						adjLayer [Turn (2)] |= (int)CamDir.turn_left;
 					adjLayer [Turn (1)] = (int)Turn (CamDir.left);
 					sclLayer [Turn (1)] = -1;
 					if (IsVisible (0, 5) == true && IsVisible (0, 1) == false && IsVisible (0, 7) == false) {
@@ -386,8 +434,8 @@ namespace CreVox
 
 		bool IsOutside(WorldPos _pos)
 		{
-			BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;	
-			BlockAir downB = world.GetBlock (_pos.x, _pos.y - 1, _pos.z) as CreVox.BlockAir;	
+			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;	
+			BlockAir downB = volume.GetBlock (_pos.x, _pos.y - 1, _pos.z) as CreVox.BlockAir;	
 			if (downB != null && downB.pieceNames == null) {
 				if (centerB != null) {
 					if (centerB.pieceNames == null)
@@ -400,12 +448,12 @@ namespace CreVox
 		}
 		bool IsVisible(int _index, int _lookDirIndex)
 		{
-			WorldPos _pos = GetNeighbor (curPos, Turn (_index));
+			WorldPos _pos = GetNeighbor (localPos, Turn (_index));
 			return IsVisible (_pos,Turn (_lookDirIndex));
 		}
 		bool IsVisible (WorldPos _pos, int _lookDirIndex)
 		{
-			BlockAir centerB = world.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
+			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
 			WorldPos n = GetNeighbor (_pos, _lookDirIndex);
 
 			if (centerB == null)
@@ -416,22 +464,22 @@ namespace CreVox
 
 			if (_lookDirIndex == 7) {
 				if (centerB.IsSolid (Block.Direction.north)
-				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
 					return false;
 			}
 			if (_lookDirIndex == 3) {
 				if (centerB.IsSolid (Block.Direction.west)
-				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
 					return false;
 			}
 			if (_lookDirIndex == 1) {
 				if (centerB.IsSolid (Block.Direction.south)
-				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
 					return false;
 			}
 			if (_lookDirIndex == 5) {
 				if (centerB.IsSolid (Block.Direction.east)
-				    || world.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
 					return false;
 			}
 			return true;
@@ -465,7 +513,7 @@ namespace CreVox
 
 		void UpdateCamZones ()
 		{
-//			camNode.transform.position = new Vector3 (curPos.x * Block.w, curPos.y * Block.h, curPos.z * Block.d);
+//			camNode.transform.position = new Vector3 (localPos.x * Block.w, localPos.y * Block.h, localPos.z * Block.d);
 			for (int i = 0; i < idLayer.Length; i++) {
 				int camID = idLayer [i];
 				int dir = dirLayer [i];
@@ -732,7 +780,7 @@ namespace CreVox
 			for (int i = 0; i < dirLayer.Length; i++) {
 				if (EditorApplication.isPlaying)
 					Gizmos.color = camZones [idLayer [i]].name.Contains ("_F") ? Color.green : Color.red;
-				CreVox.WorldPos wPos;
+				WorldPos wPos;
 				wPos.x = curPos.x + i % 3 - 1;
 				wPos.y = curPos.y;
 				wPos.z = curPos.z + (int)(i / 3) - 1;

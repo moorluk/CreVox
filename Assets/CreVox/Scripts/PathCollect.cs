@@ -19,7 +19,7 @@ namespace CreVox
 		public static string chunk = resourceSubPath + "/chunk";
 		public static string pieces = resourceSubPath + "/LevelPieces";
 
-        public static string camSettingPath =  "CamSetting";
+		public static string camSettingPath = "CamSetting";
 
-    }
+	}
 }
