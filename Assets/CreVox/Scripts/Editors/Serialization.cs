@@ -11,7 +11,7 @@ namespace CreVox
 
 	public static class Serialization
 	{
-		public static string saveFolderName = PathCollect.saveData;
+		public static string saveFolderName = PathCollect.resourceSubPath;
 
 		public static string GetSaveLocation(string _path = null)
 		{

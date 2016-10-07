@@ -12,8 +12,23 @@ namespace CreVox
 			Build,
 			Chara,
 		}
+		public enum MarkerType
+		{
+			Ground,
+			Wall,
+			WallSeparator,
+			Fence,
+			FenceSeparator,
+			Door,
+			Stair,
+			Stairhalf,
+			WallHalf,
+			WallHalfSeparator,
+			Item
+		}
 
 		public Category category = Category.System;
+		public MarkerType markType = MarkerType.Item;
 		public string itemName = "";
 		public Object inspectedScript; 
 #endif

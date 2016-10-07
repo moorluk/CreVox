@@ -9,8 +9,9 @@ namespace CreVox
 	{
 		public static string rularTag = "VoxelEditorBase";
 
-		public static string editorPath = "Assets/Crevox";
-		public static string saveData = editorPath + "/saveData";
+		public static string editorPath = Application.dataPath;
+		public static string assetsPath = "Assets/Crevox";
+		public static string saveData = assetsPath + "/saveData";
 
 		public static string resourcesPath = "Assets/Resources/";
 		public static string resourceSubPath = "Prefabs";

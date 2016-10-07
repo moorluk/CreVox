@@ -10,7 +10,7 @@ namespace CreVox
 		public static GameObject CreateBoxCursor(Transform _Parent, Vector3 _CursorSize)
 		{
 			GameObject bCursor;
-			BoxCursor cur = EditorUtils.GetAssetsWithScript<BoxCursor>(PathCollect.editorPath)[0];
+			BoxCursor cur = EditorUtils.GetAssetsWithScript<BoxCursor>(PathCollect.assetsPath)[0];
 			bCursor = PrefabUtility.InstantiatePrefab(cur.gameObject) as GameObject;
 			bCursor.transform.SetParent(_Parent);
 			bCursor.transform.localScale = _CursorSize;

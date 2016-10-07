@@ -80,13 +80,34 @@ namespace CreVox
 			EditorGUILayout.LabelField("Save & Load", EditorStyles.boldLabel);
 
 			GUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField ("ArtPack", GUILayout.Width(lw));
+			EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
+			if (GUILayout.Button ("S",GUILayout.Width(25))) {
+				string ppath = EditorUtility.OpenFolderPanel (
+					"選擇場景風格元件包的目錄位置",
+					PathCollect.resourcesPath + PathCollect.resourceSubPath,
+					PathCollect.pieces
+				);
+				ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
+				volume.piecePack = ppath;
+				Save save;
+				save = Serialization.LoadRTWorld (volume.workFile);
+				if (save != null)
+					volume.BuildWorld (save);
+				SceneView.RepaintAll ();
+			}
+			GUILayout.EndHorizontal();
+
+			GUILayout.BeginHorizontal();
 			if (GUILayout.Button("Save")) {
-				volume.workFile = Serialization.GetSaveLocation(volume.workFile == ""?null:volume.workFile);
-				Serialization.SaveWorld(volume, volume.workFile);
+				string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
+				Serialization.SaveWorld(volume, sPath);
+				volume.workFile =sPath.Remove(sPath.LastIndexOf(".")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
 			}
 			if (GUILayout.Button("Load")) {
-				volume.workFile = Serialization.GetLoadLocation(volume.workFile == ""?null:volume.workFile);
-				Save save = Serialization.LoadWorld(volume.workFile);
+				string lPath = Serialization.GetLoadLocation(volume.workFile == ""?null:volume.workFile);
+				volume.workFile = lPath.Remove(lPath.LastIndexOf(".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
+				Save save = Serialization.LoadRTWorld(volume.workFile);
 				if (save != null)
 					volume.BuildWorld(save);
 				SceneView.RepaintAll();
@@ -158,7 +179,7 @@ namespace CreVox
 		private void DrawLayerModeGUI()
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-			EditorGUILayout.BeginHorizontal (EditorStyles.textArea, GUILayout.Width (90));
+			EditorGUILayout.BeginHorizontal (EditorStyles.textArea/*"Box"*/, GUILayout.Width (90),GUILayout.Height(50f));
 			GUI.color = Color.white;
 			EditorGUILayout.BeginVertical ();
 			if (GUILayout.Button ("▲", GUILayout.Width (65))) {
@@ -167,7 +188,6 @@ namespace CreVox
 				fixY = volume.editY;
 			}
 			EditorGUILayout.LabelField (
-				"",
 				"Layer : " + volume.editY,
 				EditorStyles.textArea,
 				GUILayout.Width (65)

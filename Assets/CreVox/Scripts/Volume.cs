@@ -26,6 +26,7 @@ namespace CreVox
 		private BoxCollider bColl;
 
 		public string workFile;
+		public string piecePack = PathCollect.pieces;
 
 		public GameObject box = null;
 		public bool useBox = false;
@@ -42,20 +43,10 @@ namespace CreVox
 		void Start()
 		{
 			Save save;
-			if (EditorApplication.isPlaying) {
-				string path = workFile.Remove (workFile.LastIndexOf (".")).Substring (volume.workFile.LastIndexOf ("Resources/") + 10);
-				save = Serialization.LoadRTWorld (path);
-//				Debug.Log ("LoadRTWorld : isPlaying(" + EditorApplication.isPlaying + ")");
-				if (save != null)
-					volume.BuildWorld (save);
-				SceneView.RepaintAll ();
-			} else {
-//				Debug.Log ("LoadWorld : isPlaying(" + EditorApplication.isPlaying + ")");
-				save = Serialization.LoadWorld (workFile);
-				if (save != null)
-					volume.BuildWorld (save);
-				SceneView.RepaintAll ();
-			}
+			save = Serialization.LoadRTWorld (workFile);
+			if (save != null)
+				volume.BuildWorld (save);
+			SceneView.RepaintAll ();
 		}
 		void Update()
 		{
@@ -381,7 +372,7 @@ namespace CreVox
 
 		public void BuildWorld(Save _save)
 		{
-			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>(PathCollect.pieces);
+			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>(piecePack);
 
 			Reset();
 			Init(_save.chunkX, _save.chunkY, _save.chunkZ);

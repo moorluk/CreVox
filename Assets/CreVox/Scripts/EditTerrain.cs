@@ -45,6 +45,18 @@ namespace CreVox
 			return blockPos;
 		}
 
+		public static WorldPos GetBlockPos(Vector3 pos, Transform localRoot)
+		{
+			pos = localRoot.InverseTransformPoint(pos);
+			WorldPos blockPos = new WorldPos(
+				Mathf.RoundToInt(pos.x / Block.w),
+				Mathf.RoundToInt(pos.y / Block.h),
+				Mathf.RoundToInt(pos.z / Block.d)
+			);
+
+			return blockPos;
+		}
+
 		public static WorldPos GetBlockPos (RaycastHit hit, Vector3 offset = default(Vector3), bool adjacent = false)
 		{
 			Vector3 pos = hit.point + hit.normal * (adjacent ? 0.5f : -0.5f);
