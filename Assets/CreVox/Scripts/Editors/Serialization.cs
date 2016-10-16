@@ -11,7 +11,7 @@ namespace CreVox
 
 	public static class Serialization
 	{
-		public static string saveFolderName = PathCollect.resourceSubPath;
+		public static string saveFolderName = PathCollect.save + "/";
 
 		public static string GetSaveLocation(string _path = null)
 		{
@@ -19,9 +19,9 @@ namespace CreVox
 			if (_path != null)
 				saveLocation = _path;
 			else
-				saveLocation = saveFolderName + "/";
+				saveLocation = saveFolderName;
 
-			return EditorUtility.SaveFilePanel("save map", saveLocation, "volume", "bytes");
+			return EditorUtility.SaveFilePanel("save map", saveLocation, "", "bytes");
 		}
 
 		public static string GetLoadLocation(string _path = null)
@@ -30,7 +30,7 @@ namespace CreVox
 			if (_path != null)
 				loadLocation = _path;
 			else
-				loadLocation = saveFolderName + "/";
+				loadLocation = saveFolderName;
 
 			return EditorUtility.OpenFilePanel("load map", loadLocation, "bytes");
 		}
@@ -77,7 +77,7 @@ namespace CreVox
 		public static Save LoadRTWorld(string path)
 		{
 			TextAsset ta = Resources.Load(path) as TextAsset;
-			Debug.Log("Load path: " + path + " ---" + (ta != null?"Success":"Fail"));
+			Debug.Log("Load path: " + path + ".bytes ---" + (ta != null?"Success":"Fail"));
 
 			IFormatter formatter = new BinaryFormatter();
 			Stream stream = new MemoryStream(ta.bytes);

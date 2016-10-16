@@ -9,18 +9,15 @@ namespace CreVox
 	{
 		public static string rularTag = "VoxelEditorBase";
 
-		public static string editorPath = Application.dataPath;
 		public static string assetsPath = "Assets/Crevox";
-		public static string saveData = assetsPath + "/saveData";
 
 		public static string resourcesPath = "Assets/Resources/";
-		public static string resourceSubPath = "Prefabs";
-
-		public static string testmap = resourceSubPath + "/testmap";
+		public static string resourceSubPath = "Crevox";
+		
 		public static string chunk = resourceSubPath + "/chunk";
-		public static string pieces = resourceSubPath + "/LevelPieces";
-
-		public static string camSettingPath = "CamSetting";
+		public static string save = resourceSubPath + "/VolumeData";
+		public static string pieces = resourceSubPath + "/VolumeArtPack";
+		public static string camSetting = resourceSubPath + "/CamSetting";
 
 	}
 }

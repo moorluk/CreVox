@@ -138,19 +138,19 @@ namespace CreVox
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.north));
+			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.north,acm.mainDir));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
-			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.west));
+			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.west,acm.mainDir));
 			DrawZone (_zone);
-			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.east));
+			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.east,acm.mainDir));
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.south));
+			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.south,acm.mainDir));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 

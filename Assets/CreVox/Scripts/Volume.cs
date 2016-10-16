@@ -26,7 +26,7 @@ namespace CreVox
 		private BoxCollider bColl;
 
 		public string workFile;
-		public string piecePack = PathCollect.pieces;
+		public string piecePack = PathCollect.pieces + "/LevelPieces";
 
 		public GameObject box = null;
 		public bool useBox = false;
@@ -62,7 +62,7 @@ namespace CreVox
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
 //				Debug.Log ("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
 //				Serialization.SaveWorld (volume, PathCollect.resourcesPath + PathCollect.resourceSubPath + "/" + volume.GetHashCode ().ToString () + ".bytes");
-				Serialization.SaveWorld(volume, volume.workFile);
+				Serialization.SaveWorld(volume, PathCollect.resourcesPath + workFile + ".bytes");
 				AssetDatabase.Refresh();
 				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnBeforePlay);
 			}
@@ -107,8 +107,8 @@ namespace CreVox
 			mColl = null;
 			bColl = null;
 
-			for (int i = transform.childCount - 1; i > 0; i--) {
-				Object.DestroyImmediate (transform.GetChild (i).gameObject);
+			for (int i = transform.childCount; i > 0; i--) {
+				Object.DestroyImmediate (transform.GetChild (i - 1).gameObject);
 			}
 		}
 

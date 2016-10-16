@@ -34,6 +34,14 @@ namespace CreVox
 	{
 
 		public CamDir mainDir = CamDir.front;
+		
+		public Volume volume;
+		public WorldPos curPos;
+		private WorldPos oldPos, localPos;
+		public int oldID = 4;
+		private Transform target;
+		private GameObject camNode;
+		private CamSys camsys;
 
 		[SerializeField] GameObject[] camZonePreset;
 		[SerializeField] GameObject[] camZones = new GameObject[3 * 3];
@@ -44,13 +52,6 @@ namespace CreVox
 		public int[] dirLayer = new int[3 * 3];
 		public int[] oldIDLayer = new int[3 * 3];
 		public int[] idLayer = new int[3 * 3];
-
-		private Transform target;
-		private GameObject camNode;
-		private CamSys camsys;
-		public WorldPos curPos;
-		private WorldPos oldPos, localPos;
-		public Volume volume;
 
 		void Start ()
 		{
@@ -70,14 +71,14 @@ namespace CreVox
 		{
 			camZonePreset = new GameObject[System.Enum.GetValues (typeof(CamZoneType)).Length];
 
-			camZonePreset [(int)CamZoneType.none] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_N") as GameObject;
-			camZonePreset [(int)CamZoneType.front] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_F") as GameObject;
-			camZonePreset [(int)CamZoneType.left] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_L") as GameObject;
-			camZonePreset [(int)CamZoneType.right] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_R") as GameObject;
-			camZonePreset [(int)CamZoneType.left_right] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_LR") as GameObject;
-			camZonePreset [(int)CamZoneType.up] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_U") as GameObject;
-			camZonePreset [(int)CamZoneType.down] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_D") as GameObject;
-			camZonePreset [(int)CamZoneType.back] = Resources.Load (PathCollect.camSettingPath + "/AutoCamZone_B") as GameObject;
+			camZonePreset [(int)CamZoneType.none] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_N") as GameObject;
+			camZonePreset [(int)CamZoneType.front] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_F") as GameObject;
+			camZonePreset [(int)CamZoneType.left] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_L") as GameObject;
+			camZonePreset [(int)CamZoneType.right] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_R") as GameObject;
+			camZonePreset [(int)CamZoneType.left_right] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_LR") as GameObject;
+			camZonePreset [(int)CamZoneType.up] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_U") as GameObject;
+			camZonePreset [(int)CamZoneType.down] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_D") as GameObject;
+			camZonePreset [(int)CamZoneType.back] = Resources.Load (PathCollect.camSetting + "/AutoCamZone_B") as GameObject;
 		}
 
 		void InitCamZones ()
@@ -100,17 +101,17 @@ namespace CreVox
 		void Update ()
 		{
 			curPos = EditTerrain.GetBlockPos (target.position);
-			int offsetX = Mathf.Clamp (curPos.x - oldPos.x, -1, 1);
-			int offsetY = Mathf.Clamp (curPos.y - oldPos.y, -1, 1);
-			int offsetZ = Mathf.Clamp (curPos.z - oldPos.z, -1, 1);
-			int oldID = 4 - (offsetX + 3 * offsetZ);
-
-			volume = GetVolume (target.position);
-			camNode.transform.localRotation = volume.transform.localRotation;
-			
 			localPos = EditTerrain.GetBlockPos (target.position, volume.transform);
-			if (dirLayer [8 - oldID] > 0)
-				mainDir = (CamDir)Mathf.Clamp ((dirLayer [8 - oldID] & ((1 << 4) - 1)), 1, 1 << 3);
+			int offsetX = Mathf.Clamp (curPos.x - oldPos.x, -1, 1);
+//			int offsetY = Mathf.Clamp (curPos.y - oldPos.y, -1, 1);
+			int offsetZ = Mathf.Clamp (curPos.z - oldPos.z, -1, 1);
+			if (offsetX != 0 || offsetZ != 0) {
+				oldID = 4 - (offsetX + 3 * offsetZ);
+				volume = GetVolume (target.position);
+//				camNode.transform.localRotation = volume.transform.localRotation;
+				if (dirLayer [8 - oldID] > 0)
+					mainDir = (CamDir)Mathf.Clamp ((dirLayer [8 - oldID] & ((1 << 4) - 1)), 1, 1 << 3);
+			}
 			
 			UpdateObstacleLayer ();
 			UpdateScrollLayer (offsetX, offsetZ);
@@ -118,13 +119,15 @@ namespace CreVox
 			UpdateAdjecentLayer ();
 			CalcCamDir ();
 
-			Debug.LogWarning (
-				volume.gameObject.name
-				+ " (" + curPos.x + "," + curPos.y + "," + curPos.z + "),"
-				+ " (" + localPos.x + "," + localPos.y + "," + localPos.z + ")\n"
-				+ "[" + oldID + "]:" + (dirLayer [oldID] % (1 << 4)) + "→[4]:" + (dirLayer [4] % (1 << 4))
-			);
-
+			if (offsetX != 0 || offsetZ != 0) {
+				Debug.Log (
+					volume.gameObject.name
+					+ " (" + curPos.x + "," + curPos.y + "," + curPos.z + "),"
+					+ " (" + localPos.x + "," + localPos.y + "," + localPos.z + ")\n"
+					+ "[" + oldID + "]:" + (dirLayer [oldID] % (1 << 4)) + "→[4]:" + (dirLayer [4] % (1 << 4))
+				);
+			}
+			
 			UpdateIDLayer (offsetX, offsetZ);
 			UpdateCamZones ();
 			oldPos = curPos;
@@ -158,11 +161,11 @@ namespace CreVox
 				WorldPos n = new WorldPos (dx, dy, dz);
 
 				// chkOutsideChunk
-				if (dx > 15 || dx < 0 || dy > 15 || dy < 0 || dz > 15 || dz < 0) {
-					Vector3 pos = target.position + new Vector3 ((i % 3 - 1) * Block.w, 0, ((int)(i / 3) - 1) * Block.d);
-					v = GetVolume (pos);
-					n = EditTerrain.GetBlockPos (pos,v.transform);
-				}
+//				if (dx > 15 || dx < 0 || dy > 15 || dy < 0 || dz > 15 || dz < 0) {
+//					Vector3 pos = target.position + new Vector3 ((i % 3 - 1) * Block.w, 0, ((int)(i / 3) - 1) * Block.d);
+//					v = GetVolume (pos);
+//					n = EditTerrain.GetBlockPos (pos,v.transform);
+//				}
 
 				BlockAir b = v.GetBlock (n.x, n.y, n.z) as CreVox.BlockAir;
 				if(b == null || IsOutside(n))
@@ -180,8 +183,11 @@ namespace CreVox
 
 				if (x >= 0 && z >= 0 && x < 3 && z < 3) {
 					sclLayer [i] = dirLayer [x + z * 3];
-				} else if (i != 4) {
-					if (i != (4 - (_offsetX + 3 * _offsetZ)) && camsys.isBlending == false)
+				}
+				if (i != 4 ) {
+					if (i != oldID)
+						sclLayer [i] = -1;
+					else if (camsys.isBlending == false)
 						sclLayer [i] = -1;
 				}
 
@@ -205,14 +211,9 @@ namespace CreVox
 							adjLayer [Turn (6)] = (int)Turn (CamDir.left);
 						else
 							adjLayer [Turn (6)] |= (int)CamDir.to_wall;
-//					} else if (IsVisible (4, 3) == false) {
-//						adjLayer [Turn (7)] |= (int)CamDir.turn_left;
-//						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.turn_left + (int)CamDir.turn_right;
 					}
 				} else {
-					if (IsVisible (6, 3) == true) {
-//						adjLayer [Turn (6)] = (int)Turn (CamDir.left) + (int)CamDir.to_wall;
-					} else if (IsVisible (4, 3) == false)
+					if (IsVisible (6, 3) == false && IsVisible (4, 3) == false)
 						adjLayer [Turn (6)] = (int)Turn (CamDir.back);
 				}
 
@@ -224,46 +225,41 @@ namespace CreVox
 							adjLayer [Turn (8)] = (int)Turn (CamDir.right);
 						else
 							adjLayer [Turn (8)] |= (int)CamDir.to_wall;
-//					} else if (IsVisible (4, 5) == false) {
-//						adjLayer [Turn (7)] |= (int)CamDir.turn_right;
-//						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.turn_left + (int)CamDir.turn_right;
 					}
 				} else {
-					if (IsVisible (8, 5) == true){
-//						adjLayer [Turn (8)] = (int)Turn (CamDir.right) + (int)CamDir.to_wall;
-					} else if (IsVisible (4, 5) == false)
+					if (IsVisible (8, 5) == false && IsVisible (4, 5) == false)
 						adjLayer [Turn (8)] = (int)Turn (CamDir.back);
 				}
 			} else { 
 				// ↖
 				if (IsVisible (3, 7) == false) {
-					if (IsVisible (6, 7) == false)
-						adjLayer [Turn (6)] = (int)Turn (CamDir.right);
-					else
-						adjLayer [Turn (6)] |= (int)CamDir.to_wall;
+//					if (IsVisible (6, 7) == false)
+//						adjLayer [Turn (6)] = (int)Turn (CamDir.right);
+//					else
+//						adjLayer [Turn (6)] |= (int)CamDir.to_wall;
 				} else if (IsVisible (6, 5) == true) {
 					adjLayer [Turn (6)] |= (int)CamDir.turn_right;
 					if (IsVisible (6, 3) == true)
 						adjLayer [Turn (6)] |= (int)CamDir.turn_left;
-					if (IsVisible (7, 7) == false)
-						adjLayer [Turn (7)] = (int)Turn (CamDir.right);
-					else
-						adjLayer [Turn (7)] |= (int)CamDir.to_wall;
+//					if (IsVisible (7, 7) == false)
+//						adjLayer [Turn (7)] = (int)Turn (CamDir.right);
+//					else
+//						adjLayer [Turn (7)] |= (int)CamDir.to_wall;
 				}
 				// ↗
 				if (IsVisible (5, 7) == false) {
-					if (IsVisible (8, 7) == false)
-						adjLayer [Turn (8)] = (int)Turn (CamDir.left);
-					else
-						adjLayer [Turn (8)] |= (int)CamDir.to_wall;
+//					if (IsVisible (8, 7) == false)
+//						adjLayer [Turn (8)] = (int)Turn (CamDir.left);
+//					else
+//						adjLayer [Turn (8)] |= (int)CamDir.to_wall;
 				} else if (IsVisible (8, 3) == true) {
 					adjLayer [Turn (8)] |= (int)CamDir.turn_left;
 					if (IsVisible (8, 5) == true)
 						adjLayer [Turn (8)] |= (int)CamDir.turn_right;
-					if (IsVisible (7, 7) == false)
-						adjLayer [Turn (7)] = (int)Turn (CamDir.left);
-					else
-						adjLayer [Turn (7)] |= (int)CamDir.to_wall;
+//					if (IsVisible (7, 7) == false)
+//						adjLayer [Turn (7)] = (int)Turn (CamDir.left);
+//					else
+//						adjLayer [Turn (7)] |= (int)CamDir.to_wall;
 				}
 			}
 
@@ -329,8 +325,8 @@ namespace CreVox
 								adjLayer [Turn (0)] |= (int)CamDir.turn_left;
 							}
 						}
-						if (IsVisible (1, 1) == true)
-							adjLayer [Turn (1)] |= (int)CamDir.turn_left;
+//						if (IsVisible (1, 1) == true)
+//							adjLayer [Turn (1)] |= (int)CamDir.turn_left;
 					}
 				} else {
 					//側向判斷
@@ -364,8 +360,8 @@ namespace CreVox
 								adjLayer [Turn (2)] |= (int)CamDir.turn_right;
 							}
 						}
-						if (IsVisible (1, 1) == true)
-							adjLayer [Turn (1)] |= (int)CamDir.turn_right;
+//						if (IsVisible (1, 1) == true)
+//							adjLayer [Turn (1)] |= (int)CamDir.turn_right;
 					}
 				} else {
 					//側向判斷
@@ -502,7 +498,7 @@ namespace CreVox
 				int camID = idLayer [i];
 				int dir = dirLayer [i];
 
-				if (sclLayer [i] == -1) {
+//				if (sclLayer [i] == -1) {
 					int l = (int)CamDir.turn_left;
 					int r = (int)CamDir.turn_right;
 					int x = i % 3;
@@ -525,7 +521,7 @@ namespace CreVox
 					}
 					camZones [camID].transform.rotation = Quaternion.Euler (0f, GetAngle (dir), 0f);
 					camZones [camID].transform.position = new Vector3 ((curPos.x + x - 1) * Block.w, curPos.y * Block.h, (curPos.z + z - 1) * Block.d);
-				}
+//				}
 			}
 		}
 
@@ -675,7 +671,7 @@ namespace CreVox
 
 			return result;
 		}
-		public Block.Direction Turn (Block.Direction _dir)
+		public Block.Direction Turn (Block.Direction _dir, CamDir _baseDir)
 		{
 			Block.Direction[] srcDir = new Block.Direction[] {
 				Block.Direction.north,
@@ -685,7 +681,10 @@ namespace CreVox
 			};
 			Block.Direction[] dstDir = new Block.Direction[4];
 
-			switch (mainDir) {
+			if (_baseDir == CamDir.turn_none)
+				_baseDir = mainDir;
+			
+			switch (_baseDir) {
 			case CamDir.front:
 				dstDir = srcDir;
 				break;
@@ -718,7 +717,7 @@ namespace CreVox
 				break;
 			}
 
-			Block.Direction result = _dir ;
+			Block.Direction result = _dir;
 
 			for (int i = 0; i < 4; i++) {
 				if (_dir == srcDir [i])
@@ -737,7 +736,6 @@ namespace CreVox
 			result.x = _base.x + _x;
 			result.y = _base.y;
 			result.z = _base.z + _z;
-
 			return result;
 		}			
 		float GetAngle (int _dir)
