@@ -56,8 +56,8 @@ namespace CreVox
 		void Start ()
 		{
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
-			volume = GetVolume (target.position);
-			curPos = EditTerrain.GetBlockPos (target.position);
+			volume = GetVolume (target.position + target.up);
+			curPos = EditTerrain.GetBlockPos (target.position + target.up);
 			camsys = GameObject.FindObjectOfType<CamSys> ();
 			LoadPreset ();
 			InitCamZones ();
@@ -100,8 +100,8 @@ namespace CreVox
 
 		void Update ()
 		{
-			curPos = EditTerrain.GetBlockPos (target.position);
-			localPos = EditTerrain.GetBlockPos (target.position, volume.transform);
+			curPos = EditTerrain.GetBlockPos (target.position + target.up);
+			localPos = EditTerrain.GetBlockPos (target.position + target.up, volume.transform);
 			int offsetX = Mathf.Clamp (curPos.x - oldPos.x, -1, 1);
 //			int offsetY = Mathf.Clamp (curPos.y - oldPos.y, -1, 1);
 			int offsetZ = Mathf.Clamp (curPos.z - oldPos.z, -1, 1);
@@ -380,10 +380,10 @@ namespace CreVox
 					if (IsVisible (0, 1) == true)
 						adjLayer [Turn (0)] |= (int)CamDir.turn_right;
 					adjLayer [Turn (1)] = (int)Turn (CamDir.right);
-					sclLayer [Turn (1)] = -1;
+//					sclLayer [Turn (1)] = -1;
 					if (IsVisible (2, 3) == true && IsVisible (2, 1) == false && IsVisible (2, 7) == false) {
 						adjLayer [Turn (2)] = (int)Turn (CamDir.right);
-						sclLayer [Turn (2)] = -1;
+//						sclLayer [Turn (2)] = -1;
 					}
 				}
 			}
@@ -395,10 +395,10 @@ namespace CreVox
 					if (IsVisible (2, 1) == true)
 						adjLayer [Turn (2)] |= (int)CamDir.turn_left;
 					adjLayer [Turn (1)] = (int)Turn (CamDir.left);
-					sclLayer [Turn (1)] = -1;
+//					sclLayer [Turn (1)] = -1;
 					if (IsVisible (0, 5) == true && IsVisible (0, 1) == false && IsVisible (0, 7) == false) {
 						adjLayer [Turn (0)] = (int)Turn (CamDir.left);
-						sclLayer [Turn (0)] = -1;
+//						sclLayer [Turn (0)] = -1;
 					}
 				}
 			}
@@ -417,12 +417,8 @@ namespace CreVox
 			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;	
 			BlockAir downB = volume.GetBlock (_pos.x, _pos.y - 1, _pos.z) as CreVox.BlockAir;	
 			if (downB != null && downB.pieceNames == null) {
-				if (centerB != null) {
-					if (centerB.pieceNames == null)
+				if (centerB != null) 
 						return true;
-					else if (centerB.pieceNames.Length < 1)
-						return true;
-				}
 			}
 			return false;
 		}

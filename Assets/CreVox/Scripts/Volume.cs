@@ -325,7 +325,6 @@ namespace CreVox
 				Gizmos.color = YColor;
 			
 			if (pointer) {
-				//
 				for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
 					for (int zi = 0; zi < chunkZ * Chunk.chunkSize; zi++) {
 						float cSize;
