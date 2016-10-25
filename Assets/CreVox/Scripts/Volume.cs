@@ -10,28 +10,24 @@ namespace CreVox
 	[ExecuteInEditMode]
 	public class Volume : MonoBehaviour
 	{
-		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
+		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
 		public int chunkX = 1;
 		public int chunkY = 1;
 		public int chunkZ = 1;
 
 		public Volume volume;
+		public Canvas canvas;
 
-		private GameObject chunkPrefab;
-		private GameObject pieces;
-		private GameObject ruler;
-		private GameObject layerRuler;
-
-		private MeshCollider mColl;
-		private BoxCollider bColl;
+		private GameObject chunkPrefab, pieces, decoration;
 
 		public string workFile;
 		public string piecePack = PathCollect.pieces + "/LevelPieces";
 
-		public GameObject box = null;
+		public GameObject box = null, ruler, layerRuler;
+		private MeshCollider mColl;
+		private BoxCollider bColl;
 		public bool useBox = false;
 		public float editDis = 120f;
-
 		public int editY;
 		public bool pointer;
 		public Color YColor;
@@ -392,7 +388,15 @@ namespace CreVox
 					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new Block ());
 			}
 			UpdateChunks();
-            
+		}
+
+		public void GenerateDecoration()
+		{
+			if (canvas != null) {
+				Debug.LogWarning("canvas != null : Generate Decoration");
+			} else {
+				Debug.LogWarning("canvas == null......");
+			}
 		}
 
 		public void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)

@@ -21,9 +21,9 @@ namespace CreVox
 			FenceSeparator,
 			Door,
 			Stair,
-			Stairhalf,
-			WallHalf,
-			WallHalfSeparator,
+//			Stairhalf,
+//			WallHalf,
+//			WallHalfSeparator,
 			Item
 		}
 
