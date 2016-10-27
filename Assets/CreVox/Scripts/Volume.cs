@@ -10,24 +10,26 @@ namespace CreVox
 	[ExecuteInEditMode]
 	public class Volume : MonoBehaviour
 	{
-		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
+		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
 		public int chunkX = 1;
 		public int chunkY = 1;
 		public int chunkZ = 1;
 
 		public Volume volume;
-		public Canvas canvas;
 
-		private GameObject chunkPrefab, pieces, decoration;
+		private GameObject chunkPrefab, pieces, deco, ruler, layerRuler;
 
-		public string workFile;
-		public string piecePack = PathCollect.pieces + "/LevelPieces";
-
-		public GameObject box = null, ruler, layerRuler;
 		private MeshCollider mColl;
 		private BoxCollider bColl;
+
+		public string workFile = PathCollect.save + "/temp";
+		public string tempPath;
+		public string piecePack = PathCollect.pieces;
+
+		public GameObject box = null;
 		public bool useBox = false;
 		public float editDis = 120f;
+
 		public int editY;
 		public bool pointer;
 		public Color YColor;
@@ -38,11 +40,7 @@ namespace CreVox
 		}
 		void Start()
 		{
-			Save save;
-			save = Serialization.LoadRTWorld (workFile);
-			if (save != null)
-				volume.BuildWorld (save);
-			SceneView.RepaintAll ();
+			LoadTempWorld ();
 		}
 		void Update()
 		{
@@ -53,13 +51,26 @@ namespace CreVox
 			EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction (OnBeforePlay);
 		}
 
+		public void LoadTempWorld()
+		{
+			Save save;
+			save = Serialization.LoadRTWorld (tempPath);
+			if (save != null)
+				volume.BuildWorld (save);
+			SceneView.RepaintAll ();
+		}
+		public void SaveTempWorld()
+		{
+			string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
+			tempPath = PathCollect.save + "/_TempBackup/" + date + "_" + workFile.Substring (workFile.LastIndexOf ("/") + 1);
+			Serialization.SaveWorld (volume, PathCollect.resourcesPath + tempPath + ".bytes");
+			AssetDatabase.Refresh();
+		}
 		public void OnBeforePlay()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
-//				Debug.Log ("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
-//				Serialization.SaveWorld (volume, PathCollect.resourcesPath + PathCollect.resourceSubPath + "/" + volume.GetHashCode ().ToString () + ".bytes");
-				Serialization.SaveWorld(volume, PathCollect.resourcesPath + workFile + ".bytes");
-				AssetDatabase.Refresh();
+				SaveTempWorld ();
+				Debug.Log ("Save before play by World: playing(" + EditorApplication.isPlaying + ")");
 				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnBeforePlay);
 			}
 		}
@@ -74,16 +85,23 @@ namespace CreVox
 
 			pieces = new GameObject("Pieces");
 			pieces.transform.parent = transform;
-			pieces.transform.localPosition = Vector3.zero;//FreePos
+			pieces.transform.localPosition = Vector3.zero;
 			pieces.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
+			deco = new GameObject("Decoration");
+			deco.transform.parent = transform;
+			deco.transform.localPosition = Vector3.zero;
+			deco.transform.localRotation = Quaternion.Euler(Vector3.zero);
 			
 			CreateChunks();
 
 			if (!EditorApplication.isPlaying) {
 				CreateRuler ();
 				CreateLevelRuler ();
-				if (!box)
+				if (!box) {
 					box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
+					box.hideFlags = HideFlags.HideInHierarchy;
+				}
 			}
 		}
 
@@ -95,6 +113,8 @@ namespace CreVox
 			}
 			if (pieces)
 				Object.DestroyImmediate(pieces);
+			if (deco)
+				Object.DestroyImmediate(deco);
 			if (ruler)
 				Object.DestroyImmediate(ruler);
 			if (layerRuler)
@@ -114,7 +134,7 @@ namespace CreVox
 			ruler.layer = LayerMask.NameToLayer("Editor");
 			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
-//			ruler.hideFlags = HideFlags.HideInHierarchy;
+			ruler.hideFlags = HideFlags.HideInHierarchy;
 			mColl = ruler.AddComponent<MeshCollider>();
 
 			MeshData meshData = new MeshData();
@@ -148,7 +168,7 @@ namespace CreVox
 			layerRuler.transform.parent = transform;
 			layerRuler.transform.localPosition = Vector3.zero;//FreePos
 			layerRuler.transform.localRotation = Quaternion.Euler(Vector3.zero);
-//			layerRuler.hideFlags = HideFlags.HideInHierarchy;
+			layerRuler.hideFlags = HideFlags.HideInHierarchy;
 			bColl = layerRuler.AddComponent<BoxCollider>();
 			bColl.size = new Vector3(chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
 			ChangeEditY(editY);
@@ -196,7 +216,7 @@ namespace CreVox
 			                            ) as GameObject;
 			newChunkObject.name = "Chunk(" + x / Chunk.chunkSize + "," + y / Chunk.chunkSize + "," + z / Chunk.chunkSize + ")";
 			newChunkObject.transform.parent = transform;
-			newChunkObject.transform.localPosition = Vector3.zero;//FreePos
+			newChunkObject.transform.localPosition = new Vector3 (x * Block.w, y * Block.h, z * Block.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
 #if UNITY_EDITOR
 			if (EditorApplication.isPlaying)
@@ -326,9 +346,8 @@ namespace CreVox
 						float cSize;
 						cSize = GetBlock(xi, editY, zi).GetType() == typeof(BlockAir) ? 0.3f : 1.01f;
 
-						Gizmos.DrawCube(
-							transform.position + new Vector3(xi * Block.w, editY * Block.h, zi * Block.d), 
-							new Vector3(Block.w * cSize, Block.h * cSize, Block.d * cSize));
+						Vector3 localPos = transform.TransformPoint (xi * Block.w, editY * Block.h, zi * Block.d);
+						Gizmos.DrawCube(localPos,new Vector3(Block.w * cSize, Block.h * cSize, Block.d * cSize));
 					}
 				}
 			}
@@ -388,15 +407,7 @@ namespace CreVox
 					SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new Block ());
 			}
 			UpdateChunks();
-		}
-
-		public void GenerateDecoration()
-		{
-			if (canvas != null) {
-				Debug.LogWarning("canvas != null : Generate Decoration");
-			} else {
-				Debug.LogWarning("canvas == null......");
-			}
+            
 		}
 
 		public void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece)

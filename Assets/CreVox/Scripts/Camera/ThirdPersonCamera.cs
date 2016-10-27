@@ -11,32 +11,37 @@ public class ThirdPersonCamera : MonoBehaviour
 	}
 
 	[Header ("Position Setting")]
-	public float distanceAway = 5;
-	public float distanceUp = 2;
+	public float distanceAway = 4.3f;
+	public float distanceUp = 1.2f;
 	public LayerMask collisionMask;
-
 	private float curAway, curUp, dis;
 	private Vector3 camPos;
 	
 	[Header ("Rotation Setting")]
 	public float xRotate = 150f;
 	public float yRotate = 10f;
-	public float smooth = 3;
-
+	public float smooth = 12;
 	private float xInput = 0f, yInput = 0f;
 	private Vector3 lookDir = Vector3.zero;
+
+	[Header ("Target Effect Setting")]
+	public GameObject targetEffect;
+	[Range (0f, 1f)] public float effectHigh = 0.66f;
+	private GameObject effInstance;
+	private Vector3 targetPos, effectPos;
 
 	[Header ("Infomation Only")]
 	[SerializeField] private CamState camState;
 	[SerializeField] private Transform m_player, m_camera, m_target;
-	private Vector3 targetPos;
 
 	void Start ()
 	{
 		m_camera = this.transform;
 		curAway = distanceAway;
 		curUp = distanceUp;
-		dis = Mathf.Pow (Mathf.Pow (distanceAway, 2.0f) + Mathf.Pow (distanceUp, 2.0f), 0.5f);
+		dis = new Vector2 (distanceAway, distanceUp).magnitude;
+		effInstance = Instantiate (targetEffect);
+		effInstance.SetActive (false);
 	}
 
 	void Update ()
@@ -53,6 +58,9 @@ public class ThirdPersonCamera : MonoBehaviour
 				camState = (camState == CamState.Behind) ? CamState.Target : CamState.Behind;
 			}
 		}
+
+		if ((camState == CamState.Target) != effInstance.activeSelf)
+			effInstance.SetActive (!effInstance.activeSelf);
 
 		if (m_target == null && camState == CamState.Target)
 			camState = CamState.Behind;
@@ -90,8 +98,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
 		if (camState == CamState.Reset) {
 			if ((transform.position - camPos).magnitude < 0.05f
-				|| Mathf.Abs (Input.GetAxisRaw ("Horizontal")) > 0.1f
-				|| Mathf.Abs (Input.GetAxisRaw ("Vertical")) > 0.1f)
+			    || Mathf.Abs (Input.GetAxisRaw ("Horizontal")) > 0.1f
+			    || Mathf.Abs (Input.GetAxisRaw ("Vertical")) > 0.1f)
 				camState = CamState.Behind;
 		}
 
@@ -120,6 +128,9 @@ public class ThirdPersonCamera : MonoBehaviour
 		float disTarget = dis + delta.magnitude;
 
 		camPos = m_target.position + delta.normalized * disTarget;
+
+		effectPos = m_target.position + Vector3.up * (m_target.GetComponentInChildren<Renderer> ().bounds.size.y * effectHigh);
+		effInstance.transform.position = effectPos;
 	}
 
 	void CameraCollision ()
@@ -127,14 +138,5 @@ public class ThirdPersonCamera : MonoBehaviour
 		RaycastHit hit = new RaycastHit ();
 		if (Physics.Linecast (m_player.position, camPos, out hit, collisionMask))
 			camPos = hit.point;
-	}
-
-	void OnDrawGizmos ()
-	{
-		if (camState == CamState.Target) {
-			Gizmos.color = Color.red;
-			Gizmos.DrawLine (m_camera.position, targetPos);
-			Gizmos.DrawWireSphere (targetPos, 1.0f);
-		}
 	}
 }

@@ -7,8 +7,8 @@ public class CharacterMotor : MonoBehaviour
 	[System.Serializable]
 	public class MoveSetting
 	{
-		public float forwardVel = 12f;
-		public float rotateVel = 100f;
+		public float forwardVel = 0f;
+		public float rotateVel = 0.00001f;
 		public float jumpVel = 25f;
 		public float distToGround = 0.1f;
 		public LayerMask ground;
@@ -40,7 +40,6 @@ public class CharacterMotor : MonoBehaviour
 	Rigidbody rBody;
 	float hInput, vInput, jumpInput;
 	Vector3 forwardDir = Vector3.zero;
-	//float forwardInput, jumpInput;
 
 	public Quaternion TargetRotation {
 		get { return targetRotation; }

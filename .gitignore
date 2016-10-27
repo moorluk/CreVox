@@ -42,6 +42,11 @@ Thumbs.db
 sysinfo.txt #Unity3D Generated File On Crash Reports
 <<<<<<< HEAD
 Assets/Standard Assets/
+Assets/Standard Assets.meta
 =======
 >>>>>>> Dev
-Assets/Standard Assets.meta
+Assets/DungeonArchitect/
+Assets/DungeonArchitect.meta
+Assets/DungeonArchitect_Samples/
+Assets/DungeonArchitect_Samples.meta
+Assets/Resources/Crevox/VolumeData/_TempBackup/

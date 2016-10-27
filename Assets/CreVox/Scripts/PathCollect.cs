@@ -9,6 +9,7 @@ namespace CreVox
 	{
 		public static string rularTag = "VoxelEditorBase";
 
+		public static string editorPath = Application.dataPath;
 		public static string assetsPath = "Assets/Crevox";
 
 		public static string resourcesPath = "Assets/Resources/";
@@ -16,8 +17,7 @@ namespace CreVox
 		
 		public static string chunk = resourceSubPath + "/chunk";
 		public static string save = resourceSubPath + "/VolumeData";
-		public static string pieces = resourceSubPath + "/VolumeArtPack";
+		public static string pieces = resourceSubPath + "/VolumeArtPack/LevelPieces";
 		public static string camSetting = resourceSubPath + "/CamSetting";
-
 	}
 }

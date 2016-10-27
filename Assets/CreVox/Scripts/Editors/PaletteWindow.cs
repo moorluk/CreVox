@@ -19,8 +19,7 @@ namespace CreVox
 		private Dictionary<PaletteItem.Category, List<PaletteItem>> _categorizedItems;
 		private Dictionary<PaletteItem, Texture2D> _previews;
 		private Vector2 _scrollPosition;
-		private const float ButtonWidth = 100;
-		private const float ButtonHeight = 100;
+		private float ButtonWidth = 90;
 
 		public delegate void itemSelectedDelegate(PaletteItem item,Texture2D preview);
 
@@ -90,9 +89,9 @@ namespace CreVox
 
 		private void DrawFunction()
 		{
-			EditorGUILayout.BeginHorizontal("Box");
+			EditorGUILayout.BeginHorizontal(EditorStyles.textField);
 			if (GUILayout.Button("Select Path", GUILayout.Width(80))) {
-				_path = EditorUtility.OpenFolderPanel("Select Pieces' Path", _path, "");
+				_path = EditorUtility.OpenFolderPanel("Select Pieces' Path", PathCollect.resourcesPath + PathCollect.pieces, "");
 				if (_path.IndexOf("Assets") < 0)
 					_path = PathCollect.resourcesPath + PathCollect.pieces;
 				_path = _path.Substring(_path.IndexOf("Assets"));
@@ -100,8 +99,8 @@ namespace CreVox
 				InitCategories();
 				InitContent();
 			}
-			EditorGUILayout.LabelField(_path);
-			if (GUILayout.Button("Refresh Preview", GUILayout.Width(110))) {
+			EditorGUILayout.LabelField(label:_path,style:EditorStyles.miniLabel);
+			if (GUILayout.Button("Refresh Preview", EditorStyles.miniButton, GUILayout.Width(90))) {
 				InitCategories();
 				InitContent();
 			}
@@ -160,10 +159,11 @@ namespace CreVox
 		private GUIStyle GetGUIStyle()
 		{
 			GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
+			guiStyle.fontSize = 9;
 			guiStyle.alignment = TextAnchor.LowerCenter;
 			guiStyle.imagePosition = ImagePosition.ImageAbove;
 			guiStyle.fixedWidth = ButtonWidth;
-			guiStyle.fixedHeight = ButtonHeight;
+			guiStyle.fixedHeight = ButtonWidth + (float)guiStyle.fontSize;
 			return guiStyle;
 		}
 

@@ -43,16 +43,16 @@ namespace CreVox
 			else
 				saveFile = _path;
 
-			Debug.Log("Save path: " + saveFile);
-
 			Save save = new Save(volume);
-			if (save.blocks.Count == 0)
-				return;
+//			if (save.blocks.Count == 0)
+//				return;
+			Debug.Log("Save path: " + saveFile);
 
 			IFormatter formatter = new BinaryFormatter();
 			FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);
 			formatter.Serialize(stream, save);
 			stream.Close();
+			AssetDatabase.Refresh();
 		}
 
 		public static Save LoadWorld(string _path = null)
@@ -77,8 +77,11 @@ namespace CreVox
 		public static Save LoadRTWorld(string path)
 		{
 			TextAsset ta = Resources.Load(path) as TextAsset;
-			Debug.Log("Load path: " + path + ".bytes ---" + (ta != null?"Success":"Fail"));
 
+			if (path == null)
+				return null;
+
+			Debug.Log ("Load path: " + path + ".bytes ---" + (ta != null ? "Success" : "Fail"));
 			IFormatter formatter = new BinaryFormatter();
 			Stream stream = new MemoryStream(ta.bytes);
 

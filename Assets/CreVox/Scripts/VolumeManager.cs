@@ -8,6 +8,7 @@ namespace CreVox
 	[ExecuteInEditMode]
 	public class VolumeManager : MonoBehaviour
 	{
+		[System.Serializable]
 		public struct Dungeon
 		{
 			public Volume volume;
