@@ -3,31 +3,38 @@ using System.Collections;
 using NodeEditorFramework;
 using System;
 
-[Node(false, "CreVox/Marker Node")]
-public class MarkerNode : Node {
-    public const string ID = "MarkerNode";
-    public override string GetID { get {return ID;}}
+[Node (false, "CreVox/Marker Node")]
+public class MarkerNode : Node
+{
+	public const string ID = "MarkerNode";
 
-    string markerName = "Marker Name";
+	public override string GetID { get { return ID; } }
 
-    public override Node Create(Vector2 pos)
-    {
-        MarkerNode node = ScriptableObject.CreateInstance<MarkerNode>();
+	string markerName = "Marker Name";
 
-        node.name = "Marker Node";
-        node.rect = new Rect(pos.x, pos.y, 100, 50);
+	#region Visual Design
+	float nWidth = 150;
+	float nHeight = 45;
+	#endregion
 
-        node.CreateOutput("Next Flow:", "Flow", NodeSide.Right, 10);
+	public override Node Create (Vector2 pos)
+	{
+		MarkerNode node = ScriptableObject.CreateInstance<MarkerNode> ();
 
-        return node;
-    }
+		node.name = "Marker Node";
+		node.rect = new Rect (pos.x, pos.y, nWidth, nHeight);
 
-    protected override void NodeGUI()
-    {
-        GUILayout.BeginVertical();
-        markerName = GUILayout.TextField(markerName);
-        GUILayout.EndVertical();
-    }
+		node.CreateOutput ("Next Flow:", "Flow", NodeSide.Bottom, nWidth/2);
+
+		return node;
+	}
+
+	protected override void NodeGUI ()
+	{
+		using (var v = new GUILayout.VerticalScope ()) {
+			markerName = GUILayout.TextField (markerName);
+		}
+	}
 
 
 }
