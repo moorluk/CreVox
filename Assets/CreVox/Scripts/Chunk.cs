@@ -73,23 +73,22 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						if (!EditorApplication.isPlaying && volume.pointer && y > volume.editY) {
-						} else {
-							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
-						}
+						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
+							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
 					}
 				}
 			}
 			AssignRenderMesh(meshData);
 		}
 
-		public void UodateMeshCollider()
+		public void UpdateMeshCollider()
 		{
 			MeshData meshData = new MeshData();
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
+							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
 					}
 				}
 			}
@@ -98,25 +97,25 @@ namespace CreVox
 
 		public void UpdateChunk()
 		{
-			MeshData meshData = new MeshData();
+			MeshData meshData = new MeshData ();
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
 						BlockAir air = blocks [x, y, z] as BlockAir;
 
-						if (!EditorApplication.isPlaying && volume.pointer && y > volume.editY) {
+						if (!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) {
 							if (air != null)
-								air.ShowPiece(false);
+								air.ShowPiece (false);
 						} else {
-							meshData = blocks[x, y, z].Blockdata(this, x, y, z, meshData);
+							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
 							if (air != null)
-								air.ShowPiece(true);
+								air.ShowPiece (true);
 						}
 					}
 				}
 			}
-			AssignRenderMesh(meshData);
-			AssignCollisionMesh(meshData);
+			UpdateMeshFilter ();
+			UpdateMeshCollider ();
 		}
 
 		void AssignRenderMesh(MeshData meshData)
@@ -147,7 +146,6 @@ namespace CreVox
 			cmesh.vertices = meshData.colVertices.ToArray();
 			cmesh.triangles = meshData.colTriangles.ToArray();
 			cmesh.RecalculateNormals();
-		
 			coll.sharedMesh = cmesh;
 		}
 	}

@@ -35,10 +35,10 @@ namespace CreVox
 
 		public static WorldPos GetBlockPos(Vector3 pos)
 		{
-			WorldPos blockPos = new WorldPos(
-				                    Mathf.RoundToInt(pos.x / Block.w),
-				                    Mathf.RoundToInt(pos.y / Block.h),
-				                    Mathf.RoundToInt(pos.z / Block.d)
+			WorldPos blockPos = new WorldPos (
+				                    Mathf.RoundToInt (pos.x / Block.w),
+				                    Mathf.RoundToInt (pos.y / Block.h),
+				                    Mathf.RoundToInt (pos.z / Block.d)
 			                    );
 
 			return blockPos;
@@ -46,12 +46,12 @@ namespace CreVox
 
 		public static WorldPos GetBlockPos(Vector3 pos, Transform localRoot)
 		{
-			pos = localRoot.InverseTransformPoint(pos);
-			WorldPos blockPos = new WorldPos(
-				Mathf.RoundToInt(pos.x / Block.w),
-				Mathf.RoundToInt(pos.y / Block.h),
-				Mathf.RoundToInt(pos.z / Block.d)
-			);
+			pos = localRoot.InverseTransformPoint (pos);
+			WorldPos blockPos = new WorldPos (
+				                    Mathf.RoundToInt (pos.x / Block.w),
+				                    Mathf.RoundToInt (pos.y / Block.h),
+				                    Mathf.RoundToInt (pos.z / Block.d)
+			                    );
 
 			return blockPos;
 		}

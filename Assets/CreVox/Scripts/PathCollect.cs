@@ -9,7 +9,6 @@ namespace CreVox
 	{
 		public static string rularTag = "VoxelEditorBase";
 
-		public static string editorPath = Application.dataPath;
 		public static string assetsPath = "Assets/Crevox";
 
 		public static string resourcesPath = "Assets/Resources/";

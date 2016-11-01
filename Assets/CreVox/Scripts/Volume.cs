@@ -25,14 +25,11 @@ namespace CreVox
 		public string workFile = PathCollect.save + "/temp";
 		public string tempPath;
 		public string piecePack = PathCollect.pieces;
+		public Material vertexMaterial;
 
 		public GameObject box = null;
 		public bool useBox = false;
 		public float editDis = 120f;
-
-		public int editY;
-		public bool pointer;
-		public Color YColor;
 
 		void Awake()
 		{
@@ -44,6 +41,24 @@ namespace CreVox
 		}
 		void Update()
 		{
+			CompileSave ();
+		}
+		#region Temp save&load
+		public bool compileSave = false;
+
+		void CompileSave()
+		{
+			if (EditorApplication.isCompiling && !compileSave) {
+				Debug.LogWarning ("Save before compile");
+				SaveTempWorld ();
+				compileSave = true;
+			}
+
+			if (!EditorApplication.isCompiling && compileSave) {
+				Debug.LogWarning ("Load after compile");
+				LoadTempWorld ();
+				compileSave = false;
+			}
 		}
 
 		void SubscribeEvent()
@@ -51,21 +66,6 @@ namespace CreVox
 			EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction (OnBeforePlay);
 		}
 
-		public void LoadTempWorld()
-		{
-			Save save;
-			save = Serialization.LoadRTWorld (tempPath);
-			if (save != null)
-				volume.BuildWorld (save);
-			SceneView.RepaintAll ();
-		}
-		public void SaveTempWorld()
-		{
-			string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
-			tempPath = PathCollect.save + "/_TempBackup/" + date + "_" + workFile.Substring (workFile.LastIndexOf ("/") + 1);
-			Serialization.SaveWorld (volume, PathCollect.resourcesPath + tempPath + ".bytes");
-			AssetDatabase.Refresh();
-		}
 		public void OnBeforePlay()
 		{
 			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
@@ -74,6 +74,31 @@ namespace CreVox
 				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction(OnBeforePlay);
 			}
 		}
+		public void SaveTempWorld()
+		{
+			string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
+			tempPath = PathCollect.save + "/_TempBackup/" + date + "_" + workFile.Substring (workFile.LastIndexOf ("/") + 1);
+			Serialization.SaveWorld (volume, PathCollect.resourcesPath + tempPath + ".bytes");
+			AssetDatabase.Refresh();
+		}
+		public void LoadTempWorld()
+		{
+			Save save = null;
+			if (Serialization.LoadRTWorld (tempPath) != null) {
+				Debug.Log ("Volume[" + transform.name + "] Load tempPath : " + tempPath);
+				save = Serialization.LoadRTWorld (tempPath);
+			} else if (Serialization.LoadRTWorld (workFile) != null) {
+				Debug.Log ("Volume[" + transform.name + "] Load workFile : " + workFile);
+				save = Serialization.LoadRTWorld (workFile);
+			} else {
+				Debug.LogWarning ("Volume[" + transform.name + "] Loading Fail !!!");
+				return;
+			}
+
+			volume.BuildVolume (save);
+			SceneView.RepaintAll ();
+		}
+		#endregion
 
 		public void Init(int _chunkX, int _chunkY, int _chunkZ)
 		{
@@ -171,7 +196,7 @@ namespace CreVox
 			layerRuler.hideFlags = HideFlags.HideInHierarchy;
 			bColl = layerRuler.AddComponent<BoxCollider>();
 			bColl.size = new Vector3(chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
-			ChangeEditY(editY);
+			ChangePointY(pointY);
 		}
 
 		public void UpdateChunks()
@@ -218,6 +243,8 @@ namespace CreVox
 			newChunkObject.transform.parent = transform;
 			newChunkObject.transform.localPosition = new Vector3 (x * Block.w, y * Block.h, z * Block.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
+			if (vertexMaterial != null)
+				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
 #if UNITY_EDITOR
 			if (EditorApplication.isPlaying)
 				newChunkObject.layer = LayerMask.NameToLayer("Floor");
@@ -301,12 +328,18 @@ namespace CreVox
 			}
 		}
 
+		#region Editor Scene UI
+		
+		public Color YColor;
+		public bool pointer;
+		public int pointY;
+		public bool cuter;
+		public int cutY;
+
 		void OnDrawGizmos()
 		{
-			if (chunks.Count == 0)
-				Gizmos.color = Color.red;
-			else
-				Gizmos.color = Color.white;
+			Gizmos.color = (chunks.Count == 0) ? Color.red : Color.white;
+
 //			float x = -Block.hw;
 //			float z = -Block.hd;
 //			float w = chunkX * Chunk.chunkSize * Block.w + x;
@@ -321,7 +354,7 @@ namespace CreVox
 //			Gizmos.DrawLine(v4, v1);
 
 			DrawGizmoBoxCursor();
-			DrawGizmoLayer(editY);
+			DrawGizmoLayer(pointY);
 
 			if (!EditorApplication.isPlaying && mColl)
 				Gizmos.DrawWireCube (
@@ -344,9 +377,9 @@ namespace CreVox
 				for (int xi = 0; xi < chunkX * Chunk.chunkSize; xi++) {
 					for (int zi = 0; zi < chunkZ * Chunk.chunkSize; zi++) {
 						float cSize;
-						cSize = GetBlock(xi, editY, zi).GetType() == typeof(BlockAir) ? 0.3f : 1.01f;
+						cSize = GetBlock(xi, pointY, zi).GetType() == typeof(BlockAir) ? 0.3f : 1.01f;
 
-						Vector3 localPos = transform.TransformPoint (xi * Block.w, editY * Block.h, zi * Block.d);
+						Vector3 localPos = transform.TransformPoint (xi * Block.w, pointY * Block.h, zi * Block.d);
 						Gizmos.DrawCube(localPos,new Vector3(Block.w * cSize, Block.h * cSize, Block.d * cSize));
 					}
 				}
@@ -363,20 +396,20 @@ namespace CreVox
 			}
 		}
 
-		public void ChangeEditY(int _y)
+		public void ChangePointY(int _y)
 		{
 			_y = Mathf.Clamp(_y, 0, chunkY * Chunk.chunkSize - 1);
-			editY = _y;
+			pointY = _y;
 			YColor = new Color(
-				(20 + (editY % 10) * 20) / 255f, 
-				(200 - Mathf.Abs((editY % 10) - 5) * 20) / 255f, 
-				(200 - (editY % 10) * 20) / 255f, 
+				(20 + (pointY % 10) * 20) / 255f, 
+				(200 - Mathf.Abs((pointY % 10) - 5) * 20) / 255f, 
+				(200 - (pointY % 10) * 20) / 255f, 
 				0.4f
 			);
 			if (bColl) {
 				bColl.center = new Vector3 (
 					chunkX * Chunk.chunkSize * Block.hw - Block.hw, 
-					editY * Block.h + Block.hh, 
+					pointY * Block.h + Block.hh, 
 					chunkZ * Chunk.chunkSize * Block.hd - Block.hd
 				);
 			}
@@ -384,7 +417,16 @@ namespace CreVox
 				UpdateChunks ();
 		}
 
-		public void BuildWorld(Save _save)
+		public void ChangeCutY(int _y)
+		{
+			_y = Mathf.Clamp(_y, 0, chunkY * Chunk.chunkSize - 1);
+			cutY = _y;
+			if (chunks != null && chunks.Count > 0)
+				UpdateChunks ();
+		}
+		#endregion
+
+		public void BuildVolume(Save _save)
 		{
 			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>(piecePack);
 
