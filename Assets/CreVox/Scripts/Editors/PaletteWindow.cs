@@ -134,9 +134,9 @@ namespace CreVox
 			foreach (PaletteItem item in _items) {
 				if (!_previews.ContainsKey(item)) {
 					Texture2D preview = AssetPreview.GetAssetPreview(item.gameObject);
-					if (preview != null) {
-						_previews.Add(item, preview);
-					}
+					if (preview == null)
+						preview = Texture2D.blackTexture;
+					_previews.Add(item, preview);
 				}
 			}
 		}

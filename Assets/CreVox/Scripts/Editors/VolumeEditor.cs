@@ -21,21 +21,141 @@ namespace CreVox
 		private void OnEnable()
 		{
 			volume = (Volume)target;
+			volume.ActiveRuler (true);
 			SubscribeEvents();
 		}
 
 		private void OnDisable()
 		{
+			volume.ActiveRuler (false);
 			UnsubscribeEvents();
 		}
 
-		private void OnSceneGUI()
+		public override void OnInspectorGUI()
 		{
-			DrawModeGUI();
-			ModeHandler();
-			if (!EditorApplication.isPlaying)
-				EventHandler ();
+			float lw = 60;
+			float w = (Screen.width - 20 - lw) / 3 - 8;
+			float buttonW = 40;
+			EditorGUIUtility.labelWidth = 20;
+
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+				EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
+
+				GUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
+				cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
+				cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
+				cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
+				GUILayout.EndHorizontal ();
+
+				if (GUILayout.Button ("Init")) {
+					volume.Reset ();
+					volume.Init (cx, cy, cz);
+
+					volume.workFile = "";
+					volume.tempPath = "";
+
+					string sPath = PathCollect.resourcesPath + PathCollect.save + "/temp.bytes";
+					Serialization.SaveWorld (volume, sPath);
+				}
+			}
+
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+				GUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("Chunk Data", EditorStyles.boldLabel);
+				if (GUILayout.Button (new GUIContent("Save","Hold SHIFT to quick save to workfile."), GUILayout.Width (buttonW))) {
+					if (Event.current.shift) {
+						if (volume.workFile != "") {
+							string sPath = 
+								Application.dataPath 
+								+ PathCollect.resourcesPath.Substring(6) 
+								+ volume.workFile + ".bytes";
+							Serialization.SaveWorld (volume, sPath);
+							volume.tempPath = "";
+						}
+					} else {
+						string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
+						if (sPath != "") {
+							Serialization.SaveWorld (volume, sPath);
+							volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+							volume.tempPath = "";
+						}
+					}
+				}
+
+				if (GUILayout.Button (new GUIContent("Load","Hold SHIFT to quick load workfile."), GUILayout.Width (buttonW))) {
+					if (Event.current.shift) {
+						if (volume.workFile != "") {
+							string lPath = 
+								Application.dataPath 
+								+ PathCollect.resourcesPath.Substring(6) 
+								+ volume.workFile + ".bytes";
+							Save save = Serialization.LoadWorld (lPath);
+							if (save != null) {
+								volume.BuildVolume (save);
+								volume.tempPath = "";
+							}
+							SceneView.RepaintAll ();
+						}
+					} else {
+						string lPath = Serialization.GetLoadLocation (volume.workFile == "" ? null : volume.workFile);
+						if (lPath != "") {
+							Save save = Serialization.LoadWorld (lPath);
+							if (save != null) {
+								volume.BuildVolume (save);
+								volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
+								volume.tempPath = "";
+							}
+							SceneView.RepaintAll ();
+						}
+					}
+				}
+				GUILayout.EndHorizontal ();
+
+				EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
+				EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
+			}
+
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+				GUILayout.BeginHorizontal ();
+				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
+				if (GUILayout.Button ("選", GUILayout.Width (buttonW))) {
+					string ppath = EditorUtility.OpenFolderPanel (
+						"選擇場景風格元件包的目錄位置",
+						volume.piecePack,
+						""
+					);
+					volume.SaveTempWorld ();
+					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
+					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
+					if (mats.Length == 1) {
+						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
+						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
+					} else
+						volume.vertexMaterial = null;
+					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
+					volume.piecePack = ppath;
+					volume.LoadTempWorld ();
+				}
+				GUILayout.EndHorizontal ();
+
+				EditorGUIUtility.labelWidth = 120f;
+				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
+				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
+					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
+					, volume.vertexMaterial
+					, typeof(Material)
+					, false);
+			}
+
+			DrawPieceSelectedGUI ();
+
+			if (GUI.changed) {
+				EditorUtility.SetDirty (volume);
+				volume.UpdateChunks ();
+			}
 		}
+
 		#region Editor Scene UI
 		public enum EditMode
 		{
@@ -47,6 +167,14 @@ namespace CreVox
 		}
 		private EditMode selectedEditMode;
 		private EditMode currentEditMode;
+
+		private void OnSceneGUI()
+		{
+			DrawModeGUI();
+			ModeHandler();
+			if (!EditorApplication.isPlaying)
+				EventHandler ();
+		}
 
 		private void DrawModeGUI()
 		{
@@ -62,11 +190,13 @@ namespace CreVox
 			GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea); //根據選項數量決定寬度
 			GUI.color = Color.white;
 			selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
-			GUILayout.BeginHorizontal();
-			volume.editDis = EditorGUILayout.Slider("Editable Distance", volume.editDis, 90f, 1000f);
-			GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal ();
+			EditorGUILayout.LabelField ("Editable Distance",GUILayout.Width(105));
+			volume.editDis = GUILayout.HorizontalSlider(volume.editDis, 99f, 999f);
+			EditorGUILayout.LabelField (((int)volume.editDis).ToString(),GUILayout.Width(25));
+			GUILayout.EndHorizontal ();
 			GUILayout.EndArea();
-
+			
 			DrawLayerModeGUI();
 			Handles.EndGUI();
 		}
@@ -178,180 +308,92 @@ namespace CreVox
 				SceneView.RepaintAll();
 			}
 		}
-		#endregion 
-
-		public override void OnInspectorGUI()
-		{
-			float lw = 60;
-			float w = (Screen.width - 20 - lw) / 3 - 8;
-			EditorGUIUtility.labelWidth = 20;
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
-
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
-				cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
-				cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
-				cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
-				GUILayout.EndHorizontal ();
-
-				if (GUILayout.Button ("Init")) {
-					volume.Reset ();
-					volume.Init (cx, cy, cz);
-
-					volume.workFile = "";
-					volume.tempPath = "";
-
-					string sPath = PathCollect.resourcesPath + PathCollect.save + "/temp";
-					Serialization.SaveWorld (volume, sPath + ".bytes");
-				}
-			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("Chunk Data", EditorStyles.boldLabel);
-				if (GUILayout.Button ("Save", GUILayout.Width (40))) {
-					string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
-					if (sPath != "") {
-						Serialization.SaveWorld (volume, sPath);
-						volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
-					}
-				}
-				if (GUILayout.Button ("Load", GUILayout.Width (40))) {
-					string lPath = Serialization.GetLoadLocation (volume.workFile == "" ? null : volume.workFile);
-					if (lPath != "") {
-						Save save = Serialization.LoadWorld (lPath);
-						if (save != null) {
-							volume.BuildVolume (save);
-							volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
-						}
-						SceneView.RepaintAll ();
-					}
-				}
-				GUILayout.EndHorizontal ();
-
-				EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
-				EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
-			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
-				if (GUILayout.Button ("Set", GUILayout.Width (40))) {
-					string ppath = EditorUtility.OpenFolderPanel (
-						               "選擇場景風格元件包的目錄位置",
-						               volume.piecePack,
-						               ""
-					               );
-					volume.SaveTempWorld ();
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
-					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
-					if (mats.Length == 1) {
-						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
-						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-					} else
-						volume.vertexMaterial = null;
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
-					volume.piecePack = ppath;
-					volume.LoadTempWorld ();
-				}
-				GUILayout.EndHorizontal ();
-
-				EditorGUIUtility.labelWidth = 120f;
-				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
-				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
-					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
-					, volume.vertexMaterial
-					, typeof(Material)
-					, false);
-			}
-
-			DrawPieceSelectedGUI ();
-
-			if (GUI.changed) {
-				EditorUtility.SetDirty (volume);
-				volume.UpdateChunks ();
-			}
-		}
 
 		private void EventHandler()
 		{
-			if (!Event.current.alt && currentEditMode != EditMode.View) {
-				HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+			if (Event.current.alt) {
+				return;
+			}
+
+			if (Event.current.type == EventType.KeyDown) {
+				EventFunction (Event.current.keyCode.ToString ());
+				Event.current.Use ();
+				return;
+			} 
+
+			if (currentEditMode != EditMode.View) {
+				HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
 				int button = Event.current.button;
 
 				switch (currentEditMode) {
-					case EditMode.Voxel:
-					case EditMode.VoxelLayer: 
-						volume.useBox = true;
-						break;
+				case EditMode.Voxel:
+				case EditMode.VoxelLayer: 
+					volume.useBox = true;
+					break;
 
-					default:
-						volume.useBox = false;
-						break;
+				default:
+					volume.useBox = false;
+					break;
 				}
 
 				switch (currentEditMode) {
-					case EditMode.Voxel:
+				case EditMode.Voxel:
+					if (button == 0)
+						DrawMarker (false);
+					else if (button <= 1) {
+						DrawMarker (true);
+					}
+					if (Event.current.type == EventType.MouseDown) {
 						if (button == 0)
-							DrawMarker(false);
-						else if (button <= 1) {
-							DrawMarker(true);
+							Paint (false);
+						else if (button == 1) {
+							Paint (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
 						}
-						if (Event.current.type == EventType.MouseDown) {
-							if (button == 0)
-								Paint(false);
-							else if (button == 1) {
-								Paint(true);
-								Tools.viewTool = ViewTool.None;
-								Event.current.Use();
-							}
-						}
-						if (Event.current.type == EventType.MouseUp) {
-							UpdateDirtyChunks();
-						}               
-						break;
+					}
+					if (Event.current.type == EventType.MouseUp) {
+						UpdateDirtyChunks ();
+					}               
+					break;
 
-					case EditMode.VoxelLayer: 
-						DrawLayerMarker();
+				case EditMode.VoxelLayer: 
+					DrawLayerMarker ();
 
-						if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-							if (button == 0)
-								PaintLayer(false);
-							else if (button == 1) {
-								PaintLayer(true);
-								Tools.viewTool = ViewTool.None;
-								Event.current.Use();
-							}
+					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+						if (button == 0)
+							PaintLayer (false);
+						else if (button == 1) {
+							PaintLayer (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
 						}
-						if (Event.current.type == EventType.MouseUp) {
-							UpdateDirtyChunks();
-						}
-						break;
+					}
+					if (Event.current.type == EventType.MouseUp) {
+						UpdateDirtyChunks ();
+					}
+					break;
 
-					case EditMode.Object:
-					case EditMode.ObjectLayer:
-						if (Event.current.type == EventType.MouseDown) {
-							if (button == 0)
-								PaintPieces(false);
-							else if (button == 1) {
-								PaintPieces(true);
-								Tools.viewTool = ViewTool.None;
-								Event.current.Use();
-							}
+				case EditMode.Object:
+				case EditMode.ObjectLayer:
+					if (Event.current.type == EventType.MouseDown) {
+						if (button == 0)
+							PaintPieces (false);
+						else if (button == 1) {
+							PaintPieces (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
 						}
-						DrawGridMarker();
-						break;
+					}
+					DrawGridMarker ();
+					break;
 
-					default:
-						break;
+				default:
+					break;
 				}
 			}
-
-			if (Event.current.type == EventType.KeyDown) 
-				EventFunction (Event.current.keyCode.ToString ());
 		}
+		#endregion 
 
 		#region LayerControl
 		private int fixPointY = 0;

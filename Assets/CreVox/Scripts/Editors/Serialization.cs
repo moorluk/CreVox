@@ -50,7 +50,8 @@ namespace CreVox
 			Save save = new Save(volume);
 //			if (save.blocks.Count == 0)
 //				return;
-			Debug.Log("Save path: " + saveFile);
+
+			Debug.Log ("Volume[" + volume.transform.name + "] Save Path : \n" + saveFile);
 
 			IFormatter formatter = new BinaryFormatter();
 			FileStream stream = new FileStream(saveFile, FileMode.Create, FileAccess.Write, FileShare.None);

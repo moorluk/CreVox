@@ -8,7 +8,7 @@ namespace CreVox
 	[Serializable]
 	public class Block
 	{
-		const float tileSize = 0.25f;
+		const float tileSize = 0.5f;
 		public const float w = 3f;
 		public const float h = 2f;
 		public const float d = 3f;
@@ -93,6 +93,7 @@ namespace CreVox
 			return false;
 		}
 
+		#region Face Mesh Culculate
 		protected virtual MeshData FaceDataUp (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d + hd));
@@ -131,19 +132,6 @@ namespace CreVox
 			return meshData;
 		}
 
-		protected virtual MeshData FaceDataEast (Chunk chunk, int x, int y, int z, MeshData meshData)
-		{
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d + hd));
-
-			meshData.AddQuadTriangles ();
-			//Add the following line to every FaceData function with the direction of the face
-			meshData.uv.AddRange (FaceUVs (Direction.east));
-			return meshData;
-		}
-
 		protected virtual MeshData FaceDataSouth (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d - hd));
@@ -154,6 +142,19 @@ namespace CreVox
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
 			meshData.uv.AddRange (FaceUVs (Direction.south));
+			return meshData;
+		}
+
+		protected virtual MeshData FaceDataEast (Chunk chunk, int x, int y, int z, MeshData meshData)
+		{
+			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d - hd));
+			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d - hd));
+			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d + hd));
+			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d + hd));
+
+			meshData.AddQuadTriangles ();
+			//Add the following line to every FaceData function with the direction of the face
+			meshData.uv.AddRange (FaceUVs (Direction.east));
 			return meshData;
 		}
 
@@ -169,25 +170,36 @@ namespace CreVox
 			meshData.uv.AddRange (FaceUVs (Direction.west));
 			return meshData;
 		}
+		#endregion
 
 		public virtual Vector2[] FaceUVs (Direction direction)
 		{
 			Vector2[] UVs = new Vector2[4];
 			Tile tilePos = TexturePosition (direction);
+			float max = Mathf.Max (new float[]{ w, h, d });
+
 			switch (direction) {
 			default:
-				UVs [0] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y);
-				UVs [1] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y + tileSize * Block.h);
-				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.h);
-				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
-				return UVs;
-
 			case Direction.up:
 			case Direction.down:
-				UVs [0] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y);
-				UVs [1] = new Vector2 (tileSize * tilePos.x + tileSize * Block.w, tileSize * tilePos.y + tileSize * Block.d);
-				UVs [2] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y + tileSize * Block.d);
+				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + d / max));
+				UVs [1] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * (tilePos.y + d / max));
+				UVs [2] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * tilePos.y);
 				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				return UVs;
+			case Direction.north:
+			case Direction.south:
+				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				UVs [1] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + h / max));
+				UVs [2] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * (tilePos.y + h / max));
+				UVs [3] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * tilePos.y);
+				return UVs;
+			case Direction.east:
+			case Direction.west:
+				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				UVs [1] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + h / max));
+				UVs [2] = new Vector2 (tileSize * (tilePos.x + d / max), tileSize * (tilePos.y + h / max));
+				UVs [3] = new Vector2 (tileSize * (tilePos.x + d / max), tileSize * tilePos.y);
 				return UVs;
 			}
 		}
@@ -195,8 +207,26 @@ namespace CreVox
 		public virtual Tile TexturePosition (Direction direction)
 		{
 			Tile tile = new Tile ();
-			tile.x = 1;
-			tile.y = 1;
+			switch (direction) {
+			case Direction.up:
+				tile.x = 0;
+				tile.y = 1;
+				break;
+			case Direction.down:
+				tile.x = 1;
+				tile.y = 1;
+				break;
+			case Direction.north:
+			case Direction.south:
+				tile.x = 0;
+				tile.y = 0;
+				break;
+			case Direction.east:
+			case Direction.west:
+				tile.x = 1;
+				tile.y = 0;
+				break;
+			}
 			return tile;
 		}
 	}
