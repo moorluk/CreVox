@@ -13,7 +13,8 @@ namespace CreVox
 
 		public static string resourcesPath = "Assets/Resources/";
 		public static string resourceSubPath = "Crevox";
-		
+
+		public static string box = resourceSubPath + "/BoxCursor";
 		public static string chunk = resourceSubPath + "/chunk";
 		public static string save = resourceSubPath + "/VolumeData";
 		public static string pieces = resourceSubPath + "/VolumeArtPack/LevelPieces";

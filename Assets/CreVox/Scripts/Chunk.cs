@@ -1,7 +1,9 @@
 ﻿//Chunk.cs
 using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace CreVox
 {
@@ -73,7 +75,9 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
+						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
+						#endif
 							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
 					}
 				}
@@ -87,7 +91,9 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
+						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
+						#endif
 							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
 					}
 				}
@@ -103,6 +109,7 @@ namespace CreVox
 					for (int z = 0; z < chunkSize; z++) {
 						BlockAir air = blocks [x, y, z] as BlockAir;
 
+						#if UNITY_EDITOR
 						if (!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) {
 							if (air != null)
 								air.ShowPiece (false);
@@ -111,6 +118,11 @@ namespace CreVox
 							if (air != null)
 								air.ShowPiece (true);
 						}
+						#else
+						meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+						if (air != null)
+						air.ShowPiece (true);
+						#endif
 					}
 				}
 			}

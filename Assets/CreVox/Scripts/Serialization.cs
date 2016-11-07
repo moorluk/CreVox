@@ -1,16 +1,18 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.IO;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
-
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 namespace CreVox
 {
 
 	public static class Serialization
 	{
+		#if UNITY_EDITOR
 		public static string saveFolderName = PathCollect.save;
 
 		public static string GetSaveLocation(string _path = null)
@@ -78,6 +80,7 @@ namespace CreVox
 			stream.Close();
 			return save;
 		}
+		#endif
 
 		public static Save LoadRTWorld(string path)
 		{

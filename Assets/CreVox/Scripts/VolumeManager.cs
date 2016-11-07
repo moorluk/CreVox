@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,18 +14,19 @@ namespace CreVox
 			public Vector3 position;
 			public Vector3 rotation;
 		}
-		public static bool saveBackup = true;
-		public bool saveBackupFile;
-
 		public Dungeon[] volumes;
 		public Volume volume;
 
+		#if UNITY_EDITOR
+		public static bool saveBackup = true;
+		public bool saveBackupFile;
+
 		void Start ()
 		{
-			if (!EditorApplication.isPlaying && saveBackup) {
+			if (!UnityEditor.EditorApplication.isPlaying && saveBackup) {
 				BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
-				EditorApplication.CallbackFunction _event = EditorApplication.playmodeStateChanged;
+				UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
 				string log = "";
 				for (int i = 0; i < _event.GetInvocationList ().Length; i++) {
 					log = log + i + "/" + _event.GetInvocationList ().Length + ": " + _event.GetInvocationList () [i].Method.ToString () + "\n";
@@ -40,5 +40,6 @@ namespace CreVox
 			if (saveBackupFile != saveBackup)
 				saveBackup = saveBackupFile;
 		}
+		#endif
 	}
 }

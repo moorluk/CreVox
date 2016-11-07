@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace CreVox
 {
@@ -14,10 +16,11 @@ namespace CreVox
 
 		private GameObject pieces, deco;
 
+		public string workFile = PathCollect.save + "/temp";
+		public string tempPath;
+
 		public string piecePack = PathCollect.pieces;
 		public Material vertexMaterial;
-
-		public float editDis = 120f;
 
 		void Awake()
 		{
@@ -29,7 +32,9 @@ namespace CreVox
 		}
 		void Update()
 		{
+			#if UNITY_EDITOR
 			CompileSave ();
+			#endif
 		}
 
 		#region Chunk
@@ -37,7 +42,7 @@ namespace CreVox
 		public Dictionary<WorldPos, Chunk> chunks = new Dictionary<WorldPos, Chunk>();
 		public int chunkX = 1;
 		public int chunkY = 1;
-		public int chunkZ = 1;
+		public int chunkZ = 1;	
 
 		public void Init(int _chunkX, int _chunkY, int _chunkZ)
 		{
@@ -59,14 +64,19 @@ namespace CreVox
 
 			CreateChunks();
 
+			#if UNITY_EDITOR
 			if (!EditorApplication.isPlaying) {
 				CreateRuler ();
 				CreateLevelRuler ();
 				if (!box) {
 					box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
+//					GameObject boxr = Resources.Load<GameObject>(PathCollect.box);
+//					Debug.Log(boxr);
+//					box = Instantiate<GameObject>(boxr);
 					box.hideFlags = HideFlags.HideInHierarchy;
 				}
 			}
+			#endif
 		}
 
 		public void Reset()
@@ -79,6 +89,7 @@ namespace CreVox
 				Object.DestroyImmediate(pieces);
 			if (deco)
 				Object.DestroyImmediate(deco);
+			#if UNITY_EDITOR
 			if (ruler)
 				Object.DestroyImmediate(ruler);
 			if (layerRuler)
@@ -86,6 +97,7 @@ namespace CreVox
 
 			mColl = null;
 			bColl = null;
+			#endif
 
 			for (int i = transform.childCount; i > 0; i--) {
 				Object.DestroyImmediate (transform.GetChild (i - 1).gameObject);
@@ -197,8 +209,7 @@ namespace CreVox
 		#endregion
 
 		#region Temp Save & Load
-		public string workFile = PathCollect.save + "/temp";
-		public string tempPath;
+		#if UNITY_EDITOR
 		public bool compileSave;
 
 		void CompileSave()
@@ -235,6 +246,7 @@ namespace CreVox
 			Serialization.SaveWorld (volume, PathCollect.resourcesPath + tempPath + ".bytes");
 			AssetDatabase.Refresh();
 		}
+		#endif
 		public void LoadTempWorld()
 		{
 			Save save = null;
@@ -250,11 +262,14 @@ namespace CreVox
 			}
 
 			volume.BuildVolume (save);
+			#if UNITY_EDITOR
 			SceneView.RepaintAll ();
+			#endif
 		}
 		#endregion
 
 		#region Ruler
+		#if UNITY_EDITOR
 		private GameObject ruler, layerRuler;
 		public GameObject box = null;
 		private MeshCollider mColl;
@@ -314,15 +329,18 @@ namespace CreVox
 				bColl.enabled = _active;
 				pointer = _active;
 		}
+		#endif
 		#endregion
 
 		#region Editor Scene UI
+		#if UNITY_EDITOR
 		
 		public Color YColor;
 		public bool pointer;
 		public int pointY;
 		public bool cuter;
 		public int cutY;
+		public float editDis = 120f;
 
 		void OnDrawGizmos()
 		{
@@ -413,6 +431,7 @@ namespace CreVox
 			if (chunks != null && chunks.Count > 0)
 				UpdateChunks ();
 		}
+		#endif
 		#endregion
 
 		public void BuildVolume(Save _save)
@@ -481,7 +500,11 @@ namespace CreVox
 			float z = bPos.z * Block.d + pos.z;
 
 			if (_piece != null) {
+				#if UNITY_EDITOR
 				obj = PrefabUtility.InstantiatePrefab(_piece.gameObject) as GameObject;
+				#else
+				obj = GameObject.Instantiate(_piece.gameObject);
+				#endif
 				obj.transform.parent = pieces.transform;
 				obj.transform.localPosition = new Vector3(x, y, z);
 				obj.transform.localRotation = Quaternion.Euler(0, GetPieceAngle(gPos.x, gPos.z), 0);

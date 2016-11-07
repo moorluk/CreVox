@@ -13,14 +13,13 @@ public class ThirdPersonCamera : MonoBehaviour
 	[Header ("Position Setting")]
 	public float distanceAway = 4.3f;
 	public float distanceUp = 1.2f;
-	public LayerMask collisionMask;
-	private float curAway, curUp, dis;
-	private Vector3 camPos;
+	private float curAway, curUp, curDis, curYRot;
+	private Vector3 desiredRigPos, vecolity;
 	
 	[Header ("Rotation Setting")]
-	public float xRotate = 150f;
-	public float yRotate = 10f;
-	public float smooth = 12;
+	public float yRotateSpeed = 500f;
+	public float xRotateSpeed = 15f;
+	public float smooth = 5;
 	private float xInput = 0f, yInput = 0f;
 	private Vector3 lookDir = Vector3.zero;
 
@@ -28,28 +27,48 @@ public class ThirdPersonCamera : MonoBehaviour
 	public GameObject targetEffect;
 	[Range (0f, 1f)] public float effectHigh = 0.66f;
 	private GameObject effInstance;
-	private Vector3 targetPos, effectPos;
+	private Vector3 targetPos, effectPos, smoothedLookPos;
+
+	[Space]
+	public CameraCollisionHandler camCol = new CameraCollisionHandler ();
+//	private InputAct act;
 
 	[Header ("Infomation Only")]
 	[SerializeField] private CamState camState;
-	[SerializeField] private Transform m_player, m_camera, m_target;
+	[SerializeField] private Transform m_look, m_camera, m_target;
+	private Vector3 sVel1, sVel2, sVel3; 
+
+	public float pitchMax = 30f;
+	public float currentPitch = 0f;
+	public float xAngleMin = -10f;
+	public float xAngleMax = 60f;
+	public float curXAngle = 0f;
 
 	void Start ()
 	{
-		m_camera = this.transform;
+		Application.targetFrameRate = 60;
+		Camera cam = transform.GetComponentInChildren<Camera> ();
+		m_camera = cam.transform; //
 		curAway = distanceAway;
 		curUp = distanceUp;
-		dis = new Vector2 (distanceAway, distanceUp).magnitude;
-		effInstance = Instantiate (targetEffect);
-		effInstance.SetActive (false);
+		curDis = new Vector2 (distanceAway, distanceUp).magnitude;
+		if(targetEffect) {
+			effInstance = Instantiate (targetEffect);
+			effInstance.SetActive (false);
+		}
+
+		camCol.Initialize (cam);
+//		act = GameObject.FindWithTag ("Player").transform.GetComponent<InputAct> ();
+		m_target = null;
 	}
 
 	void Update ()
 	{
-		if (m_player == null)
-			m_player = GameObject.FindWithTag ("Look").transform;
-		
-//		m_target = GameObject.FindWithTag ("Player").transform.GetComponent<InputAct> ().m_target;
+		if (m_look == null)
+			m_look = GameObject.FindWithTag ("Look").transform;
+
+//		if(act != null)
+//			m_target = act.m_target;
 
 		if (Input.GetButtonDown ("Snap")) {
 			if (m_target == null) {
@@ -59,7 +78,7 @@ public class ThirdPersonCamera : MonoBehaviour
 			}
 		}
 
-		if ((camState == CamState.Target) != effInstance.activeSelf)
+		if (effInstance != null && ((camState == CamState.Target) != effInstance.activeSelf))
 			effInstance.SetActive (!effInstance.activeSelf);
 
 		if (m_target == null && camState == CamState.Target)
@@ -73,14 +92,14 @@ public class ThirdPersonCamera : MonoBehaviour
 	{
 		switch (camState) {
 		case CamState.Behind:
-			lookDir = m_player.position - m_camera.position;
+			lookDir = m_look.position - transform.position;
 			lookDir.y = 0;
 			lookDir.Normalize ();
 			CameraRotate ();
 			break;
 
 		case CamState.Target:
-			lookDir = m_target.position - m_player.position;
+			lookDir = m_target.position - m_look.position;
 			lookDir.y = 0;
 			lookDir.Normalize ();
 			CameraRotateTarget ();
@@ -89,45 +108,84 @@ public class ThirdPersonCamera : MonoBehaviour
 		case CamState.Reset:
 			curAway = distanceAway;
 //			curUp = distanceUp;
-			lookDir = m_player.transform.forward;
+			lookDir = m_look.transform.forward;
 			CameraRotate ();
 			break;
 		}
 
-		CameraCollision ();
-
 		if (camState == CamState.Reset) {
-			if ((transform.position - camPos).magnitude < 0.05f
+			if ((transform.position - desiredRigPos).magnitude < 0.05f
 			    || Mathf.Abs (Input.GetAxisRaw ("Horizontal")) > 0.1f
 			    || Mathf.Abs (Input.GetAxisRaw ("Vertical")) > 0.1f)
 				camState = CamState.Behind;
 		}
 
-		transform.position = Vector3.Lerp (transform.position, camPos, Time.deltaTime * smooth);
-		transform.LookAt ((camState == CamState.Target) ? targetPos : m_player.position);
+
+
+		//Vector3 lookPos = (camState == CamState.Target) ? targetPos : m_look.position;
+		Vector3 lookPos = m_look.position;
+
+		Vector3 localLookPos = m_camera.InverseTransformPoint (lookPos);
+		Vector3 localSmoothedLookPos = m_camera.InverseTransformPoint (smoothedLookPos);
+		localSmoothedLookPos.y = localLookPos.y;
+		localSmoothedLookPos.z = localLookPos.z;
+		smoothedLookPos = m_camera.TransformPoint (localSmoothedLookPos);
+
+		smoothedLookPos = Vector3.SmoothDamp (smoothedLookPos, lookPos, ref sVel2, smooth * 1.3f);
+
+		if(camState == CamState.Reset)
+			transform.position = Vector3.SmoothDamp (transform.position, desiredRigPos, ref sVel1, smooth*0.12f);
+		else
+			transform.position = desiredRigPos; 
+
+		if (camCol.Collide (smoothedLookPos, desiredRigPos))
+			m_camera.position = Vector3.SmoothDamp (m_camera.position, camCol.targetPos, ref sVel3, smooth*0.01f);
+		else
+			m_camera.position = transform.position;
+
+		//transform.LookAt (smoothedLookPos);
+		if(camState == CamState.Target)
+			m_camera.LookAt (m_target.position);
+		else
+			m_camera.LookAt (smoothedLookPos);
 	}
 
 	void CameraRotate ()
 	{
 		if (Mathf.Abs (yInput) > 0.1f)
-			curUp += yInput * yRotate * Time.deltaTime;
+			curXAngle += yInput * xRotateSpeed * Time.deltaTime;
+			//curUp += yInput * xRotateSpeed * Time.deltaTime;
 
-		curUp = Mathf.Clamp (curUp, dis * -0.7f, dis * 0.95f);
-		curAway = Mathf.Pow (Mathf.Pow (dis, 2.0f) - Mathf.Pow (curUp, 2.0f), 0.5f);
+		if (Mathf.Abs (xInput) > 0.1f) {
+			curYRot = xInput * yRotateSpeed * Time.deltaTime;
+		} else
+			curYRot = Mathf.SmoothStep(curYRot, 0f, Time.deltaTime * 10f);
 
-		camPos = m_player.position + m_player.up * curUp - lookDir * curAway;
+		//curUp = Mathf.Clamp (curUp, curDis * -0.7f, curDis * 0.95f);
+		//curAway = Mathf.Pow (Mathf.Pow (curDis, 2.0f) - Mathf.Pow (curUp, 2.0f), 0.5f);
+		curXAngle = Mathf.Clamp(curXAngle, xAngleMin, xAngleMax);
+		curUp = curDis * Mathf.Sin (curXAngle * Mathf.Deg2Rad);
+		curAway = curDis * Mathf.Cos (curXAngle * Mathf.Deg2Rad);
 
-		if (Mathf.Abs (xInput) > 0.1f)
-			m_camera.RotateAround (m_player.position + m_player.up * distanceUp, m_player.up, xInput * xRotate * Time.deltaTime);
+		Quaternion yRot = Quaternion.Euler (0f, curYRot, 0f);
+
+		desiredRigPos = m_look.position + yRot *(m_look.up * curUp - lookDir * curAway);
 	}
 
 	void CameraRotateTarget ()
 	{
 		targetPos = m_target.position + (Vector3.up * -0.2f);
-		Vector3 delta = (m_player.position - targetPos);
-		float disTarget = dis + delta.magnitude;
+		Vector3 delta = (smoothedLookPos - targetPos);
+		currentPitch = 90f - Vector3.Angle (Vector3.up, delta);
+		if (currentPitch > pitchMax)
+			currentPitch = pitchMax;
 
-		camPos = m_target.position + delta.normalized * disTarget;
+		float disTarget = curDis + delta.magnitude;
+
+		Vector3 axis = Vector3.Cross (delta.normalized, Vector3.up);
+		delta = Quaternion.AngleAxis (currentPitch - 90f, axis) * Vector3.up;
+
+		desiredRigPos = m_target.position + delta.normalized * disTarget;
 
 		effectPos = m_target.position + Vector3.up * (m_target.GetComponentInChildren<Renderer> ().bounds.size.y * effectHigh);
 		effInstance.transform.position = effectPos;
@@ -136,7 +194,13 @@ public class ThirdPersonCamera : MonoBehaviour
 	void CameraCollision ()
 	{
 		RaycastHit hit = new RaycastHit ();
-		if (Physics.Linecast (m_player.position, camPos, out hit, collisionMask))
-			camPos = hit.point;
+		if (Physics.Linecast (m_look.position, desiredRigPos, out hit, camCol.collisionLayer))
+			desiredRigPos = hit.point;
+	}
+
+	void OnDrawGizmos() {
+		Gizmos.DrawSphere (smoothedLookPos, 0.3f);
+		Gizmos.DrawSphere (desiredRigPos, 0.3f);
+		Gizmos.DrawSphere (camCol.targetPos, 0.3f);
 	}
 }
