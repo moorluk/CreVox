@@ -42,7 +42,7 @@ namespace CreVox
 			if (saveBackup != saveBackupFile) {
 				saveBackup = saveBackupFile;
 			}
-			if (debugRuler != showDebugRuler) {
+			if (!UnityEditor.EditorApplication.isPlaying && debugRuler != showDebugRuler) {
 				debugRuler = showDebugRuler;
 				Debug.LogWarning ("Show Debug Ruler : " + debugRuler);
 				BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
