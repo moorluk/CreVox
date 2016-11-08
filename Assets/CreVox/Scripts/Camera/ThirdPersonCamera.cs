@@ -19,6 +19,9 @@ public class ThirdPersonCamera : MonoBehaviour
 	[Header ("Rotation Setting")]
 	public float yRotateSpeed = 500f;
 	public float xRotateSpeed = 15f;
+	public float xAngleMin = -10f;
+	public float xAngleMax = 60f;
+	public float pitchMax = 30f;
 	public float smooth = 5;
 	private float xInput = 0f, yInput = 0f;
 	private Vector3 lookDir = Vector3.zero;
@@ -38,17 +41,14 @@ public class ThirdPersonCamera : MonoBehaviour
 	[SerializeField] private Transform m_look, m_camera, m_target;
 	private Vector3 sVel1, sVel2, sVel3; 
 
-	public float pitchMax = 30f;
 	public float currentPitch = 0f;
-	public float xAngleMin = -10f;
-	public float xAngleMax = 60f;
 	public float curXAngle = 0f;
 
 	void Start ()
 	{
 		Application.targetFrameRate = 60;
 		Camera cam = transform.GetComponentInChildren<Camera> ();
-		m_camera = cam.transform; //
+		m_camera = cam.transform;
 		curAway = distanceAway;
 		curUp = distanceUp;
 		curDis = new Vector2 (distanceAway, distanceUp).magnitude;
@@ -142,8 +142,7 @@ public class ThirdPersonCamera : MonoBehaviour
 			m_camera.position = Vector3.SmoothDamp (m_camera.position, camCol.targetPos, ref sVel3, smooth*0.01f);
 		else
 			m_camera.position = transform.position;
-
-		//transform.LookAt (smoothedLookPos);
+		
 		if(camState == CamState.Target)
 			m_camera.LookAt (m_target.position);
 		else
@@ -160,7 +159,7 @@ public class ThirdPersonCamera : MonoBehaviour
 			curYRot = xInput * yRotateSpeed * Time.deltaTime;
 		} else
 			curYRot = Mathf.SmoothStep(curYRot, 0f, Time.deltaTime * 10f);
-
+		
 		//curUp = Mathf.Clamp (curUp, curDis * -0.7f, curDis * 0.95f);
 		//curAway = Mathf.Pow (Mathf.Pow (curDis, 2.0f) - Mathf.Pow (curUp, 2.0f), 0.5f);
 		curXAngle = Mathf.Clamp(curXAngle, xAngleMin, xAngleMax);
@@ -190,14 +189,14 @@ public class ThirdPersonCamera : MonoBehaviour
 		effectPos = m_target.position + Vector3.up * (m_target.GetComponentInChildren<Renderer> ().bounds.size.y * effectHigh);
 		effInstance.transform.position = effectPos;
 	}
-
+/*
 	void CameraCollision ()
 	{
 		RaycastHit hit = new RaycastHit ();
 		if (Physics.Linecast (m_look.position, desiredRigPos, out hit, camCol.collisionLayer))
 			desiredRigPos = hit.point;
 	}
-
+*/
 	void OnDrawGizmos() {
 		Gizmos.DrawSphere (smoothedLookPos, 0.3f);
 		Gizmos.DrawSphere (desiredRigPos, 0.3f);

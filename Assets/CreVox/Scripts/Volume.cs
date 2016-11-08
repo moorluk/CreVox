@@ -68,13 +68,8 @@ namespace CreVox
 			if (!EditorApplication.isPlaying) {
 				CreateRuler ();
 				CreateLevelRuler ();
-				if (!box) {
-					box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
-//					GameObject boxr = Resources.Load<GameObject>(PathCollect.box);
-//					Debug.Log(boxr);
-//					box = Instantiate<GameObject>(boxr);
-					box.hideFlags = HideFlags.HideInHierarchy;
-				}
+				CreateBox ();
+				ShowRuler();
 			}
 			#endif
 		}
@@ -254,6 +249,7 @@ namespace CreVox
 				Debug.Log ("Volume[<B>" + transform.name + "] <color=#05EE61>Load tempPath :</color></B>\n" + tempPath);
 				save = Serialization.LoadRTWorld (tempPath);
 			} else if (Serialization.LoadRTWorld (workFile) != null) {
+				tempPath = null;
 				Debug.Log ("Volume<B>[" + transform.name + "] <color=#059E61>Load workFile :</color></B>\n" + workFile);
 				save = Serialization.LoadRTWorld (workFile);
 			} else {
@@ -282,7 +278,7 @@ namespace CreVox
 			ruler.layer = LayerMask.NameToLayer("Editor");
 			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
-			ruler.hideFlags = HideFlags.HideInHierarchy;
+//			ruler.hideFlags = HideFlags.HideInHierarchy;
 			mColl = ruler.AddComponent<MeshCollider>();
 
 			MeshData meshData = new MeshData();
@@ -316,18 +312,37 @@ namespace CreVox
 			layerRuler.transform.parent = transform;
 			layerRuler.transform.localPosition = Vector3.zero;//FreePos
 			layerRuler.transform.localRotation = Quaternion.Euler(Vector3.zero);
-			layerRuler.hideFlags = HideFlags.HideInHierarchy;
+//			layerRuler.hideFlags = HideFlags.HideInHierarchy;
 			bColl = layerRuler.AddComponent<BoxCollider>();
 			bColl.size = new Vector3(chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
 			ChangePointY(pointY);
 		}
+		void CreateBox()
+		{
+			if (!box) {
+				box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
+//				box.hideFlags = HideFlags.HideInHierarchy;
+			}
+		}
 		public void ActiveRuler(bool _active)
 		{
-			if (mColl)
+			if (mColl) {
 				mColl.enabled = _active;
-			if (bColl)
+				ruler.SetActive (_active);
+			}
+			if (bColl) {
 				bColl.enabled = _active;
-				pointer = _active;
+				layerRuler.SetActive (_active);
+			}
+			pointer = _active;
+		}
+		public void ShowRuler()
+		{
+			bool _active = EditorApplication.isPlaying ? false : VolumeManager.debugRuler;
+			ruler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
+			layerRuler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
+			box.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
+			ActiveRuler (_active);
 		}
 		#endif
 		#endregion

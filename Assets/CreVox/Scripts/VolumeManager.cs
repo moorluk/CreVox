@@ -19,7 +19,9 @@ namespace CreVox
 
 		#if UNITY_EDITOR
 		public static bool saveBackup = true;
+		public static bool debugRuler = false;
 		public bool saveBackupFile;
+		public bool showDebugRuler;
 
 		void Start ()
 		{
@@ -37,8 +39,14 @@ namespace CreVox
 	
 		void LateUpdate ()
 		{
-			if (saveBackupFile != saveBackup)
+			if (saveBackup != saveBackupFile) {
 				saveBackup = saveBackupFile;
+			}
+			if (debugRuler != showDebugRuler) {
+				debugRuler = showDebugRuler;
+				Debug.LogWarning ("Show Debug Ruler : " + debugRuler);
+				BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+			}
 		}
 		#endif
 	}

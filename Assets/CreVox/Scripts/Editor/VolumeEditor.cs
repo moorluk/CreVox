@@ -27,7 +27,8 @@ namespace CreVox
 
 		private void OnDisable()
 		{
-			volume.ActiveRuler (false);
+			if (!VolumeManager.debugRuler)
+				volume.ActiveRuler (false);
 			UnsubscribeEvents();
 		}
 
