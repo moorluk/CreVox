@@ -4,28 +4,26 @@ using System.Collections.Generic;
 
 namespace CreVox
 {
+	#if UNITY_EDITOR
+	public class VolumeGlobal
+	{
+		public static bool saveBackup = true;
+		public static bool debugRuler = false;
+	}
+	#endif
+
 	[ExecuteInEditMode]
 	public class VolumeManager : MonoBehaviour
 	{
-		[System.Serializable]
-		public struct Dungeon
-		{
-			public Volume volume;
-			public Vector3 position;
-			public Vector3 rotation;
-		}
-		public Dungeon[] volumes;
-		public Volume volume;
-
 		#if UNITY_EDITOR
-		public static bool saveBackup = true;
-		public static bool debugRuler = false;
 		public bool saveBackupFile;
 		public bool showDebugRuler;
+		#endif
 
 		void Start ()
 		{
-			if (!UnityEditor.EditorApplication.isPlaying && saveBackup) {
+			#if UNITY_EDITOR
+			if (!UnityEditor.EditorApplication.isPlaying && VolumeGlobal.saveBackup) {
 				BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
 				UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
@@ -35,19 +33,48 @@ namespace CreVox
 				}
 				Debug.LogWarning (log);
 			}
+			#endif
 		}
-	
-		void LateUpdate ()
+
+		#region Volume Control
+
+		public Dungeon[] dungeons;
+
+		public void UpdateDungeon ()
 		{
-			if (saveBackup != saveBackupFile) {
-				saveBackup = saveBackupFile;
+			Volume[] v = GameObject.FindObjectsOfType<Volume> ();
+			dungeons = new Dungeon[v.Length];
+			for (int i = 0; i < v.Length; i++) {
+				Transform vt = v [i].transform;
+				dungeons [i].volume = v [i];
+				dungeons [i].volumeFile = v [i].workFile;
+				dungeons [i].artPack = v [i].piecePack;
+				dungeons [i].position = vt.position;
+				dungeons [i].rotation = vt.rotation;
 			}
-			if (!UnityEditor.EditorApplication.isPlaying && debugRuler != showDebugRuler) {
-				debugRuler = showDebugRuler;
-				Debug.LogWarning ("Show Debug Ruler : " + debugRuler);
-				BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-			}
+		}
+
+		#endregion
+
+		#region Decoration (Fake)
+
+		#if UNITY_EDITOR
+		private GameObject deco;
+
+		void CreateDeco ()
+		{
+			deco = new GameObject ("Decoration");
+			deco.transform.parent = transform;
+			deco.transform.localPosition = Vector3.zero;
+			deco.transform.localRotation = Quaternion.Euler (Vector3.zero);
+		}
+
+		void ClearDeco ()
+		{
+			if (deco)
+				Object.DestroyImmediate (deco);
 		}
 		#endif
+		#endregion
 	}
 }

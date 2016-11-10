@@ -6,33 +6,32 @@ using System.Collections.Generic;
 
 namespace CreVox
 {
-
-	[CustomEditor(typeof(Volume))]
+	[CustomEditor (typeof(Volume))]
 	public class VolumeEditor : Editor
 	{
 		Volume volume;
-		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk>();
+		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
 		int cx = 1;
 		int cy = 1;
 		int cz = 1;
 
 		WorldPos workpos;
 
-		private void OnEnable()
+		private void OnEnable ()
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
-			SubscribeEvents();
+			SubscribeEvents ();
 		}
 
-		private void OnDisable()
+		private void OnDisable ()
 		{
-			if (!VolumeManager.debugRuler)
+			if (!VolumeGlobal.debugRuler)
 				volume.ActiveRuler (false);
-			UnsubscribeEvents();
+			UnsubscribeEvents ();
 		}
 
-		public override void OnInspectorGUI()
+		public override void OnInspectorGUI ()
 		{
 			float lw = 60;
 			float w = (Screen.width - 20 - lw) / 3 - 8;
@@ -64,12 +63,12 @@ namespace CreVox
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Chunk Data", EditorStyles.boldLabel);
-				if (GUILayout.Button (new GUIContent("Save","Hold SHIFT to quick save to workfile."), GUILayout.Width (buttonW))) {
+				if (GUILayout.Button (new GUIContent ("Save", "Hold SHIFT to quick save to workfile."), GUILayout.Width (buttonW))) {
 					if (Event.current.shift) {
 						if (volume.workFile != "") {
 							string sPath = 
-								Application.dataPath 
-								+ PathCollect.resourcesPath.Substring(6) 
+								Application.dataPath
+								+ PathCollect.resourcesPath.Substring (6)
 								+ volume.workFile + ".bytes";
 							Serialization.SaveWorld (volume, sPath);
 							volume.tempPath = "";
@@ -84,12 +83,12 @@ namespace CreVox
 					}
 				}
 
-				if (GUILayout.Button (new GUIContent("Load","Hold SHIFT to quick load workfile."), GUILayout.Width (buttonW))) {
+				if (GUILayout.Button (new GUIContent ("Load", "Hold SHIFT to quick load workfile."), GUILayout.Width (buttonW))) {
 					if (Event.current.shift) {
 						if (volume.workFile != "") {
 							string lPath = 
-								Application.dataPath 
-								+ PathCollect.resourcesPath.Substring(6) 
+								Application.dataPath
+								+ PathCollect.resourcesPath.Substring (6)
 								+ volume.workFile + ".bytes";
 							Save save = Serialization.LoadWorld (lPath);
 							if (save != null) {
@@ -117,37 +116,40 @@ namespace CreVox
 				EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
 			}
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
-				if (GUILayout.Button ("選", GUILayout.Width (buttonW))) {
-					string ppath = EditorUtility.OpenFolderPanel (
-						"選擇場景風格元件包的目錄位置",
-						volume.piecePack,
-						""
-					);
-					volume.SaveTempWorld ();
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
-					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
-					if (mats.Length == 1) {
-						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
-						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-					} else
-						volume.vertexMaterial = null;
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
-					volume.piecePack = ppath;
-					volume.LoadTempWorld ();
-				}
-				GUILayout.EndHorizontal ();
+//			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+//				GUILayout.BeginHorizontal ();
+//				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
+//				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
+//					string ppath = EditorUtility.OpenFolderPanel (
+//						               "選擇場景風格元件包的目錄位置",
+//						               volume.piecePack,
+//						               ""
+//					               );
+//					if (VolumeGlobal.saveBackup)
+//						volume.SaveTempWorld ();
+//					
+//					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
+//					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
+//					if (mats.Length == 1) {
+//						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
+//						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
+//					} else
+//						volume.vertexMaterial = null;
+//					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
+//					volume.piecePack = ppath;
+//
+//					volume.LoadTempWorld ();
+//				}
+//				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.labelWidth = 120f;
-				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
-				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
-					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
-					, volume.vertexMaterial
-					, typeof(Material)
-					, false);
-			}
+//				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
+//				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
+//					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
+//					, volume.vertexMaterial
+//					, typeof(Material)
+//					, false);
+//			}
 
 			DrawPieceSelectedGUI ();
 
@@ -158,6 +160,7 @@ namespace CreVox
 		}
 
 		#region Editor Scene UI
+
 		public enum EditMode
 		{
 			View,
@@ -166,42 +169,44 @@ namespace CreVox
 			ObjectLayer,
 			Object
 		}
+
 		private EditMode selectedEditMode;
 		private EditMode currentEditMode;
 
-		private void OnSceneGUI()
+		private void OnSceneGUI ()
 		{
-			DrawModeGUI();
-			ModeHandler();
+			DrawModeGUI ();
+			ModeHandler ();
 			if (!EditorApplication.isPlaying)
 				EventHandler ();
 		}
 
-		private void DrawModeGUI()
+		private void DrawModeGUI ()
 		{
-			List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode>();
-			List<string> modeLabels = new List<string>();
+			List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode> ();
+			List<string> modeLabels = new List<string> ();
 			foreach (EditMode mode in modes) {
-				modeLabels.Add(mode.ToString());
+				modeLabels.Add (mode.ToString ());
 			}
 			float ButtonW = 80;
 
-			Handles.BeginGUI();
+			Handles.BeginGUI ();
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-			GUILayout.BeginArea(new Rect(10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea); //根據選項數量決定寬度
+			GUILayout.BeginArea (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea); //根據選項數量決定寬度
 			GUI.color = Color.white;
-			selectedEditMode = (EditMode)GUILayout.Toolbar((int)currentEditMode, modeLabels.ToArray(), GUILayout.ExpandHeight(true));
+			selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
 			GUILayout.BeginHorizontal ();
-			EditorGUILayout.LabelField ("Editable Distance",GUILayout.Width(105));
-			volume.editDis = GUILayout.HorizontalSlider(volume.editDis, 99f, 999f);
-			EditorGUILayout.LabelField (((int)volume.editDis).ToString(),GUILayout.Width(25));
+			EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
+			volume.editDis = GUILayout.HorizontalSlider (volume.editDis, 99f, 999f);
+			EditorGUILayout.LabelField (((int)volume.editDis).ToString (), GUILayout.Width (25));
 			GUILayout.EndHorizontal ();
-			GUILayout.EndArea();
+			GUILayout.EndArea ();
 			
-			DrawLayerModeGUI();
-			Handles.EndGUI();
+			DrawLayerModeGUI ();
+			Handles.EndGUI ();
 		}
-		private void ModeHandler()
+
+		private void ModeHandler ()
 		{
 			switch (selectedEditMode) {
 			case EditMode.Voxel:
@@ -217,100 +222,102 @@ namespace CreVox
 			}
 			if (selectedEditMode != currentEditMode) {
 				currentEditMode = selectedEditMode;
-				Repaint();
+				Repaint ();
 			}
 		}
 
-		private void DrawMarker(bool isErase)
+		private void DrawMarker (bool isErase)
 		{
 			RaycastHit hit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("Editor");
-			bool isHit = Physics.Raycast(worldRay, out hit, volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
+			bool isHit = Physics.Raycast (worldRay, out hit, volume.editDis, _mask);
 
-			if (isHit && !isErase && hit.collider.GetComponentInParent<Volume>()==volume) {
-				WorldPos pos = EditTerrain.GetBlockPos(hit, isErase ? false : true);
+			if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
+				WorldPos pos = EditTerrain.GetBlockPos (hit, isErase ? false : true);
 				float x = pos.x * Block.w;
 				float y = pos.y * Block.h;
 				float z = pos.z * Block.d;
 
-				Handles.DrawLine(hit.point, hit.point + hit.normal);
+				Handles.DrawLine (hit.point, hit.point + hit.normal);
 				if (hit.collider.gameObject.tag == PathCollect.rularTag) {
 					hit.normal = Vector3.zero;
 				}
-				BoxCursorUtils.UpdateBox(volume.box, new Vector3(x, y, z), hit.normal);
-				SceneView.RepaintAll();
+				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), hit.normal);
+				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
-				SceneView.RepaintAll();
+				SceneView.RepaintAll ();
 			}
 		}
-		private void DrawLayerMarker()
+
+		private void DrawLayerMarker ()
 		{
 			RaycastHit hit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("EditorLevel");
-			bool isHit = Physics.Raycast(worldRay, out hit, volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
+			bool isHit = Physics.Raycast (worldRay, out hit, volume.editDis, _mask);
 
-			if (isHit && hit.collider.GetComponentInParent<Volume>()==volume) {
-				WorldPos pos = EditTerrain.GetBlockPos(hit, false);
+			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
+				WorldPos pos = EditTerrain.GetBlockPos (hit, false);
 				float x = pos.x * Block.w;
 				float y = pos.y * Block.h;
 				float z = pos.z * Block.d;
 
-				Handles.DrawLine(hit.point, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox(volume.box, new Vector3(x, y, z), Vector3.zero);
-				SceneView.RepaintAll();
+				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), Vector3.zero);
+				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
-				SceneView.RepaintAll();
+				SceneView.RepaintAll ();
 			}
 		}
-		private void DrawGridMarker()
+
+		private void DrawGridMarker ()
 		{
 			if (_pieceSelected == null)
 				return;
 			bool isNotLayer = (currentEditMode != EditMode.ObjectLayer);
 			RaycastHit hit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer("Editor") : 1 << LayerMask.NameToLayer("EditorLevel");
-			bool isHit = Physics.Raycast(worldRay, out hit, (int)volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
+			bool isHit = Physics.Raycast (worldRay, out hit, (int)volume.editDis, _mask);
 
-			if (isHit && hit.collider.GetComponentInParent<Volume>()==volume) {
+			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				if (hit.normal.y <= 0)
 					return;
 				
-				WorldPos pos = EditTerrain.GetBlockPos(hit, isNotLayer);
-				WorldPos gPos = EditTerrain.GetGridPos(hit.point);
+				WorldPos pos = EditTerrain.GetBlockPos (hit, isNotLayer);
+				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
 				gPos.y = isNotLayer ? 0 : (int)Block.h;
 
 				float x = pos.x * Block.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
-				float y = pos.y * Block.h + gPos.y -1;
+				float y = pos.y * Block.h + gPos.y - 1;
 				float z = pos.z * Block.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
 
 				Handles.color = Color.white;
 				Handles.lighting = true;
-				Handles.RectangleCap(0, new Vector3(pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler(90, 0, 0), Block.hw);
-				Handles.DrawLine(hit.point, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
+				Handles.RectangleCap (0, new Vector3 (pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler (90, 0, 0), Block.hw);
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
 
 				LevelPiece.PivotType pivot = _pieceSelected.pivot;
-				if (CheckPlaceable((int)gPos.x, (int)gPos.z, pivot)) {
+				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
-					Handles.RectangleCap(0, new Vector3(x, y, z), Quaternion.Euler(90, 0, 0), 0.5f);
+					Handles.RectangleCap (0, new Vector3 (x, y, z), Quaternion.Euler (90, 0, 0), 0.5f);
 					Handles.color = Color.white;
 				}
 
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox(volume.box, new Vector3(pos.x * Block.w, pos.y * Block.h, pos.z * Block.d), Vector3.zero);
-				SceneView.RepaintAll();
+				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d), Vector3.zero);
+				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
-				SceneView.RepaintAll();
+				SceneView.RepaintAll ();
 			}
 		}
 
-		private void EventHandler()
+		private void EventHandler ()
 		{
 			if (Event.current.alt) {
 				return;
@@ -394,13 +401,15 @@ namespace CreVox
 				}
 			}
 		}
-		#endregion 
+
+		#endregion
 
 		#region LayerControl
+
 		private int fixPointY = 0;
 		private int fixCutY = 0;
 
-		private void DrawLayerModeGUI()
+		private void DrawLayerModeGUI ()
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
 			float bwidth = 70f;
@@ -410,7 +419,7 @@ namespace CreVox
 					using (var v = new GUILayout.VerticalScope ()) {
 						if (GUILayout.Button ("Pointer(Q)", GUILayout.Width (bwidth)))
 							EventFunction ("Q");
-						GUI.color = volume.pointer?Color.white:Color.gray;
+						GUI.color = volume.pointer ? Color.white : Color.gray;
 						EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
 						if (GUILayout.Button ("▲(W)", GUILayout.Width (45)))
 							EventFunction ("W");
@@ -422,7 +431,7 @@ namespace CreVox
 					using (var v = new GUILayout.VerticalScope ()) {
 						if (GUILayout.Button ("Cutter(E)", GUILayout.Width (bwidth)))
 							EventFunction ("E");
-						GUI.color = volume.cuter?Color.white:Color.gray;
+						GUI.color = volume.cuter ? Color.white : Color.gray;
 						EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
 						if (GUILayout.Button ("▲(R)", GUILayout.Width (45)))
 							EventFunction ("R");
@@ -434,7 +443,8 @@ namespace CreVox
 			}
 		}
 
-		private void EventFunction (string funcKey = ""){
+		private void EventFunction (string funcKey = "")
+		{
 			int _index = (int)currentEditMode;
 			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
 
@@ -493,57 +503,60 @@ namespace CreVox
 
 			}
 		}
+
 		#endregion
 
-		private void Paint(bool isErase)
+		private void Paint (bool isErase)
 		{
 			RaycastHit gHit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("Editor");
-			bool isHit = Physics.Raycast(worldRay, out gHit, volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
 			WorldPos pos;
 
-			if (isHit && gHit.collider.GetComponentInParent<Volume>()==volume) {
-				gHit.point = volume.transform.InverseTransformPoint(gHit.point);
-				gHit.normal = volume.transform.InverseTransformDirection(gHit.normal);
-				pos = EditTerrain.GetBlockPos(gHit, isErase ? false : true);
+			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
+				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
+				gHit.normal = volume.transform.InverseTransformDirection (gHit.normal);
+				pos = EditTerrain.GetBlockPos (gHit, isErase ? false : true);
 
-				volume.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
-				Chunk chunk = volume.GetChunk(pos.x, pos.y, pos.z);
+				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? new BlockAir () : new Block ());
+				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 
 				if (chunk) {
-					if (!dirtyChunks.ContainsKey(pos))
-						dirtyChunks.Add(pos, chunk);
-					chunk.UpdateMeshFilter();
-					SceneView.RepaintAll();
+					if (!dirtyChunks.ContainsKey (pos))
+						dirtyChunks.Add (pos, chunk);
+					chunk.UpdateMeshFilter ();
+					SceneView.RepaintAll ();
 				}
 			}
 		}
-		private void PaintLayer(bool isErase)
+
+		private void PaintLayer (bool isErase)
 		{
 			RaycastHit gHit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer("EditorLevel");
-			bool isHit = Physics.Raycast(worldRay, out gHit, volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
 			WorldPos pos;
 
-			if (isHit && gHit.collider.GetComponentInParent<Volume>()==volume) {
-				gHit.point = gHit.point + new Vector3(0f, -Block.h, 0f);
-				gHit.point = volume.transform.InverseTransformPoint(gHit.point);
-				pos = EditTerrain.GetBlockPos(gHit, true);
+			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
+				gHit.point = gHit.point + new Vector3 (0f, -Block.h, 0f);
+				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
+				pos = EditTerrain.GetBlockPos (gHit, true);
 
-				volume.SetBlock(pos.x, pos.y, pos.z, isErase ? new BlockAir() : new Block());
-				Chunk chunk = volume.GetChunk(pos.x, pos.y, pos.z);
+				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? new BlockAir () : new Block ());
+				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 
 				if (chunk) {
-					if (!dirtyChunks.ContainsKey(pos))
-						dirtyChunks.Add(pos, chunk);
-					chunk.UpdateMeshFilter();
-					SceneView.RepaintAll();
+					if (!dirtyChunks.ContainsKey (pos))
+						dirtyChunks.Add (pos, chunk);
+					chunk.UpdateMeshFilter ();
+					SceneView.RepaintAll ();
 				}
 			}
 		}
-		private void PaintPieces(bool isErase)
+
+		private void PaintPieces (bool isErase)
 		{
 			if (_pieceSelected == null)
 				return;
@@ -551,41 +564,41 @@ namespace CreVox
 			bool canPlace = false;
 
 			RaycastHit gHit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer("Editor") : 1 << LayerMask.NameToLayer("EditorLevel");
-			bool isHit = Physics.Raycast(worldRay, out gHit, volume.editDis, _mask);
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
 
-			if (isHit && gHit.collider.GetComponentInParent<Volume>()==volume) {
+			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
 				if (gHit.normal.y <= 0)
 					return;
 
-				gHit.point = volume.transform.InverseTransformPoint(gHit.point);
-				WorldPos bPos = EditTerrain.GetBlockPos(gHit, (currentEditMode == EditMode.Object));
-				WorldPos gPos = EditTerrain.GetGridPos(gHit.point);
+				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
+				WorldPos bPos = EditTerrain.GetBlockPos (gHit, (currentEditMode == EditMode.Object));
+				WorldPos gPos = EditTerrain.GetGridPos (gHit.point);
 				gPos.y = 0;
 				int gx = gPos.x;
 				int gz = gPos.z;
 
-				if (CheckPlaceable(gx, gz, _pieceSelected.pivot)) {
+				if (CheckPlaceable (gx, gz, _pieceSelected.pivot)) {
 					canPlace = true;
 				}
 
 				if (canPlace) {
-					volume.PlacePiece(bPos, gPos, isErase ? null : _pieceSelected);
-					SceneView.RepaintAll();
+					volume.PlacePiece (bPos, gPos, isErase ? null : _pieceSelected);
+					SceneView.RepaintAll ();
 				}
 			}
 		}
 
-		private void UpdateDirtyChunks()
+		private void UpdateDirtyChunks ()
 		{
 			foreach (KeyValuePair<WorldPos, Chunk> c in dirtyChunks) {
-				c.Value.UpdateMeshCollider();
+				c.Value.UpdateMeshCollider ();
 			}
-			dirtyChunks.Clear();
+			dirtyChunks.Clear ();
 		}
 
-		private bool CheckPlaceable(int x, int z, LevelPiece.PivotType pType)
+		private bool CheckPlaceable (int x, int z, LevelPiece.PivotType pType)
 		{
 			if (pType == LevelPiece.PivotType.Grid)
 				return true;
@@ -598,13 +611,14 @@ namespace CreVox
 
 			return false;
 		}
+
 		#region SubscribeEvents
 
 		private PaletteItem _itemSelected;
 		private Texture2D _itemPreview;
 		private LevelPiece _pieceSelected;
 
-		private void DrawPieceSelectedGUI()
+		private void DrawPieceSelectedGUI ()
 		{
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
 				EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
@@ -619,23 +633,24 @@ namespace CreVox
 			}
 		}
 
-		private void SubscribeEvents()
+		private void SubscribeEvents ()
 		{
-			PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+			PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
 		}
 
-		private void UnsubscribeEvents()
+		private void UnsubscribeEvents ()
 		{
-			PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate(UpdateCurrentPieceInstance);
+			PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
 		}
 
-		private void UpdateCurrentPieceInstance(PaletteItem item, Texture2D preview)
+		private void UpdateCurrentPieceInstance (PaletteItem item, Texture2D preview)
 		{
 			_itemSelected = item;
 			_itemPreview = preview;
-			_pieceSelected = (LevelPiece)item.GetComponent<LevelPiece>();
-			Repaint();
+			_pieceSelected = (LevelPiece)item.GetComponent<LevelPiece> ();
+			Repaint ();
 		}
+
 		#endregion
 	}
 }

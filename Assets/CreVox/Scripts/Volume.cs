@@ -7,6 +7,15 @@ using UnityEditor;
 
 namespace CreVox
 {
+	[System.Serializable]
+	public struct Dungeon
+	{
+		public Volume volume;
+		public string volumeFile;
+		public string artPack;
+		public Vector3 position;
+		public Quaternion rotation;
+	}
 
 	[SelectionBase]
 	[ExecuteInEditMode]
@@ -14,7 +23,7 @@ namespace CreVox
 	{
 		public Volume volume;
 
-		private GameObject pieces, deco;
+		private GameObject pieces;
 
 		public string workFile = PathCollect.save + "/temp";
 		public string tempPath;
@@ -57,11 +66,6 @@ namespace CreVox
 			pieces.transform.localPosition = Vector3.zero;
 			pieces.transform.localRotation = Quaternion.Euler(Vector3.zero);
 
-			deco = new GameObject("Decoration");
-			deco.transform.parent = transform;
-			deco.transform.localPosition = Vector3.zero;
-			deco.transform.localRotation = Quaternion.Euler(Vector3.zero);
-
 			CreateChunks();
 
 			#if UNITY_EDITOR
@@ -82,8 +86,6 @@ namespace CreVox
 			}
 			if (pieces)
 				Object.DestroyImmediate(pieces);
-			if (deco)
-				Object.DestroyImmediate(deco);
 			#if UNITY_EDITOR
 			if (ruler)
 				Object.DestroyImmediate(ruler);
@@ -210,7 +212,7 @@ namespace CreVox
 		void CompileSave()
 		{
 			if (EditorApplication.isCompiling && !compileSave) {
-				if (VolumeManager.saveBackup)
+				if (VolumeGlobal.saveBackup)
 					SaveTempWorld ();
 				compileSave = true;
 			}
@@ -278,7 +280,6 @@ namespace CreVox
 			ruler.layer = LayerMask.NameToLayer("Editor");
 			ruler.tag = PathCollect.rularTag;
 			ruler.transform.parent = transform;
-//			ruler.hideFlags = HideFlags.HideInHierarchy;
 			mColl = ruler.AddComponent<MeshCollider>();
 
 			MeshData meshData = new MeshData();
@@ -302,7 +303,7 @@ namespace CreVox
 
 			mColl.sharedMesh = cmesh;
 
-			ruler.transform.localPosition = Vector3.zero;//FreePos
+			ruler.transform.localPosition = Vector3.zero;
 			ruler.transform.localRotation = Quaternion.Euler(Vector3.zero);
 		}
 		void CreateLevelRuler()
@@ -310,9 +311,8 @@ namespace CreVox
 			layerRuler = new GameObject("LevelRuler");
 			layerRuler.layer = LayerMask.NameToLayer("EditorLevel");
 			layerRuler.transform.parent = transform;
-			layerRuler.transform.localPosition = Vector3.zero;//FreePos
+			layerRuler.transform.localPosition = Vector3.zero;
 			layerRuler.transform.localRotation = Quaternion.Euler(Vector3.zero);
-//			layerRuler.hideFlags = HideFlags.HideInHierarchy;
 			bColl = layerRuler.AddComponent<BoxCollider>();
 			bColl.size = new Vector3(chunkX * Chunk.chunkSize * Block.w, 0f, chunkZ * Chunk.chunkSize * Block.d);
 			ChangePointY(pointY);
@@ -321,7 +321,6 @@ namespace CreVox
 		{
 			if (!box) {
 				box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Block.w, Block.h, Block.d));
-//				box.hideFlags = HideFlags.HideInHierarchy;
 			}
 		}
 		public void ActiveRuler(bool _active)
@@ -329,19 +328,19 @@ namespace CreVox
 			if (mColl) {
 				mColl.enabled = _active;
 				ruler.SetActive (_active);
+				ruler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
 			}
 			if (bColl) {
 				bColl.enabled = _active;
 				layerRuler.SetActive (_active);
+				layerRuler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
 			}
+			box.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
 			pointer = _active;
 		}
 		public void ShowRuler()
 		{
-			bool _active = EditorApplication.isPlaying ? false : VolumeManager.debugRuler;
-			ruler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
-			layerRuler.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
-			box.hideFlags = _active ? HideFlags.NotEditable : HideFlags.HideInHierarchy;
+			bool _active = EditorApplication.isPlaying ? false : VolumeGlobal.debugRuler;
 			ActiveRuler (_active);
 		}
 		#endif
