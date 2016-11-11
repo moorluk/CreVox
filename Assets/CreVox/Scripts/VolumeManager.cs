@@ -1,10 +1,23 @@
 ﻿using UnityEngine;
-using System.Collections;
+//using System.Collections;
 using System.Collections.Generic;
+//using System.Xml.Schema;
 
 namespace CreVox
 {
+	[System.Serializable]
+	public struct Dungeon
+	{
+		public Volume volume;
+		public string volumeFile;
+		public Vector3 position;
+		public Quaternion rotation;
+		public string artPack;
+		public Material vertexMaterial;
+	}
+
 	#if UNITY_EDITOR
+	[System.Serializable]
 	public class VolumeGlobal
 	{
 		public static bool saveBackup = true;
@@ -42,16 +55,37 @@ namespace CreVox
 
 		public void UpdateDungeon ()
 		{
-			Volume[] v = GameObject.FindObjectsOfType<Volume> ();
+			Dictionary<Volume,string> oldDungeon = new Dictionary<Volume, string> ();
+			for (int i = 0; i < dungeons.Length; i++) {
+				oldDungeon.Add (dungeons [i].volume, dungeons [i].artPack);
+			}
+
+			Volume[] v = transform.GetComponentsInChildren<Volume> (true);
 			dungeons = new Dungeon[v.Length];
+
 			for (int i = 0; i < v.Length; i++) {
 				Transform vt = v [i].transform;
 				dungeons [i].volume = v [i];
 				dungeons [i].volumeFile = v [i].workFile;
-				dungeons [i].artPack = v [i].piecePack;
 				dungeons [i].position = vt.position;
 				dungeons [i].rotation = vt.rotation;
+				if (oldDungeon.ContainsKey (v [i])) {
+					dungeons [i].artPack = oldDungeon [v [i]];
+					dungeons [i].vertexMaterial = FindMaterial (dungeons [i].artPack);
+				} else
+					dungeons [i].artPack = PathCollect.pieces;
 			}
+		}
+
+		public Material FindMaterial (string _path)
+		{
+			Material[] tempM = Resources.LoadAll<Material> (_path);
+			for (int i = 0; i < tempM.Length; i++) {
+				if (tempM [i].name.Contains ("voxel")) {
+					return tempM [i];
+				}
+			}
+			return null;
 		}
 
 		#endregion
@@ -61,18 +95,27 @@ namespace CreVox
 		#if UNITY_EDITOR
 		private GameObject deco;
 
-		void CreateDeco ()
+		public void CreateDeco ()
 		{
-			deco = new GameObject ("Decoration");
-			deco.transform.parent = transform;
-			deco.transform.localPosition = Vector3.zero;
-			deco.transform.localRotation = Quaternion.Euler (Vector3.zero);
+			if (!deco) {
+				deco = new GameObject ("Decoration");
+				deco.transform.parent = transform;
+				deco.transform.localPosition = Vector3.zero;
+				deco.transform.localRotation = Quaternion.Euler (Vector3.zero);
+				for (int i = 0; i < dungeons.Length; i++) {
+					dungeons [i].volume.gameObject.SetActive (false);
+				}
+			}
 		}
 
-		void ClearDeco ()
+		public void ClearDeco ()
 		{
-			if (deco)
+			if (deco) {
 				Object.DestroyImmediate (deco);
+				for (int i = 0; i < dungeons.Length; i++) {
+					dungeons [i].volume.gameObject.SetActive (true);
+				}
+			}
 		}
 		#endif
 		#endregion

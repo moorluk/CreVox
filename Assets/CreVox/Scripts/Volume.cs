@@ -7,16 +7,6 @@ using UnityEditor;
 
 namespace CreVox
 {
-	[System.Serializable]
-	public struct Dungeon
-	{
-		public Volume volume;
-		public string volumeFile;
-		public string artPack;
-		public Vector3 position;
-		public Quaternion rotation;
-	}
-
 	[SelectionBase]
 	[ExecuteInEditMode]
 	public class Volume : MonoBehaviour
@@ -28,8 +18,8 @@ namespace CreVox
 		public string workFile = PathCollect.save + "/temp";
 		public string tempPath;
 
-		public string piecePack = PathCollect.pieces;
-		public Material vertexMaterial;
+//		public string piecePack = PathCollect.pieces;
+//		public Material vertexMaterial;
 
 		void Awake()
 		{
@@ -145,8 +135,8 @@ namespace CreVox
 			newChunkObject.transform.parent = transform;
 			newChunkObject.transform.localPosition = new Vector3 (x * Block.w, y * Block.h, z * Block.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler(Vector3.zero);
-			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
+//			if (vertexMaterial != null)
+//				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
 			#if UNITY_EDITOR
 			if (EditorApplication.isPlaying)
 				newChunkObject.layer = LayerMask.NameToLayer("Floor");
@@ -160,10 +150,8 @@ namespace CreVox
 			newChunk.pos = worldPos;
 			newChunk.volume = this;
 
-			//Add it to the chunks dictionary with the position as the key
 			chunks.Add(worldPos, newChunk);
 
-			//Add the following:
 			for (int xi = 0; xi < Chunk.chunkSize; xi++) {
 				for (int yi = 0; yi < Chunk.chunkSize; yi++) {
 					for (int zi = 0; zi < Chunk.chunkSize; zi++) {
@@ -251,7 +239,6 @@ namespace CreVox
 				Debug.Log ("Volume[<B>" + transform.name + "] <color=#05EE61>Load tempPath :</color></B>\n" + tempPath);
 				save = Serialization.LoadRTWorld (tempPath);
 			} else if (Serialization.LoadRTWorld (workFile) != null) {
-				tempPath = null;
 				Debug.Log ("Volume<B>[" + transform.name + "] <color=#059E61>Load workFile :</color></B>\n" + workFile);
 				save = Serialization.LoadRTWorld (workFile);
 			} else {
@@ -450,7 +437,7 @@ namespace CreVox
 
 		public void BuildVolume(Save _save)
 		{
-			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>(piecePack);
+			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem>(/*piecePack*/PathCollect.pieces);
 
 			Reset();
 			Init(_save.chunkX, _save.chunkY, _save.chunkZ);
