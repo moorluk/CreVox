@@ -152,7 +152,7 @@ namespace CreVox
 
 		public void BuildVolume (Save _save)
 		{
-			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem> (/*piecePack*/PathCollect.pieces);
+			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem> (vg.FakeDeco ? piecePack : PathCollect.pieces);
 
 			Reset ();
 			Init (_save.chunkX, _save.chunkY, _save.chunkZ);
