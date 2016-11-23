@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
-//using System;
-//using System.Collections;
-//using System.Collections.Generic;
 using UnityEditor;
 
 namespace CreVox
@@ -12,14 +10,12 @@ namespace CreVox
 	public class VolumeManagerEditor : Editor
 	{
 		VolumeManager vm;
-		SerializedProperty p_saveBackupFile;
-		SerializedProperty p_showDebugRuler;
+		VGlobal vg;
 
 		private void Awake ()
 		{
 			vm = (VolumeManager)target;
-			p_saveBackupFile = serializedObject.FindProperty ("saveBackupFile");
-			p_showDebugRuler = serializedObject.FindProperty ("showDebugRuler");
+			vg = VGlobal.GetSetting ();
 			UpdateStatus ();
 		}
 
@@ -36,17 +32,19 @@ namespace CreVox
 			EditorGUIUtility.labelWidth = lw;
 
 			DrawDef ();
-			
-			serializedObject.Update ();
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				p_saveBackupFile.boolValue = EditorGUILayout.ToggleLeft ("Save Backup File(" + VolumeGlobal.saveBackup + ")", p_saveBackupFile.boolValue);
-				p_showDebugRuler.boolValue = EditorGUILayout.ToggleLeft ("Show Ruler", p_showDebugRuler.boolValue);
-			}
-			serializedObject.ApplyModifiedProperties ();
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
-				EditorGUILayout.LabelField ("Dungeon Setting", EditorStyles.boldLabel);
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
+				EditorGUI.BeginChangeCheck ();
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Show Fake Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
+				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
+				if (EditorGUI.EndChangeCheck ())
+					EditorUtility.SetDirty (vg);
+			}
+
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Decoration Setting", EditorStyles.boldLabel);
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button ("Generate", GUILayout.Width (buttonW))) {
 					vm.CreateDeco ();
@@ -57,7 +55,7 @@ namespace CreVox
 				GUILayout.EndHorizontal ();
 			}
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
 				if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
@@ -78,46 +76,56 @@ namespace CreVox
 
 			for (int i = 0; i < vm.dungeons.Length; i++) {
 				Volume vol = vm.dungeons [i].volume;
-				VolumeData vData = Resources.Load (vol.workFile + ".asset") as VolumeData;
+//				VolumeData vData = Resources.Load (vol.workFile + ".asset") as VolumeData;
 
 				GUI.color = volColor;
-				using (var v2 = new EditorGUILayout.VerticalScope ("Box")) {
+				using (var v = new EditorGUILayout.VerticalScope ("Box")) {
 					GUI.color = defColor;
-					EditorGUILayout.ObjectField (vol, typeof(Volume), true);
+
 					GUILayout.BeginHorizontal ();
-					if (GUILayout.Button ("Data", GUILayout.Width (buttonW))) {
-						if (Event.current.shift) {
-							if (vol.workFile != "") {
-								string lPath = 
-									Application.dataPath
-									+ PathCollect.resourcesPath.Substring (6)
-									+ vol.workFile + ".bytes";
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									vol.BuildVolume (save);
-									vol.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						} else {
-							string lPath = Serialization.GetLoadLocation (vol.workFile == "" ? null : vol.workFile);
-							if (lPath != "") {
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									vol.BuildVolume (save);
-									vol.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
-									vol.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						}
-					}
-					string sfPath = vol.workFile.Substring (vol.workFile.LastIndexOf ("VolumeData/") + 10);
-					EditorGUILayout.LabelField (sfPath);
+					EditorGUILayout.LabelField ("GameObj", GUILayout.Width (buttonW));
+					EditorGUILayout.ObjectField (vol, typeof(Volume), true);
 					GUILayout.EndHorizontal ();
 
 					EditorGUILayout.Vector3Field ("Position", vm.dungeons [i].position);
 					EditorGUILayout.Vector3Field ("Rotation", vm.dungeons [i].rotation.eulerAngles);
+
+					using (var v2 = new EditorGUILayout.VerticalScope ("Box")) {
+						int sfIndex = vol.workFile.LastIndexOf ("VolumeData/");
+						string sfPath = (sfIndex > 0) ? vol.workFile.Substring (sfIndex + 10) : "Empty!!!";
+						EditorGUILayout.LabelField (sfPath, EditorStyles.miniLabel);
+						GUILayout.BeginHorizontal ();
+						if (GUILayout.Button ("Load.byte")) {
+							if (Event.current.shift) {
+								if (vol.workFile != "") {
+									string lPath = 
+										Application.dataPath
+										+ PathCollect.resourcesPath.Substring (6)
+										+ vol.workFile + ".bytes";
+									Save save = Serialization.LoadWorld (lPath);
+									if (save != null) {
+										vol.BuildVolume (save);
+										vol.tempPath = "";
+									}
+								}
+							} else {
+								string lPath = Serialization.GetLoadLocation (vol.workFile == "" ? null : vol.workFile);
+								if (lPath != "") {
+									Save save = Serialization.LoadWorld (lPath);
+									if (save != null) {
+										vol.BuildVolume (save);
+										vol.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
+										vol.tempPath = "";
+									}
+								}
+							}
+							SceneView.RepaintAll ();
+						}
+						if (GUILayout.Button ("byte2VData")) {
+//							vol.WriteVData ();
+						}
+						GUILayout.EndHorizontal ();
+					}
 
 					if (vm.dungeons [i].artPack == null || vm.dungeons [i].artPack.Length < 1) {
 						vm.dungeons [i].artPack = PathCollect.resourcesPath + PathCollect.pieces;
@@ -157,12 +165,8 @@ namespace CreVox
 
 		void UpdateStatus ()
 		{
-			if (VolumeGlobal.saveBackup != vm.saveBackupFile) {
-				VolumeGlobal.saveBackup = vm.saveBackupFile;
-			}
-			if (VolumeGlobal.debugRuler != vm.showDebugRuler && !UnityEditor.EditorApplication.isPlaying) {
-				VolumeGlobal.debugRuler = vm.showDebugRuler;
-				Debug.LogWarning ("Show Debug Ruler : " + VolumeGlobal.debugRuler);
+			if (!UnityEditor.EditorApplication.isPlaying) {
+				Debug.Log ("Show Debug Ruler : " + vg.debugRuler);
 				vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 			}
 		}

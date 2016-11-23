@@ -38,6 +38,7 @@ namespace CreVox
 		public CamDir mainDir = CamDir.front;
 		
 		public Volume volume;
+		private VGlobal vg;
 		public WorldPos curPos;
 		private WorldPos oldPos, localPos;
 		public int oldID = 4;
@@ -59,6 +60,7 @@ namespace CreVox
 		{
 			target = GameObject.FindGameObjectWithTag ("Player").transform;
 			volume = GetVolume (target.position);
+			vg = VGlobal.GetSetting ();
 			curPos = EditTerrain.GetBlockPos (target.position);
 			camsys = GameObject.FindObjectOfType<CamSys> ();
 			LoadPreset ();
@@ -89,9 +91,9 @@ namespace CreVox
 			camNode.name = "CameraZones";
 			camNode.transform.parent = this.transform;
 			for (int i = 0; i < camZones.Length; i++) {
-				float x = (i % 3 - 1) * Block.w;
+				float x = (i % 3 - 1) * vg.w;
 				float y = 0f;
-				float z = ((int)(i / 3) - 1) * Block.d;
+				float z = ((int)(i / 3) - 1) * vg.d;
 				GameObject co = GameObject.Instantiate (camZonePreset [(int)CamZoneType.front], Vector3.zero, Quaternion.identity) as GameObject;
 				co.name = "zone" + i.ToString ();
 				co.transform.localPosition = new Vector3 (x, y, z);
@@ -164,12 +166,12 @@ namespace CreVox
 
 				// chkOutsideChunk
 //				if (dx > 15 || dx < 0 || dy > 15 || dy < 0 || dz > 15 || dz < 0) {
-//					Vector3 pos = target.position + new Vector3 ((i % 3 - 1) * Block.w, 0, ((int)(i / 3) - 1) * Block.d);
+//					Vector3 pos = target.position + new Vector3 ((i % 3 - 1) * vg.w, 0, ((int)(i / 3) - 1) * vg.d);
 //					v = GetVolume (pos);
 //					n = EditTerrain.GetBlockPos (pos,v.transform);
 //				}
 
-				BlockAir b = v.GetBlock (n.x, n.y, n.z) as CreVox.BlockAir;
+				BlockAir b = v.GetBlock (n.x, n.y, n.z) as BlockAir;
 				if(b == null || IsOutside(n))
 					obsLayer [i] = 0;
 				else
@@ -416,8 +418,8 @@ namespace CreVox
 
 		bool IsOutside(WorldPos _pos)
 		{
-			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;	
-			BlockAir downB = volume.GetBlock (_pos.x, _pos.y - 1, _pos.z) as CreVox.BlockAir;	
+			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as BlockAir;	
+			BlockAir downB = volume.GetBlock (_pos.x, _pos.y - 1, _pos.z) as BlockAir;	
 			if (downB != null && downB.pieceNames == null) {
 				if (centerB != null) {
 //					if (centerB.pieceNames == null)
@@ -435,7 +437,7 @@ namespace CreVox
 		}
 		bool IsVisible (WorldPos _pos, int _lookDirIndex)
 		{
-			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as CreVox.BlockAir;
+			BlockAir centerB = volume.GetBlock (_pos.x, _pos.y, _pos.z) as BlockAir;
 			WorldPos n = GetNeighbor (_pos, _lookDirIndex);
 
 			if (centerB == null)
@@ -445,23 +447,23 @@ namespace CreVox
 				return false;
 
 			if (_lookDirIndex == 7) {
-				if (centerB.IsSolid (Block.Direction.north)
-				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.south))
+				if (centerB.IsSolid (Direction.north)
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Direction.south))
 					return false;
 			}
 			if (_lookDirIndex == 3) {
-				if (centerB.IsSolid (Block.Direction.west)
-				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.east))
+				if (centerB.IsSolid (Direction.west)
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Direction.east))
 					return false;
 			}
 			if (_lookDirIndex == 1) {
-				if (centerB.IsSolid (Block.Direction.south)
-				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.north))
+				if (centerB.IsSolid (Direction.south)
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Direction.north))
 					return false;
 			}
 			if (_lookDirIndex == 5) {
-				if (centerB.IsSolid (Block.Direction.east)
-				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Block.Direction.west))
+				if (centerB.IsSolid (Direction.east)
+				    || volume.GetBlock (n.x, n.y, n.z).IsSolid (Direction.west))
 					return false;
 			}
 			return true;
@@ -495,7 +497,7 @@ namespace CreVox
 
 		void UpdateCamZones ()
 		{
-//			camNode.transform.position = new Vector3 (localPos.x * Block.w, localPos.y * Block.h, localPos.z * Block.d);
+//			camNode.transform.position = new Vector3 (localPos.x * vg.w, localPos.y * vg.h, localPos.z * vg.d);
 			for (int i = 0; i < idLayer.Length; i++) {
 				int camID = idLayer [i];
 				int dir = dirLayer [i];
@@ -522,7 +524,7 @@ namespace CreVox
 						CopyCameraZoneData (camID, CamZoneType.none);
 					}
 					camZones [camID].transform.rotation = Quaternion.Euler (0f, GetAngle (dir), 0f);
-					camZones [camID].transform.position = new Vector3 ((curPos.x + x - 1) * Block.w, curPos.y * Block.h, (curPos.z + z - 1) * Block.d);
+					camZones [camID].transform.position = new Vector3 ((curPos.x + x - 1) * vg.w, curPos.y * vg.h, (curPos.z + z - 1) * vg.d);
 //				}
 			}
 		}
@@ -673,15 +675,15 @@ namespace CreVox
 
 			return result;
 		}
-		public Block.Direction Turn (Block.Direction _dir, CamDir _baseDir)
+		public Direction Turn (Direction _dir, CamDir _baseDir)
 		{
-			Block.Direction[] srcDir = new Block.Direction[] {
-				Block.Direction.north,
-				Block.Direction.west,
-				Block.Direction.south,
-				Block.Direction.east
+			Direction[] srcDir = new Direction[] {
+				Direction.north,
+				Direction.west,
+				Direction.south,
+				Direction.east
 			};
-			Block.Direction[] dstDir = new Block.Direction[4];
+			Direction[] dstDir = new Direction[4];
 
 			if (_baseDir == CamDir.turn_none)
 				_baseDir = mainDir;
@@ -692,34 +694,34 @@ namespace CreVox
 				break;
 
 			case CamDir.left:
-				dstDir = new Block.Direction[] {
-					Block.Direction.west,
-					Block.Direction.south,
-					Block.Direction.east,
-					Block.Direction.north
+				dstDir = new Direction[] {
+					Direction.west,
+					Direction.south,
+					Direction.east,
+					Direction.north
 				};
 				break;
 
 			case CamDir.back:
-				dstDir = new Block.Direction[] {
-					Block.Direction.south,
-					Block.Direction.east,
-					Block.Direction.north,
-					Block.Direction.west
+				dstDir = new Direction[] {
+					Direction.south,
+					Direction.east,
+					Direction.north,
+					Direction.west
 				};
 				break;
 
 			case CamDir.right:
-				dstDir = new Block.Direction[] {
-					Block.Direction.east,
-					Block.Direction.north,
-					Block.Direction.west,
-					Block.Direction.south
+				dstDir = new Direction[] {
+					Direction.east,
+					Direction.north,
+					Direction.west,
+					Direction.south
 				};
 				break;
 			}
 
-			Block.Direction result = _dir;
+			Direction result = _dir;
 
 			for (int i = 0; i < 4; i++) {
 				if (_dir == srcDir [i])
@@ -775,7 +777,7 @@ namespace CreVox
 		}
 		void DrawCamDir (WorldPos _pos, int _dir)
 		{
-			Vector3 v = new Vector3 (_pos.x * Block.w, _pos.y * Block.h, _pos.z * Block.d);
+			Vector3 v = new Vector3 (_pos.x * vg.w, _pos.y * vg.h, _pos.z * vg.d);
 			Gizmos.DrawCube (v, Vector3.one * 0.1f);
 			if ((_dir & (int)CamDir.front) != 0) {
 				Gizmos.DrawLine (v, v + Vector3.forward * 1f);

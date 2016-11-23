@@ -4,36 +4,28 @@ using System;
 
 namespace CreVox
 {
+	public enum Direction
+	{
+		north,
+		east,
+		south,
+		west,
+		up,
+		down
+
+	}
+
+	public struct Tile
+	{
+		public int x;
+		public int y;
+	}
 
 	[Serializable]
 	public class Block
 	{
-		const float tileSize = 0.5f;
-		public const float w = 3f;
-		public const float h = 2f;
-		public const float d = 3f;
-		public const float hw = 1.5f;
-		public const float hh = 1f;
-		public const float hd = 1.5f;
+		public WorldPos BlockPos;
 
-		public enum Direction
-		{
-			north,
-			east,
-			south,
-			west,
-			up,
-			down
-
-		}
-
-		public struct Tile
-		{
-			public int x;
-			public int y;
-		}
-
-		//Base block constructor
 		public Block ()
 		{
 		}
@@ -42,7 +34,7 @@ namespace CreVox
 		{
 		}
 
-		public virtual MeshData Blockdata (Chunk chunk, int x, int y, int z, MeshData meshData)
+		public virtual MeshData MeahAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			meshData.useRenderDataForCol = true;
 
@@ -96,10 +88,11 @@ namespace CreVox
 		#region Face Mesh Culculate
 		protected virtual MeshData FaceDataUp (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d - hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
 			meshData.uv.AddRange (FaceUVs (Direction.up));
@@ -108,10 +101,11 @@ namespace CreVox
 
 		protected virtual MeshData FaceDataDown (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d + hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -121,10 +115,11 @@ namespace CreVox
 
 		protected virtual MeshData FaceDataNorth (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d + hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -134,10 +129,11 @@ namespace CreVox
 
 		protected virtual MeshData FaceDataSouth (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d - hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -147,10 +143,11 @@ namespace CreVox
 
 		protected virtual MeshData FaceDataEast (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w + hw, y * h - hh, z * d + hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -160,10 +157,11 @@ namespace CreVox
 
 		protected virtual MeshData FaceDataWest (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d + hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h + hh, z * d - hd));
-			meshData.AddVertex (new Vector3 (x * w - hw, y * h - hh, z * d - hd));
+			VGlobal vg = VGlobal.GetSetting ();
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -174,32 +172,33 @@ namespace CreVox
 
 		public virtual Vector2[] FaceUVs (Direction direction)
 		{
+			VGlobal vg = VGlobal.GetSetting ();
 			Vector2[] UVs = new Vector2[4];
 			Tile tilePos = TexturePosition (direction);
-			float max = Mathf.Max (new float[]{ w, h, d });
+			float max = Mathf.Max (new float[]{ vg.w, vg.h, vg.d });
 
 			switch (direction) {
 			default:
 			case Direction.up:
 			case Direction.down:
-				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + d / max));
-				UVs [1] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * (tilePos.y + d / max));
-				UVs [2] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * tilePos.y);
-				UVs [3] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
+				UVs [0] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * (tilePos.y + vg.d / max));
+				UVs [1] = new Vector2 (vg.tileSize * (tilePos.x + vg.w / max), vg.tileSize * (tilePos.y + vg.d / max));
+				UVs [2] = new Vector2 (vg.tileSize * (tilePos.x + vg.w / max), vg.tileSize * tilePos.y);
+				UVs [3] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * tilePos.y);
 				return UVs;
 			case Direction.north:
 			case Direction.south:
-				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
-				UVs [1] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + h / max));
-				UVs [2] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * (tilePos.y + h / max));
-				UVs [3] = new Vector2 (tileSize * (tilePos.x + w / max), tileSize * tilePos.y);
+				UVs [0] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * tilePos.y);
+				UVs [1] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * (tilePos.y + vg.h / max));
+				UVs [2] = new Vector2 (vg.tileSize * (tilePos.x + vg.w / max), vg.tileSize * (tilePos.y + vg.h / max));
+				UVs [3] = new Vector2 (vg.tileSize * (tilePos.x + vg.w / max), vg.tileSize * tilePos.y);
 				return UVs;
 			case Direction.east:
 			case Direction.west:
-				UVs [0] = new Vector2 (tileSize * tilePos.x, tileSize * tilePos.y);
-				UVs [1] = new Vector2 (tileSize * tilePos.x, tileSize * (tilePos.y + h / max));
-				UVs [2] = new Vector2 (tileSize * (tilePos.x + d / max), tileSize * (tilePos.y + h / max));
-				UVs [3] = new Vector2 (tileSize * (tilePos.x + d / max), tileSize * tilePos.y);
+				UVs [0] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * tilePos.y);
+				UVs [1] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * (tilePos.y + vg.h / max));
+				UVs [2] = new Vector2 (vg.tileSize * (tilePos.x + vg.d / max), vg.tileSize * (tilePos.y + vg.h / max));
+				UVs [3] = new Vector2 (vg.tileSize * (tilePos.x + vg.d / max), vg.tileSize * tilePos.y);
 				return UVs;
 			}
 		}

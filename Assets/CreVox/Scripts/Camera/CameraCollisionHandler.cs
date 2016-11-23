@@ -57,7 +57,6 @@ public class CameraCollisionHandler
 		int colID = 0;
 
 		for (int i = 0; i < cameraClipPoints.Length; i++) {
-			Ray ray = new Ray (_lookPos, cameraClipPoints [i] - _lookPos);
 			RaycastHit hit;
 			if(Physics.Linecast(_lookPos, cameraClipPoints [i], out hit, collisionLayer)) {
 				if(distance == -1) {

@@ -1,6 +1,8 @@
-﻿//Chunk.cs
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,15 +10,18 @@ using UnityEditor;
 namespace CreVox
 {
 
-	[RequireComponent(typeof(MeshFilter))]
-	[RequireComponent(typeof(MeshRenderer))]
-	[RequireComponent(typeof(MeshCollider))]
+	[RequireComponent (typeof(MeshFilter))]
+	[RequireComponent (typeof(MeshRenderer))]
+	[RequireComponent (typeof(MeshCollider))]
+	[Serializable]
 	public class Chunk : MonoBehaviour
 	{
-		public Block[,,] blocks = new Block[chunkSize, chunkSize, chunkSize];
-		public static int chunkSize = 16;
-		public bool update = true;
+		public static int chunkSize{get{return VGlobal.GetSetting().chunkSize; }} 
+		public List<Block> blocks = new List<Block>();
+		public List<BlockAir> blockAirs = new List<BlockAir>();
+		[SerializeField]
 		MeshFilter filter;
+		[SerializeField]
 		MeshCollider coll;
 
 		public Volume volume;
@@ -32,30 +37,62 @@ namespace CreVox
 
 		public void Destroy()
 		{
-			foreach (var block in blocks)
-				block.Destroy();
+			foreach (Block block in blocks)
+				if (block != null)
+					block.Destroy ();
+			foreach (BlockAir bAir in blockAirs)
+				if (bAir != null)
+					bAir.Destroy ();
 		}
 
 		void Start()
 		{
 			filter = gameObject.GetComponent<MeshFilter>();
 			coll = gameObject.GetComponent<MeshCollider>();
-//			UpdateChunk();
+			UpdateChunk();
 		}
 
 		public Block GetBlock(int x, int y, int z)
 		{
-			if (InRange(x) && InRange(y) && InRange(z))
-				return blocks[x, y, z];
-			return volume.GetBlock(pos.x + x, pos.y + y, pos.z + z);
+			if (InRange (x) && InRange (y) && InRange (z)) {
+				return GetChunkBlock (x, y, z);
+			} else {
+				return volume.GetBlock (pos.x + x, pos.y + y, pos.z + z);
+			}
+		}
+
+		private Block GetChunkBlock (int x, int y, int z)
+		{
+			foreach (Block block in blocks) {
+				if (block != null && block.BlockPos.Compare (new WorldPos (x, y, z)))
+					return block;
+			}
+			foreach (BlockAir bAir in blockAirs) {
+				if (bAir != null && bAir.BlockPos.Compare (new WorldPos (x, y, z)))
+					return bAir;
+			}
+			return null;
 		}
 
 		public void SetBlock(int x, int y, int z, Block block)
 		{
 			if (InRange(x) && InRange(y) && InRange(z)) {
-				if (blocks[x, y, z] != null)
-					blocks[x, y, z].Destroy();
-				blocks[x, y, z] = block;
+				Block _block = GetChunkBlock (x, y, z); 
+				if (_block != null) {
+					BlockAir bAir = _block as BlockAir;
+					if (bAir != null)
+						blockAirs.Remove (bAir);
+					else
+						blocks.Remove (_block);
+				}
+				if (block != null) {
+					BlockAir bAir = block as BlockAir;
+					if (bAir != null)
+						blockAirs.Add (bAir);
+					else
+						blocks.Add (block);
+				}
+					
 			} else {
 				volume.SetBlock(pos.x + x, pos.y + y, pos.z + z, block);
 			}
@@ -78,7 +115,8 @@ namespace CreVox
 						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
 						#endif
-							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+						if(GetChunkBlock (x, y, z) != null)
+							meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
 					}
 				}
 			}
@@ -94,7 +132,8 @@ namespace CreVox
 						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) == false)
 						#endif
-							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+						if(GetChunkBlock (x, y, z) != null)
+							meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
 					}
 				}
 			}
@@ -107,21 +146,23 @@ namespace CreVox
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
-						BlockAir air = blocks [x, y, z] as BlockAir;
+						BlockAir air = GetChunkBlock (x, y, z) as BlockAir;
 
 						#if UNITY_EDITOR
 						if (!EditorApplication.isPlaying && volume.cuter && y + pos.y > volume.cutY) {
 							if (air != null)
 								air.ShowPiece (false);
 						} else {
-							meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+							if(GetChunkBlock (x, y, z) != null)
+								meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
 							if (air != null)
 								air.ShowPiece (true);
 						}
 						#else
-						meshData = blocks [x, y, z].Blockdata (this, x, y, z, meshData);
+						if(GetChunkBlock (x, y, z) != null)
+							meshData = GetChunkBlock (x, y, z).BlockMesh (this, x, y, z, meshData);
 						if (air != null)
-						air.ShowPiece (true);
+							air.ShowPiece (true);
 						#endif
 					}
 				}
@@ -144,8 +185,6 @@ namespace CreVox
         filter.mesh.Clear();
         filter.mesh.vertices = meshData.vertices.ToArray();
         filter.mesh.triangles = meshData.triangles.ToArray();
-
-        //Add the following two lines
         filter.mesh.uv = meshData.uv.ToArray();
         filter.mesh.RecalculateNormals();
 #endif

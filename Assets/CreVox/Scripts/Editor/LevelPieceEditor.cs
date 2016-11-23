@@ -9,7 +9,6 @@ namespace CreVox
 		LevelPiece lp;
 		
 		bool drawIsSolid = true;
-		bool drawDef = false;
 
 		private void OnEnable ()
 		{
@@ -22,15 +21,14 @@ namespace CreVox
 			lp.isStair = EditorGUILayout.Toggle ("Is Stair", lp.isStair);
 			drawIsSolid = EditorGUILayout.Foldout (drawIsSolid, "Is Solid");
 			if (drawIsSolid) {
+				EditorGUI.indentLevel++;
 				for (int i = 0; i < lp.isSolid.Length; i++) {
-					lp.isSolid [i] = EditorGUILayout.Toggle (((Block.Direction)i).ToString(), lp.isSolid [i]);
+					lp.isSolid [i] = EditorGUILayout.Toggle (((Direction)i).ToString(), lp.isSolid [i]);
 				}
+				EditorGUI.indentLevel--;
 			}
 			
 			GUILayout.Space (5);
-			drawDef = EditorGUILayout.Foldout (drawDef, "Default Inspector");
-			if (drawDef)
-				DrawDefaultInspector ();
 		}
 	}
 }

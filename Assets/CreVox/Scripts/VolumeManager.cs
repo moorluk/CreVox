@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-//using System.Collections;
 using System.Collections.Generic;
-//using System.Xml.Schema;
 
 namespace CreVox
 {
@@ -16,27 +14,14 @@ namespace CreVox
 		public Material vertexMaterial;
 	}
 
-	#if UNITY_EDITOR
-	[System.Serializable]
-	public class VolumeGlobal
-	{
-		public static bool saveBackup = true;
-		public static bool debugRuler = false;
-	}
-	#endif
-
 	[ExecuteInEditMode]
 	public class VolumeManager : MonoBehaviour
 	{
-		#if UNITY_EDITOR
-		public bool saveBackupFile;
-		public bool showDebugRuler;
-		#endif
 
 		void Start ()
 		{
 			#if UNITY_EDITOR
-			if (!UnityEditor.EditorApplication.isPlaying && VolumeGlobal.saveBackup) {
+			if (!UnityEditor.EditorApplication.isPlaying && VGlobal.GetSetting ().saveBackup) {
 				BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
 				UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;

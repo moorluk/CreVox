@@ -8,8 +8,9 @@ namespace CreVox
 #if UNITY_EDITOR
 		public enum Category
 		{
-			System,
 			Build,
+			BuildDeco,
+			System,
 			Chara,
 		}
 		public enum MarkerType
@@ -30,7 +31,7 @@ namespace CreVox
 		public Category category = Category.System;
 		public MarkerType markType = MarkerType.Item;
 		public string itemName = "";
-		public Object inspectedScript; 
+//		public LevelPiece inspectedScript;
 #endif
 
 		// Use this for initialization

@@ -9,9 +9,9 @@ using System;
 public class MeshNode : Node
 {
 	GameObject go = null;
-	Vector3 p = Vector3.zero;
-	Vector3 r = Vector3.zero;
-	Vector3 s = Vector3.one;
+	Vector3 pos = Vector3.zero;
+	Vector3 rot = Vector3.zero;
+	Vector3 sca = Vector3.one;
 	float probability;
 	bool consume;
 
@@ -59,9 +59,9 @@ public class MeshNode : Node
 //		}
 		using (var v = new GUILayout.VerticalScope ()) {
 			EditorGUIUtility.labelWidth = 25;
-			p = EditorGUILayout.Vector3Field ("Pos"/*ition"*/, p, GUILayout.Width (nWidth - 10));
-			r = EditorGUILayout.Vector3Field ("Rot"/*ation"*/, r, GUILayout.Width (nWidth - 10));
-			s = EditorGUILayout.Vector3Field ("Sca"/*le"*/, s, GUILayout.Width (nWidth - 10));
+			pos = EditorGUILayout.Vector3Field ("Pos"/*ition"*/, pos, GUILayout.Width (nWidth - 10));
+			rot = EditorGUILayout.Vector3Field ("Rot"/*ation"*/, rot, GUILayout.Width (nWidth - 10));
+			sca = EditorGUILayout.Vector3Field ("Sca"/*le"*/, sca, GUILayout.Width (nWidth - 10));
 			EditorGUIUtility.labelWidth = 60;
 		}
 		using (var v = new GUILayout.VerticalScope (EditorStyles.helpBox)) {
@@ -83,18 +83,18 @@ public class MeshNode : Node
 	public override bool Calculate ()
 	{
 //		if (Inputs [1].connection != null)
-//			p = Inputs [1].connection.GetValue<Vector3> ();
+//			pos = Inputs [1].connection.GetValue<Vector3> ();
 //		if (Inputs [2].connection != null)
-//			r = Inputs [2].connection.GetValue<Vector3> ();
+//			rot = Inputs [2].connection.GetValue<Vector3> ();
 //		if (Inputs [3].connection != null)
-//			s = Inputs [3].connection.GetValue<Vector3> ();
+//			sca = Inputs [3].connection.GetValue<Vector3> ();
 //		return true;
 		if (Inputs [1].connection != null)
-			Outputs [1].SetValue<Vector3> (Inputs [1].connection.GetValue<Vector3> () + p);
+			Outputs [1].SetValue<Vector3> (Inputs [1].connection.GetValue<Vector3> () + pos);
 		if (Inputs [2].connection != null)
-			Outputs [2].SetValue<Vector3> (Inputs [2].connection.GetValue<Vector3> () + r);
+			Outputs [2].SetValue<Vector3> (Inputs [2].connection.GetValue<Vector3> () + rot);
 		if (Inputs [3].connection != null)
-			Outputs [3].SetValue<Vector3> (Inputs [3].connection.GetValue<Vector3> ());
+			Outputs [3].SetValue<Vector3> (Inputs [3].connection.GetValue<Vector3> () + sca);
 		return true;
 	}
 

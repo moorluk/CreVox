@@ -79,7 +79,7 @@ namespace CreVox
 			);
 		}
 
-		void DrawEdge (float _height, float _width, WorldPos _pos, Block.Direction _dir)
+		void DrawEdge (float _height, float _width, WorldPos _pos, Direction _dir)
 		{
 			GUI.color = acm.volume.GetBlock (_pos.x, _pos.y, _pos.z).IsSolid (_dir) ? Color.gray : oldColor;
 			EditorStyles.textArea.margin = new RectOffset (2, 2, 10, 10);
@@ -138,19 +138,19 @@ namespace CreVox
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.north,acm.mainDir));
+			DrawEdge (5, w, _pos, acm.Turn (Direction.north,acm.mainDir));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
-			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.west,acm.mainDir));
+			DrawEdge (w, 5, _pos, acm.Turn (Direction.west,acm.mainDir));
 			DrawZone (_zone);
-			DrawEdge (w, 5, _pos, acm.Turn (Block.Direction.east,acm.mainDir));
+			DrawEdge (w, 5, _pos, acm.Turn (Direction.east,acm.mainDir));
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			DrawCorner ();
-			DrawEdge (5, w, _pos, acm.Turn (Block.Direction.south,acm.mainDir));
+			DrawEdge (5, w, _pos, acm.Turn (Direction.south,acm.mainDir));
 			DrawCorner ();
 			GUILayout.EndHorizontal ();
 

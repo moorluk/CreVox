@@ -26,7 +26,7 @@ namespace CreVox
 
 		private void OnDisable ()
 		{
-			if (!VolumeGlobal.debugRuler)
+			if (!volume.vg.debugRuler)
 				volume.ActiveRuler (false);
 			UnsubscribeEvents ();
 		}
@@ -34,18 +34,17 @@ namespace CreVox
 		public override void OnInspectorGUI ()
 		{
 			float lw = 60;
-			float w = (Screen.width - 20 - lw) / 3 - 8;
 			float buttonW = 40;
 			EditorGUIUtility.labelWidth = 20;
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Chunk setting", EditorStyles.boldLabel);
 
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Count", GUILayout.Width (lw));
-				cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
-				cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
-				cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
+				cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (buttonW));
+				cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (buttonW));
+				cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (buttonW));
 				GUILayout.EndHorizontal ();
 
 				if (GUILayout.Button ("Init")) {
@@ -60,7 +59,8 @@ namespace CreVox
 				}
 			}
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+			EditorGUI.BeginChangeCheck ();
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Chunk Data", EditorStyles.boldLabel);
 				if (GUILayout.Button (new GUIContent ("Save", "Hold SHIFT to quick save to workfile."), GUILayout.Width (buttonW))) {
@@ -112,11 +112,12 @@ namespace CreVox
 				}
 				GUILayout.EndHorizontal ();
 
+//				volume.vd = EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false) as VolumeData;
 				EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
 				EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
 			}
 
-//			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+//			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 //				GUILayout.BeginHorizontal ();
 //				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
 //				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
@@ -125,7 +126,7 @@ namespace CreVox
 //						               volume.piecePack,
 //						               ""
 //					               );
-//					if (VolumeGlobal.saveBackup)
+//					if (volume.vg.saveBackup)
 //						volume.SaveTempWorld ();
 //					
 //					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
@@ -141,8 +142,8 @@ namespace CreVox
 //					volume.LoadTempWorld ();
 //				}
 //				GUILayout.EndHorizontal ();
-
-				EditorGUIUtility.labelWidth = 120f;
+//
+//				EditorGUIUtility.labelWidth = 120f;
 //				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
 //				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 //					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
@@ -153,13 +154,13 @@ namespace CreVox
 
 			DrawPieceSelectedGUI ();
 
-			if (GUI.changed) {
+			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
 				volume.UpdateChunks ();
 			}
 		}
 
-		#region Editor Scene UI
+		#region Scene GUI
 
 		public enum EditMode
 		{
@@ -197,8 +198,11 @@ namespace CreVox
 			selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
 			GUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
-			volume.editDis = GUILayout.HorizontalSlider (volume.editDis, 99f, 999f);
-			EditorGUILayout.LabelField (((int)volume.editDis).ToString (), GUILayout.Width (25));
+			EditorGUI.BeginChangeCheck ();
+			volume.vg.editDis = GUILayout.HorizontalSlider (volume.vg.editDis, 99f, 999f);
+			if (EditorGUI.EndChangeCheck ())
+				EditorUtility.SetDirty (volume.vg);
+			EditorGUILayout.LabelField (((int)volume.vg.editDis).ToString (), GUILayout.Width (25));
 			GUILayout.EndHorizontal ();
 			GUILayout.EndArea ();
 			
@@ -231,13 +235,13 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-			bool isHit = Physics.Raycast (worldRay, out hit, volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, volume.vg.editDis, _mask);
 
 			if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
 				WorldPos pos = EditTerrain.GetBlockPos (hit, isErase ? false : true);
-				float x = pos.x * Block.w;
-				float y = pos.y * Block.h;
-				float z = pos.z * Block.d;
+				float x = pos.x * volume.vg.w;
+				float y = pos.y * volume.vg.h;
+				float z = pos.z * volume.vg.d;
 
 				Handles.DrawLine (hit.point, hit.point + hit.normal);
 				if (hit.collider.gameObject.tag == PathCollect.rularTag) {
@@ -256,22 +260,21 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out hit, volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, volume.vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				WorldPos pos = EditTerrain.GetBlockPos (hit, false);
-				float x = pos.x * Block.w;
-				float y = pos.y * Block.h;
-				float z = pos.z * Block.d;
+				float x = pos.x * volume.vg.w;
+				float y = pos.y * volume.vg.h;
+				float z = pos.z * volume.vg.d;
 
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d));
 				volume.useBox = true;
 				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), Vector3.zero);
-				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
-				SceneView.RepaintAll ();
 			}
+			SceneView.RepaintAll ();
 		}
 
 		private void DrawGridMarker ()
@@ -282,7 +285,7 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out hit, (int)volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, (int)volume.vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				if (hit.normal.y <= 0)
@@ -290,16 +293,16 @@ namespace CreVox
 				
 				WorldPos pos = EditTerrain.GetBlockPos (hit, isNotLayer);
 				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
-				gPos.y = isNotLayer ? 0 : (int)Block.h;
+				gPos.y = isNotLayer ? 0 : (int)volume.vg.h;
 
-				float x = pos.x * Block.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
-				float y = pos.y * Block.h + gPos.y - 1;
-				float z = pos.z * Block.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
+				float x = pos.x * volume.vg.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
+				float y = pos.y * volume.vg.h + gPos.y - 1;
+				float z = pos.z * volume.vg.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
 
 				Handles.color = Color.white;
 				Handles.lighting = true;
-				Handles.RectangleCap (0, new Vector3 (pos.x * Block.w, y, pos.z * Block.d), Quaternion.Euler (90, 0, 0), Block.hw);
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d));
+				Handles.RectangleCap (0, new Vector3 (pos.x * volume.vg.w, y, pos.z * volume.vg.d), Quaternion.Euler (90, 0, 0), volume.vg.hw);
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d));
 
 				LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
@@ -309,7 +312,7 @@ namespace CreVox
 				}
 
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * Block.w, pos.y * Block.h, pos.z * Block.d), Vector3.zero);
+				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d), Vector3.zero);
 				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
@@ -324,7 +327,7 @@ namespace CreVox
 			}
 
 			if (Event.current.type == EventType.KeyDown) {
-				EventFunction (Event.current.keyCode.ToString ());
+				HotkeyFunction (Event.current.keyCode.ToString ());
 				Event.current.Use ();
 				return;
 			} 
@@ -418,32 +421,32 @@ namespace CreVox
 					GUI.color = Color.white;
 					using (var v = new GUILayout.VerticalScope ()) {
 						if (GUILayout.Button ("Pointer(Q)", GUILayout.Width (bwidth)))
-							EventFunction ("Q");
+							HotkeyFunction ("Q");
 						GUI.color = volume.pointer ? Color.white : Color.gray;
 						EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
 						if (GUILayout.Button ("▲(W)", GUILayout.Width (45)))
-							EventFunction ("W");
+							HotkeyFunction ("W");
 						if (GUILayout.Button ("▼(S)", GUILayout.Width (45)))
-							EventFunction ("S");
+							HotkeyFunction ("S");
 						GUI.color = Color.white;
 					}
 
 					using (var v = new GUILayout.VerticalScope ()) {
 						if (GUILayout.Button ("Cutter(E)", GUILayout.Width (bwidth)))
-							EventFunction ("E");
+							HotkeyFunction ("E");
 						GUI.color = volume.cuter ? Color.white : Color.gray;
 						EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
 						if (GUILayout.Button ("▲(R)", GUILayout.Width (45)))
-							EventFunction ("R");
+							HotkeyFunction ("R");
 						if (GUILayout.Button ("▼(F)", GUILayout.Width (45)))
-							EventFunction ("F");
+							HotkeyFunction ("F");
 						GUI.color = Color.white;
 					}
 				}
 			}
 		}
 
-		private void EventFunction (string funcKey = "")
+		private void HotkeyFunction (string funcKey = "")
 		{
 			int _index = (int)currentEditMode;
 			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
@@ -511,7 +514,7 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
 			WorldPos pos;
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -519,7 +522,7 @@ namespace CreVox
 				gHit.normal = volume.transform.InverseTransformDirection (gHit.normal);
 				pos = EditTerrain.GetBlockPos (gHit, isErase ? false : true);
 
-				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? new BlockAir () : new Block ());
+				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
 				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 
 				if (chunk) {
@@ -536,17 +539,17 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
 			WorldPos pos;
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
-				gHit.point = gHit.point + new Vector3 (0f, -Block.h, 0f);
+				gHit.point = gHit.point + new Vector3 (0f, -volume.vg.h, 0f);
 				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
 				pos = EditTerrain.GetBlockPos (gHit, true);
 
-				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? new BlockAir () : new Block ());
-				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
+				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
 
+				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 				if (chunk) {
 					if (!dirtyChunks.ContainsKey (pos))
 						dirtyChunks.Add (pos, chunk);
@@ -566,7 +569,7 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
 				if (gHit.normal.y <= 0)
@@ -620,7 +623,7 @@ namespace CreVox
 
 		private void DrawPieceSelectedGUI ()
 		{
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 20))) {
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
 				if (_pieceSelected == null) {
 					EditorGUILayout.HelpBox ("No piece selected!", MessageType.Info);

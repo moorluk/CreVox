@@ -25,6 +25,14 @@ namespace CreVox
 			return false;
 		}
 
+		public bool Compare(WorldPos _pos)
+		{
+			if (_pos.x == this.x && _pos.y == this.y && _pos.z == this.z)
+				return true;
+			else
+				return false;
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked {

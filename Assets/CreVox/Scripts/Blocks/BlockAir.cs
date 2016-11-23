@@ -3,19 +3,19 @@ using System;
 
 namespace CreVox
 {
-
+	
 	[Serializable]
 	public class BlockAir : Block
 	{
 		public string[] pieceNames;
+		private bool[] isSolid = new bool[6];
+
 		[NonSerialized]
 		private GameObject[] pieces;
 		[NonSerialized]
 		private GameObject node;
-		[NonSerialized]
-		private bool[] isSolid = new bool[6];
 
-		public BlockAir (): base ()
+		public BlockAir () : base ()
 		{
 			for (int i = 0; i < isSolid.Length; i++)
 				isSolid [i] = false;
@@ -34,12 +34,12 @@ namespace CreVox
 			base.Destroy ();
 		}
 
-		public override MeshData Blockdata (Chunk chunk, int x, int y, int z, MeshData meshData)
+		public override MeshData MeahAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			return meshData;
 		}
 
-		public override bool IsSolid (Block.Direction direction)
+		public override bool IsSolid (Direction direction)
 		{
 			return isSolid [(int)direction];
 		}
@@ -82,7 +82,7 @@ namespace CreVox
 			}
 		}
 
-		void SolidCheck()
+		void SolidCheck ()
 		{
 			for (int i = 0; i < isSolid.Length; i++) {
 				isSolid [i] = false;
@@ -91,7 +91,7 @@ namespace CreVox
 			for (int p = 0; p < pieces.Length; p++) {
 				if (pieces [p] != null) {
 					for (int i = 0; i < isSolid.Length; i++) {
-						if (pieces [p].GetComponent<LevelPiece> ().IsSolid ((Block.Direction)i)) {
+						if (pieces [p].GetComponent<LevelPiece> ().IsSolid ((Direction)i)) {
 							isSolid [i] = true;
 						}
 					}
