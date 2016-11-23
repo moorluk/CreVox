@@ -112,7 +112,7 @@ namespace CreVox
 				}
 				GUILayout.EndHorizontal ();
 
-//				volume.vd = EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false) as VolumeData;
+				volume.vd = EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false) as VolumeData;
 				EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
 				EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
 			}

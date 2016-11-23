@@ -10,8 +10,10 @@ namespace CreVox
 	{
 		public struct BlockBool
 		{
-			public bool showThis;
-			public bool[] showSingle;
+			public bool showBlocks;
+			public bool[] blocks;
+			public bool showBlockAirs;
+			public bool[] blockAirs;
 
 			public bool filter;
 			public float layerMin;
@@ -25,26 +27,44 @@ namespace CreVox
 		Color defColor = GUI.color;
 		Color volColor = new Color (0.5f, 0.8f, 0.75f);
 
-		void Init ()
+		void OnEnable ()
 		{
 			vd = (VolumeData)target;
 			cb = new BlockBool[vd.chunkDatas.Count];
-			for (int i = 0; i < cb.Length; i++) {
-				cb [i].showThis = false;
-				cb [i].showSingle = new bool[vd.chunkDatas [i].blocks.Count];
-				for (int j = 0; j < cb [i].showSingle.Length; j++) {
-					cb [i].showSingle [j] = false;
+			for(int i = 0; i < cb.Length; i++) {
+				cb[i].layerMin = 0;
+				cb[i].layerMax = Chunk.chunkSize;
+
+				cb[i].blocks = new bool[0];
+				cb[i].blockAirs = new bool[0];
+			}
+		}
+
+		void UpdateList()
+		{
+			for(int i = 0; i < cb.Length; i++) {
+				if (cb[i].blocks.Length != vd.chunkDatas[i].blocks.Count) {
+					cb[i].blocks = new bool[vd.chunkDatas[i].blocks.Count];
+					for (int j = 0; j < cb[i].blocks.Length; j++) {
+						cb[i].blocks [j] = false;
+					}
 				}
-				cb [i].layerMin = 0;
-				cb [i].layerMax = Chunk.chunkSize;
+
+				if (cb[i].blockAirs.Length != vd.chunkDatas[i].blockAirs.Count) {
+					cb[i].blockAirs = new bool[vd.chunkDatas[i].blockAirs.Count];
+					for (int k = 0; k < cb[i].blockAirs.Length; k++) {
+						cb[i].blockAirs [k] = false;
+					}
+				}
 			}
 		}
 
 		public override void OnInspectorGUI ()
 		{
-			Init ();
-
+			vd = (VolumeData)target;
 			EditorGUIUtility.wideMode = true;
+
+			UpdateList ();
 
 			for (int _index = 0; _index < vd.chunkDatas.Count; _index++) {
 				DrawChunkData (_index);
@@ -83,39 +103,42 @@ namespace CreVox
 					cb [_index].layerMax = (int)cb [_index].layerMax;
 					valueMinMax = cb [_index].layerMin + "~" + cb [_index].layerMax;
 				}
+				EditorGUILayout.LabelField ("Layer = " + (cb [_index].filter ? valueMinMax : "all"));
 
 				EditorGUI.indentLevel++;
-				cb [_index].showThis = EditorGUILayout.Foldout (cb [_index].showThis
-					, "Blocks: (Layer = " 
-					+ (cb [_index].filter ? valueMinMax : "all-" + vd.chunkDatas [_index].blocks.Count) 
-					+ ")"
-				);
+				cb [_index].showBlocks = EditorGUILayout.Foldout (cb [_index].showBlocks, " Block(" + cb [_index].blocks.Length);
 
-				if (cb [_index].showThis) {
-					var Blocks = vd.chunkDatas [_index].blocks;
+				if (cb [_index].showBlocks) {
+					List<Block> Blocks = vd.chunkDatas [_index].blocks;
 					for (int i = 0; i < Blocks.Count; i++) {
 						if (cb [_index].filter ? (Blocks [i].BlockPos.y >= cb [_index].layerMin && Blocks [i].BlockPos.y <= cb [_index].layerMax) : true) {
-							if (Blocks [i] is BlockAir) {
-								BlockAir bAir = Blocks [i] as BlockAir;
-								if (bAir.pieceNames != null) {
-									cb [_index].showSingle [i] = EditorGUILayout.Foldout (cb [_index].showSingle [i], 
-										"[" + Blocks [i].BlockPos.x + 
-										"," + Blocks [i].BlockPos.y + 
-										"," + Blocks [i].BlockPos.z + 
-										"]"
-									);
-									if (cb [_index].showSingle [i]) {
-										GUILayout.SelectionGrid (-1, bAir.pieceNames, 3, EditorStyles.miniButton);
-									}
-								}
-							} else {
-								if (!(Blocks [i] == null))
-									EditorGUILayout.LabelField (
-										"[" + Blocks [i].BlockPos.x + 
-										"," + Blocks [i].BlockPos.y + 
-										"," + Blocks [i].BlockPos.z + 
-										"](Voxel)"
-									);
+							if (Blocks [i] != null)
+								EditorGUILayout.LabelField (
+									"[" + Blocks [i].BlockPos.x +
+									"," + Blocks [i].BlockPos.y +
+									"," + Blocks [i].BlockPos.z +
+									"](Voxel)"
+								);
+						}
+					}
+				}
+				EditorGUI.indentLevel--;
+
+				EditorGUI.indentLevel++;
+				cb [_index].showBlockAirs = EditorGUILayout.Foldout (cb [_index].showBlockAirs, " BlockAir(" + cb [_index].blockAirs.Length);
+
+				if (cb [_index].showBlockAirs) {
+					List<BlockAir> BlockAirs = vd.chunkDatas [_index].blockAirs;
+					for (int i = 0; i < BlockAirs.Count; i++) {
+						if (cb [_index].filter ? (BlockAirs [i].BlockPos.y >= cb [_index].layerMin && BlockAirs [i].BlockPos.y <= cb [_index].layerMax) : true) {
+							cb [_index].blockAirs [i] = EditorGUILayout.Foldout (cb [_index].blockAirs [i], 
+								"[" + BlockAirs [i].BlockPos.x +
+								"," + BlockAirs [i].BlockPos.y +
+								"," + BlockAirs [i].BlockPos.z +
+								"]"
+							);
+							if (cb [_index].blocks [i]) {
+								GUILayout.SelectionGrid (-1, BlockAirs [i].pieceNames, 3, EditorStyles.miniButton);
 							}
 						}
 					}

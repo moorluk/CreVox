@@ -122,7 +122,7 @@ namespace CreVox
 							SceneView.RepaintAll ();
 						}
 						if (GUILayout.Button ("byte2VData")) {
-//							vol.WriteVData ();
+							vol.WriteVData ();
 						}
 						GUILayout.EndHorizontal ();
 					}

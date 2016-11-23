@@ -102,7 +102,7 @@ namespace CreVox
 				}
 			}
 		}
-
+*/
 		public void WriteVData ()
 		{
 			if (vd == null)
@@ -110,26 +110,17 @@ namespace CreVox
 			vd.chunkDatas = new List<VolumeData.ChunkData> ();
 			foreach (Chunk _chunk in chunks) {
 				WorldPos _pos = _chunk.pos;
+
 				VolumeData.ChunkData newChunkData = new VolumeData.ChunkData ();
-
 				newChunkData.ChunkPos = _pos;
+				newChunkData.blocks = _chunk.blocks;
+				newChunkData.blockAirs = _chunk.blockAirs;
 
-				for (int b2 = 0; b2 < vg.chunkSize; b2++) {
-					for (int b1 = 0; b1 < vg.chunkSize; b1++) {
-						for (int b3 = 0; b3 < vg.chunkSize; b3++) {
-							Block block = _chunk.GetBlock (b1, b2, b3);
-							if (block != null) {
-								BlockAir blockAir = _chunk.GetBlock (b1, b2, b3) as BlockAir;
-								newChunkData.blocks.Add ((blockAir != null) ? blockAir : block);
-							}
-						}
-					}
-				}
 				vd.chunkDatas.Add (newChunkData);
 			}
 
 			VDataSetDirty ();
-			LinkAllVData ();
+//			LinkAllVData ();
 		}
 
 		void VDataSetDirty()
@@ -138,7 +129,7 @@ namespace CreVox
 			EditorUtility.SetDirty (vd);
 			#endif
 		}
-*/
+
 		#endregion
 
 		#region Chunk
