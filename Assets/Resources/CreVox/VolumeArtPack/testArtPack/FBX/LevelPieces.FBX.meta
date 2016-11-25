@@ -1,0 +1,2058 @@
+fileFormatVersion: 2
+guid: b8cc3117d13fef842acce24f4d9ce465
+timeCreated: 1476239564
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Door
+    100004: Fence
+    100006: Fence_StairL
+    100008: Fence_StairR
+    100010: FenceSeprator
+    100012: pillar
+    100014: pillar2
+    100016: pitfall
+    100018: pitfall2
+    100020: pitfall_floor
+    100022: Stair1M
+    100024: Stair2M
+    100026: StairCollision1M
+    100028: StairCollision2M
+    100030: StairL2M
+    100032: StairLCollision2M
+    100034: StairR1M
+    100036: StairRCollision2M
+    100038: terrace
+    100040: Terrace1M
+    100042: Terrace2M
+    100044: TerraceHalf2M
+    100046: TerraceTwo2M
+    100048: Wall
+    100050: Wall2
+    100052: Wall3
+    100054: StairR2M
+    100056: Wall3_TerraceHalf
+    100058: Wall_TerraceHalf
+    100060: terrace 1
+    100062: terrace2
+    100064: Stair_Up1M
+    100066: StairCollisionUp1M
+    100068: Fence_StairL 1
+    100070: Fence_StairL_Up1M
+    100072: Fence_StairR 1
+    100074: Fence_StairR_Up1M
+    100076: Fence_Up1M
+    100078: Fence_StairL1M
+    100080: Fence_StairR1M
+    100082: Fence_StairL1M2
+    100084: Fence_StairL_Up1M2
+    100086: Fence_StairR1M2
+    100088: Fence_StairR_Up1M2
+    100090: FenceSeprator_pillar
+    100092: Stair
+    100094: StairCollision
+    100096: StairCorner
+    100098: StairCornerCollision
+    100100: StairL
+    100102: StairLCollision
+    100104: StairR
+    100106: StairRCollision
+    100108: WallSeprator
+    100110: WindowX1.0
+    100112: WindowX2.0
+    100114: WallHalf
+    100116: WallCorner
+    100118: WallCorner2
+    100120: Door003
+    100122: Door004
+    100124: Fence_StairLCollision
+    100126: Fence_StairRCollision
+    100128: WallHalf 1
+    100130: WallSeprator 1
+    100132: WallSeprator2
+    100134: WallSeprator3
+    100136: WallSepratorCollision
+    100138: StairCorner+
+    100140: Box001
+    100142: Box002
+    100144: Box003
+    100146: Box004
+    100148: Box005
+    100150: Door 1
+    100152: Door 2
+    100154: Door 3
+    100156: Door 4
+    100158: Door 5
+    100160: Door005
+    100162: Door006
+    100164: Door008
+    100166: Door009
+    100168: Fence 1
+    100170: Fence 2
+    100172: Fence 3
+    100174: Fence 4
+    100176: Fence 5
+    100178: Fence_StairL 2
+    100180: Fence_StairL 3
+    100182: Fence_StairL 4
+    100184: Fence_StairL 5
+    100186: Fence_StairL004
+    100188: Fence_StairLCollision 1
+    100190: Fence_StairLCollision 2
+    100192: Fence_StairR 2
+    100194: Fence_StairR 3
+    100196: Fence_StairR 4
+    100198: Fence_StairR 5
+    100200: Fence_StairRCollision 1
+    100202: Fence_StairRCollision 2
+    100204: FenceHalf_L_1M001
+    100206: FenceHalf_L_Up1M001
+    100208: FenceHalf_R_1M001
+    100210: FenceHalf_R_Up1M001
+    100212: FenceSeprator 1
+    100214: FenceSeprator 2
+    100216: FenceSeprator 3
+    100218: FenceSeprator1/2
+    100220: FenceSeprator3X3X1
+    100222: Object001
+    100224: Object002
+    100226: Object003
+    100228: Object005
+    100230: Object006
+    100232: Object007
+    100234: Object008
+    100236: Object009
+    100238: Object010
+    100240: Object011
+    100242: Object012
+    100244: Object013
+    100246: Object014
+    100248: Object015
+    100250: Object016
+    100252: Object018
+    100254: Object022
+    100256: Object023
+    100258: pillar009
+    100260: pillar2 1
+    100262: pitfall 1
+    100264: pitfall2 1
+    100266: pitfall_field2_whirl_3X3X2
+    100268: Plane001
+    100270: Plane002
+    100272: Plane003
+    100274: Sphere001
+    100276: Stair 1
+    100278: Stair 2
+    100280: Stair 3
+    100282: Stair 4
+    100284: Stair_1.5X3X1
+    100286: Stair_collision_1.5X3X1
+    100288: Stair_collision_3X3X2
+    100290: StairCollision 1
+    100292: StairCollision 2
+    100294: StairCollision 3
+    100296: StairCorner 1
+    100298: StairCorner 2
+    100300: StairCorner 3
+    100302: StairCorner 4
+    100304: StairCorner+ 1
+    100306: StairCornerCollision 1
+    100308: StairCornerCollision 2
+    100310: StairL 1
+    100312: StairL 2
+    100314: StairL 3
+    100316: StairL 4
+    100318: StairL_3X1.5X2
+    100320: StairL_collision_3X1.5X2
+    100322: StairLCollision 1
+    100324: StairLCollision 2
+    100326: StairLCollision 3
+    100328: StairLCollision 4
+    100330: StairLCollision 5
+    100332: StairR 1
+    100334: StairR 2
+    100336: StairR 3
+    100338: StairR 4
+    100340: StairR_3X1.5X2
+    100342: StairR_collision_3X1.5X2
+    100344: StairRCollision 1
+    100346: StairRCollision 2
+    100348: StairRCollision 3
+    100350: StairRCollision 4
+    100352: StairRCollision 5
+    100354: terrace 2
+    100356: Terrace2M 1
+    100358: Wall 1
+    100360: Wall 2
+    100362: Wall 3
+    100364: Wall 4
+    100366: Wall 5
+    100368: Wall 6
+    100370: WallCorner 1
+    100372: WallCorner 2
+    100374: WallCorner 3
+    100376: WallCorner 4
+    100378: WallCorner 5
+    100380: WallCorner 6
+    100382: WallCorner 7
+    100384: WallCorner2 1
+    100386: WallHalf 2
+    100388: WallHalf 3
+    100390: WallHalf 4
+    100392: WallHalf 5
+    100394: WallSeprator 2
+    100396: WallSeprator 3
+    100398: WallSeprator 4
+    100400: WallSeprator 5
+    100402: WallSepratorCollision 1
+    100404: WallSepratorCollision 2
+    100406: WindowX1.0 1
+    100408: WindowX1.0 2
+    100410: WindowX1.0 3
+    100412: WindowX1.0 4
+    100414: WindowX1.0 5
+    100416: WindowX2.0 1
+    100418: WindowX2.0 2
+    100420: WindowX2.0 3
+    100422: WindowX2.0 4
+    100424: WindowX2.0 5
+    100426: ceiling
+    100428: ceiling_out
+    100430: ceiling_near
+    100432: ceilingCorner
+    100434: ceilingCorner2
+    100436: FloorSeprator
+    100438: FloorSeprator2
+    100440: ceilingCorner 1
+    100442: FloorSeprator3
+    100444: FloorSeprator4
+    100446: FloorSepratorHalfL
+    100448: FloorSepratorHalfR
+    100450: FloorSepratortwo
+    100452: FloorSeprator 1
+    100454: FloorSeprator 2
+    100456: FloorSepratorX
+    100458: FloorSepratorZ
+    100460: Fence_SepratorL
+    100462: Fence_SepratorR
+    100464: Fence_SepratorL 1
+    100466: ceiling002
+    100468: ceiling_nearL
+    100470: ceiling_nearR
+    100472: ceiling_outL
+    100474: ceiling_outR
+    100476: WallL
+    100478: WallR
+    100480: FloorSeprator010
+    100482: ceiling2
+    100484: ceiling_nearL 1
+    100486: ceiling_outL 1
+    100488: ceiling_outL002
+    100490: StairCollision002
+    100492: Box008
+    100494: ceiling 1
+    100496: ceiling001
+    100498: ceiling003
+    100500: ceiling004
+    100502: ceiling005
+    100504: ceiling006
+    100506: ceiling007
+    100508: ceiling2 1
+    100510: ceiling_near 1
+    100512: ceiling_near 2
+    100514: ceiling_near 3
+    100516: ceiling_near001
+    100518: ceiling_near003
+    100520: ceiling_near004
+    100522: ceiling_near005
+    100524: ceiling_near006
+    100526: ceiling_near007
+    100528: ceiling_near009
+    100530: ceiling_near010
+    100532: ceiling_near011
+    100534: ceiling_nearL 2
+    100536: ceiling_nearR 1
+    100538: ceiling_nearR 2
+    100540: ceiling_out 1
+    100542: ceiling_out 2
+    100544: ceiling_out 3
+    100546: ceiling_out 4
+    100548: ceiling_out001
+    100550: ceiling_out002
+    100552: ceiling_outL 2
+    100554: ceiling_outR 1
+    100556: ceilingCorner 2
+    100558: ceilingCorner 3
+    100560: ceilingCorner 4
+    100562: ceilingCorner003
+    100564: ceilingCorner2 1
+    100566: Door010
+    100568: Fence 6
+    100570: Fence002
+    100572: Fence003
+    100574: Fence004
+    100576: Fence_SepratorR++
+    100578: Fence_SepratorR001
+    100580: Fence_StairL 6
+    100582: Fence_StairL 7
+    100584: Fence_StairL 8
+    100586: Fence_StairL 9
+    100588: Fence_StairL005
+    100590: Fence_StairL006
+    100592: Fence_StairLCollision001
+    100594: Fence_StairR 6
+    100596: Fence_StairR 7
+    100598: Fence_StairR 8
+    100600: Fence_StairR 9
+    100602: Fence_StairR001
+    100604: Fence_StairRCollision001
+    100606: FenceSeprator 4
+    100608: FenceSeprator001
+    100610: FloorSeprator005
+    100612: FloorSeprator006
+    100614: FloorSeprator007
+    100616: FloorSeprator008
+    100618: FloorSeprator009
+    100620: FloorSeprator2 1
+    100622: FloorSepratorHalfL 1
+    100624: FloorSepratorHalfL 2
+    100626: FloorSepratorHalfL 3
+    100628: FloorSepratorHalfL001
+    100630: FloorSepratorHalfR 1
+    100632: FloorSepratorHalfR 2
+    100634: FloorSepratorHalfR001
+    100636: FloorSepratorX 1
+    100638: FloorSepratorX 2
+    100640: FloorSepratorX001
+    100642: FloorSepratorX003
+    100644: FloorSepratorZ 1
+    100646: FloorSepratorZ 2
+    100648: FloorSepratorZ001
+    100650: FloorSepratorZ002
+    100652: Object039
+    100654: Object041
+    100656: Object042
+    100658: Object043
+    100660: Object047
+    100662: Object048
+    100664: Object052
+    100666: Object053
+    100668: Object056
+    100670: Object057
+    100672: Object059
+    100674: Object060
+    100676: Stair 5
+    100678: Stair 6
+    100680: Stair001
+    100682: Stair002
+    100684: Stair003
+    100686: Stair004
+    100688: Stair005
+    100690: StairCollision 4
+    100692: StairCollision 5
+    100694: StairCollision 6
+    100696: StairCollision 7
+    100698: StairCollision001
+    100700: StairCorner 5
+    100702: StairCorner001
+    100704: StairL 5
+    100706: StairL 6
+    100708: StairL001
+    100710: StairL002
+    100712: StairLCollision001
+    100714: StairR 5
+    100716: StairR 6
+    100718: StairR001
+    100720: StairR002
+    100722: StairRCollision001
+    100724: Wall001
+    100726: Wall005
+    100728: Wall006
+    100730: Wall007
+    100732: Wall008
+    100734: Wall009
+    100736: Wall011
+    100738: Wall015
+    100740: WallCorner 8
+    100742: WallCorner003
+    100744: WallHalf001
+    100746: WallSeprator 6
+    100748: WallSeprator006
+    100750: WallSeprator007
+    100752: WallSeprator008
+    100754: WallSeprator009
+    100756: WallSeprator011
+    100758: WallSepratorCollision001
+    100760: WallSepratorCollision002
+    100762: WindowX1.001
+    100764: WindowX2.001
+    100766: FloorSeprator3 1
+    100768: WallCorner004
+    100770: WallCorner005
+    100772: Object070
+    100774: FloorSeprator1
+    100776: FloorSeprator2_1
+    100778: WallSeprator2_1
+    100780: ground
+    100782: WallLCollision
+    100784: WallRCollision
+    100786: FloorSeprator015
+    100788: WallSeprator3_ gold
+    100790: light
+    100792: light2
+    100794: light3
+    100796: WindowX1
+    100798: WindowX1Collision
+    100800: WindowX2
+    100802: WindowX2Collision
+    400000: //RootNode
+    400002: Door
+    400004: Fence
+    400006: Fence_StairL
+    400008: Fence_StairR
+    400010: FenceSeprator
+    400012: pillar
+    400014: pillar2
+    400016: pitfall
+    400018: pitfall2
+    400020: pitfall_floor
+    400022: Stair1M
+    400024: Stair2M
+    400026: StairCollision1M
+    400028: StairCollision2M
+    400030: StairL2M
+    400032: StairLCollision2M
+    400034: StairR1M
+    400036: StairRCollision2M
+    400038: terrace
+    400040: Terrace1M
+    400042: Terrace2M
+    400044: TerraceHalf2M
+    400046: TerraceTwo2M
+    400048: Wall
+    400050: Wall2
+    400052: Wall3
+    400054: StairR2M
+    400056: Wall3_TerraceHalf
+    400058: Wall_TerraceHalf
+    400060: terrace 1
+    400062: terrace2
+    400064: Stair_Up1M
+    400066: StairCollisionUp1M
+    400068: Fence_StairL 1
+    400070: Fence_StairL_Up1M
+    400072: Fence_StairR 1
+    400074: Fence_StairR_Up1M
+    400076: Fence_Up1M
+    400078: Fence_StairL1M
+    400080: Fence_StairR1M
+    400082: Fence_StairL1M2
+    400084: Fence_StairL_Up1M2
+    400086: Fence_StairR1M2
+    400088: Fence_StairR_Up1M2
+    400090: FenceSeprator_pillar
+    400092: Stair
+    400094: StairCollision
+    400096: StairCorner
+    400098: StairCornerCollision
+    400100: StairL
+    400102: StairLCollision
+    400104: StairR
+    400106: StairRCollision
+    400108: WallSeprator
+    400110: WindowX1.0
+    400112: WindowX2.0
+    400114: WallHalf
+    400116: WallCorner
+    400118: WallCorner2
+    400120: Door003
+    400122: Door004
+    400124: Fence_StairLCollision
+    400126: Fence_StairRCollision
+    400128: WallHalf 1
+    400130: WallSeprator 1
+    400132: WallSeprator2
+    400134: WallSeprator3
+    400136: WallSepratorCollision
+    400138: StairCorner+
+    400140: Box001
+    400142: Box002
+    400144: Box003
+    400146: Box004
+    400148: Box005
+    400150: Door 1
+    400152: Door 2
+    400154: Door 3
+    400156: Door 4
+    400158: Door 5
+    400160: Door005
+    400162: Door006
+    400164: Door008
+    400166: Door009
+    400168: Fence 1
+    400170: Fence 2
+    400172: Fence 3
+    400174: Fence 4
+    400176: Fence 5
+    400178: Fence_StairL 2
+    400180: Fence_StairL 3
+    400182: Fence_StairL 4
+    400184: Fence_StairL 5
+    400186: Fence_StairL004
+    400188: Fence_StairLCollision 1
+    400190: Fence_StairLCollision 2
+    400192: Fence_StairR 2
+    400194: Fence_StairR 3
+    400196: Fence_StairR 4
+    400198: Fence_StairR 5
+    400200: Fence_StairRCollision 1
+    400202: Fence_StairRCollision 2
+    400204: FenceHalf_L_1M001
+    400206: FenceHalf_L_Up1M001
+    400208: FenceHalf_R_1M001
+    400210: FenceHalf_R_Up1M001
+    400212: FenceSeprator 1
+    400214: FenceSeprator 2
+    400216: FenceSeprator 3
+    400218: FenceSeprator1/2
+    400220: FenceSeprator3X3X1
+    400222: Object001
+    400224: Object002
+    400226: Object003
+    400228: Object005
+    400230: Object006
+    400232: Object007
+    400234: Object008
+    400236: Object009
+    400238: Object010
+    400240: Object011
+    400242: Object012
+    400244: Object013
+    400246: Object014
+    400248: Object015
+    400250: Object016
+    400252: Object018
+    400254: Object022
+    400256: Object023
+    400258: pillar009
+    400260: pillar2 1
+    400262: pitfall 1
+    400264: pitfall2 1
+    400266: pitfall_field2_whirl_3X3X2
+    400268: Plane001
+    400270: Plane002
+    400272: Plane003
+    400274: Sphere001
+    400276: Stair 1
+    400278: Stair 2
+    400280: Stair 3
+    400282: Stair 4
+    400284: Stair_1.5X3X1
+    400286: Stair_collision_1.5X3X1
+    400288: Stair_collision_3X3X2
+    400290: StairCollision 1
+    400292: StairCollision 2
+    400294: StairCollision 3
+    400296: StairCorner 1
+    400298: StairCorner 2
+    400300: StairCorner 3
+    400302: StairCorner 4
+    400304: StairCorner+ 1
+    400306: StairCornerCollision 1
+    400308: StairCornerCollision 2
+    400310: StairL 1
+    400312: StairL 2
+    400314: StairL 3
+    400316: StairL 4
+    400318: StairL_3X1.5X2
+    400320: StairL_collision_3X1.5X2
+    400322: StairLCollision 1
+    400324: StairLCollision 2
+    400326: StairLCollision 3
+    400328: StairLCollision 4
+    400330: StairLCollision 5
+    400332: StairR 1
+    400334: StairR 2
+    400336: StairR 3
+    400338: StairR 4
+    400340: StairR_3X1.5X2
+    400342: StairR_collision_3X1.5X2
+    400344: StairRCollision 1
+    400346: StairRCollision 2
+    400348: StairRCollision 3
+    400350: StairRCollision 4
+    400352: StairRCollision 5
+    400354: terrace 2
+    400356: Terrace2M 1
+    400358: Wall 1
+    400360: Wall 2
+    400362: Wall 3
+    400364: Wall 4
+    400366: Wall 5
+    400368: Wall 6
+    400370: WallCorner 1
+    400372: WallCorner 2
+    400374: WallCorner 3
+    400376: WallCorner 4
+    400378: WallCorner 5
+    400380: WallCorner 6
+    400382: WallCorner 7
+    400384: WallCorner2 1
+    400386: WallHalf 2
+    400388: WallHalf 3
+    400390: WallHalf 4
+    400392: WallHalf 5
+    400394: WallSeprator 2
+    400396: WallSeprator 3
+    400398: WallSeprator 4
+    400400: WallSeprator 5
+    400402: WallSepratorCollision 1
+    400404: WallSepratorCollision 2
+    400406: WindowX1.0 1
+    400408: WindowX1.0 2
+    400410: WindowX1.0 3
+    400412: WindowX1.0 4
+    400414: WindowX1.0 5
+    400416: WindowX2.0 1
+    400418: WindowX2.0 2
+    400420: WindowX2.0 3
+    400422: WindowX2.0 4
+    400424: WindowX2.0 5
+    400426: ceiling
+    400428: ceiling_out
+    400430: ceiling_near
+    400432: ceilingCorner
+    400434: ceilingCorner2
+    400436: FloorSeprator
+    400438: FloorSeprator2
+    400440: ceilingCorner 1
+    400442: FloorSeprator3
+    400444: FloorSeprator4
+    400446: FloorSepratorHalfL
+    400448: FloorSepratorHalfR
+    400450: FloorSepratortwo
+    400452: FloorSeprator 1
+    400454: FloorSeprator 2
+    400456: FloorSepratorX
+    400458: FloorSepratorZ
+    400460: Fence_SepratorL
+    400462: Fence_SepratorR
+    400464: Fence_SepratorL 1
+    400466: ceiling002
+    400468: ceiling_nearL
+    400470: ceiling_nearR
+    400472: ceiling_outL
+    400474: ceiling_outR
+    400476: WallL
+    400478: WallR
+    400480: FloorSeprator010
+    400482: ceiling2
+    400484: ceiling_nearL 1
+    400486: ceiling_outL 1
+    400488: ceiling_outL002
+    400490: StairCollision002
+    400492: Box008
+    400494: ceiling 1
+    400496: ceiling001
+    400498: ceiling003
+    400500: ceiling004
+    400502: ceiling005
+    400504: ceiling006
+    400506: ceiling007
+    400508: ceiling2 1
+    400510: ceiling_near 1
+    400512: ceiling_near 2
+    400514: ceiling_near 3
+    400516: ceiling_near001
+    400518: ceiling_near003
+    400520: ceiling_near004
+    400522: ceiling_near005
+    400524: ceiling_near006
+    400526: ceiling_near007
+    400528: ceiling_near009
+    400530: ceiling_near010
+    400532: ceiling_near011
+    400534: ceiling_nearL 2
+    400536: ceiling_nearR 1
+    400538: ceiling_nearR 2
+    400540: ceiling_out 1
+    400542: ceiling_out 2
+    400544: ceiling_out 3
+    400546: ceiling_out 4
+    400548: ceiling_out001
+    400550: ceiling_out002
+    400552: ceiling_outL 2
+    400554: ceiling_outR 1
+    400556: ceilingCorner 2
+    400558: ceilingCorner 3
+    400560: ceilingCorner 4
+    400562: ceilingCorner003
+    400564: ceilingCorner2 1
+    400566: Door010
+    400568: Fence 6
+    400570: Fence002
+    400572: Fence003
+    400574: Fence004
+    400576: Fence_SepratorR++
+    400578: Fence_SepratorR001
+    400580: Fence_StairL 6
+    400582: Fence_StairL 7
+    400584: Fence_StairL 8
+    400586: Fence_StairL 9
+    400588: Fence_StairL005
+    400590: Fence_StairL006
+    400592: Fence_StairLCollision001
+    400594: Fence_StairR 6
+    400596: Fence_StairR 7
+    400598: Fence_StairR 8
+    400600: Fence_StairR 9
+    400602: Fence_StairR001
+    400604: Fence_StairRCollision001
+    400606: FenceSeprator 4
+    400608: FenceSeprator001
+    400610: FloorSeprator005
+    400612: FloorSeprator006
+    400614: FloorSeprator007
+    400616: FloorSeprator008
+    400618: FloorSeprator009
+    400620: FloorSeprator2 1
+    400622: FloorSepratorHalfL 1
+    400624: FloorSepratorHalfL 2
+    400626: FloorSepratorHalfL 3
+    400628: FloorSepratorHalfL001
+    400630: FloorSepratorHalfR 1
+    400632: FloorSepratorHalfR 2
+    400634: FloorSepratorHalfR001
+    400636: FloorSepratorX 1
+    400638: FloorSepratorX 2
+    400640: FloorSepratorX001
+    400642: FloorSepratorX003
+    400644: FloorSepratorZ 1
+    400646: FloorSepratorZ 2
+    400648: FloorSepratorZ001
+    400650: FloorSepratorZ002
+    400652: Object039
+    400654: Object041
+    400656: Object042
+    400658: Object043
+    400660: Object047
+    400662: Object048
+    400664: Object052
+    400666: Object053
+    400668: Object056
+    400670: Object057
+    400672: Object059
+    400674: Object060
+    400676: Stair 5
+    400678: Stair 6
+    400680: Stair001
+    400682: Stair002
+    400684: Stair003
+    400686: Stair004
+    400688: Stair005
+    400690: StairCollision 4
+    400692: StairCollision 5
+    400694: StairCollision 6
+    400696: StairCollision 7
+    400698: StairCollision001
+    400700: StairCorner 5
+    400702: StairCorner001
+    400704: StairL 5
+    400706: StairL 6
+    400708: StairL001
+    400710: StairL002
+    400712: StairLCollision001
+    400714: StairR 5
+    400716: StairR 6
+    400718: StairR001
+    400720: StairR002
+    400722: StairRCollision001
+    400724: Wall001
+    400726: Wall005
+    400728: Wall006
+    400730: Wall007
+    400732: Wall008
+    400734: Wall009
+    400736: Wall011
+    400738: Wall015
+    400740: WallCorner 8
+    400742: WallCorner003
+    400744: WallHalf001
+    400746: WallSeprator 6
+    400748: WallSeprator006
+    400750: WallSeprator007
+    400752: WallSeprator008
+    400754: WallSeprator009
+    400756: WallSeprator011
+    400758: WallSepratorCollision001
+    400760: WallSepratorCollision002
+    400762: WindowX1.001
+    400764: WindowX2.001
+    400766: FloorSeprator3 1
+    400768: WallCorner004
+    400770: WallCorner005
+    400772: Object070
+    400774: FloorSeprator1
+    400776: FloorSeprator2_1
+    400778: WallSeprator2_1
+    400780: ground
+    400782: WallLCollision
+    400784: WallRCollision
+    400786: FloorSeprator015
+    400788: WallSeprator3_ gold
+    400790: light
+    400792: light2
+    400794: light3
+    400796: WindowX1
+    400798: WindowX1Collision
+    400800: WindowX2
+    400802: WindowX2Collision
+    2300000: Door
+    2300002: Fence
+    2300004: Fence_StairL
+    2300006: Fence_StairR
+    2300008: FenceSeprator
+    2300010: pillar
+    2300012: pillar2
+    2300014: pitfall
+    2300016: pitfall2
+    2300018: pitfall_floor
+    2300020: Stair1M
+    2300022: Stair2M
+    2300024: StairCollision1M
+    2300026: StairCollision2M
+    2300028: StairL2M
+    2300030: StairLCollision2M
+    2300032: StairR1M
+    2300034: StairRCollision2M
+    2300036: terrace
+    2300038: Terrace1M
+    2300040: Terrace2M
+    2300042: TerraceHalf2M
+    2300044: TerraceTwo2M
+    2300046: Wall
+    2300048: Wall2
+    2300050: Wall3
+    2300052: StairR2M
+    2300054: Wall3_TerraceHalf
+    2300056: Wall_TerraceHalf
+    2300058: terrace 1
+    2300060: terrace2
+    2300062: Stair_Up1M
+    2300064: StairCollisionUp1M
+    2300066: Fence_StairL 1
+    2300068: Fence_StairL_Up1M
+    2300070: Fence_StairR 1
+    2300072: Fence_StairR_Up1M
+    2300074: Fence_Up1M
+    2300076: Fence_StairL1M
+    2300078: Fence_StairR1M
+    2300080: Fence_StairL1M2
+    2300082: Fence_StairL_Up1M2
+    2300084: Fence_StairR1M2
+    2300086: Fence_StairR_Up1M2
+    2300088: FenceSeprator_pillar
+    2300090: Stair
+    2300092: StairCollision
+    2300094: StairCorner
+    2300096: StairCornerCollision
+    2300098: StairL
+    2300100: StairLCollision
+    2300102: StairR
+    2300104: StairRCollision
+    2300106: WallSeprator
+    2300108: WindowX1.0
+    2300110: WindowX2.0
+    2300112: WallHalf
+    2300114: WallCorner
+    2300116: WallCorner2
+    2300118: Fence_StairLCollision
+    2300120: Fence_StairRCollision
+    2300122: WallHalf 1
+    2300124: WallSeprator 1
+    2300126: WallSeprator2
+    2300128: WallSeprator3
+    2300130: WallSepratorCollision
+    2300132: StairCorner+
+    2300134: //RootNode
+    2300136: Box001
+    2300138: Box002
+    2300140: Box003
+    2300142: Box004
+    2300144: Box005
+    2300146: Door 1
+    2300148: Door 2
+    2300150: Door 3
+    2300152: Door 4
+    2300154: Door 5
+    2300156: Fence 1
+    2300158: Fence 2
+    2300160: Fence 3
+    2300162: Fence 4
+    2300164: Fence 5
+    2300166: Fence_StairL 2
+    2300168: Fence_StairL 3
+    2300170: Fence_StairL 4
+    2300172: Fence_StairL 5
+    2300174: Fence_StairLCollision 1
+    2300176: Fence_StairLCollision 2
+    2300178: Fence_StairR 2
+    2300180: Fence_StairR 3
+    2300182: Fence_StairR 4
+    2300184: Fence_StairR 5
+    2300186: Fence_StairRCollision 1
+    2300188: Fence_StairRCollision 2
+    2300190: FenceHalf_L_1M001
+    2300192: FenceHalf_L_Up1M001
+    2300194: FenceHalf_R_1M001
+    2300196: FenceHalf_R_Up1M001
+    2300198: FenceSeprator 1
+    2300200: FenceSeprator 2
+    2300202: FenceSeprator 3
+    2300204: FenceSeprator1/2
+    2300206: FenceSeprator3X3X1
+    2300208: Object001
+    2300210: Object002
+    2300212: Object003
+    2300214: Object005
+    2300216: Object006
+    2300218: Object007
+    2300220: Object008
+    2300222: Object009
+    2300224: Object010
+    2300226: Object011
+    2300228: Object012
+    2300230: Object013
+    2300232: Object014
+    2300234: Object015
+    2300236: Object016
+    2300238: Object018
+    2300240: Object022
+    2300242: Object023
+    2300244: pillar009
+    2300246: pillar2 1
+    2300248: pitfall 1
+    2300250: pitfall2 1
+    2300252: pitfall_field2_whirl_3X3X2
+    2300254: Plane001
+    2300256: Plane002
+    2300258: Plane003
+    2300260: Sphere001
+    2300262: Stair 1
+    2300264: Stair 2
+    2300266: Stair 3
+    2300268: Stair 4
+    2300270: Stair_1.5X3X1
+    2300272: Stair_collision_1.5X3X1
+    2300274: Stair_collision_3X3X2
+    2300276: StairCollision 1
+    2300278: StairCollision 2
+    2300280: StairCollision 3
+    2300282: StairCorner 1
+    2300284: StairCorner 2
+    2300286: StairCorner 3
+    2300288: StairCorner 4
+    2300290: StairCorner+ 1
+    2300292: StairCornerCollision 1
+    2300294: StairCornerCollision 2
+    2300296: StairL 1
+    2300298: StairL 2
+    2300300: StairL 3
+    2300302: StairL 4
+    2300304: StairL_3X1.5X2
+    2300306: StairL_collision_3X1.5X2
+    2300308: StairLCollision 1
+    2300310: StairLCollision 2
+    2300312: StairLCollision 3
+    2300314: StairLCollision 4
+    2300316: StairLCollision 5
+    2300318: StairR 1
+    2300320: StairR 2
+    2300322: StairR 3
+    2300324: StairR 4
+    2300326: StairR_3X1.5X2
+    2300328: StairR_collision_3X1.5X2
+    2300330: StairRCollision 1
+    2300332: StairRCollision 2
+    2300334: StairRCollision 3
+    2300336: StairRCollision 4
+    2300338: StairRCollision 5
+    2300340: terrace 2
+    2300342: Terrace2M 1
+    2300344: Wall 1
+    2300346: Wall 2
+    2300348: Wall 3
+    2300350: Wall 4
+    2300352: Wall 5
+    2300354: Wall 6
+    2300356: WallCorner 1
+    2300358: WallCorner 2
+    2300360: WallCorner 3
+    2300362: WallCorner 4
+    2300364: WallCorner 5
+    2300366: WallCorner 6
+    2300368: WallCorner 7
+    2300370: WallCorner2 1
+    2300372: WallHalf 2
+    2300374: WallHalf 3
+    2300376: WallHalf 4
+    2300378: WallHalf 5
+    2300380: WallSeprator 2
+    2300382: WallSeprator 3
+    2300384: WallSeprator 4
+    2300386: WallSeprator 5
+    2300388: WallSepratorCollision 1
+    2300390: WallSepratorCollision 2
+    2300392: WindowX1.0 1
+    2300394: WindowX1.0 2
+    2300396: WindowX1.0 3
+    2300398: WindowX1.0 4
+    2300400: WindowX1.0 5
+    2300402: WindowX2.0 1
+    2300404: WindowX2.0 2
+    2300406: WindowX2.0 3
+    2300408: WindowX2.0 4
+    2300410: WindowX2.0 5
+    2300412: ceiling
+    2300414: ceiling_out
+    2300416: ceiling_near
+    2300418: ceilingCorner
+    2300420: ceilingCorner2
+    2300422: FloorSeprator
+    2300424: FloorSeprator2
+    2300426: ceilingCorner 1
+    2300428: FloorSeprator3
+    2300430: FloorSeprator4
+    2300432: FloorSepratorHalfL
+    2300434: FloorSepratorHalfR
+    2300436: FloorSepratortwo
+    2300438: FloorSeprator 1
+    2300440: FloorSeprator 2
+    2300442: FloorSepratorX
+    2300444: FloorSepratorZ
+    2300446: Fence_SepratorL
+    2300448: Fence_SepratorR
+    2300450: Fence_SepratorL 1
+    2300452: ceiling002
+    2300454: ceiling_nearL
+    2300456: ceiling_nearR
+    2300458: ceiling_outL
+    2300460: ceiling_outR
+    2300462: WallL
+    2300464: WallR
+    2300466: FloorSeprator010
+    2300468: ceiling2
+    2300470: ceiling_nearL 1
+    2300472: ceiling_outL 1
+    2300474: ceiling_outL002
+    2300476: StairCollision002
+    2300478: Box008
+    2300480: ceiling 1
+    2300482: ceiling001
+    2300484: ceiling003
+    2300486: ceiling004
+    2300488: ceiling005
+    2300490: ceiling006
+    2300492: ceiling007
+    2300494: ceiling2 1
+    2300496: ceiling_near 1
+    2300498: ceiling_near 2
+    2300500: ceiling_near 3
+    2300502: ceiling_near001
+    2300504: ceiling_near003
+    2300506: ceiling_near004
+    2300508: ceiling_near005
+    2300510: ceiling_near006
+    2300512: ceiling_near007
+    2300514: ceiling_near009
+    2300516: ceiling_near010
+    2300518: ceiling_near011
+    2300520: ceiling_nearL 2
+    2300522: ceiling_nearR 1
+    2300524: ceiling_nearR 2
+    2300526: ceiling_out 1
+    2300528: ceiling_out 2
+    2300530: ceiling_out 3
+    2300532: ceiling_out 4
+    2300534: ceiling_out001
+    2300536: ceiling_out002
+    2300538: ceiling_outL 2
+    2300540: ceiling_outR 1
+    2300542: ceilingCorner 2
+    2300544: ceilingCorner 3
+    2300546: ceilingCorner 4
+    2300548: ceilingCorner003
+    2300550: ceilingCorner2 1
+    2300552: Door010
+    2300554: Fence 6
+    2300556: Fence002
+    2300558: Fence003
+    2300560: Fence004
+    2300562: Fence_SepratorR++
+    2300564: Fence_SepratorR001
+    2300566: Fence_StairL 6
+    2300568: Fence_StairL 7
+    2300570: Fence_StairL 8
+    2300572: Fence_StairL 9
+    2300574: Fence_StairL005
+    2300576: Fence_StairL006
+    2300578: Fence_StairLCollision001
+    2300580: Fence_StairR 6
+    2300582: Fence_StairR 7
+    2300584: Fence_StairR 8
+    2300586: Fence_StairR 9
+    2300588: Fence_StairR001
+    2300590: Fence_StairRCollision001
+    2300592: FenceSeprator 4
+    2300594: FenceSeprator001
+    2300596: FloorSeprator005
+    2300598: FloorSeprator006
+    2300600: FloorSeprator007
+    2300602: FloorSeprator008
+    2300604: FloorSeprator009
+    2300606: FloorSeprator2 1
+    2300608: FloorSepratorHalfL 1
+    2300610: FloorSepratorHalfL 2
+    2300612: FloorSepratorHalfL 3
+    2300614: FloorSepratorHalfL001
+    2300616: FloorSepratorHalfR 1
+    2300618: FloorSepratorHalfR 2
+    2300620: FloorSepratorHalfR001
+    2300622: FloorSepratorX 1
+    2300624: FloorSepratorX 2
+    2300626: FloorSepratorX001
+    2300628: FloorSepratorX003
+    2300630: FloorSepratorZ 1
+    2300632: FloorSepratorZ 2
+    2300634: FloorSepratorZ001
+    2300636: FloorSepratorZ002
+    2300638: Object039
+    2300640: Object041
+    2300642: Object042
+    2300644: Object043
+    2300646: Object047
+    2300648: Object048
+    2300650: Object052
+    2300652: Object053
+    2300654: Object056
+    2300656: Object057
+    2300658: Object059
+    2300660: Object060
+    2300662: Stair 5
+    2300664: Stair 6
+    2300666: Stair001
+    2300668: Stair002
+    2300670: Stair003
+    2300672: Stair004
+    2300674: Stair005
+    2300676: StairCollision 4
+    2300678: StairCollision 5
+    2300680: StairCollision 6
+    2300682: StairCollision 7
+    2300684: StairCollision001
+    2300686: StairCorner 5
+    2300688: StairCorner001
+    2300690: StairL 5
+    2300692: StairL 6
+    2300694: StairL001
+    2300696: StairL002
+    2300698: StairLCollision001
+    2300700: StairR 5
+    2300702: StairR 6
+    2300704: StairR001
+    2300706: StairR002
+    2300708: StairRCollision001
+    2300710: Wall001
+    2300712: Wall005
+    2300714: Wall006
+    2300716: Wall007
+    2300718: Wall008
+    2300720: Wall009
+    2300722: Wall011
+    2300724: Wall015
+    2300726: WallCorner 8
+    2300728: WallCorner003
+    2300730: WallHalf001
+    2300732: WallSeprator 6
+    2300734: WallSeprator006
+    2300736: WallSeprator007
+    2300738: WallSeprator008
+    2300740: WallSeprator009
+    2300742: WallSeprator011
+    2300744: WallSepratorCollision001
+    2300746: WallSepratorCollision002
+    2300748: WindowX1.001
+    2300750: WindowX2.001
+    2300752: FloorSeprator3 1
+    2300754: WallCorner004
+    2300756: WallCorner005
+    2300758: Object070
+    2300760: FloorSeprator1
+    2300762: FloorSeprator2_1
+    2300764: WallSeprator2_1
+    2300766: ground
+    2300768: WallLCollision
+    2300770: WallRCollision
+    2300772: FloorSeprator015
+    2300774: WallSeprator3_ gold
+    2300776: light
+    2300778: light2
+    2300780: light3
+    2300782: WindowX1
+    2300784: WindowX1Collision
+    2300786: WindowX2
+    2300788: WindowX2Collision
+    3300000: Door
+    3300002: Fence
+    3300004: Fence_StairL
+    3300006: Fence_StairR
+    3300008: FenceSeprator
+    3300010: pillar
+    3300012: pillar2
+    3300014: pitfall
+    3300016: pitfall2
+    3300018: pitfall_floor
+    3300020: Stair1M
+    3300022: Stair2M
+    3300024: StairCollision1M
+    3300026: StairCollision2M
+    3300028: StairL2M
+    3300030: StairLCollision2M
+    3300032: StairR1M
+    3300034: StairRCollision2M
+    3300036: terrace
+    3300038: Terrace1M
+    3300040: Terrace2M
+    3300042: TerraceHalf2M
+    3300044: TerraceTwo2M
+    3300046: Wall
+    3300048: Wall2
+    3300050: Wall3
+    3300052: StairR2M
+    3300054: Wall3_TerraceHalf
+    3300056: Wall_TerraceHalf
+    3300058: terrace 1
+    3300060: terrace2
+    3300062: Stair_Up1M
+    3300064: StairCollisionUp1M
+    3300066: Fence_StairL 1
+    3300068: Fence_StairL_Up1M
+    3300070: Fence_StairR 1
+    3300072: Fence_StairR_Up1M
+    3300074: Fence_Up1M
+    3300076: Fence_StairL1M
+    3300078: Fence_StairR1M
+    3300080: Fence_StairL1M2
+    3300082: Fence_StairL_Up1M2
+    3300084: Fence_StairR1M2
+    3300086: Fence_StairR_Up1M2
+    3300088: FenceSeprator_pillar
+    3300090: Stair
+    3300092: StairCollision
+    3300094: StairCorner
+    3300096: StairCornerCollision
+    3300098: StairL
+    3300100: StairLCollision
+    3300102: StairR
+    3300104: StairRCollision
+    3300106: WallSeprator
+    3300108: WindowX1.0
+    3300110: WindowX2.0
+    3300112: WallHalf
+    3300114: WallCorner
+    3300116: WallCorner2
+    3300118: Fence_StairLCollision
+    3300120: Fence_StairRCollision
+    3300122: WallHalf 1
+    3300124: WallSeprator 1
+    3300126: WallSeprator2
+    3300128: WallSeprator3
+    3300130: WallSepratorCollision
+    3300132: StairCorner+
+    3300134: //RootNode
+    3300136: Box001
+    3300138: Box002
+    3300140: Box003
+    3300142: Box004
+    3300144: Box005
+    3300146: Door 1
+    3300148: Door 2
+    3300150: Door 3
+    3300152: Door 4
+    3300154: Door 5
+    3300156: Fence 1
+    3300158: Fence 2
+    3300160: Fence 3
+    3300162: Fence 4
+    3300164: Fence 5
+    3300166: Fence_StairL 2
+    3300168: Fence_StairL 3
+    3300170: Fence_StairL 4
+    3300172: Fence_StairL 5
+    3300174: Fence_StairLCollision 1
+    3300176: Fence_StairLCollision 2
+    3300178: Fence_StairR 2
+    3300180: Fence_StairR 3
+    3300182: Fence_StairR 4
+    3300184: Fence_StairR 5
+    3300186: Fence_StairRCollision 1
+    3300188: Fence_StairRCollision 2
+    3300190: FenceHalf_L_1M001
+    3300192: FenceHalf_L_Up1M001
+    3300194: FenceHalf_R_1M001
+    3300196: FenceHalf_R_Up1M001
+    3300198: FenceSeprator 1
+    3300200: FenceSeprator 2
+    3300202: FenceSeprator 3
+    3300204: FenceSeprator1/2
+    3300206: FenceSeprator3X3X1
+    3300208: Object001
+    3300210: Object002
+    3300212: Object003
+    3300214: Object005
+    3300216: Object006
+    3300218: Object007
+    3300220: Object008
+    3300222: Object009
+    3300224: Object010
+    3300226: Object011
+    3300228: Object012
+    3300230: Object013
+    3300232: Object014
+    3300234: Object015
+    3300236: Object016
+    3300238: Object018
+    3300240: Object022
+    3300242: Object023
+    3300244: pillar009
+    3300246: pillar2 1
+    3300248: pitfall 1
+    3300250: pitfall2 1
+    3300252: pitfall_field2_whirl_3X3X2
+    3300254: Plane001
+    3300256: Plane002
+    3300258: Plane003
+    3300260: Sphere001
+    3300262: Stair 1
+    3300264: Stair 2
+    3300266: Stair 3
+    3300268: Stair 4
+    3300270: Stair_1.5X3X1
+    3300272: Stair_collision_1.5X3X1
+    3300274: Stair_collision_3X3X2
+    3300276: StairCollision 1
+    3300278: StairCollision 2
+    3300280: StairCollision 3
+    3300282: StairCorner 1
+    3300284: StairCorner 2
+    3300286: StairCorner 3
+    3300288: StairCorner 4
+    3300290: StairCorner+ 1
+    3300292: StairCornerCollision 1
+    3300294: StairCornerCollision 2
+    3300296: StairL 1
+    3300298: StairL 2
+    3300300: StairL 3
+    3300302: StairL 4
+    3300304: StairL_3X1.5X2
+    3300306: StairL_collision_3X1.5X2
+    3300308: StairLCollision 1
+    3300310: StairLCollision 2
+    3300312: StairLCollision 3
+    3300314: StairLCollision 4
+    3300316: StairLCollision 5
+    3300318: StairR 1
+    3300320: StairR 2
+    3300322: StairR 3
+    3300324: StairR 4
+    3300326: StairR_3X1.5X2
+    3300328: StairR_collision_3X1.5X2
+    3300330: StairRCollision 1
+    3300332: StairRCollision 2
+    3300334: StairRCollision 3
+    3300336: StairRCollision 4
+    3300338: StairRCollision 5
+    3300340: terrace 2
+    3300342: Terrace2M 1
+    3300344: Wall 1
+    3300346: Wall 2
+    3300348: Wall 3
+    3300350: Wall 4
+    3300352: Wall 5
+    3300354: Wall 6
+    3300356: WallCorner 1
+    3300358: WallCorner 2
+    3300360: WallCorner 3
+    3300362: WallCorner 4
+    3300364: WallCorner 5
+    3300366: WallCorner 6
+    3300368: WallCorner 7
+    3300370: WallCorner2 1
+    3300372: WallHalf 2
+    3300374: WallHalf 3
+    3300376: WallHalf 4
+    3300378: WallHalf 5
+    3300380: WallSeprator 2
+    3300382: WallSeprator 3
+    3300384: WallSeprator 4
+    3300386: WallSeprator 5
+    3300388: WallSepratorCollision 1
+    3300390: WallSepratorCollision 2
+    3300392: WindowX1.0 1
+    3300394: WindowX1.0 2
+    3300396: WindowX1.0 3
+    3300398: WindowX1.0 4
+    3300400: WindowX1.0 5
+    3300402: WindowX2.0 1
+    3300404: WindowX2.0 2
+    3300406: WindowX2.0 3
+    3300408: WindowX2.0 4
+    3300410: WindowX2.0 5
+    3300412: ceiling
+    3300414: ceiling_out
+    3300416: ceiling_near
+    3300418: ceilingCorner
+    3300420: ceilingCorner2
+    3300422: FloorSeprator
+    3300424: FloorSeprator2
+    3300426: ceilingCorner 1
+    3300428: FloorSeprator3
+    3300430: FloorSeprator4
+    3300432: FloorSepratorHalfL
+    3300434: FloorSepratorHalfR
+    3300436: FloorSepratortwo
+    3300438: FloorSeprator 1
+    3300440: FloorSeprator 2
+    3300442: FloorSepratorX
+    3300444: FloorSepratorZ
+    3300446: Fence_SepratorL
+    3300448: Fence_SepratorR
+    3300450: Fence_SepratorL 1
+    3300452: ceiling002
+    3300454: ceiling_nearL
+    3300456: ceiling_nearR
+    3300458: ceiling_outL
+    3300460: ceiling_outR
+    3300462: WallL
+    3300464: WallR
+    3300466: FloorSeprator010
+    3300468: ceiling2
+    3300470: ceiling_nearL 1
+    3300472: ceiling_outL 1
+    3300474: ceiling_outL002
+    3300476: StairCollision002
+    3300478: Box008
+    3300480: ceiling 1
+    3300482: ceiling001
+    3300484: ceiling003
+    3300486: ceiling004
+    3300488: ceiling005
+    3300490: ceiling006
+    3300492: ceiling007
+    3300494: ceiling2 1
+    3300496: ceiling_near 1
+    3300498: ceiling_near 2
+    3300500: ceiling_near 3
+    3300502: ceiling_near001
+    3300504: ceiling_near003
+    3300506: ceiling_near004
+    3300508: ceiling_near005
+    3300510: ceiling_near006
+    3300512: ceiling_near007
+    3300514: ceiling_near009
+    3300516: ceiling_near010
+    3300518: ceiling_near011
+    3300520: ceiling_nearL 2
+    3300522: ceiling_nearR 1
+    3300524: ceiling_nearR 2
+    3300526: ceiling_out 1
+    3300528: ceiling_out 2
+    3300530: ceiling_out 3
+    3300532: ceiling_out 4
+    3300534: ceiling_out001
+    3300536: ceiling_out002
+    3300538: ceiling_outL 2
+    3300540: ceiling_outR 1
+    3300542: ceilingCorner 2
+    3300544: ceilingCorner 3
+    3300546: ceilingCorner 4
+    3300548: ceilingCorner003
+    3300550: ceilingCorner2 1
+    3300552: Door010
+    3300554: Fence 6
+    3300556: Fence002
+    3300558: Fence003
+    3300560: Fence004
+    3300562: Fence_SepratorR++
+    3300564: Fence_SepratorR001
+    3300566: Fence_StairL 6
+    3300568: Fence_StairL 7
+    3300570: Fence_StairL 8
+    3300572: Fence_StairL 9
+    3300574: Fence_StairL005
+    3300576: Fence_StairL006
+    3300578: Fence_StairLCollision001
+    3300580: Fence_StairR 6
+    3300582: Fence_StairR 7
+    3300584: Fence_StairR 8
+    3300586: Fence_StairR 9
+    3300588: Fence_StairR001
+    3300590: Fence_StairRCollision001
+    3300592: FenceSeprator 4
+    3300594: FenceSeprator001
+    3300596: FloorSeprator005
+    3300598: FloorSeprator006
+    3300600: FloorSeprator007
+    3300602: FloorSeprator008
+    3300604: FloorSeprator009
+    3300606: FloorSeprator2 1
+    3300608: FloorSepratorHalfL 1
+    3300610: FloorSepratorHalfL 2
+    3300612: FloorSepratorHalfL 3
+    3300614: FloorSepratorHalfL001
+    3300616: FloorSepratorHalfR 1
+    3300618: FloorSepratorHalfR 2
+    3300620: FloorSepratorHalfR001
+    3300622: FloorSepratorX 1
+    3300624: FloorSepratorX 2
+    3300626: FloorSepratorX001
+    3300628: FloorSepratorX003
+    3300630: FloorSepratorZ 1
+    3300632: FloorSepratorZ 2
+    3300634: FloorSepratorZ001
+    3300636: FloorSepratorZ002
+    3300638: Object039
+    3300640: Object041
+    3300642: Object042
+    3300644: Object043
+    3300646: Object047
+    3300648: Object048
+    3300650: Object052
+    3300652: Object053
+    3300654: Object056
+    3300656: Object057
+    3300658: Object059
+    3300660: Object060
+    3300662: Stair 5
+    3300664: Stair 6
+    3300666: Stair001
+    3300668: Stair002
+    3300670: Stair003
+    3300672: Stair004
+    3300674: Stair005
+    3300676: StairCollision 4
+    3300678: StairCollision 5
+    3300680: StairCollision 6
+    3300682: StairCollision 7
+    3300684: StairCollision001
+    3300686: StairCorner 5
+    3300688: StairCorner001
+    3300690: StairL 5
+    3300692: StairL 6
+    3300694: StairL001
+    3300696: StairL002
+    3300698: StairLCollision001
+    3300700: StairR 5
+    3300702: StairR 6
+    3300704: StairR001
+    3300706: StairR002
+    3300708: StairRCollision001
+    3300710: Wall001
+    3300712: Wall005
+    3300714: Wall006
+    3300716: Wall007
+    3300718: Wall008
+    3300720: Wall009
+    3300722: Wall011
+    3300724: Wall015
+    3300726: WallCorner 8
+    3300728: WallCorner003
+    3300730: WallHalf001
+    3300732: WallSeprator 6
+    3300734: WallSeprator006
+    3300736: WallSeprator007
+    3300738: WallSeprator008
+    3300740: WallSeprator009
+    3300742: WallSeprator011
+    3300744: WallSepratorCollision001
+    3300746: WallSepratorCollision002
+    3300748: WindowX1.001
+    3300750: WindowX2.001
+    3300752: FloorSeprator3 1
+    3300754: WallCorner004
+    3300756: WallCorner005
+    3300758: Object070
+    3300760: FloorSeprator1
+    3300762: FloorSeprator2_1
+    3300764: WallSeprator2_1
+    3300766: ground
+    3300768: WallLCollision
+    3300770: WallRCollision
+    3300772: FloorSeprator015
+    3300774: WallSeprator3_ gold
+    3300776: light
+    3300778: light2
+    3300780: light3
+    3300782: WindowX1
+    3300784: WindowX1Collision
+    3300786: WindowX2
+    3300788: WindowX2Collision
+    4300000: terrace
+    4300002: pitfall2
+    4300004: Wall
+    4300006: StairCollision2M
+    4300008: StairCollision1M
+    4300010: pitfall
+    4300012: pitfall_floor
+    4300014: StairRCollision2M
+    4300016: StairLCollision2M
+    4300018: pillar2
+    4300020: TerraceTwo2M
+    4300022: Terrace1M
+    4300024: TerraceHalf2M
+    4300026: FenceSeprator
+    4300028: Wall3
+    4300030: Fence_StairR
+    4300032: Stair2M
+    4300034: Stair1M
+    4300036: StairL2M
+    4300038: StairR1M
+    4300040: Terrace2M
+    4300042: Fence_StairL
+    4300044: Fence
+    4300046: Door
+    4300048: pillar
+    4300050: Wall2
+    4300052: StairR2M
+    4300054: Wall_TerraceHalf
+    4300056: Wall3_TerraceHalf
+    4300058: terrace2
+    4300060: StairCollisionUp1M
+    4300062: Stair_Up1M
+    4300064: Fence_StairL
+    4300066: Fence_StairR
+    4300068: Fence_StairR_Up1M
+    4300070: Fence_StairL_Up1M
+    4300072: Fence_Up1M
+    4300074: Fence_StairL1M
+    4300076: Fence_StairR1M
+    4300078: FenceSeprator_pillar
+    4300080: Fence_StairR1M2
+    4300082: Fence_StairR_Up1M2
+    4300084: Fence_StairL_Up1M2
+    4300086: Fence_StairL1M2
+    4300088: StairCollision
+    4300090: StairCornerCollision
+    4300092: StairRCollision
+    4300094: StairLCollision
+    4300096: WindowX2.0
+    4300098: Stair
+    4300100: StairCorner
+    4300102: StairL
+    4300104: StairR
+    4300106: WallSeprator
+    4300108: WindowX1.0
+    4300110: WallHalf
+    4300112: WallCorner2
+    4300114: WallCorner
+    4300116: Fence_StairLCollision
+    4300118: Fence_StairRCollision
+    4300120: WallHalf
+    4300122: WallSeprator3
+    4300124: WallSeprator
+    4300126: WallSeprator2
+    4300128: WallSepratorCollision
+    4300130: StairCorner+
+    4300132: Stair_collision_3X3X2
+    4300134: Stair_collision_1.5X3X1
+    4300136: pitfall_field2_whirl_3X3X2
+    4300138: StairR_collision_3X1.5X2
+    4300140: StairL_collision_3X1.5X2
+    4300142: FenceSeprator3X3X1
+    4300144: FenceSeprator1/2
+    4300146: Stair_1.5X3X1
+    4300148: StairL_3X1.5X2
+    4300150: StairR_3X1.5X2
+    4300152: pitfall2
+    4300154: Wall
+    4300156: pitfall
+    4300158: WindowX2.0
+    4300160: Door
+    4300162: WindowX1.0
+    4300164: Sphere001
+    4300166: Object001
+    4300168: Box001
+    4300170: Box002
+    4300172: Box003
+    4300174: Object002
+    4300176: Object003
+    4300178: WallCorner
+    4300180: terrace
+    4300182: FenceHalf_L_Up1M001
+    4300184: FenceHalf_R_Up1M001
+    4300186: FenceHalf_L_1M001
+    4300188: FenceHalf_R_1M001
+    4300190: Object005
+    4300192: pillar009
+    4300194: Object006
+    4300196: Object007
+    4300198: Object008
+    4300200: Object009
+    4300202: Object010
+    4300204: Object011
+    4300206: Object012
+    4300208: Object013
+    4300210: Box004
+    4300212: Wall
+    4300214: Wall
+    4300216: StairCollision
+    4300218: StairCornerCollision
+    4300220: StairRCollision
+    4300222: StairLCollision
+    4300224: pillar2
+    4300226: WallCorner2
+    4300228: WindowX2.0
+    4300230: Stair
+    4300232: Fence
+    4300234: Door
+    4300236: WindowX1.0
+    4300238: WallHalf
+    4300240: WallCorner
+    4300242: Plane001
+    4300244: Plane002
+    4300246: StairCorner
+    4300248: StairL
+    4300250: StairLCollision
+    4300252: StairR
+    4300254: StairRCollision
+    4300256: StairCollision
+    4300258: StairCornerCollision
+    4300260: WallCorner
+    4300262: WallHalf
+    4300264: FenceSeprator
+    4300266: WindowX2.0
+    4300268: Fence_StairR
+    4300270: Stair
+    4300272: StairCorner+
+    4300274: Fence_StairL
+    4300276: Fence
+    4300278: WindowX1.0
+    4300280: Door
+    4300282: Wall
+    4300284: WallCorner
+    4300286: StairL
+    4300288: StairLCollision
+    4300290: StairR
+    4300292: StairRCollision
+    4300294: WallSepratorCollision
+    4300296: Plane003
+    4300298: WallSeprator
+    4300300: StairCorner
+    4300302: WallSeprator
+    4300304: Object014
+    4300306: Object015
+    4300308: Object016
+    4300310: Object018
+    4300312: Object022
+    4300314: Object023
+    4300316: Box005
+    4300318: Fence_StairR
+    4300320: Fence_StairL
+    4300322: Fence
+    4300324: StairLCollision
+    4300326: StairRCollision
+    4300328: StairCollision
+    4300330: WallCorner
+    4300332: WallHalf
+    4300334: FenceSeprator
+    4300336: Stair
+    4300338: Door
+    4300340: Wall
+    4300342: WallSeprator
+    4300344: WallCorner
+    4300346: WallSepratorCollision
+    4300348: WindowX2.0
+    4300350: Fence_StairLCollision
+    4300352: Fence_StairRCollision
+    4300354: StairLCollision
+    4300356: StairRCollision
+    4300358: StairL
+    4300360: StairR
+    4300362: Fence
+    4300364: Fence_StairL
+    4300366: Fence_StairR
+    4300368: WindowX1.0
+    4300370: WindowX1.0
+    4300372: Fence_StairRCollision
+    4300374: WallHalf
+    4300376: WallCorner
+    4300378: Fence_StairR
+    4300380: Fence_StairL
+    4300382: Fence
+    4300384: Terrace2M
+    4300386: Door
+    4300388: WindowX2.0
+    4300390: Wall
+    4300392: FenceSeprator
+    4300394: WallSeprator
+    4300396: StairL
+    4300398: StairR
+    4300400: Stair
+    4300402: Fence_StairLCollision
+    4300404: StairCorner
+    4300406: StairCorner
+    4300408: ceiling
+    4300410: ceiling_out
+    4300412: ceiling_near
+    4300414: ceilingCorner
+    4300416: ceilingCorner2
+    4300418: FloorSeprator
+    4300420: FloorSeprator2
+    4300422: ceilingCorner
+    4300424: FloorSeprator3
+    4300426: FloorSeprator4
+    4300428: FloorSepratorHalfL
+    4300430: FloorSepratorHalfR
+    4300432: FloorSepratortwo
+    4300434: FloorSeprator
+    4300436: FloorSeprator
+    4300438: FloorSepratorX
+    4300440: FloorSepratorZ
+    4300442: Fence_SepratorR
+    4300444: Fence_SepratorL
+    4300446: Fence_SepratorL
+    4300448: WallR
+    4300450: ceiling002
+    4300452: ceiling_outR
+    4300454: ceiling_nearR
+    4300456: ceiling_nearL
+    4300458: ceiling_outL
+    4300460: WallL
+    4300462: FloorSeprator010
+    4300464: ceiling2
+    4300466: ceiling_outL
+    4300468: ceiling_nearL
+    4300470: ceiling_outL002
+    4300472: StairCollision002
+    4300474: WallSepratorCollision001
+    4300476: Fence
+    4300478: FenceSeprator
+    4300480: StairL
+    4300482: StairR
+    4300484: Stair
+    4300486: StairL
+    4300488: StairR
+    4300490: WallCorner
+    4300492: Fence_StairL
+    4300494: Fence_StairR
+    4300496: StairCorner
+    4300498: FloorSeprator2
+    4300500: Object039
+    4300502: FloorSepratorX
+    4300504: FloorSepratorZ
+    4300506: FloorSepratorHalfR
+    4300508: FloorSepratorHalfL
+    4300510: Fence_StairL
+    4300512: Fence_StairR
+    4300514: StairCollision001
+    4300516: WallSepratorCollision002
+    4300518: StairLCollision001
+    4300520: StairRCollision001
+    4300522: WindowX1.001
+    4300524: Fence_StairRCollision001
+    4300526: WallHalf001
+    4300528: WallCorner003
+    4300530: Fence002
+    4300532: Door010
+    4300534: WindowX2.001
+    4300536: Wall001
+    4300538: FenceSeprator001
+    4300540: WallSeprator006
+    4300542: StairL001
+    4300544: StairR001
+    4300546: Stair001
+    4300548: Fence_StairLCollision001
+    4300550: StairCorner001
+    4300552: Fence_StairL005
+    4300554: ceiling_out
+    4300556: ceiling001
+    4300558: ceiling_near
+    4300560: FloorSeprator005
+    4300562: FloorSeprator006
+    4300564: FloorSeprator007
+    4300566: FloorSepratorX001
+    4300568: FloorSeprator008
+    4300570: FloorSepratorZ001
+    4300572: FloorSepratorHalfR001
+    4300574: FloorSepratorHalfL001
+    4300576: Fence_StairR001
+    4300578: ceiling_out
+    4300580: ceilingCorner
+    4300582: ceiling_near
+    4300584: Box008
+    4300586: FloorSepratorZ
+    4300588: FloorSepratorHalfL
+    4300590: FloorSepratorHalfR
+    4300592: Fence_StairL
+    4300594: Fence_StairR
+    4300596: FloorSepratorHalfL
+    4300598: FloorSepratorX
+    4300600: Fence_SepratorR++
+    4300602: Fence_SepratorR001
+    4300604: Fence003
+    4300606: Fence004
+    4300608: FloorSepratorX003
+    4300610: Fence_StairR
+    4300612: Fence_StairL
+    4300614: Fence_StairL006
+    4300616: FloorSepratorZ002
+    4300618: FloorSeprator009
+    4300620: Object041
+    4300622: Object042
+    4300624: StairL002
+    4300626: Stair002
+    4300628: StairR002
+    4300630: Stair003
+    4300632: Stair004
+    4300634: Stair005
+    4300636: Wall005
+    4300638: Wall006
+    4300640: Wall007
+    4300642: Wall008
+    4300644: Object043
+    4300646: WallSeprator007
+    4300648: ceiling_near001
+    4300650: ceilingCorner003
+    4300652: Wall009
+    4300654: WallSeprator008
+    4300656: WallSeprator009
+    4300658: ceiling_near003
+    4300660: ceiling_near004
+    4300662: WallSeprator
+    4300664: ceiling_near005
+    4300666: ceiling_near006
+    4300668: WallSeprator011
+    4300670: Wall011
+    4300672: Wall015
+    4300674: ceiling_near007
+    4300676: ceiling_near009
+    4300678: ceiling_near010
+    4300680: Object047
+    4300682: Object048
+    4300684: Object052
+    4300686: Object053
+    4300688: ceiling_out001
+    4300690: ceiling003
+    4300692: ceiling004
+    4300694: ceiling005
+    4300696: ceiling006
+    4300698: ceiling007
+    4300700: Object056
+    4300702: Object057
+    4300704: ceiling_near011
+    4300706: Object059
+    4300708: ceiling_nearR
+    4300710: ceiling_near
+    4300712: ceilingCorner
+    4300714: ceiling_nearR
+    4300716: ceiling_nearL
+    4300718: ceilingCorner2
+    4300720: ceiling2
+    4300722: ceiling
+    4300724: ceiling_out
+    4300726: ceiling_outL
+    4300728: ceiling_outR
+    4300730: StairCollision
+    4300732: StairCollision
+    4300734: StairCollision
+    4300736: Stair
+    4300738: StairCollision
+    4300740: Object060
+    4300742: ceiling_out
+    4300744: ceilingCorner
+    4300746: ceiling_out002
+    4300748: WallCorner004
+    4300750: WallCorner005
+    4300752: FloorSeprator3
+    4300754: Object070
+    4300756: FloorSeprator1
+    4300758: WallSeprator2_1
+    4300760: FloorSeprator2_1
+    4300762: ground
+    4300764: WallRCollision
+    4300766: WallLCollision
+    4300768: FloorSeprator015
+    4300770: WallSeprator3_ gold
+    4300772: light3
+    4300774: light2
+    4300776: light
+    4300778: WindowX2Collision
+    4300780: WindowX1Collision
+    4300782: WindowX1
+    4300784: WindowX2
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 2
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 0
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 10
+    normalImportMode: 1
+    tangentImportMode: 3
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
