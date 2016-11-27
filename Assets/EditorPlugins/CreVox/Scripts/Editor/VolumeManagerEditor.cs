@@ -105,6 +105,7 @@ namespace CreVox
 										+ vol.workFile + ".bytes";
 									Save save = Serialization.LoadWorld (lPath);
 									if (save != null) {
+										vol._useBytes = true;
 										vol.BuildVolume (save,vol.vd);
 										vol.tempPath = "";
 									}
@@ -114,6 +115,7 @@ namespace CreVox
 								if (lPath != "") {
 									Save save = Serialization.LoadWorld (lPath);
 									if (save != null) {
+										vol._useBytes = true;
 										vol.BuildVolume (save,vol.vd);
 										vol.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
 										vol.tempPath = "";

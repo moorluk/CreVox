@@ -21,6 +21,8 @@ namespace CreVox
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
+			if (volume.vd && !volume._useBytes)
+				volume.BuildVolume (null, volume.vd);
 			SubscribeEvents ();
 		}
 
@@ -33,7 +35,6 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-			float labelW = 60;
 			float buttonW = 40;
 			float bh = 23.5f;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
@@ -50,7 +51,8 @@ namespace CreVox
 
 				using (var h = new EditorGUILayout.HorizontalScope (GUILayout.Height(10))) {
 					if (GUILayout.Button (new GUIContent ("Link\n▼", "將資料檔連結到場景"), "miniButtonLeft",GUILayout.Height(bh))) {
-						volume.BuildVolume (new Save (), volume.vd, false);
+						volume._useBytes = false;
+						volume.BuildVolume (new Save (), volume.vd);
 						volume.tempPath = "";
 						SceneView.RepaintAll ();
 					}
@@ -62,10 +64,13 @@ namespace CreVox
 				}
 
 				bool linking;
-				if (volume.chunks != null)
-					linking = volume.chunks [0].cData.Equals (volume.vd.chunkDatas [0]);
-				else
+				if (volume.chunks != null && volume.chunks.Count > 0 && volume.vd != null && volume.vd.chunkDatas.Count > 0)
+					linking = ReferenceEquals (volume.chunks [0].cData, volume.vd.chunkDatas [0]);
+				else {
+					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
+						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
 					linking = false;
+				}
 				
 				GUI.backgroundColor = linking ? Color.green : Color.red;
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
@@ -116,7 +121,8 @@ namespace CreVox
 									+ volume.workFile + ".bytes";
 								Save save = Serialization.LoadWorld (lPath);
 								if (save != null) {
-									volume.BuildVolume (save, volume.vd, true);
+									volume._useBytes = true;
+									volume.BuildVolume (save, volume.vd);
 									volume.tempPath = "";
 								}
 								SceneView.RepaintAll ();
@@ -126,8 +132,9 @@ namespace CreVox
 							if (lPath != "") {
 								Save save = Serialization.LoadWorld (lPath);
 								if (save != null) {
-									volume.BuildVolume (save, volume.vd, true);
+									volume._useBytes = true;
 									volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
+									volume.BuildVolume (save);
 									volume.tempPath = "";
 								}
 								SceneView.RepaintAll ();
@@ -139,13 +146,17 @@ namespace CreVox
 				EditorGUI.BeginChangeCheck ();
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
 					EditorGUILayout.LabelField ("", "Chunk Bytes(Old)", "BoldToggle");
-					EditorGUIUtility.labelWidth = 50;
 					int cha = 17;
-					if (/*volume.workFile.Length > 17 && */volume.workFile.Contains(PathCollect.save))
-						EditorGUILayout.LabelField ("Main: ", volume.workFile.Substring (cha), EditorStyles.miniLabel);
-					if (/*volume.tempPath.Length > 17 && */volume.tempPath.Contains(PathCollect.save))
-					EditorGUILayout.LabelField ("Backup: ", volume.tempPath.Substring(cha), EditorStyles.miniLabel);
-					EditorGUIUtility.labelWidth = defLabelWidth;
+					using (var h = new EditorGUILayout.HorizontalScope ()) {
+						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));
+						if (volume.workFile.Length > 17/* && volume.workFile.Contains(PathCollect.save) */)
+							EditorGUILayout.LabelField (volume.workFile/*.Substring (cha)*/, EditorStyles.miniLabel);
+					}
+					using (var h = new EditorGUILayout.HorizontalScope ()) {
+						EditorGUILayout.LabelField ("Backup:", GUILayout.Width (50f));
+						if (/*volume.tempPath.Length > 17 && */volume.tempPath.Contains (PathCollect.save))
+							EditorGUILayout.LabelField (volume.tempPath/*.Substring (cha)*/, EditorStyles.miniLabel);
+					}
 				}
 			}
 

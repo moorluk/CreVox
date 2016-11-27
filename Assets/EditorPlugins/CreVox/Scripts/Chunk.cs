@@ -24,7 +24,7 @@ namespace CreVox
 	[Serializable]
 	public class Chunk : MonoBehaviour
 	{
-		public static int chunkSize{get{return VGlobal.GetSetting().chunkSize; }} 
+		public static int chunkSize{ get { return VGlobal.GetSetting ().chunkSize; } }
 
 		public ChunkData cData;
 
@@ -32,15 +32,15 @@ namespace CreVox
 		[SerializeField] MeshFilter filter;
 		[SerializeField] MeshCollider coll;
 
-		public void Init()
+		public void Init ()
 		{
-			filter = gameObject.GetComponent<MeshFilter>();
-			coll = gameObject.GetComponent<MeshCollider>();
+			filter = gameObject.GetComponent<MeshFilter> ();
+			coll = gameObject.GetComponent<MeshCollider> ();
 			coll.hideFlags = HideFlags.HideInHierarchy;
-			UpdateChunk();
+			UpdateChunk ();
 		}
 
-		public void Destroy()
+		public void Destroy ()
 		{
 			foreach (Block block in cData.blocks)
 				if (block != null)
@@ -50,14 +50,13 @@ namespace CreVox
 					bAir.Destroy ();
 		}
 
-		void Start()
+		void Start ()
 		{
-			filter = gameObject.GetComponent<MeshFilter>();
-			coll = gameObject.GetComponent<MeshCollider>();
-			UpdateChunk();
+			filter = gameObject.GetComponent<MeshFilter> ();
+			coll = gameObject.GetComponent<MeshCollider> ();
 		}
 
-		public Block GetBlock(int x, int y, int z)
+		public Block GetBlock (int x, int y, int z)
 		{
 			if (InRange (x) && InRange (y) && InRange (z)) {
 				return GetChunkBlock (x, y, z);
@@ -79,9 +78,9 @@ namespace CreVox
 			return null;
 		}
 
-		public void SetBlock(int x, int y, int z, Block block)
+		public void SetBlock (int x, int y, int z, Block block)
 		{
-			if (InRange(x) && InRange(y) && InRange(z)) {
+			if (InRange (x) && InRange (y) && InRange (z)) {
 				Block _block = GetChunkBlock (x, y, z); 
 				if (_block != null) {
 					BlockAir bAir = _block as BlockAir;
@@ -99,11 +98,11 @@ namespace CreVox
 				}
 					
 			} else {
-				volume.SetBlock(cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z, block);
+				volume.SetBlock (cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z, block);
 			}
 		}
 
-		public static bool InRange(int index)
+		public static bool InRange (int index)
 		{
 			if (index < 0 || index >= chunkSize)
 				return false;
@@ -111,41 +110,41 @@ namespace CreVox
 			return true;
 		}
 
-		public void UpdateMeshFilter()
+		public void UpdateMeshFilter ()
 		{
-			MeshData meshData = new MeshData();
+			MeshData meshData = new MeshData ();
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
 						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + cData.ChunkPos.y > volume.cutY) == false)
 						#endif
-						if(GetChunkBlock (x, y, z) != null)
+						if (GetChunkBlock (x, y, z) != null)
 							meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
 					}
 				}
 			}
-			AssignRenderMesh(meshData);
+			AssignRenderMesh (meshData);
 		}
 
-		public void UpdateMeshCollider()
+		public void UpdateMeshCollider ()
 		{
-			MeshData meshData = new MeshData();
+			MeshData meshData = new MeshData ();
 			for (int x = 0; x < chunkSize; x++) {
 				for (int y = 0; y < chunkSize; y++) {
 					for (int z = 0; z < chunkSize; z++) {
 						#if UNITY_EDITOR
 						if ((!EditorApplication.isPlaying && volume.cuter && y + cData.ChunkPos.y > volume.cutY) == false)
 						#endif
-						if(GetChunkBlock (x, y, z) != null)
+						if (GetChunkBlock (x, y, z) != null)
 							meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
 					}
 				}
 			}
-			AssignCollisionMesh(meshData);
+			AssignCollisionMesh (meshData);
 		}
 
-		public void UpdateChunk()
+		public void UpdateChunk ()
 		{
 			MeshData meshData = new MeshData ();
 			foreach (Block block in cData.blocks) {
@@ -156,27 +155,34 @@ namespace CreVox
 			}
 
 			foreach (BlockAir bAir in cData.blockAirs) {
-				#if UNITY_EDITOR
-				if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY) 
-					bAir.ShowPiece (false);
-				else
-				#endif
-				bAir.ShowPiece (true);
+				WorldPos vPos = new WorldPos (
+					                cData.ChunkPos.x + bAir.BlockPos.x, 
+					                cData.ChunkPos.y + bAir.BlockPos.y, 
+					                cData.ChunkPos.z + bAir.BlockPos.z);
+				
+				if (volume.GetNode (vPos) != null) {
+					#if UNITY_EDITOR
+					if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
+						volume.GetNode (vPos).SetActive (false);
+					else 
+					#endif
+						volume.GetNode (vPos).SetActive (true);
+				}
 			}
 
 			UpdateMeshFilter ();
 			UpdateMeshCollider ();
 		}
 
-		void AssignRenderMesh(MeshData meshData)
+		void AssignRenderMesh (MeshData meshData)
 		{
 #if UNITY_EDITOR
 			filter.sharedMesh = null;
-			Mesh mesh = new Mesh();
-			mesh.vertices = meshData.colVertices.ToArray();
-			mesh.triangles = meshData.colTriangles.ToArray();
-			mesh.uv = meshData.uv.ToArray();
-			mesh.RecalculateNormals();
+			Mesh mesh = new Mesh ();
+			mesh.vertices = meshData.colVertices.ToArray ();
+			mesh.triangles = meshData.colTriangles.ToArray ();
+			mesh.uv = meshData.uv.ToArray ();
+			mesh.RecalculateNormals ();
 			filter.sharedMesh = mesh;
 #else
 	        filter.mesh.Clear();
@@ -187,13 +193,13 @@ namespace CreVox
 #endif
 		}
 
-		void AssignCollisionMesh(MeshData meshData)
+		void AssignCollisionMesh (MeshData meshData)
 		{
 			coll.sharedMesh = null;
-			Mesh cmesh = new Mesh();
-			cmesh.vertices = meshData.colVertices.ToArray();
-			cmesh.triangles = meshData.colTriangles.ToArray();
-			cmesh.RecalculateNormals();
+			Mesh cmesh = new Mesh ();
+			cmesh.vertices = meshData.colVertices.ToArray ();
+			cmesh.triangles = meshData.colTriangles.ToArray ();
+			cmesh.RecalculateNormals ();
 			coll.sharedMesh = cmesh;
 		}
 	}

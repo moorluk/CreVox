@@ -10,11 +10,6 @@ namespace CreVox
 		public string[] pieceNames;
 		private bool[] isSolid = new bool[6];
 
-		[NonSerialized]
-		private GameObject[] pieces;
-		[NonSerialized]
-		private GameObject node;
-
 		public BlockAir () : base ()
 		{
 			for (int i = 0; i < isSolid.Length; i++)
@@ -23,14 +18,6 @@ namespace CreVox
 
 		public override void Destroy ()
 		{
-			if (pieces != null) {
-				foreach (GameObject o in pieces)
-					GameObject.DestroyImmediate (o);
-			}
-
-			if (node != null) {
-				GameObject.DestroyImmediate (node);
-			}
 			base.Destroy ();
 		}
 
@@ -46,46 +33,20 @@ namespace CreVox
 
 		public void SetPiece (WorldPos bPos, WorldPos gPos, LevelPiece piece)
 		{
-			if (pieces == null)
-				pieces = new GameObject[9];
-
 			if (pieceNames == null)
 				pieceNames = new string[9];
-
 			GameObject pObj = (piece != null) ? piece.gameObject : null;
 			int x = gPos.x;
 			int z = gPos.z;
 			int id = z * 3 + x;
-
-			if (node == null) {
-				node = new GameObject ();
-				node.name = bPos.ToString ();
-				node.transform.parent = pObj.transform.parent;
-			}
-
 			if (pObj != null) {
-
-				if (pieces [id] != null) {
-					GameObject.DestroyImmediate (pieces [id]);
-				}
-					
-				pObj.transform.parent = node.transform;
-				pieces [id] = pObj;
 				pieceNames [id] = pObj.GetComponent<PaletteItem> ().name;
-				SolidCheck ();
 			} else {
-				if (pieces != null) {
-					if (pieces [id] != null) {
-						GameObject.DestroyImmediate (pieces [id]);
-						pieceNames [id] = null;
-						pieces [id] = null;
-						SolidCheck ();
-					}
-				}
+				pieceNames [id] = null;
 			}
 		}
 
-		void SolidCheck ()
+		public void SolidCheck (GameObject[] pieces)
 		{
 			for (int i = 0; i < isSolid.Length; i++) {
 				isSolid [i] = false;
@@ -100,19 +61,6 @@ namespace CreVox
 					}
 				}
 			}
-		}
-
-		public int GetPartAngle (int _x, int _y)
-		{
-			int id = _x + _y * 3;
-			GameObject part = pieces [id];
-			return (part != null) ? (int)(part.transform.eulerAngles.y + 360) % 360 : -1;
-		}
-
-		public void ShowPiece (bool isHide)
-		{
-			if (node)
-				node.SetActive (isHide);
 		}
 	}
 }
