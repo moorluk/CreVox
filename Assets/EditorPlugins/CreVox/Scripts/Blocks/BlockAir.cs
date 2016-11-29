@@ -28,6 +28,9 @@ namespace CreVox
 
 		public override bool IsSolid (Direction direction)
 		{
+			if (isSolid == null || isSolid.Length != 6) {
+				isSolid = new bool[6];
+			}
 			return isSolid [(int)direction];
 		}
 
@@ -48,6 +51,8 @@ namespace CreVox
 
 		public void SolidCheck (GameObject[] pieces)
 		{
+			if (isSolid == null || isSolid.Length != 6)
+				isSolid = new bool[6];
 			for (int i = 0; i < isSolid.Length; i++) {
 				isSolid [i] = false;
 			}

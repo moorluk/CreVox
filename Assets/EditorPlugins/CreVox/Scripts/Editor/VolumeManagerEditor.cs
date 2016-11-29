@@ -39,7 +39,10 @@ namespace CreVox
 				EditorGUI.BeginChangeCheck ();
 				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
 				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Fake Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
+				EditorGUI.BeginChangeCheck ();
 				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
+				if (EditorGUI.EndChangeCheck ())
+					UpdateStatus ();
 				if (EditorGUI.EndChangeCheck ())
 					EditorUtility.SetDirty (vg);
 			}

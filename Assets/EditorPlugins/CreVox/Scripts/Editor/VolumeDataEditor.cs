@@ -159,7 +159,7 @@ namespace CreVox
 					}
 				}
 				EditorGUI.indentLevel --;
-//				EditorGUI.indentLevel --;
+				EditorGUI.indentLevel --;
 			}
 		}
 	}

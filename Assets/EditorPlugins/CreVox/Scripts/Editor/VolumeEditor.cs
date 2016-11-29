@@ -43,7 +43,7 @@ namespace CreVox
 			using (var v0 = new EditorGUILayout.VerticalScope ("ProgressBarBack")) {
 				GUI.color = Color.white;
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					EditorGUILayout.LabelField ("", "Chunk Data", "BoldToggle");
+					EditorGUILayout.LabelField ("", "Chunk Data", "BoldLabel");
 					EditorGUI.indentLevel++;
 					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
 					EditorGUI.indentLevel--;
@@ -75,7 +75,7 @@ namespace CreVox
 				GUI.backgroundColor = linking ? Color.green : Color.red;
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
 					GUI.backgroundColor = Color.white;
-					EditorGUILayout.LabelField ("","Scene Volume (" + (linking ? "連結中)" : "未連結)"), "BoldToggle");
+					EditorGUILayout.LabelField ("","Scene Volume (" + (linking ? "連結中)" : "未連結)"), "BoldLabel");
 					GUILayout.BeginHorizontal ();
 					EditorGUIUtility.labelWidth = 15;
 					EditorGUILayout.LabelField ("New");
@@ -145,7 +145,7 @@ namespace CreVox
 
 				EditorGUI.BeginChangeCheck ();
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					EditorGUILayout.LabelField ("", "Chunk Bytes(Old)", "BoldToggle");
+					EditorGUILayout.LabelField ("", "Chunk Bytes(Old)", "BoldLabel");
 					int cha = 17;
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));

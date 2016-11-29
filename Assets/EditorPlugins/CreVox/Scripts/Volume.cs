@@ -34,6 +34,8 @@ namespace CreVox
 			vg = VGlobal.GetSetting ();
 			if (nodes == null)
 				nodes = new Dictionary<WorldPos, Node> ();
+			if (chunks == null)
+				chunks = new List<Chunk> ();
 			LoadTempWorld ();
 		}
 
