@@ -12,6 +12,9 @@ namespace CreVox
 
 		public BlockAir () : base ()
 		{
+			if (isSolid == null || isSolid.Length != 6) {
+				isSolid = new bool[6];
+			}
 			for (int i = 0; i < isSolid.Length; i++)
 				isSolid [i] = false;
 		}

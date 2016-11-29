@@ -575,6 +575,7 @@ namespace CreVox
 					SceneView.RepaintAll ();
 				}
 			}
+			EditorUtility.SetDirty (volume.vd);
 		}
 
 		private void PaintLayer (bool isErase)
@@ -600,6 +601,7 @@ namespace CreVox
 					SceneView.RepaintAll ();
 				}
 			}
+			EditorUtility.SetDirty (volume.vd);
 		}
 
 		private void PaintPieces (bool isErase)
@@ -634,6 +636,7 @@ namespace CreVox
 					SceneView.RepaintAll ();
 				}
 			}
+			EditorUtility.SetDirty (volume.vd);
 		}
 
 		private void UpdateDirtyChunks ()
