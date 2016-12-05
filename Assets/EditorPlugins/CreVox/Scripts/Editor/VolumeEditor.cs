@@ -57,8 +57,10 @@ namespace CreVox
 						SceneView.RepaintAll ();
 					}
 					if (GUILayout.Button (new GUIContent ("▲\nWrite", "將場景現況 寫入/新建 資料檔(轉檔用)"), "miniButtonRight", GUILayout.Height(bh))) {
+						volume._useBytes = false;
 						volume.WriteVData ();
 						EditorUtility.SetDirty (volume.vd);
+						volume.tempPath = "";
 						SceneView.RepaintAll ();
 					}
 				}
@@ -67,8 +69,8 @@ namespace CreVox
 				if (volume.chunks != null && volume.chunks.Count > 0 && volume.vd != null && volume.vd.chunkDatas.Count > 0)
 					linking = ReferenceEquals (volume.chunks [0].cData, volume.vd.chunkDatas [0]);
 				else {
-					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
-						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
+//					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
+//						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
 					linking = false;
 				}
 				
@@ -199,6 +201,7 @@ namespace CreVox
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
+//				volume.PlacePieces ();
 				volume.UpdateChunks ();
 			}
 		}
@@ -633,10 +636,10 @@ namespace CreVox
 
 				if (canPlace) {
 					volume.PlacePiece (bPos, gPos, isErase ? null : _pieceSelected);
+					EditorUtility.SetDirty (volume.vd);
 					SceneView.RepaintAll ();
 				}
 			}
-			EditorUtility.SetDirty (volume.vd);
 		}
 
 		private void UpdateDirtyChunks ()

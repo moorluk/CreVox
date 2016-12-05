@@ -23,6 +23,8 @@ ModelImporter:
     100030: StairR
     100032: WallCorner
     100034: WallHalf
+    100036: Ground
+    100038: GroundHalf
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -41,6 +43,8 @@ ModelImporter:
     400030: StairR
     400032: WallCorner
     400034: WallHalf
+    400036: Ground
+    400038: GroundHalf
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -58,6 +62,8 @@ ModelImporter:
     2300028: StairR
     2300030: WallCorner
     2300032: WallHalf
+    2300034: Ground
+    2300036: GroundHalf
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -75,6 +81,8 @@ ModelImporter:
     3300028: StairR
     3300030: WallCorner
     3300032: WallHalf
+    3300034: Ground
+    3300036: GroundHalf
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -92,6 +100,8 @@ ModelImporter:
     4300028: StairR
     4300030: WallHalf
     4300032: WallCorner
+    4300034: Ground
+    4300036: GroundHalf
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
@@ -108,8 +118,10 @@ ModelImporter:
     6400026: StairR
     6400028: WallCorner
     6400030: WallHalf
+    6400032: Ground
+    6400034: GroundHalf
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 1
     materialSearch: 2
   animations:
@@ -134,8 +146,8 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
-    importBlendShapes: 1
+    addColliders: 0
+    importBlendShapes: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1

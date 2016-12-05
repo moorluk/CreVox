@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using UnityEngine.SocialPlatforms;
-using NodeEditorFramework.Utilities;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -122,6 +120,7 @@ namespace CreVox
 					c.cData = a_data.GetChunk (c.cData.ChunkPos);
 				}
 			}
+			PlacePieces ();
 			UpdateChunks ();
 		}
 
@@ -173,7 +172,6 @@ namespace CreVox
 
 		public void UpdateChunks ()
 		{
-			PlacePieces ();
 			foreach (Chunk chunk in chunks)
 				chunk.UpdateChunk ();
 		}
@@ -183,15 +181,14 @@ namespace CreVox
 			for (int x = 0; x < chunkX; x++) {
 				for (int y = 0; y < chunkY; y++) {
 					for (int z = 0; z < chunkZ; z++) {
-						CreateChunk (x * vg.chunkSize, y * vg.chunkSize, z * vg.chunkSize);
-						Chunk newChunk = GetChunk (x * vg.chunkSize, y * vg.chunkSize, z * vg.chunkSize);
+						Chunk newChunk = CreateChunk (x * vg.chunkSize, y * vg.chunkSize, z * vg.chunkSize);;
 						newChunk.Init ();
 					}
 				}
 			}
 		}
 
-		void CreateChunk (int x, int y, int z)
+		Chunk CreateChunk (int x, int y, int z)
 		{
 			WorldPos chunkPos = new WorldPos (x, y, z);
 
@@ -225,6 +222,7 @@ namespace CreVox
 					}
 				}
 			}
+			return newChunk;
 		}
 
 		void DestoryChunks ()
@@ -278,7 +276,7 @@ namespace CreVox
 			public GameObject[] pieces;
 		}
 
-		private GameObject nodeRoot;
+		public GameObject nodeRoot;
 		private Dictionary<WorldPos,Node> nodes = new Dictionary<WorldPos, Node>();
 
 		public GameObject GetNode(WorldPos _volumePos)
@@ -382,7 +380,7 @@ namespace CreVox
 			GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
 			nodes.Remove (bPos);
 		}
-		private void PlacePieces()
+		public void PlacePieces()
 		{
 			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem> (vg.FakeDeco ? piecePack : PathCollect.pieces);
 			foreach (Chunk c in chunks) {
@@ -689,6 +687,7 @@ namespace CreVox
 			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
 			cutY = _y;
 			if (chunks != null && chunks.Count > 0)
+//				PlacePieces ();
 				UpdateChunks ();
 		}
 		#endif

@@ -29,24 +29,41 @@ namespace CreVox
 				Debug.LogWarning (log);
 			}
 			#endif
+//			GenerateDecoration ();
 		}
 
 		#region Volume Control
 
-		public Dungeon[] dungeons;
+		public List<Dungeon> dungeons;
 
 		public void UpdateDungeon ()
 		{
-
+			markers.Clear ();
 			Volume[] v = transform.GetComponentsInChildren<Volume> (true);
-			dungeons = new Dungeon[v.Length];
+			dungeons = new List<Dungeon>();
 
 			for (int i = 0; i < v.Length; i++) {
-				Transform vt = v [i].transform;
-				dungeons [i].volumeData = v [i].vd;
-				dungeons [i].position = vt.position;
-				dungeons [i].rotation = vt.rotation;
+				Dungeon newDungeon;
+				newDungeon.volumeData = v [i].vd;
+				newDungeon.position = v [i].transform.position;
+				newDungeon.rotation = v [i].transform.rotation;
+				dungeons.Add (newDungeon);
+				PaletteItem[] pieces = v [i].nodeRoot.transform.GetComponentsInChildren<PaletteItem> ();
+				for (int p = 0; p < pieces.Length; p++) {
+					markers.Add (pieces [i].gameObject);
+				}
 			}
+		}
+
+		void GenerateDecoration()
+		{
+			
+			BehaviorTree bTree = GetComponent<BehaviorTree> ();
+			for (int i = 0; i < markers.Count; i++) {
+				((SharedGameObject)bTree.GetVariable ("root")).Value = markers [i];
+				((SharedString)bTree.GetVariable ("Marker")).Value = markers [i].GetComponent<PaletteItem> ().markType.ToString ();
+			}
+
 		}
 
 		public Material FindMaterial (string _path)
@@ -66,6 +83,7 @@ namespace CreVox
 
 		#if UNITY_EDITOR
 		private GameObject deco;
+		public List<GameObject> markers;
 
 		public void CreateDeco ()
 		{

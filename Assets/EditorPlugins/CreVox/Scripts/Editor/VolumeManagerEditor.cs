@@ -77,7 +77,7 @@ namespace CreVox
 			Color defColor = GUI.color;
 			Color volColor = new Color (0.5f, 0.8f, 0.75f);
 
-			for (int i = 0; i < vm.dungeons.Length; i++) {
+			for (int i = 0; i < vm.dungeons.Count; i++) {
 
 				GUI.color = volColor;
 				using (var v = new EditorGUILayout.VerticalScope ("Box")) {

@@ -100,6 +100,8 @@ namespace CreVox
 				InitContent();
 			}
 			EditorGUILayout.LabelField(label:_path,style:EditorStyles.miniLabel);
+			EditorGUILayout.LabelField("Button Size",GUILayout.Width (70));
+			ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 90f, 140f, GUILayout.Width (100));
 			if (GUILayout.Button("Refresh Preview", EditorStyles.miniButton, GUILayout.Width(90))) {
 				InitCategories();
 				InitContent();
@@ -159,7 +161,7 @@ namespace CreVox
 		private GUIStyle GetGUIStyle()
 		{
 			GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
-			guiStyle.fontSize = 9;
+			guiStyle.fontSize = 14;
 			guiStyle.alignment = TextAnchor.LowerCenter;
 			guiStyle.imagePosition = ImagePosition.ImageAbove;
 			guiStyle.fixedWidth = ButtonWidth;

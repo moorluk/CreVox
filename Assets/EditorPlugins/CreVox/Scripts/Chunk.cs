@@ -27,6 +27,7 @@ namespace CreVox
 		public static int chunkSize{ get { return VGlobal.GetSetting ().chunkSize; } }
 
 		public ChunkData cData;
+		private Dictionary<WorldPos,Block> BlockDict;
 
 		public Volume volume;
 		[SerializeField] MeshFilter filter;
@@ -34,6 +35,7 @@ namespace CreVox
 
 		public void Init ()
 		{
+			BlockDict = new Dictionary<WorldPos, Block> ();
 			filter = gameObject.GetComponent<MeshFilter> ();
 			coll = gameObject.GetComponent<MeshCollider> ();
 			coll.hideFlags = HideFlags.HideInHierarchy;
@@ -42,6 +44,7 @@ namespace CreVox
 
 		public void Destroy ()
 		{
+			cData = new ChunkData ();
 			foreach (Block block in cData.blocks)
 				if (block != null)
 					block.Destroy ();
@@ -83,9 +86,9 @@ namespace CreVox
 			if (InRange (x) && InRange (y) && InRange (z)) {
 				Block _block = GetChunkBlock (x, y, z); 
 				if (_block != null) {
-					BlockAir bAir = _block as BlockAir;
-					if (bAir != null)
-						cData.blockAirs.Remove (bAir);
+					BlockAir _bAir = _block as BlockAir;
+					if (_bAir != null)
+						cData.blockAirs.Remove (_bAir);
 					else
 						cData.blocks.Remove (_block);
 				}

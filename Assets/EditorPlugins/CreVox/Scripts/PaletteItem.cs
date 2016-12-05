@@ -9,9 +9,12 @@ namespace CreVox
 		public enum Category
 		{
 			Build,
-			BuildDeco,
+			Deco,
 			System,
-			Chara,
+			Trap,
+			Sign,
+			Movement,
+			Chara
 		}
 		public enum MarkerType
 		{
