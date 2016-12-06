@@ -14,6 +14,9 @@ namespace CreVox
 	[ExecuteInEditMode]
 	public class VolumeManager : MonoBehaviour
 	{
+		public List<Dungeon> dungeons;
+		private GameObject deco;
+		public List<GameObject> markers;
 
 		void Start ()
 		{
@@ -29,18 +32,40 @@ namespace CreVox
 				Debug.LogWarning (log);
 			}
 			#endif
-//			GenerateDecoration ();
+			CreateVoxels ();
+			CreateMarkers ();
 		}
 
-		#region Volume Control
+		void CreateVoxels ()
+		{
 
-		public List<Dungeon> dungeons;
+		}
 
+		void CreateMarkers ()
+		{
+			if (!deco) {
+				deco = new GameObject ("Decoration");
+				deco.transform.parent = transform;
+				deco.transform.localPosition = Vector3.zero;
+				deco.transform.localRotation = Quaternion.Euler (Vector3.zero);
+			}
+
+			for (int vi = 0; vi < dungeons.Count; vi++) {
+				for (int ci = 0; ci < dungeons [vi].volumeData.chunkDatas.Count; ci++) {
+					ChunkData cData = dungeons [vi].volumeData.chunkDatas [ci];
+					foreach (BlockAir bAir in cData.blockAirs) {
+
+					}
+				}
+			}
+		}
+
+		#if UNITY_EDITOR
 		public void UpdateDungeon ()
 		{
 			markers.Clear ();
 			Volume[] v = transform.GetComponentsInChildren<Volume> (true);
-			dungeons = new List<Dungeon>();
+			dungeons = new List<Dungeon> ();
 
 			for (int i = 0; i < v.Length; i++) {
 				Dungeon newDungeon;
@@ -55,17 +80,6 @@ namespace CreVox
 			}
 		}
 
-		void GenerateDecoration()
-		{
-			
-			BehaviorTree bTree = GetComponent<BehaviorTree> ();
-			for (int i = 0; i < markers.Count; i++) {
-				((SharedGameObject)bTree.GetVariable ("root")).Value = markers [i];
-				((SharedString)bTree.GetVariable ("Marker")).Value = markers [i].GetComponent<PaletteItem> ().markType.ToString ();
-			}
-
-		}
-
 		public Material FindMaterial (string _path)
 		{
 			Material[] tempM = Resources.LoadAll<Material> (_path);
@@ -76,14 +90,6 @@ namespace CreVox
 			}
 			return null;
 		}
-
-		#endregion
-
-		#region Decoration (Fake)
-
-		#if UNITY_EDITOR
-		private GameObject deco;
-		public List<GameObject> markers;
 
 		public void CreateDeco ()
 		{
@@ -112,6 +118,5 @@ namespace CreVox
 			}
 		}
 		#endif
-		#endregion
 	}
 }

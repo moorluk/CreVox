@@ -156,15 +156,18 @@ namespace CreVox
 				chunks.Clear ();
 			}
 			nodes.Clear();
+
+			#if UNITY_EDITOR
 			mColl = null;
 			bColl = null;
-
-			if (nodeRoot)
-				GameObject.DestroyImmediate (nodeRoot);
 			if (ruler)
 				GameObject.DestroyImmediate (ruler);
 			if (layerRuler)
 				GameObject.DestroyImmediate (layerRuler);
+			#endif
+
+			if (nodeRoot)
+				GameObject.DestroyImmediate (nodeRoot);
 			for (int i = transform.childCount; i > 0; i--) {
 				GameObject.DestroyImmediate (transform.GetChild (i - 1).gameObject);
 			}
@@ -201,11 +204,13 @@ namespace CreVox
 			newChunkObject.transform.parent = transform;
 			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
-			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
 			#if UNITY_EDITOR
+			if (vertexMaterial != null && EditorApplication.isPlaying)
+				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
+			if (vertexMaterial != null)
+				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
 			newChunkObject.layer = LayerMask.NameToLayer("Floor");
 			#endif
 			Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
@@ -244,7 +249,7 @@ namespace CreVox
 					#if UNITY_EDITOR
 					GameObject.DestroyImmediate (chunk.gameObject);
 					#else
-					Object.Destroy(chunk.gameObject);
+					UnityEngine.Object.Destroy(chunk.gameObject);
 					#endif
 					chunk.Destroy ();
 					chunks.Remove (chunk);
@@ -382,7 +387,14 @@ namespace CreVox
 		}
 		public void PlacePieces()
 		{
-			PaletteItem[] itemArray = Resources.LoadAll<PaletteItem> (vg.FakeDeco ? piecePack : PathCollect.pieces);
+			PaletteItem[] itemArray;
+			#if UNITY_EDITOR
+			if (EditorApplication.isPlaying == false)
+				itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+			else
+			#endif
+				itemArray = Resources.LoadAll<PaletteItem> (piecePack);
+
 			foreach (Chunk c in chunks) {
 				foreach (var ba in c.cData.blockAirs) {
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
@@ -518,10 +530,15 @@ namespace CreVox
 		#region Ruler
 
 		#if UNITY_EDITOR
-		private GameObject ruler, layerRuler;
-		public GameObject box = null;
+		[SerializeField]
 		private MeshCollider mColl;
+		[SerializeField]
 		private BoxCollider bColl;
+		[SerializeField]
+		private GameObject ruler; 
+		[SerializeField]
+		private GameObject layerRuler;
+		public GameObject box = null;
 		public bool useBox = false;
 
 		void CreateRuler ()

@@ -59,6 +59,40 @@ namespace CreVox
 			coll = gameObject.GetComponent<MeshCollider> ();
 		}
 
+		public void UpdateChunk ()
+		{
+			MeshData meshData = new MeshData ();
+			foreach (Block block in cData.blocks) {
+				#if UNITY_EDITOR
+				if (!EditorApplication.isPlaying && volume.cuter && block.BlockPos.y + cData.ChunkPos.y > volume.cutY)
+				#endif
+					block.MeahAddMe (this, block.BlockPos.x, block.BlockPos.y, block.BlockPos.z, meshData);
+				if (!BlockDict.ContainsKey (block.BlockPos))
+					BlockDict.Add (block.BlockPos, block);
+			}
+
+			foreach (BlockAir bAir in cData.blockAirs) {
+				if (!BlockDict.ContainsKey (bAir.BlockPos))
+					BlockDict.Add (bAir.BlockPos, bAir);
+				WorldPos volumePos = new WorldPos (
+					cData.ChunkPos.x + bAir.BlockPos.x, 
+					cData.ChunkPos.y + bAir.BlockPos.y, 
+					cData.ChunkPos.z + bAir.BlockPos.z);
+
+				if (volume.GetNode (volumePos) != null) {
+					#if UNITY_EDITOR
+					if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
+						volume.GetNode (volumePos).SetActive (false);
+					else 
+					#endif
+						volume.GetNode (volumePos).SetActive (true);
+				}
+			}
+
+			UpdateMeshFilter ();
+			UpdateMeshCollider ();
+		}
+
 		public Block GetBlock (int x, int y, int z)
 		{
 			if (InRange (x) && InRange (y) && InRange (z)) {
@@ -145,36 +179,6 @@ namespace CreVox
 				}
 			}
 			AssignCollisionMesh (meshData);
-		}
-
-		public void UpdateChunk ()
-		{
-			MeshData meshData = new MeshData ();
-			foreach (Block block in cData.blocks) {
-				#if UNITY_EDITOR
-				if (!EditorApplication.isPlaying && volume.cuter && block.BlockPos.y + cData.ChunkPos.y > volume.cutY)
-				#endif
-					block.MeahAddMe (this, block.BlockPos.x, block.BlockPos.y, block.BlockPos.z, meshData);
-			}
-
-			foreach (BlockAir bAir in cData.blockAirs) {
-				WorldPos vPos = new WorldPos (
-					                cData.ChunkPos.x + bAir.BlockPos.x, 
-					                cData.ChunkPos.y + bAir.BlockPos.y, 
-					                cData.ChunkPos.z + bAir.BlockPos.z);
-				
-				if (volume.GetNode (vPos) != null) {
-					#if UNITY_EDITOR
-					if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
-						volume.GetNode (vPos).SetActive (false);
-					else 
-					#endif
-						volume.GetNode (vPos).SetActive (true);
-				}
-			}
-
-			UpdateMeshFilter ();
-			UpdateMeshCollider ();
 		}
 
 		void AssignRenderMesh (MeshData meshData)
