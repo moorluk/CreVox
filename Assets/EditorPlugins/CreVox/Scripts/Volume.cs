@@ -632,9 +632,10 @@ namespace CreVox
 		void OnDrawGizmos ()
 		{
 			Gizmos.color = (chunks.Count == 0) ? Color.red : Color.white;
-			DrawGizmoBoxCursor ();
-			DrawGizmoLayer ();
-
+			if (!EditorApplication.isPlaying) {
+				DrawGizmoBoxCursor ();
+				DrawGizmoLayer ();
+			}
 		}
 
 		void DrawGizmoLayer ()

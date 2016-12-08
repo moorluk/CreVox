@@ -48,7 +48,7 @@ public class MeshNode : Node
 		return node;
 	}
 
-	protected override void NodeGUI ()
+	protected internal override void NodeGUI ()
 	{
 		EditorGUIUtility.wideMode = true;
 

@@ -29,7 +29,7 @@ public class MarkerNode : Node
 		return node;
 	}
 
-	protected override void NodeGUI ()
+	protected internal override void NodeGUI ()
 	{
 		using (var v = new GUILayout.VerticalScope ()) {
 			markerName = GUILayout.TextField (markerName);

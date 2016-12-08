@@ -36,7 +36,7 @@ public class TransformNode : Node
 		return node;
 	}
 
-	protected override void NodeGUI ()
+	protected internal override void NodeGUI ()
 	{
 		EditorGUIUtility.wideMode = true;
 		using (var h = new GUILayout.HorizontalScope ()) {
