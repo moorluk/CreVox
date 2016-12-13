@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 namespace CreVox
 {
@@ -13,12 +14,21 @@ namespace CreVox
 			Vertex,
 			Edge,
 			Center,
-			Grid,
+			Grid
+		}
+
+		[Serializable]
+		public class Hold
+		{
+			public WorldPos offset;
+			public bool isSolid;
 		}
 
 		public PivotType pivot;
-		public bool isStair = false;
 		public bool[] isSolid = new bool[6];
+		public bool isHold = false;
+		public List<Hold> holdBlocks;
+		public int maxX, minX, maxY, minY, maxZ, minZ;
 
 		public bool IsSolid (Direction direction)
 		{

@@ -29,6 +29,11 @@ namespace CreVox
 			return meshData;
 		}
 
+		public override MeshData ColliderAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
+		{
+			return meshData;
+		}
+
 		public override bool IsSolid (Direction direction)
 		{
 			if (isSolid == null || isSolid.Length != 6) {

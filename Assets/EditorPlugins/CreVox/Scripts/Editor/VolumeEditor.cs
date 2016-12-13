@@ -28,7 +28,7 @@ namespace CreVox
 
 		private void OnDisable ()
 		{
-			if (!volume.vg.debugRuler)
+			if (!Volume.vg.debugRuler)
 				volume.ActiveRuler (false);
 			UnsubscribeEvents ();
 		}
@@ -151,13 +151,13 @@ namespace CreVox
 					int cha = 17;
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));
-						if (volume.workFile.Length > 17/* && volume.workFile.Contains(PathCollect.save) */)
-							EditorGUILayout.LabelField (volume.workFile/*.Substring (cha)*/, EditorStyles.miniLabel);
+						if (volume.workFile.Length > cha && volume.workFile.Contains(PathCollect.save))
+							EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
 					}
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						EditorGUILayout.LabelField ("Backup:", GUILayout.Width (50f));
 						if (/*volume.tempPath.Length > 17 && */volume.tempPath.Contains (PathCollect.save))
-							EditorGUILayout.LabelField (volume.tempPath/*.Substring (cha)*/, EditorStyles.miniLabel);
+							EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
 					}
 				}
 			}
@@ -168,10 +168,10 @@ namespace CreVox
 				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
 					string ppath = EditorUtility.OpenFolderPanel (
 						               "選擇場景風格元件包的目錄位置",
-						               volume.piecePack,
+									volume.vd.ArtPack,
 						               ""
 					               );
-					if (volume.vg.saveBackup)
+					if (Volume.vg.saveBackup)
 						volume.SaveTempWorld ();
 					
 					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
@@ -179,22 +179,38 @@ namespace CreVox
 					if (mats.Length == 1) {
 						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
+						volume.vd.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.IndexOf (PathCollect.resourceSubPath));
 					} else
 						volume.vertexMaterial = null;
 					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
-					volume.piecePack = ppath;
+					volume.vd.ArtPack = ppath;
+					EditorUtility.SetDirty (volume.vd);
 
 					volume.LoadTempWorld ();
 				}
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.labelWidth = 120f;
-				EditorGUILayout.LabelField (volume.piecePack, EditorStyles.miniLabel);
+				EditorGUILayout.LabelField (volume.vd.ArtPack, EditorStyles.miniLabel);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
 					, volume.vertexMaterial
 					, typeof(Material)
 					, false);
+			}
+
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
+				EditorGUI.BeginChangeCheck ();
+				Volume.vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + Volume.vg.saveBackup + ")", Volume.vg.saveBackup);
+				Volume.vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + Volume.vg.FakeDeco + ")", Volume.vg.FakeDeco);
+				Volume.vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + Volume.vg.debugRuler + ")", Volume.vg.debugRuler);
+				if (EditorGUI.EndChangeCheck ()) {
+					EditorUtility.SetDirty (Volume.vg);
+					if (!UnityEditor.EditorApplication.isPlaying) {
+						volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+					}
+				}
 			}
 
 			DrawPieceSelectedGUI ();
@@ -245,10 +261,10 @@ namespace CreVox
 			GUILayout.BeginHorizontal ();
 			EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
 			EditorGUI.BeginChangeCheck ();
-			volume.vg.editDis = GUILayout.HorizontalSlider (volume.vg.editDis, 99f, 999f);
+			Volume.vg.editDis = GUILayout.HorizontalSlider (Volume.vg.editDis, 99f, 999f);
 			if (EditorGUI.EndChangeCheck ())
-				EditorUtility.SetDirty (volume.vg);
-			EditorGUILayout.LabelField (((int)volume.vg.editDis).ToString (), GUILayout.Width (25));
+				EditorUtility.SetDirty (Volume.vg);
+			EditorGUILayout.LabelField (((int)Volume.vg.editDis).ToString (), GUILayout.Width (25));
 			GUILayout.EndHorizontal ();
 			GUILayout.EndArea ();
 			
@@ -281,13 +297,13 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-			bool isHit = Physics.Raycast (worldRay, out hit, volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, Volume.vg.editDis, _mask);
 
 			if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
 				WorldPos pos = EditTerrain.GetBlockPos (hit, isErase ? false : true);
-				float x = pos.x * volume.vg.w;
-				float y = pos.y * volume.vg.h;
-				float z = pos.z * volume.vg.d;
+				float x = pos.x * Volume.vg.w;
+				float y = pos.y * Volume.vg.h;
+				float z = pos.z * Volume.vg.d;
 
 				Handles.DrawLine (hit.point, hit.point + hit.normal);
 				if (hit.collider.gameObject.tag == PathCollect.rularTag) {
@@ -306,15 +322,15 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out hit, volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, Volume.vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				WorldPos pos = EditTerrain.GetBlockPos (hit, false);
-				float x = pos.x * volume.vg.w;
-				float y = pos.y * volume.vg.h;
-				float z = pos.z * volume.vg.d;
+				float x = pos.x * Volume.vg.w;
+				float y = pos.y * Volume.vg.h;
+				float z = pos.z * Volume.vg.d;
 
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d));
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * Volume.vg.w, pos.y * Volume.vg.h, pos.z * Volume.vg.d));
 				volume.useBox = true;
 				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), Vector3.zero);
 			} else {
@@ -331,7 +347,7 @@ namespace CreVox
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out hit, (int)volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out hit, (int)Volume.vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				if (hit.normal.y <= 0)
@@ -339,16 +355,16 @@ namespace CreVox
 				
 				WorldPos pos = EditTerrain.GetBlockPos (hit, isNotLayer);
 				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
-				gPos.y = isNotLayer ? 0 : (int)volume.vg.h;
+				gPos.y = isNotLayer ? 0 : (int)Volume.vg.h;
 
-				float x = pos.x * volume.vg.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
-				float y = pos.y * volume.vg.h + gPos.y - 1;
-				float z = pos.z * volume.vg.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
+				float x = pos.x * Volume.vg.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
+				float y = pos.y * Volume.vg.h + gPos.y - 1;
+				float z = pos.z * Volume.vg.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
 
 				Handles.color = Color.white;
 				Handles.lighting = true;
-				Handles.RectangleCap (0, new Vector3 (pos.x * volume.vg.w, y, pos.z * volume.vg.d), Quaternion.Euler (90, 0, 0), volume.vg.hw);
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d));
+				Handles.RectangleCap (0, new Vector3 (pos.x * Volume.vg.w, y, pos.z * Volume.vg.d), Quaternion.Euler (90, 0, 0), Volume.vg.hw);
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * Volume.vg.w, pos.y * Volume.vg.h, pos.z * Volume.vg.d));
 
 				LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
@@ -358,7 +374,7 @@ namespace CreVox
 				}
 
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * volume.vg.w, pos.y * volume.vg.h, pos.z * volume.vg.d), Vector3.zero);
+				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * Volume.vg.w, pos.y * Volume.vg.h, pos.z * Volume.vg.d), Vector3.zero);
 				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
@@ -560,7 +576,7 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, Volume.vg.editDis, _mask);
 			WorldPos pos;
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -586,11 +602,11 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, Volume.vg.editDis, _mask);
 			WorldPos pos;
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
-				gHit.point = gHit.point + new Vector3 (0f, -volume.vg.h, 0f);
+				gHit.point = gHit.point + new Vector3 (0f, -Volume.vg.h, 0f);
 				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
 				pos = EditTerrain.GetBlockPos (gHit, true);
 
@@ -617,7 +633,7 @@ namespace CreVox
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-			bool isHit = Physics.Raycast (worldRay, out gHit, volume.vg.editDis, _mask);
+			bool isHit = Physics.Raycast (worldRay, out gHit, Volume.vg.editDis, _mask);
 
 			if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
 				if (gHit.normal.y <= 0)

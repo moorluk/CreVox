@@ -14,22 +14,23 @@ namespace CreVox
 	public class Volume : MonoBehaviour
 	{
 		public Volume volume;
-		public VGlobal vg;
+		public static VGlobal vg;
 
 		public string workFile;
 		public string tempPath;
 
-		public string piecePack = PathCollect.pieces;
 		public Material vertexMaterial;
 
 		void Awake ()
 		{
 			volume = this;
+			vg = VGlobal.GetSetting ();
+			if (EditorApplication.isPlaying)
+				this.gameObject.SetActive (!Volume.vg.FakeDeco);
 		}
 
 		void Start ()
 		{
-			vg = VGlobal.GetSetting ();
 			if (nodes == null)
 				nodes = new Dictionary<WorldPos, Node> ();
 			if (chunks == null)
@@ -184,7 +185,7 @@ namespace CreVox
 			for (int x = 0; x < chunkX; x++) {
 				for (int y = 0; y < chunkY; y++) {
 					for (int z = 0; z < chunkZ; z++) {
-						Chunk newChunk = CreateChunk (x * vg.chunkSize, y * vg.chunkSize, z * vg.chunkSize);;
+						Chunk newChunk = CreateChunk (x * Volume.vg.chunkSize, y * Volume.vg.chunkSize, z * Volume.vg.chunkSize);;
 						newChunk.Init ();
 					}
 				}
@@ -197,12 +198,12 @@ namespace CreVox
 
 			//Instantiate the chunk at the coordinates using the chunk prefab
 			GameObject newChunkObject = Instantiate (
-				                            chunkPrefab, new Vector3 (x * vg.w, y * vg.h, z * vg.d),
+				                            chunkPrefab, new Vector3 (x * Volume.vg.w, y * Volume.vg.h, z * Volume.vg.d),
 				                            Quaternion.Euler (Vector3.zero)
 			                            ) as GameObject;
 			newChunkObject.name = "Chunk(" + x + "," + y + "," + z + ")";
 			newChunkObject.transform.parent = transform;
-			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
+			newChunkObject.transform.localPosition = new Vector3 (x * Volume.vg.w, y * Volume.vg.h, z * Volume.vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
 			if (vertexMaterial != null && EditorApplication.isPlaying)
@@ -220,9 +221,9 @@ namespace CreVox
 
 			chunks.Add (newChunk);
 
-			for (int xi = 0; xi < vg.chunkSize; xi++) {
-				for (int yi = 0; yi < vg.chunkSize; yi++) {
-					for (int zi = 0; zi < vg.chunkSize; zi++) {
+			for (int xi = 0; xi < Volume.vg.chunkSize; xi++) {
+				for (int yi = 0; yi < Volume.vg.chunkSize; yi++) {
+					for (int zi = 0; zi < Volume.vg.chunkSize; zi++) {
 						SetBlock (x + xi, y + yi, z + zi, null);
 					}
 				}
@@ -235,7 +236,7 @@ namespace CreVox
 			for (int x = 0; x < chunkX; x++) {
 				for (int y = 0; y < chunkY; y++) {
 					for (int z = 0; z < chunkZ; z++) {
-						DestroyChunk (x * vg.chunkSize, y * vg.chunkSize, z * vg.chunkSize);
+						DestroyChunk (x * Volume.vg.chunkSize, y * Volume.vg.chunkSize, z * Volume.vg.chunkSize);
 					}
 				}
 			}
@@ -260,10 +261,10 @@ namespace CreVox
 		public Chunk GetChunk (int x, int y, int z)
 		{
 			WorldPos pos = new WorldPos ();
-			float multiple = vg.chunkSize;
-			pos.x = Mathf.FloorToInt (x / multiple) * vg.chunkSize;
-			pos.y = Mathf.FloorToInt (y / multiple) * vg.chunkSize;
-			pos.z = Mathf.FloorToInt (z / multiple) * vg.chunkSize;
+			float multiple = Volume.vg.chunkSize;
+			pos.x = Mathf.FloorToInt (x / multiple) * Volume.vg.chunkSize;
+			pos.y = Mathf.FloorToInt (y / multiple) * Volume.vg.chunkSize;
+			pos.z = Mathf.FloorToInt (z / multiple) * Volume.vg.chunkSize;
 			Chunk containerChunk = null;
 			foreach (Chunk _chunk in chunks) {
 				if (_chunk.cData.ChunkPos.Compare (pos))
@@ -302,7 +303,6 @@ namespace CreVox
 					              x - containerChunk.cData.ChunkPos.x,
 					              y - containerChunk.cData.ChunkPos.y,
 					              z - containerChunk.cData.ChunkPos.z);
-
 				return block;
 			} else {
 				return null;
@@ -320,6 +320,8 @@ namespace CreVox
 					if (_block is BlockAir) {
 						BlockAir _bAir = _block as BlockAir;
 						chunk.SetBlock (newBlockPos.x, newBlockPos.y, newBlockPos.z, _bAir);
+					} else if (_block is BlockHold) {
+						chunk.SetBlock (newBlockPos.x, newBlockPos.y, newBlockPos.z, _block as BlockHold);
 					} else {
 						chunk.SetBlock (newBlockPos.x, newBlockPos.y, newBlockPos.z, _block);
 					}
@@ -355,9 +357,9 @@ namespace CreVox
 			BlockAir blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
 			if (blockAir != null) {
 				Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
-				float x = bPos.x * vg.w + pos.x;
-				float y = bPos.y * vg.h + pos.y;
-				float z = bPos.z * vg.d + pos.z;
+				float x = bPos.x * Volume.vg.w + pos.x;
+				float y = bPos.y * Volume.vg.h + pos.y;
+				float z = bPos.z * Volume.vg.d + pos.z;
 
 				GameObject pObj = nodes [bPos].pieces [gPos.z * 3 + gPos.x];
 				if (pObj != null)
@@ -393,7 +395,7 @@ namespace CreVox
 				itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 			else
 			#endif
-				itemArray = Resources.LoadAll<PaletteItem> (piecePack);
+				itemArray = Resources.LoadAll<PaletteItem> (vd.ArtPack);
 
 			foreach (Chunk c in chunks) {
 				foreach (var ba in c.cData.blockAirs) {
@@ -414,12 +416,12 @@ namespace CreVox
 			}
 		}
 
-		Vector3 GetPieceOffset (int x, int z)
+		public static Vector3 GetPieceOffset (int x, int z)
 		{
 			Vector3 offset = Vector3.zero;
-			float hw = vg.hw;
-			float hh = vg.hh;
-			float hd = vg.hd;
+			float hw = Volume.vg.hw;
+			float hh = Volume.vg.hh;
+			float hd = Volume.vg.hd;
 
 			if (x == 0 && z == 0)
 				return new Vector3 (-hw, -hh, -hd);
@@ -444,7 +446,7 @@ namespace CreVox
 			return offset;
 		}
 
-		int GetPieceAngle (int x, int z)
+		public static int GetPieceAngle (int x, int z)
 		{
 			if (x == 0 && z >= 1)
 				return 90;
@@ -465,7 +467,7 @@ namespace CreVox
 		void CompileSave ()
 		{
 			if (EditorApplication.isCompiling && !compileSave) {
-				if (vg.saveBackup)
+				if (Volume.vg.saveBackup)
 					SaveTempWorld ();
 				compileSave = true;
 			}
@@ -550,11 +552,11 @@ namespace CreVox
 			mColl = ruler.AddComponent<MeshCollider> ();
 
 			MeshData meshData = new MeshData ();
-			float x = -vg.hw;
-			float y = -vg.hh;
-			float z = -vg.hd;
-			float w = chunkX * vg.chunkSize * vg.w + x;
-			float d = chunkZ * vg.chunkSize * vg.d + z;
+			float x = -Volume.vg.hw;
+			float y = -Volume.vg.hh;
+			float z = -Volume.vg.hd;
+			float w = chunkX * Volume.vg.chunkSize * Volume.vg.w + x;
+			float d = chunkZ * Volume.vg.chunkSize * Volume.vg.d + z;
 			meshData.useRenderDataForCol = true;
 			meshData.AddVertex (new Vector3 (x, y, z));
 			meshData.AddVertex (new Vector3 (x, y, d));
@@ -582,14 +584,14 @@ namespace CreVox
 			layerRuler.transform.localPosition = Vector3.zero;
 			layerRuler.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			bColl = layerRuler.AddComponent<BoxCollider> ();
-			bColl.size = new Vector3 (chunkX * vg.chunkSize * vg.w, 0f, chunkZ * vg.chunkSize * vg.d);
+			bColl.size = new Vector3 (chunkX * Volume.vg.chunkSize * Volume.vg.w, 0f, chunkZ * Volume.vg.chunkSize * Volume.vg.d);
 			ChangePointY (pointY);
 		}
 
 		void CreateBox ()
 		{
 			if (!box) {
-				box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (vg.w, vg.h, vg.d));
+				box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (Volume.vg.w, Volume.vg.h, Volume.vg.d));
 			}
 		}
 
@@ -613,7 +615,7 @@ namespace CreVox
 
 		public void ShowRuler ()
 		{
-			bool _active = EditorApplication.isPlaying ? false : vg.debugRuler;
+			bool _active = EditorApplication.isPlaying ? false : Volume.vg.debugRuler;
 			ActiveRuler (_active);
 		}
 		#endif
@@ -635,6 +637,19 @@ namespace CreVox
 			if (!EditorApplication.isPlaying) {
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
+				DrawBlockHold ();
+			}
+		}
+
+		void DrawBlockHold ()
+		{
+			Gizmos.color = new Color (255f/255f, 244f/255f, 228f/255f, 0.4f);
+			foreach (Chunk chunk in chunks) {
+				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
+					WorldPos bh = chunk.cData.blockHolds [i].BlockPos;
+					Vector3 localPos = transform.TransformPoint (bh.x * Volume.vg.w, bh.y * Volume.vg.h, bh.z * Volume.vg.d);
+					Gizmos.DrawCube (localPos, new Vector3 (Volume.vg.w, Volume.vg.h, Volume.vg.d));
+				}
 			}
 		}
 
@@ -648,21 +663,21 @@ namespace CreVox
 					Gizmos.DrawWireCube (
 						new Vector3 (
 							mColl.bounds.center.x,
-							transform.position.y + chunkY * vg.chunkSize * vg.hh - vg.hh,
+							transform.position.y + chunkY * Volume.vg.chunkSize * Volume.vg.hh - Volume.vg.hh,
 							mColl.bounds.center.z),
 						new Vector3 (
-							chunkX * vg.chunkSize * vg.w, 
-							chunkY * vg.chunkSize * vg.h, 
-							chunkZ * vg.chunkSize * vg.d)
+							chunkX * Volume.vg.chunkSize * Volume.vg.w, 
+							chunkY * Volume.vg.chunkSize * Volume.vg.h, 
+							chunkZ * Volume.vg.chunkSize * Volume.vg.d)
 					);
 				
-				for (int xi = 0; xi < chunkX * vg.chunkSize; xi++) {
-					for (int zi = 0; zi < chunkZ * vg.chunkSize; zi++) {
+				for (int xi = 0; xi < chunkX * Volume.vg.chunkSize; xi++) {
+					for (int zi = 0; zi < chunkZ * Volume.vg.chunkSize; zi++) {
 						float cSize;
 						cSize = (GetBlock (xi, pointY, zi) == null) ? 0.3f : 1.01f;
 
-						Vector3 localPos = transform.TransformPoint (xi * vg.w, pointY * vg.h, zi * vg.d);
-						Gizmos.DrawCube (localPos, new Vector3 (vg.w * cSize, vg.h * cSize, vg.d * cSize));
+						Vector3 localPos = transform.TransformPoint (xi * Volume.vg.w, pointY * Volume.vg.h, zi * Volume.vg.d);
+						Gizmos.DrawCube (localPos, new Vector3 (Volume.vg.w * cSize, Volume.vg.h * cSize, Volume.vg.d * cSize));
 					}
 				}
 			}
@@ -681,7 +696,7 @@ namespace CreVox
 
 		public void ChangePointY (int _y)
 		{
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
+			_y = Mathf.Clamp (_y, 0, chunkY * Volume.vg.chunkSize - 1);
 			pointY = _y;
 			YColor = new Color (
 				(20 + (pointY % 10) * 20) / 255f, 
@@ -691,9 +706,9 @@ namespace CreVox
 			);
 			if (bColl) {
 				bColl.center = new Vector3 (
-					chunkX * vg.chunkSize * vg.hw - vg.hw, 
-					pointY * vg.h + vg.hh, 
-					chunkZ * vg.chunkSize * vg.hd - vg.hd
+					chunkX * Volume.vg.chunkSize * Volume.vg.hw - Volume.vg.hw, 
+					pointY * Volume.vg.h + Volume.vg.hh, 
+					chunkZ * Volume.vg.chunkSize * Volume.vg.hd - Volume.vg.hd
 				);
 			}
 			if (chunks != null && chunks.Count > 0)
@@ -702,7 +717,7 @@ namespace CreVox
 
 		public void ChangeCutY (int _y)
 		{
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
+			_y = Mathf.Clamp (_y, 0, chunkY * Volume.vg.chunkSize - 1);
 			cutY = _y;
 			if (chunks != null && chunks.Count > 0)
 //				PlacePieces ();

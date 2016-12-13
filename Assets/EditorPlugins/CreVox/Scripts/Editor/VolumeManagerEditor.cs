@@ -38,7 +38,7 @@ namespace CreVox
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
 				EditorGUI.BeginChangeCheck ();
 				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
-				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Fake Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
+				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
 				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
 				if (EditorGUI.EndChangeCheck ()) {
 					EditorUtility.SetDirty (vg);
@@ -87,6 +87,7 @@ namespace CreVox
 					EditorGUIUtility.labelWidth = 80;
 					EditorGUILayout.Vector3Field ("Position", vm.dungeons [i].position);
 					EditorGUILayout.Vector3Field ("Rotation", vm.dungeons [i].rotation.eulerAngles);
+					EditorGUILayout.TextField ("ArtPack",vm.dungeons [i].volumeData.ArtPack);
 				}
 			}
 		}

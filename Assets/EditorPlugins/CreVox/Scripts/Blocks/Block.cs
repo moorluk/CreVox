@@ -66,6 +66,38 @@ namespace CreVox
 
 		}
 
+		public virtual MeshData ColliderAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
+		{
+			meshData.useRenderDataForCol = true;
+
+			if (chunk.GetBlock (x, y + 1, z) == null) {
+				meshData = FaceDataUp (chunk, x, y, z, meshData);
+			}
+
+			if (chunk.GetBlock (x, y - 1, z) == null) {
+				meshData = FaceDataDown (chunk, x, y, z, meshData);
+			}
+
+			if (chunk.GetBlock (x, y, z + 1) == null) {
+				meshData = FaceDataNorth (chunk, x, y, z, meshData);
+			}
+
+			if (chunk.GetBlock (x, y, z - 1) == null) {
+				meshData = FaceDataSouth (chunk, x, y, z, meshData);
+			}
+
+			if (chunk.GetBlock (x + 1, y, z) == null) {
+				meshData = FaceDataEast (chunk, x, y, z, meshData);
+			}
+
+			if (chunk.GetBlock (x - 1, y, z) == null) {
+				meshData = FaceDataWest (chunk, x, y, z, meshData);
+			}
+
+			return meshData;
+
+		}
+
 		public virtual bool IsSolid (Direction direction)
 		{
 			switch (direction) {

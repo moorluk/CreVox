@@ -9,9 +9,10 @@ namespace CreVox
 	{
 
 		bool showBlocks = false;
-		bool[] blocks;
 		bool showBlockAirs = false;
 		bool[] blockAirs;
+		bool showBlockHolds = false;
+		bool[] blockHolds;
 
 		bool filter;
 		float layerMin;
@@ -29,8 +30,9 @@ namespace CreVox
 			layerMin = 0;
 			layerMax = Chunk.chunkSize;
 
-			blocks = new bool[0];
+//			blocks = new bool[0];
 			blockAirs = new bool[0];
+			blockHolds = new bool[0];
 
 			defColor = GUI.color;
 			volColor = new Color (0.5f, 0.8f, 0.75f);
@@ -38,17 +40,24 @@ namespace CreVox
 
 		void UpdateList()
 		{
-			if (blocks.Length != chunk.cData.blocks.Count) {
-				blocks = new bool[chunk.cData.blocks.Count];
-				for (int i = 0; i < blocks.Length; i++) {
-					blocks [i] = false;
-				}
-			}
+//			if (blocks.Length != chunk.cData.blocks.Count) {
+//				blocks = new bool[chunk.cData.blocks.Count];
+//				for (int i = 0; i < blocks.Length; i++) {
+//					blocks [i] = false;
+//				}
+//			}
 
 			if (blockAirs.Length != chunk.cData.blockAirs.Count) {
 				blockAirs = new bool[chunk.cData.blockAirs.Count];
 				for (int j = 0; j < blockAirs.Length; j++) {
 					blockAirs [j] = false;
+				}
+			}
+
+			if (blockHolds.Length != chunk.cData.blockHolds.Count) {
+				blockHolds = new bool[chunk.cData.blockHolds.Count];
+				for (int k = 0; k < blockHolds.Length; k++) {
+					blockHolds [k] = false;
 				}
 			}
 		}
@@ -85,8 +94,8 @@ namespace CreVox
 
 				EditorGUI.indentLevel++;
 				DrawBlock ();
-
 				DrawBlockAir ();
+				DrawBlockHold ();
 			}
 
 			drawDef = EditorGUILayout.Foldout (drawDef, "Default");
@@ -105,7 +114,7 @@ namespace CreVox
 							"[" + chunk.cData.blocks [i].BlockPos.x +
 							"," + chunk.cData.blocks [i].BlockPos.y +
 							"," + chunk.cData.blocks [i].BlockPos.z +
-							"](Voxel)"
+							"]"
 						);
 					}
 				}
@@ -131,6 +140,33 @@ namespace CreVox
 								GUILayout.SelectionGrid (-1, chunk.cData.blockAirs [i].pieceNames, 3
 									, EditorStyles.miniButton
 									, GUILayout.Width(Screen.width-45));
+							}
+						}
+					}
+				}
+				EditorGUI.indentLevel--;
+			}
+		}
+
+		public void DrawBlockHold ()
+		{
+			showBlockHolds = EditorGUILayout.Foldout (showBlockHolds, " BlockHold(" + chunk.cData.blockHolds.Count);
+			if (showBlockHolds) {
+				EditorGUI.indentLevel++;
+				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
+					if (filter ? (chunk.cData.blockHolds [i].BlockPos.y >= layerMin && chunk.cData.blockHolds [i].BlockPos.y <= layerMax) : true) {
+						if (chunk.cData.blockHolds [i].roots.Count > 0) {
+							blockHolds [i] = EditorGUILayout.Foldout (blockHolds [i],
+								"[" + chunk.cData.blockHolds [i].BlockPos.x +
+								"," + chunk.cData.blockHolds [i].BlockPos.y +
+								"," + chunk.cData.blockHolds [i].BlockPos.z +
+								"]" + ((chunk.cData.blockHolds [i].IsSolid (Direction.south)) ? "(Solid)" : "")
+							);
+							if (blockHolds [i]) {
+								for (int j = 0; j < chunk.cData.blockHolds [i].roots.Count; j++)
+									EditorGUILayout.LabelField ("[" + chunk.cData.blockHolds [i].roots [j].blockPos.ToString () + "]" +
+										" Marker(" + chunk.cData.blockHolds [i].roots [j].pieceID + ")",
+										EditorStyles.helpBox);
 							}
 						}
 					}

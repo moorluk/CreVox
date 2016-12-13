@@ -16,6 +16,7 @@ namespace CreVox
 		public WorldPos ChunkPos;
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
+		public List<BlockHold> blockHolds = new List<BlockHold> ();
 	}
 
 	[RequireComponent (typeof(MeshFilter))]
@@ -98,19 +99,25 @@ namespace CreVox
 			if (InRange (x) && InRange (y) && InRange (z)) {
 				return GetChunkBlock (x, y, z);
 			} else {
-				return volume.GetBlock (cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z);
+				if (!Volume.vg.FakeDeco)
+					return volume.GetBlock (cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z);
 			}
+			return null;
 		}
 
 		private Block GetChunkBlock (int x, int y, int z)
 		{
+			foreach (BlockAir bAir in cData.blockAirs) {
+				if (bAir != null && bAir.BlockPos.Compare (new WorldPos (x, y, z)))
+					return bAir;
+			}
 			foreach (Block block in cData.blocks) {
 				if (block != null && block.BlockPos.Compare (new WorldPos (x, y, z)))
 					return block;
 			}
-			foreach (BlockAir bAir in cData.blockAirs) {
-				if (bAir != null && bAir.BlockPos.Compare (new WorldPos (x, y, z)))
-					return bAir;
+			foreach (BlockHold bHold in cData.blockHolds) {
+				if (bHold != null && bHold.BlockPos.Compare (new WorldPos (x, y, z)))
+					return bHold;
 			}
 			return null;
 		}
@@ -118,13 +125,15 @@ namespace CreVox
 		public void SetBlock (int x, int y, int z, Block block)
 		{
 			if (InRange (x) && InRange (y) && InRange (z)) {
-				Block _block = GetChunkBlock (x, y, z); 
-				if (_block != null) {
-					BlockAir _bAir = _block as BlockAir;
-					if (_bAir != null)
-						cData.blockAirs.Remove (_bAir);
+				Block _b = GetChunkBlock (x, y, z); 
+				if (_b != null) {
+					if (_b is BlockHold)
+						return;
+					BlockAir _ba = _b as BlockAir;
+					if (_ba != null)
+						cData.blockAirs.Remove (_ba);
 					else
-						cData.blocks.Remove (_block);
+						cData.blocks.Remove (_b);
 				}
 				if (block != null) {
 					BlockAir bAir = block as BlockAir;
@@ -174,7 +183,7 @@ namespace CreVox
 						if ((!EditorApplication.isPlaying && volume.cuter && y + cData.ChunkPos.y > volume.cutY) == false)
 						#endif
 						if (GetChunkBlock (x, y, z) != null)
-							meshData = GetChunkBlock (x, y, z).MeahAddMe (this, x, y, z, meshData);
+							meshData = GetChunkBlock (x, y, z).ColliderAddMe (this, x, y, z, meshData);
 					}
 				}
 			}

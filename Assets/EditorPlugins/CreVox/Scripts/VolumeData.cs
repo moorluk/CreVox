@@ -11,17 +11,9 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 		public List <ChunkData> chunkDatas = new List<ChunkData> ();
+		public string ArtPack = PathCollect.pieces;
+		public string vMaterial;
 
-		public void AddChunk (Chunk _chunk)
-		{
-			foreach (ChunkData cd in chunkDatas) {
-				if (cd.ChunkPos.Compare (_chunk.cData.ChunkPos))
-					return;
-			}
-			ChunkData newCD = new ChunkData ();
-			newCD.ChunkPos = _chunk.cData.ChunkPos;
-			chunkDatas.Add (newCD);
-		}
 
 		public ChunkData GetChunk (WorldPos _pos)
 		{
@@ -32,25 +24,7 @@ namespace CreVox
 			return null;
 		}
 
-		public Dictionary<WorldPos,Block> GetBlockDictionary (ChunkData _cd)
-		{
-			var blocksDictionary = new Dictionary<WorldPos,Block> ();
-			foreach (Block b in _cd.blocks) {
-				blocksDictionary.Add (b.BlockPos, b);
-			}
-			return blocksDictionary;
-		}
 
-		public Block GetBlock (WorldPos _blockPos, WorldPos _chunkPos)
-		{
-			if (GetChunk (_chunkPos) != null) {
-				foreach (Block b in GetChunk(_chunkPos).blocks) {
-					if (b.BlockPos.Compare (_blockPos))
-						return b;
-				}
-			}
-			return null;
-		}
 
 		public static VolumeData GetVData (string workFile)
 		{
