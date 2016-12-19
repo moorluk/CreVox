@@ -88,7 +88,7 @@ namespace CreVox
 				minZ = EditorGUILayout.IntField (minZ);
 				GUILayout.EndVertical ();
 
-				if (GUILayout.Button ("init", GUILayout.ExpandHeight (true), GUILayout.Width (50))) {
+				if (GUILayout.Button ("init", GUILayout.Height (30), GUILayout.Width (50))) {
 					CreateHoldBlockList ();
 				}
 			}

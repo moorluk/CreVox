@@ -66,31 +66,46 @@ namespace CreVox
 
 		}
 
+		private bool SolidCheck(Chunk chunk, int x, int y, int z)
+		{
+			Block b = chunk.GetBlock (x, y, z);
+			if (b == null)
+				return true;
+			else {
+				if (b is BlockAir)
+					return true;
+				else if (b is BlockHold)
+					return true;
+				else
+					return false;
+			}
+		}
+
 		public virtual MeshData ColliderAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			meshData.useRenderDataForCol = true;
 
-			if (chunk.GetBlock (x, y + 1, z) == null) {
+			if (SolidCheck (chunk, x, y + 1, z)) {
 				meshData = FaceDataUp (chunk, x, y, z, meshData);
 			}
 
-			if (chunk.GetBlock (x, y - 1, z) == null) {
+			if (SolidCheck (chunk, x, y - 1, z)) {
 				meshData = FaceDataDown (chunk, x, y, z, meshData);
 			}
 
-			if (chunk.GetBlock (x, y, z + 1) == null) {
+			if (SolidCheck (chunk, x, y, z + 1)) {
 				meshData = FaceDataNorth (chunk, x, y, z, meshData);
 			}
 
-			if (chunk.GetBlock (x, y, z - 1) == null) {
+			if (SolidCheck (chunk, x, y, z - 1)) {
 				meshData = FaceDataSouth (chunk, x, y, z, meshData);
 			}
 
-			if (chunk.GetBlock (x + 1, y, z) == null) {
+			if (SolidCheck (chunk, x + 1, y, z)) {
 				meshData = FaceDataEast (chunk, x, y, z, meshData);
 			}
 
-			if (chunk.GetBlock (x - 1, y, z) == null) {
+			if (SolidCheck (chunk, x - 1, y, z)) {
 				meshData = FaceDataWest (chunk, x, y, z, meshData);
 			}
 

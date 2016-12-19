@@ -5,12 +5,12 @@ namespace CreVox
 {
 	
 	[Serializable]
-	public class BlockAir : Block
+	public class BlockItem : Block
 	{
 		public string[] pieceNames = new string[9];
 		private bool[] isSolid = new bool[6];
 
-		public BlockAir () : base ()
+		public BlockItem () : base ()
 		{
 			if (isSolid == null || isSolid.Length != 6) {
 				isSolid = new bool[6];

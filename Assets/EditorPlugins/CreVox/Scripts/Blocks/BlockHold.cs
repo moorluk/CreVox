@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace CreVox
 {
@@ -23,7 +24,7 @@ namespace CreVox
 
 		[SerializeField]
 		private bool isSolid = false;
-		public List<piecePos> roots;
+		public List<piecePos> roots = new List<piecePos>();
 
 //		public BlockHold () : base ()
 //		{

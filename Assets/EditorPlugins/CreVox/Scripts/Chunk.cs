@@ -16,6 +16,7 @@ namespace CreVox
 		public WorldPos ChunkPos;
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
+		public List<BlockItem> blockItems = new List<BlockItem> ();
 		public List<BlockHold> blockHolds = new List<BlockHold> ();
 	}
 
@@ -39,7 +40,7 @@ namespace CreVox
 			BlockDict = new Dictionary<WorldPos, Block> ();
 			filter = gameObject.GetComponent<MeshFilter> ();
 			coll = gameObject.GetComponent<MeshCollider> ();
-			coll.hideFlags = HideFlags.HideInHierarchy;
+//			coll.hideFlags = HideFlags.HideInHierarchy;
 			UpdateChunk ();
 		}
 
@@ -99,7 +100,7 @@ namespace CreVox
 			if (InRange (x) && InRange (y) && InRange (z)) {
 				return GetChunkBlock (x, y, z);
 			} else {
-				if (!Volume.vg.FakeDeco)
+				if (!VGlobal.GetSetting().FakeDeco)
 					return volume.GetBlock (cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z);
 			}
 			return null;
@@ -127,18 +128,20 @@ namespace CreVox
 			if (InRange (x) && InRange (y) && InRange (z)) {
 				Block _b = GetChunkBlock (x, y, z); 
 				if (_b != null) {
-					if (_b is BlockHold)
-						return;
-					BlockAir _ba = _b as BlockAir;
-					if (_ba != null)
-						cData.blockAirs.Remove (_ba);
+					if (_b is BlockHold){
+						BlockHold _bh = (BlockHold)_b;
+						if (_bh.roots.Count < 1)
+							cData.blockHolds.Remove (_bh);
+					}else if (_b is BlockAir)
+						cData.blockAirs.Remove ((BlockAir)_b);
 					else
 						cData.blocks.Remove (_b);
 				}
 				if (block != null) {
-					BlockAir bAir = block as BlockAir;
-					if (bAir != null)
-						cData.blockAirs.Add (bAir);
+					if (block is BlockAir)
+						cData.blockAirs.Add ((BlockAir)block);
+					else if (block is BlockHold)
+						cData.blockHolds.Add ((BlockHold)block);
 					else
 						cData.blocks.Add (block);
 				}
