@@ -53,6 +53,12 @@ namespace CreVox
 			foreach (BlockAir bAir in cData.blockAirs)
 				if (bAir != null)
 					bAir.Destroy ();
+			foreach (BlockItem bItem in cData.blockItems)
+				if (bItem != null)
+					bItem.Destroy ();
+			foreach (BlockHold bHold in cData.blockHolds)
+				if (bHold != null)
+					bHold.Destroy ();
 		}
 
 		void Start ()

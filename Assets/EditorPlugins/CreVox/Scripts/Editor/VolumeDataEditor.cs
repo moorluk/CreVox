@@ -78,6 +78,7 @@ namespace CreVox
 
 			UpdateList ();
 
+			EditorGUI.BeginChangeCheck ();
 			for (int _index = 0; _index < vd.chunkDatas.Count; _index++) {
 				DrawChunkData (_index);
 			}
@@ -88,6 +89,8 @@ namespace CreVox
 			drawDef = EditorGUILayout.Foldout (drawDef, "Default");
 			if (drawDef)
 				DrawDefaultInspector ();
+			if (EditorGUI.EndChangeCheck ())
+				EditorUtility.SetDirty (vd);
 		}
 
 		public void DrawChunkData(int _index)
@@ -179,8 +182,8 @@ namespace CreVox
 							);
 						}
 					}
-					EditorGUI.indentLevel--;
 				}
+				EditorGUI.indentLevel --;
 				EditorGUI.indentLevel --;
 			}
 		}

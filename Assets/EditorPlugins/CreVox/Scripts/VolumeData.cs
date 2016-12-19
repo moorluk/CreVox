@@ -14,6 +14,11 @@ namespace CreVox
 		public string ArtPack = PathCollect.pieces;
 		public string vMaterial;
 
+		public void Awake()
+		{
+			if (chunkDatas.Count < 1)
+				chunkDatas.Add (new ChunkData ());
+		}
 
 		public ChunkData GetChunk (WorldPos _pos)
 		{

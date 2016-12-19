@@ -94,7 +94,7 @@ namespace CreVox
 						volume.workFile = "";
 						volume.tempPath = "";
 						string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-						sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name, ".asset");
+						sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
 						sPath = sPath.Remove (sPath.LastIndexOf ("_vData")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
 						volume.vd = VolumeData.GetVData (sPath);
 //						volume.WriteVData ();
@@ -161,13 +161,21 @@ namespace CreVox
 					int cha = 17;
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));
-						if (volume.workFile.Length > cha && volume.workFile.Contains(PathCollect.save))
-							EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
+						if (volume.workFile != null) {
+							if (volume.workFile.Length > cha) {
+								if (volume.workFile.Contains (PathCollect.save))
+									EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
+							}
+						}
 					}
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						EditorGUILayout.LabelField ("Backup:", GUILayout.Width (50f));
-						if (volume.tempPath.Length > cha && volume.tempPath.Contains (PathCollect.save))
-							EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
+						if (volume.tempPath != null) {
+							if (volume.tempPath.Length > cha) {
+								if (volume.tempPath.Contains (PathCollect.save))
+									EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
+							}
+						}
 					}
 				}
 			}
