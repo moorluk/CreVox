@@ -392,7 +392,9 @@ namespace CreVox
 				pObj.transform.localPosition = new Vector3 (x, y, z);
 				pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
 				nodes [bPos].pieces [gPos.z * 3 + gPos.x] = pObj;
-				PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), false);
+				if (_piece.isHold) {
+					PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), false);
+				}
 
 				if (GetBlock (bPos.x, bPos.y, bPos.z) == null)
 					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
@@ -404,7 +406,7 @@ namespace CreVox
 			} else {
 				if (nodes.ContainsKey (bPos)) {
 					pObj = nodes [bPos].pieces [gPos.z * 3 + gPos.x];
-					if (pObj != null && _piece.isHold) {
+					if (pObj != null) { 
 						PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), true);
 						GameObject.DestroyImmediate (pObj);
 					}
