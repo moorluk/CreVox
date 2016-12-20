@@ -95,7 +95,7 @@ namespace CreVox
 						volume.tempPath = "";
 						string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
 						sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
-						sPath = sPath.Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+						sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
 						volume.vd = VolumeData.GetVData (sPath);
 //						volume.WriteVData ();
 						volume._useBytes = false;
@@ -119,7 +119,7 @@ namespace CreVox
 							string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
 							if (sPath != "") {
 								Serialization.SaveWorld (volume, sPath);
-								volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+								volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
 								volume.tempPath = "";
 							}
 						}
@@ -145,7 +145,7 @@ namespace CreVox
 								Save save = Serialization.LoadWorld (lPath);
 								if (save != null) {
 									volume._useBytes = true;
-									volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.IndexOf (PathCollect.resourceSubPath));
+									volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.LastIndexOf (PathCollect.resourceSubPath));
 									volume.BuildVolume (save);
 									volume.tempPath = "";
 								}
@@ -192,15 +192,15 @@ namespace CreVox
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath));
+					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourcesPath));
 					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
 					if (mats.Length == 1) {
 						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-						volume.vd.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.IndexOf (PathCollect.resourceSubPath));
+						volume.vd.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
 					} else
 						volume.vertexMaterial = null;
-					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourceSubPath));
+					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
 					volume.vd.ArtPack = ppath;
 					EditorUtility.SetDirty (volume.vd);
 

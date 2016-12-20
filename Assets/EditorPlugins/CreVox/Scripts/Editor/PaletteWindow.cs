@@ -92,9 +92,9 @@ namespace CreVox
 			EditorGUILayout.BeginHorizontal(EditorStyles.textField);
 			if (GUILayout.Button("Select Path", GUILayout.Width(80))) {
 				_path = EditorUtility.OpenFolderPanel("Select Pieces' Path", PathCollect.resourcesPath + PathCollect.pieces, "");
-				if (_path.IndexOf("Assets") < 0)
+				if (_path.LastIndexOf ("Assets") < 0)
 					_path = PathCollect.resourcesPath + PathCollect.pieces;
-				_path = _path.Substring(_path.IndexOf("Assets"));
+				_path = _path.Substring(_path.LastIndexOf("Assets"));
 
 				InitCategories();
 				InitContent();
