@@ -58,7 +58,14 @@ namespace CreVox
 		public void WriteVData ()
 		{
 			if (vd == null) {
-				vd = VolumeData.GetVData (workFile);
+				if (workFile != "")
+					vd = VolumeData.GetVData (workFile + "_vData");
+				else {
+					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, volume.name + "_vData", "asset");
+					sPath = sPath.Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+					vd = VolumeData.GetVData (sPath);
+				}
 
 				vd.chunkX = chunkX;
 				vd.chunkY = chunkY;
@@ -84,7 +91,7 @@ namespace CreVox
 		#region Chunk
 
 		private GameObject chunkPrefab;
-		public List<Chunk> chunks;
+		public List<Chunk> chunks = new List<Chunk>();
 		public int chunkX = 1;
 		public int chunkY = 1;
 		public int chunkZ = 1;
@@ -397,7 +404,7 @@ namespace CreVox
 			} else {
 				if (nodes.ContainsKey (bPos)) {
 					pObj = nodes [bPos].pieces [gPos.z * 3 + gPos.x];
-					if (pObj != null) {
+					if (pObj != null && _piece.isHold) {
 						PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), true);
 						GameObject.DestroyImmediate (pObj);
 					}

@@ -95,7 +95,7 @@ namespace CreVox
 						volume.tempPath = "";
 						string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
 						sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
-						sPath = sPath.Remove (sPath.LastIndexOf ("_vData")).Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+						sPath = sPath.Substring (sPath.IndexOf (PathCollect.resourceSubPath));
 						volume.vd = VolumeData.GetVData (sPath);
 //						volume.WriteVData ();
 						volume._useBytes = false;
@@ -105,7 +105,7 @@ namespace CreVox
 				}
 
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
-					if (GUILayout.Button (new GUIContent ("Save\n▼", "同時按 SHIFT 快速存檔"), "miniButtonLeft", GUILayout.Height(bh))) {
+					if (GUILayout.Button (new GUIContent ("Save\n▼", "存byte檔；同時按 SHIFT 快速存檔"), "miniButtonLeft", GUILayout.Height(bh))) {
 						if (Event.current.shift) {
 							if (volume.workFile != "") {
 								string sPath = 
@@ -124,7 +124,7 @@ namespace CreVox
 							}
 						}
 					}
-					if (GUILayout.Button (new GUIContent ("▲\nLoad", "同時按 SHIFT 快速讀檔"), "miniButtonRight", GUILayout.Height(bh))) {
+					if (GUILayout.Button (new GUIContent ("▲\nLoad", "讀byte檔；同時按 SHIFT 快速讀檔"), "miniButtonRight", GUILayout.Height(bh))) {
 						if (Event.current.shift) {
 							if (volume.workFile != "") {
 								string lPath = 

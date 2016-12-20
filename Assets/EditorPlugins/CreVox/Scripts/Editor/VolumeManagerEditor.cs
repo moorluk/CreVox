@@ -47,18 +47,6 @@ namespace CreVox
 			}
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Decoration Setting", EditorStyles.boldLabel);
-				GUILayout.BeginHorizontal ();
-				if (GUILayout.Button ("Generate", GUILayout.Width (buttonW))) {
-					vm.CreateDeco ();
-				}
-				if (GUILayout.Button ("Clear", GUILayout.Width (buttonW))) {
-					vm.ClearDeco ();
-				}
-				GUILayout.EndHorizontal ();
-			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
 				if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
@@ -87,7 +75,7 @@ namespace CreVox
 					EditorGUIUtility.labelWidth = 80;
 					EditorGUILayout.Vector3Field ("Position", vm.dungeons [i].position);
 					EditorGUILayout.Vector3Field ("Rotation", vm.dungeons [i].rotation.eulerAngles);
-					EditorGUILayout.TextField ("ArtPack",vm.dungeons [i].volumeData.ArtPack);
+					EditorGUILayout.LabelField ("ArtPack",vm.dungeons [i].volumeData.ArtPack.Replace("CreVox/VolumeArtPack/",""),"miniLabel");
 				}
 			}
 		}

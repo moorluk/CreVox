@@ -14,6 +14,33 @@ namespace CreVox
 			PaletteWindow.ShowPalette();
 		}
 
+		[MenuItem("GameObject/3D Object/Volume (CreVox)")]
+		private static void AddVolume()
+		{
+			GameObject newVol = new GameObject ();
+			newVol.name = "New Volume";
+			newVol.AddComponent<Volume> ();
+			Volume volume = newVol.GetComponent<Volume> ();
+			volume.Reset ();
+			volume.Init (1, 1, 1);
+			volume.workFile = "";
+			volume.tempPath = "";
+			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+			sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
+			sPath = sPath.Substring (sPath.IndexOf (PathCollect.resourceSubPath));
+			volume.vd = VolumeData.GetVData (sPath);
+			volume._useBytes = false;
+			volume.BuildVolume (new Save (), volume.vd);
+		}
+
+		[MenuItem("GameObject/3D Object/Volume Manager (CreVox)")]
+		private static void AddVolumeManager()
+		{
+			GameObject newVol = new GameObject ();
+			newVol.name = "VolumeManager";
+			newVol.AddComponent<VolumeManager> ();
+		}
+
 //		[MenuItem("Assets/Create/Volume Data")]
 //		private static void CreateVolumeData()
 //		{

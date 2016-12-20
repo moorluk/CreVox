@@ -33,14 +33,14 @@ namespace CreVox
 
 		public static VolumeData GetVData (string workFile)
 		{
-			VolumeData _vData = Resources.Load (workFile + "_vData", typeof(VolumeData)) as VolumeData;
+			VolumeData _vData = Resources.Load (workFile, typeof(VolumeData)) as VolumeData;
 			#if UNITY_EDITOR
 			if (_vData == null) {
-				string bytesPath = PathCollect.resourcesPath + workFile + "_vData" + ".asset";
-				Debug.Log (bytesPath + " -> " + workFile + "_vData");
+				string bytesPath = PathCollect.resourcesPath + workFile;
 				VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
 				UnityEditor.AssetDatabase.CreateAsset (vd, bytesPath);
-				_vData = Resources.Load (workFile + "_vData", typeof(VolumeData)) as VolumeData;
+				UnityEditor.AssetDatabase.Refresh();
+				_vData = Resources.Load (workFile.Replace(".asset",""), typeof(VolumeData)) as VolumeData;
 			}
 			#endif
 			return _vData;
