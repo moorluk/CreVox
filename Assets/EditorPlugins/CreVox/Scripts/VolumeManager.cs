@@ -60,6 +60,8 @@ namespace CreVox
 					chunk.transform.localPosition = new Vector3 (cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
 					chunk.transform.localRotation = Quaternion.Euler (Vector3.zero);
 					Material vMat = Resources.Load(dungeons [vi].volumeData.vMaterial,typeof(Material)) as Material;
+					if (vMat == null)
+						vMat = Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
 					chunk.GetComponent<Renderer> ().sharedMaterial = vMat;
 					chunk.layer = LayerMask.NameToLayer("Floor");
 
@@ -68,6 +70,7 @@ namespace CreVox
 					c.cData = cData;
 					c.UpdateMeshCollider ();
 					c.UpdateMeshFilter ();
+
 					CreateMarkers (c, dungeons [vi].volumeData.ArtPack);
 				}
 			}
@@ -75,8 +78,12 @@ namespace CreVox
 
 		void CreateMarkers (Chunk _chunk,String _ArtPack)
 		{
-			PaletteItem[] itemArray;
-			itemArray = Resources.LoadAll<PaletteItem> (_ArtPack);
+			PaletteItem[] itemArray = new PaletteItem[0];
+			if (_ArtPack.Length > 0)
+				itemArray = Resources.LoadAll<PaletteItem> (_ArtPack);
+			if (itemArray.Length < 1) {
+				itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+			}
 			ChunkData cData = _chunk.cData;
 			foreach (BlockAir bAir in cData.blockAirs) {
 				for (int i = 0; i < bAir.pieceNames.Length; i++) {
