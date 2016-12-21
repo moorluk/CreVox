@@ -7,8 +7,8 @@ public class CharacterMotor : MonoBehaviour
 	[System.Serializable]
 	public class MoveSetting
 	{
-		public float forwardVel = 0f;
-		public float rotateVel = 0.00001f;
+		public float forwardVel = 3f;
+		public float rotateVel = 0.005f;
 		public float jumpVel = 25f;
 		public float distToGround = 0.1f;
 		public LayerMask ground;
@@ -79,7 +79,7 @@ public class CharacterMotor : MonoBehaviour
         
 		Run ();
 		Turn ();
-		//Jump ();
+		Jump ();
 
 		rBody.velocity = velocity;
 	}
