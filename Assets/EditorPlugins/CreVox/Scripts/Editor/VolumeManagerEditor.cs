@@ -22,7 +22,7 @@ namespace CreVox
 		void OnEnable ()
 		{
 			Awake ();
-			vm.UpdateDungeon ();
+//			vm.UpdateDungeon ();
 		}
 		
 		float buttonW = 70;

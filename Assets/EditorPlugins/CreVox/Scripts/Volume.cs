@@ -24,9 +24,6 @@ namespace CreVox
 		void Awake ()
 		{
 			volume = this;
-//			vg = VGlobal.GetSetting ();
-			if (EditorApplication.isPlaying)
-				this.gameObject.SetActive (!VGlobal.GetSetting ().FakeDeco);
 		}
 
 		void Start ()
@@ -221,11 +218,11 @@ namespace CreVox
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
 			if (vertexMaterial != null && EditorApplication.isPlaying)
-				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
+				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco?vertexMaterial:Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
 			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
+				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco?vertexMaterial:Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer("Floor");
 			#endif
 			Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
@@ -443,7 +440,7 @@ namespace CreVox
 				itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 			else
 			#endif
-				itemArray = Resources.LoadAll<PaletteItem> (vd.ArtPack);
+				itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting().FakeDeco ?vd.ArtPack:PathCollect.pieces);
 
 			foreach (Chunk c in chunks) {
 				for(int b =0 ; b < c.cData.blockAirs.Count ; b++) {

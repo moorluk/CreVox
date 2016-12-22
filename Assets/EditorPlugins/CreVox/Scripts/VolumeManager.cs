@@ -17,6 +17,14 @@ namespace CreVox
 		public List<Dungeon> dungeons;
 		private GameObject deco;
 
+		void Awake ()
+		{
+			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
+			if (VGlobal.GetSetting ().FakeDeco)
+				for (int i = 0; i < v.Length; i++)
+					v [i].gameObject.SetActive (false);
+		}
+
 		void Start ()
 		{
 			#if UNITY_EDITOR
@@ -122,7 +130,7 @@ namespace CreVox
 		#if UNITY_EDITOR
 		public void UpdateDungeon ()
 		{
-			Volume[] v = transform.GetComponentsInChildren<Volume> (true);
+			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 			dungeons = new List<Dungeon> ();
 
 			for (int i = 0; i < v.Length; i++) {
