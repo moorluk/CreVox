@@ -14,7 +14,6 @@ namespace CreVox
 	public class Volume : MonoBehaviour
 	{
 		public Volume volume;
-//		public static VGlobal vg;
 
 		public string workFile;
 		public string tempPath;
@@ -28,8 +27,6 @@ namespace CreVox
 
 		void Start ()
 		{
-//			if (!vg)
-//				vg = VGlobal.GetSetting ();
 			if (nodes == null)
 				nodes = new Dictionary<WorldPos, Node> ();
 			if (chunks == null)
@@ -39,8 +36,6 @@ namespace CreVox
 
 		void Update ()
 		{
-//			if (!vg)
-//				vg = VGlobal.GetSetting ();
 			#if UNITY_EDITOR
 			if (VGlobal.GetSetting ().saveBackup)
 				CompileSave ();
@@ -687,18 +682,19 @@ namespace CreVox
 
 		public void ActiveRuler (bool _active)
 		{
+			VGlobal vg = VGlobal.GetSetting ();
 			if (mColl) {
 				mColl.enabled = _active;
 				ruler.SetActive (_active);
-//				ruler.hideFlags = HideFlags.HideInHierarchy;
+				ruler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			if (bColl) {
 				bColl.enabled = _active;
 				layerRuler.SetActive (_active);
-//				layerRuler.hideFlags = HideFlags.HideInHierarchy;
+				layerRuler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			if (box) {
-				box.hideFlags = HideFlags.HideInHierarchy;
+				box.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			pointer = _active;
 		}
