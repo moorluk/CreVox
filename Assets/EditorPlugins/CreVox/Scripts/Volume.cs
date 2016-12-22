@@ -345,35 +345,21 @@ namespace CreVox
 
 		public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece)
 		{
-			GameObject pObj;
+			Block block = GetBlock (bPos.x, bPos.y, bPos.z);
 			BlockAir blockAir = null;
+
+			if (block != null && !(block is BlockAir || block is BlockHold))
+				return;
+			
+			GameObject pObj;
 			if (_piece != null) {
-				if (!nodes.ContainsKey (bPos)) {
-					Node newNode = new Node ();
-
-					GameObject _pieceRoot = new GameObject ();
-					_pieceRoot.name = bPos.ToString ();
-					_pieceRoot.transform.parent = nodeRoot.transform;
-					_pieceRoot.transform.localPosition = Vector3.zero;
-					_pieceRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
-					newNode.pieceRoot = _pieceRoot;
-
-					newNode.pieces = new GameObject[9];
-
-					nodes.Add (bPos, newNode);
-				}
-
+				if (!nodes.ContainsKey (bPos))
+					CreateNode (bPos);
 				pObj = nodes [bPos].pieces [gPos.z * 3 + gPos.x];
 				if (pObj != null) {
 					PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), true);
 					GameObject.DestroyImmediate (pObj);
 				}
-				
-				Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
-				VGlobal vg = VGlobal.GetSetting ();
-				float x = bPos.x * vg.w + pos.x;
-				float y = bPos.y * vg.h + pos.y;
-				float z = bPos.z * vg.d + pos.z;
 				
 				#if UNITY_EDITOR
 				pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
@@ -381,17 +367,22 @@ namespace CreVox
 				pObj = GameObject.Instantiate(_piece.gameObject);
 				#endif
 				pObj.transform.parent = nodes [bPos].pieceRoot.transform;
+				Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
+				VGlobal vg = VGlobal.GetSetting ();
+				float x = bPos.x * vg.w + pos.x;
+				float y = bPos.y * vg.h + pos.y;
+				float z = bPos.z * vg.d + pos.z;
 				pObj.transform.localPosition = new Vector3 (x, y, z);
 				pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
 				nodes [bPos].pieces [gPos.z * 3 + gPos.x] = pObj;
-				if (_piece.isHold) {
-					PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), false);
-				}
 
-				if (GetBlock (bPos.x, bPos.y, bPos.z) == null)
+				if (_piece.isHold)
+					PlaceBlockHold (bPos, gPos.z * 3 + gPos.x, pObj.GetComponent<LevelPiece> (), false);
+				
+				if (block == null)
 					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
-				blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
-				if (blockAir != null) {
+				if (block is BlockAir) {
+					blockAir = block as BlockAir;
 					blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
 					blockAir.SolidCheck (nodes [bPos].pieces);
 				}
@@ -404,28 +395,14 @@ namespace CreVox
 					}
 				}
 
-				if (GetBlock (bPos.x, bPos.y, bPos.z) != null) {
-					blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
+				if (block is BlockAir) {
+					blockAir = block as BlockAir;
 					blockAir.SetPiece (bPos, gPos, null);
 					blockAir.SolidCheck (nodes [bPos].pieces);
 				}
 			}
-
-			///檢查BlockAir是否為空並移除
-			if (GetBlock (bPos.x, bPos.y, bPos.z) != null) {
-				bool isEmpty = true;
-				foreach (string p in blockAir.pieceNames) {
-					if (p != null) {
-						isEmpty = false;
-						break;
-					}
-				}
-				if (isEmpty) {
-					SetBlock (bPos.x, bPos.y, bPos.z, null);
-					GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
-					nodes.Remove (bPos);
-				}
-			}
+			if (blockAir != null)
+				RemoveEmptyNode (blockAir);
 		}
 		private void PlacePieces()
 		{
@@ -453,6 +430,41 @@ namespace CreVox
 							}
 						}
 					}
+				}
+			}
+		}
+
+		void CreateNode(WorldPos bPos)
+		{
+			Node newNode = new Node ();
+
+			GameObject _pieceRoot = new GameObject ();
+			_pieceRoot.name = bPos.ToString ();
+			_pieceRoot.transform.parent = nodeRoot.transform;
+			_pieceRoot.transform.localPosition = Vector3.zero;
+			_pieceRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+			newNode.pieceRoot = _pieceRoot;
+
+			newNode.pieces = new GameObject[9];
+
+			nodes.Add (bPos, newNode);
+		}
+
+		void RemoveEmptyNode(BlockAir blockAir)
+		{
+			WorldPos bPos = blockAir.BlockPos;
+			if (blockAir != null) {
+				bool isEmpty = true;
+				foreach (string p in blockAir.pieceNames) {
+					if (p != null) {
+						isEmpty = false;
+						break;
+					}
+				}
+				if (isEmpty) {
+					SetBlock (bPos.x, bPos.y, bPos.z, null);
+					GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
+					nodes.Remove (bPos);
 				}
 			}
 		}
