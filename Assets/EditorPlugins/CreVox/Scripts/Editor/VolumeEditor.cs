@@ -380,14 +380,9 @@ namespace CreVox
 				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
 				gPos.y = isNotLayer ? 0 : (int)vg.h;
 
-				float x = pos.x * vg.w + gPos.x + ((hit.point.x < 0) ? 1 : -1);
+				float x = pos.x * vg.w + gPos.x + ((pos.x < 0) ? 1 : -1);
 				float y = pos.y * vg.h + gPos.y - 1;
-				float z = pos.z * vg.d + gPos.z + ((hit.point.z < 0) ? 1 : -1);
-
-				Handles.color = Color.white;
-				Handles.lighting = true;
-				Handles.RectangleCap (0, new Vector3 (pos.x * vg.w, y, pos.z * vg.d), Quaternion.Euler (90, 0, 0), vg.hw);
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d));
+				float z = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
 				LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
@@ -395,6 +390,11 @@ namespace CreVox
 					Handles.RectangleCap (0, new Vector3 (x, y, z), Quaternion.Euler (90, 0, 0), 0.5f);
 					Handles.color = Color.white;
 				}
+
+				Handles.color = Color.white;
+				Handles.lighting = true;
+				Handles.RectangleCap (0, new Vector3 (pos.x * vg.w, y, pos.z * vg.d), Quaternion.Euler (90, 0, 0), vg.hw);
+				Handles.DrawLine (hit.point, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d));
 
 				volume.useBox = true;
 				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d), Vector3.zero);
@@ -700,7 +700,7 @@ namespace CreVox
 				return true;
 			else if (pType == LevelPiece.PivotType.Vertex && (x + z) % 2 == 0 && x * z != 1)
 				return true;
-			else if (pType == LevelPiece.PivotType.Edge && (x + z) % 2 == 1)
+			else if (pType == LevelPiece.PivotType.Edge && (Mathf.Abs(x) + Mathf.Abs(z)) % 2 == 1)
 				return true;
 
 			return false;
