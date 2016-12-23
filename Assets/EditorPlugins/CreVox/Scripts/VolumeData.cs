@@ -38,7 +38,7 @@ namespace CreVox
 			if (_vData == null) {
 				string bytesPath = PathCollect.resourcesPath + workFile;
 				VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
-				UnityEditor.AssetDatabase.CreateAsset (vd, bytesPath);
+				UnityEditor.AssetDatabase.CreateAsset (vd, bytesPath + ".asset");
 				UnityEditor.AssetDatabase.Refresh();
 				_vData = Resources.Load (workFile.Replace(".asset",""), typeof(VolumeData)) as VolumeData;
 			}
