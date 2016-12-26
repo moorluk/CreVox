@@ -70,7 +70,7 @@ namespace CreVox
 
 				bool linking;
 				if (volume.chunks != null && volume.chunks.Count > 0 && volume.vd != null && volume.vd.chunkDatas.Count > 0)
-					linking = ReferenceEquals (volume.chunks [0].cData, volume.vd.chunkDatas [0]);
+					linking = ReferenceEquals (volume.chunks [volume.vd.chunkDatas [0].ChunkPos].cData, volume.vd.chunkDatas [0]);
 				else {
 //					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
 //						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
@@ -321,16 +321,15 @@ namespace CreVox
 			bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
 
 			if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
-				WorldPos pos = EditTerrain.GetBlockPos (hit, isErase ? false : true);
-				float x = pos.x * vg.w;
-				float y = pos.y * vg.h;
-				float z = pos.z * vg.d;
+				RaycastHit hitFix = hit;
+				WorldPos pos = EditTerrain.GetBlockPos (hitFix, isErase ? false : true);
+				hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
 
 				Handles.DrawLine (hit.point, hit.point + hit.normal);
 				if (hit.collider.gameObject.tag == PathCollect.rularTag) {
 					hit.normal = Vector3.zero;
 				}
-				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), hit.normal);
+				BoxCursorUtils.UpdateBox (volume.box, hitFix.point, hit.normal);
 				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
@@ -347,14 +346,14 @@ namespace CreVox
 			bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
-				WorldPos pos = EditTerrain.GetBlockPos (hit, false);
-				float x = pos.x * vg.w;
-				float y = pos.y * vg.h;
-				float z = pos.z * vg.d;
-
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d));
+				RaycastHit hitFix = hit;
+				WorldPos pos = EditTerrain.GetBlockPos (hitFix, false);
+				hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
+				
+				Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.hh, 0), Quaternion.Euler (90, 0, 0), vg.hw);
+				Handles.DrawLine (hit.point, hitFix.point);
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (x, y, z), Vector3.zero);
+				BoxCursorUtils.UpdateBox (volume.box, hitFix.point, Vector3.zero);
 			} else {
 				volume.useBox = false;
 			}
@@ -375,29 +374,32 @@ namespace CreVox
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
 				if (hit.normal.y <= 0)
 					return;
-				
-				WorldPos pos = EditTerrain.GetBlockPos (hit, isNotLayer);
+
+				RaycastHit hitFix = hit;
+				WorldPos pos = EditTerrain.GetBlockPos (hitFix, isNotLayer);
+				hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
+
 				WorldPos gPos = EditTerrain.GetGridPos (hit.point);
 				gPos.y = isNotLayer ? 0 : (int)vg.h;
 
-				float x = pos.x * vg.w + gPos.x + ((pos.x < 0) ? 1 : -1);
-				float y = pos.y * vg.h + gPos.y - 1;
-				float z = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
+				float gx = pos.x * vg.w + gPos.x + ((pos.x < 0) ? 1 : -1);
+				float gy = pos.y * vg.h + gPos.y - vg.hh;
+				float gz = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
 				LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
-					Handles.RectangleCap (0, new Vector3 (x, y, z), Quaternion.Euler (90, 0, 0), 0.5f);
+					Handles.RectangleCap (0, new Vector3 (gx, gy, gz), Quaternion.Euler (90, 0, 0), 0.5f);
 					Handles.color = Color.white;
 				}
 
 				Handles.color = Color.white;
 				Handles.lighting = true;
-				Handles.RectangleCap (0, new Vector3 (pos.x * vg.w, y, pos.z * vg.d), Quaternion.Euler (90, 0, 0), vg.hw);
-				Handles.DrawLine (hit.point, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d));
+				Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.hh - gPos.y, 0), Quaternion.Euler (90, 0, 0), vg.hw);
+				Handles.DrawLine (hit.point, hitFix.point);
 
 				volume.useBox = true;
-				BoxCursorUtils.UpdateBox (volume.box, new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d), Vector3.zero);
+				BoxCursorUtils.UpdateBox (volume.box, hitFix.point, Vector3.zero);
 				SceneView.RepaintAll ();
 			} else {
 				volume.useBox = false;
