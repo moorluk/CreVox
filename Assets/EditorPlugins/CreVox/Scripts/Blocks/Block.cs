@@ -36,7 +36,6 @@ namespace CreVox
 
 		public virtual MeshData MeahAddMe (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
-			meshData.useRenderDataForCol = true;
 
 			if (chunk.GetBlock (x, y + 1, z) == null || !chunk.GetBlock (x, y + 1, z).IsSolid (Direction.down)) {
 				meshData = FaceDataUp (chunk, x, y, z, meshData);
