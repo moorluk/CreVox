@@ -93,13 +93,9 @@ namespace CreVox
 						volume.Init (cx, cy, cz);
 						volume.workFile = "";
 						volume.tempPath = "";
-						string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-						sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
-						sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-						volume.vd = VolumeData.GetVData (sPath);
-//						volume.WriteVData ();
-						volume._useBytes = false;
-						volume.BuildVolume (new Save (), volume.vd);
+						volume._useBytes = true;
+						Save newSave = new Save ();
+						volume.BuildVolume (newSave);
 					}
 					GUILayout.EndHorizontal ();
 				}

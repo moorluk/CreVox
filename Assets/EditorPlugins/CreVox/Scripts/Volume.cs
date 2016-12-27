@@ -56,7 +56,7 @@ namespace CreVox
 		{
 			if (vd == null) {
 				if (workFile != "")
-					vd = VolumeData.GetVData (workFile + "_vData");
+					vd = VolumeData.GetVData (workFile + "_vData.asset");
 				else {
 					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
 					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, volume.name + "_vData", "asset");
@@ -93,9 +93,9 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 
-		public void BuildVolume (Save _save, VolumeData a_data = null)
+		public void BuildVolume (Save _save, VolumeData _VData = null)
 		{
-			if (a_data == null && _useBytes == false) {
+			if (_VData == null && _useBytes == false) {
 				return;
 			}
 			Reset ();
@@ -125,9 +125,9 @@ namespace CreVox
 					}
 				}
 			} else { //load ScriptableObject
-				Init (a_data.chunkX, a_data.chunkY, a_data.chunkZ);
+				Init (_VData.chunkX, _VData.chunkY, _VData.chunkZ);
 				foreach (Chunk c in chunks.Values) {
-					c.cData = a_data.GetChunk (c.cData.ChunkPos);
+					c.cData = _VData.GetChunk (c.cData.ChunkPos);
 				}
 			}
 			PlacePieces ();
@@ -207,7 +207,6 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			WorldPos chunkPos = new WorldPos (x, y, z);
 
-			//Instantiate the chunk at the coordinates using the chunk prefab
 			GameObject newChunkObject = Instantiate (
 				                            chunkPrefab, new Vector3 (x * vg.w, y * vg.h, z * vg.d),
 				                            Quaternion.Euler (Vector3.zero)
