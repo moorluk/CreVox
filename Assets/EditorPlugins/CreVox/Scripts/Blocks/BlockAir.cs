@@ -8,15 +8,10 @@ namespace CreVox
 	public class BlockAir : Block
 	{
 		public string[] pieceNames = new string[9];
-		private bool[] isSolid = new bool[6];
+		[SerializeField]private bool[] isSolid = new bool[6];
 
 		public BlockAir () : base ()
 		{
-			if (isSolid == null || isSolid.Length != 6) {
-				isSolid = new bool[6];
-			}
-			for (int i = 0; i < isSolid.Length; i++)
-				isSolid [i] = false;
 		}
 
 		public override void Destroy ()

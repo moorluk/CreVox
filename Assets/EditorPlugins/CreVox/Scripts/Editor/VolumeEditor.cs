@@ -676,6 +676,9 @@ namespace CreVox
 
 				if (canPlace) {
 					volume.PlacePiece (bPos, gPos, isErase ? null : _pieceSelected);
+					Chunk chunk = volume.GetChunk (bPos.x, bPos.y, bPos.z);
+					chunk.UpdateMeshFilter ();
+					chunk.UpdateMeshCollider ();
 					EditorUtility.SetDirty (volume.vd);
 					SceneView.RepaintAll ();
 				}

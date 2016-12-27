@@ -108,14 +108,7 @@ namespace CreVox
 					if (block != null) {
 						if (block is BlockAir) {
 							BlockAir bAir = blockPair.Value as BlockAir;
-							bool notEmpty = false;
-							for (int i = 0; i < bAir.pieceNames.Length; i++) {
-								if (bAir.pieceNames [i] != "") {
-									notEmpty = true;
-									break;
-								}
-							}
-							if (notEmpty)
+							if (!RemoveNodeIfIsEmpty(bAir.BlockPos))
 								SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, bAir);
 							else
 								Debug.Log (bAir.BlockPos);
@@ -319,11 +312,11 @@ namespace CreVox
 				WorldPos chunkBlockPos = new WorldPos (x - chunk.cData.ChunkPos.x, y - chunk.cData.ChunkPos.y, z - chunk.cData.ChunkPos.z);
 				if (_block != null) {
 					_block.BlockPos = chunkBlockPos;
+					Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
+						return b.BlockPos.Compare (chunkBlockPos);
+					};
 					switch (_block.GetType ().ToString ()) {
 					case "CreVox.BlockAir":
-						Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
-							return b.BlockPos.Compare (chunkBlockPos);
-						};
 						if (!chunk.cData.blockAirs.Exists (sameBlockAir)) {
 							chunk.cData.blockAirs.Add (_block as BlockAir);
 							chunk.setBlockDict (chunkBlockPos, _block as BlockAir);
@@ -351,6 +344,14 @@ namespace CreVox
 						Predicate<Block> sameBlock = delegate(Block b) {
 							return b.BlockPos.Compare (chunkBlockPos);
 						};
+						if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
+							chunk.cData.blockAirs.Remove (oldBlock as BlockAir);
+							WorldPos bPos = new WorldPos (x, y, z);
+							if (nodes.ContainsKey (bPos)) {
+								GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
+								nodes.Remove (bPos);
+							}
+						}
 						if (!chunk.cData.blocks.Exists (sameBlock)) {
 							chunk.cData.blocks.Add (_block);
 							chunk.setBlockDict (chunkBlockPos, _block);
@@ -371,9 +372,7 @@ namespace CreVox
 					}
 				}
 			}
-			#if UNITY_EDITOR
-			EditorUtility.SetDirty (vd);
-			#endif
+			RemoveNodeIfIsEmpty (new WorldPos (x, y, z));
 		}
 
 		public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece)
@@ -386,6 +385,11 @@ namespace CreVox
 				return;
 
 			if (_piece != null) {
+				if (block == null) {
+					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
+					block = GetBlock (bPos.x, bPos.y, bPos.z);
+				}
+
 				if (!nodes.ContainsKey (bPos))
 					CreateNode (bPos);
 
@@ -410,11 +414,6 @@ namespace CreVox
 				pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
 				nodes [bPos].pieces [gPos.z * 3 + gPos.x] = pObj;
 
-				if (block == null) {
-					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
-					block = GetBlock (bPos.x, bPos.y, bPos.z);
-				}
-
 				if (block is BlockAir) {
 					blockAir = block as BlockAir;
 					blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
@@ -437,9 +436,10 @@ namespace CreVox
 						GameObject.DestroyImmediate (pObj);
 					}
 				}
+
+				if(RemoveNodeIfIsEmpty (bPos))
+					SetBlock(bPos.x, bPos.y, bPos.z, null);
 			}
-			RemoveEmptyNode (bPos);
-			EditorUtility.SetDirty (vd);
 		}
 
 		private void PlacePieces ()
@@ -487,23 +487,27 @@ namespace CreVox
 			nodes.Add (bPos, newNode);
 		}
 
-		void RemoveEmptyNode (WorldPos bPos)
+		bool RemoveNodeIfIsEmpty (WorldPos bPos)
 		{
 			BlockAir blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
+			bool isEmpty = true;
 			if (blockAir != null) {
-				bool isEmpty = true;
 				foreach (string p in blockAir.pieceNames) {
-					if (p != null) {
+					if (p != null && p.Length > 0) {
 						isEmpty = false;
 						break;
 					}
 				}
 				if (isEmpty) {
-					SetBlock (bPos.x, bPos.y, bPos.z, null);
-					GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
-					nodes.Remove (bPos);
+					if (nodes.ContainsKey (bPos)) {
+						GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
+						nodes.Remove (bPos);
+					}
 				}
+			} else {
+				isEmpty = false;
 			}
+			return isEmpty;
 		}
 
 		private void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
@@ -650,7 +654,8 @@ namespace CreVox
 				} else
 					Debug.LogError ("No ChunkData Source!!!");
 			} else {
-				volume.BuildVolume (null, vd);
+				if (vd != null)
+					volume.BuildVolume (null, vd);
 			}
 
 			#if UNITY_EDITOR

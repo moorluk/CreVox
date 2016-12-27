@@ -110,8 +110,10 @@ namespace CreVox
 						if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
 							volume.GetNode (volumePos).SetActive (false);
 						else 
-					#endif
 						volume.GetNode (volumePos).SetActive (true);
+						#else
+						volume.GetNode (volumePos).SetActive (true);
+						#endif
 					}
 				}
 			}
