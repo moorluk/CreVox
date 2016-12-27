@@ -109,8 +109,8 @@ namespace CreVox
 						#if UNITY_EDITOR
 						if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
 							volume.GetNode (volumePos).SetActive (false);
-						else 
-						volume.GetNode (volumePos).SetActive (true);
+						else
+							volume.GetNode (volumePos).SetActive (true);
 						#else
 						volume.GetNode (volumePos).SetActive (true);
 						#endif
@@ -124,31 +124,21 @@ namespace CreVox
 
 		public Block GetBlock (int x, int y, int z)
 		{
-			if (InRange (x) && InRange (y) && InRange (z)) {
-				return GetChunkBlock (x, y, z);
-			} else {
-				if (!VGlobal.GetSetting ().FakeDeco)
-					return volume.GetBlock (cData.ChunkPos.x + x, cData.ChunkPos.y + y, cData.ChunkPos.z + z);
-			}
-			return null;
-		}
-
-		public void setBlockDict (WorldPos blockPos, Block block)
-		{
-			if(BlockDict.ContainsKey(blockPos))
-				BlockDict.Remove(blockPos);
-			if (block != null)
-				BlockDict.Add (blockPos, block);
-		}
-
-		private Block GetChunkBlock (int x, int y, int z)
-		{
 			WorldPos blockPos = new WorldPos (x, y, z);
 			if (BlockDict.ContainsKey (blockPos))
 				return BlockDict [blockPos];
 			else
 				return null;
 		}
+
+		public void setBlockDict (WorldPos blockPos, Block block)
+		{
+			if (BlockDict.ContainsKey (blockPos))
+				BlockDict.Remove (blockPos);
+			if (block != null)
+				BlockDict.Add (blockPos, block);
+		}
+
 
 		public static bool InRange (int index)
 		{

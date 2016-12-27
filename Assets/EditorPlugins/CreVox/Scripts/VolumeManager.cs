@@ -21,8 +21,10 @@ namespace CreVox
 		{
 			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 			if (VGlobal.GetSetting ().FakeDeco)
-				for (int i = 0; i < v.Length; i++)
-					v [i].gameObject.SetActive (false);
+				for (int i = 0; i < v.Length; i++) {
+					v [i].enabled = false;
+					GameObject.Destroy( v [i].gameObject);
+				}
 		}
 
 		void Start ()
