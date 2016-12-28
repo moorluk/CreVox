@@ -3,10 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace CreVox
 {
 
@@ -69,14 +65,9 @@ namespace CreVox
 
 		public void UpdateChunk ()
 		{
-			MeshData meshData = new MeshData ();
 			foreach (Block block in cData.blocks) {
 				if (!BlockDict.ContainsKey (block.BlockPos))
 					setBlockDict (block.BlockPos, block);
-				#if UNITY_EDITOR
-				if (volume.cuter && block.BlockPos.y + cData.ChunkPos.y > volume.cutY)
-				#endif
-					block.MeahAddMe (this, block.BlockPos.x, block.BlockPos.y, block.BlockPos.z, meshData);
 			}
 
 			foreach (BlockHold bHold in cData.blockHolds) {
@@ -104,20 +95,20 @@ namespace CreVox
 						                     cData.ChunkPos.x + bAir.BlockPos.x, 
 						                     cData.ChunkPos.y + bAir.BlockPos.y, 
 						                     cData.ChunkPos.z + bAir.BlockPos.z);
-
-					if (volume.GetNode (volumePos) != null) {
-						#if UNITY_EDITOR
-						if (!EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
-							volume.GetNode (volumePos).SetActive (false);
-						else
-							volume.GetNode (volumePos).SetActive (true);
-						#else
+					if (volume != null) {
+						if (volume.GetNode (volumePos) != null) {
+							#if UNITY_EDITOR
+							if (!UnityEditor.EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
+								volume.GetNode (volumePos).SetActive (false);
+							else
+								volume.GetNode (volumePos).SetActive (true);
+							#else
 						volume.GetNode (volumePos).SetActive (true);
-						#endif
+							#endif
+						}
 					}
 				}
 			}
-
 			UpdateMeshFilter ();
 			UpdateMeshCollider ();
 		}
@@ -153,7 +144,9 @@ namespace CreVox
 			MeshData meshData = new MeshData ();
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				Block b = cData.blocks [i];
-				meshData = b.MeahAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
+				bool isCut = (volume == null) ? false : (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY);
+				if (!isCut)
+					meshData = b.MeahAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
 			}
 			AssignRenderMesh (meshData);
 		}
@@ -163,7 +156,9 @@ namespace CreVox
 			MeshData meshData = new MeshData ();
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				Block b = cData.blocks [i];
-				meshData = b.ColliderAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
+				bool isCut = (volume == null) ? false : (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY);
+				if (!isCut)
+					meshData = b.ColliderAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
 			}
 			AssignCollisionMesh (meshData);
 		}
