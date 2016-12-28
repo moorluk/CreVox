@@ -94,8 +94,8 @@ namespace CreVox
 						volume.workFile = "";
 						volume.tempPath = "";
 						volume._useBytes = true;
-						Save newSave = new Save ();
-						volume.BuildVolume (newSave);
+//						Save newSave = new Save ();
+//						volume.BuildVolume (newSave);
 					}
 					GUILayout.EndHorizontal ();
 				}
