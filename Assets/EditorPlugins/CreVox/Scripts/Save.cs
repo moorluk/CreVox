@@ -9,9 +9,9 @@ namespace CreVox
 	[Serializable]
 	public class Save
 	{
-		public int chunkX;
-		public int chunkY;
-		public int chunkZ;
+		public int chunkX = 1;
+		public int chunkY = 1;
+		public int chunkZ = 1;
 		public Dictionary<WorldPos, Block> blocks = new Dictionary<WorldPos, Block>();
 
 		public Save()

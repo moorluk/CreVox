@@ -21,8 +21,10 @@ namespace CreVox
 		{
 			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 			if (VGlobal.GetSetting ().FakeDeco)
-				for (int i = 0; i < v.Length; i++)
-					v [i].gameObject.SetActive (false);
+				for (int i = 0; i < v.Length; i++) {
+					v [i].enabled = false;
+					GameObject.Destroy( v [i].gameObject);
+				}
 		}
 
 		void Start ()
@@ -74,10 +76,8 @@ namespace CreVox
 					chunk.layer = LayerMask.NameToLayer("Floor");
 
 					Chunk c = chunk.GetComponent<Chunk> ();
-					c.Init ();
 					c.cData = cData;
-					c.UpdateMeshCollider ();
-					c.UpdateMeshFilter ();
+					c.Init ();
 
 					CreateMarkers (c, dungeons [vi].volumeData.ArtPack);
 				}
@@ -98,10 +98,7 @@ namespace CreVox
 					for (int k = 0; k < itemArray.Length; k++) {
 						if (bAir.pieceNames [i] == itemArray [k].name) {
 							PlacePiece (
-								new WorldPos (
-									bAir.BlockPos.x,
-									bAir.BlockPos.y,
-									bAir.BlockPos.z),
+								bAir.BlockPos,
 								new WorldPos (i % 3, 0, (int)(i / 3)), 
 								itemArray [k].gameObject.GetComponent<LevelPiece> (),
 								_chunk.transform);
