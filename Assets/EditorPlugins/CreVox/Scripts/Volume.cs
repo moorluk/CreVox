@@ -381,7 +381,7 @@ namespace CreVox
 			BlockAir blockAir = null;
 			GameObject pObj;
 
-			if (block != null && !(block is BlockAir || block is BlockItem))
+			if (block != null && !(block is BlockAir))
 				return;
 
 			if (_piece != null) {

@@ -13,6 +13,8 @@ namespace CreVox
 		bool[] blockAirs;
 		bool showBlockHolds = false;
 		bool[] blockHolds;
+		bool showBlockItems = false;
+		bool[] blockItems;
 
 		bool filter;
 		float layerMin;
@@ -30,44 +32,18 @@ namespace CreVox
 			layerMin = 0;
 			layerMax = Chunk.chunkSize;
 
-//			blocks = new bool[0];
-			blockAirs = new bool[0];
-			blockHolds = new bool[0];
+			blockAirs = new bool[chunk.cData.blockAirs.Count];
+			blockHolds = new bool[chunk.cData.blockHolds.Count];
+			blockItems = new bool[chunk.cData.blockItems.Count];
 
 			defColor = GUI.color;
 			volColor = new Color (0.5f, 0.8f, 0.75f);
-		}
-
-		void UpdateList()
-		{
-//			if (blocks.Length != chunk.cData.blocks.Count) {
-//				blocks = new bool[chunk.cData.blocks.Count];
-//				for (int i = 0; i < blocks.Length; i++) {
-//					blocks [i] = false;
-//				}
-//			}
-
-			if (blockAirs.Length != chunk.cData.blockAirs.Count) {
-				blockAirs = new bool[chunk.cData.blockAirs.Count];
-				for (int j = 0; j < blockAirs.Length; j++) {
-					blockAirs [j] = false;
-				}
-			}
-
-			if (blockHolds.Length != chunk.cData.blockHolds.Count) {
-				blockHolds = new bool[chunk.cData.blockHolds.Count];
-				for (int k = 0; k < blockHolds.Length; k++) {
-					blockHolds [k] = false;
-				}
-			}
 		}
 
 		public override void OnInspectorGUI ()
 		{
 			string valueMinMax;
 			EditorGUIUtility.wideMode = true;
-
-			UpdateList ();
 
 			using (var v = new EditorGUILayout.VerticalScope ("Box")) {
 				GUI.color = volColor;
@@ -96,6 +72,7 @@ namespace CreVox
 				DrawBlock ();
 				DrawBlockAir ();
 				DrawBlockHold ();
+				DrawBlockItem ();
 			}
 
 			drawDef = EditorGUILayout.Foldout (drawDef, "Default");
@@ -169,6 +146,26 @@ namespace CreVox
 										EditorStyles.helpBox);
 							}
 						}
+					}
+				}
+				EditorGUI.indentLevel--;
+			}
+		}
+
+		public void DrawBlockItem ()
+		{
+			showBlockItems = EditorGUILayout.Foldout (showBlockItems, " BlockItem(" + chunk.cData.blockItems.Count);
+			if (showBlockItems) {
+				EditorGUI.indentLevel++;
+				for (int i = 0; i < chunk.cData.blockItems.Count; i++) {
+					if (filter ? (chunk.cData.blockItems [i].BlockPos.y >= layerMin && chunk.cData.blockItems [i].BlockPos.y <= layerMax) : true) {
+						blockItems [i] = EditorGUILayout.Foldout (blockItems [i],
+							chunk.cData.blockItems [i].pieceName +
+							"[" + chunk.cData.blockItems [i].BlockPos.x +
+							"," + chunk.cData.blockItems [i].BlockPos.y +
+							"," + chunk.cData.blockItems [i].BlockPos.z +
+							"]"
+						);
 					}
 				}
 				EditorGUI.indentLevel--;

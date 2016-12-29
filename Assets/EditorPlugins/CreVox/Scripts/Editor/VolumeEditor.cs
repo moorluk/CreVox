@@ -181,10 +181,10 @@ namespace CreVox
 				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
 				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
 					string ppath = EditorUtility.OpenFolderPanel (
-						               "選擇場景風格元件包的目錄位置",
-						               Application.dataPath + PathCollect.resourcesPath.Substring (6) + volume.vd.ArtPack,
-						               ""
-					               );
+						"選擇場景風格元件包的目錄位置",
+						Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
+						 ""
+					);
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					
@@ -245,7 +245,8 @@ namespace CreVox
 			VoxelLayer,
 			Voxel,
 			ObjectLayer,
-			Object
+			Object,
+			Edit
 		}
 
 		private EditMode selectedEditMode;
@@ -271,7 +272,7 @@ namespace CreVox
 
 			Handles.BeginGUI ();
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-			GUILayout.BeginArea (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea); //根據選項數量決定寬度
+			GUILayout.BeginArea (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea);
 			GUI.color = Color.white;
 			selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
 			GUILayout.BeginHorizontal ();
@@ -298,6 +299,7 @@ namespace CreVox
 				Tools.current = Tool.None;
 				break;
 
+			case EditMode.Edit:
 			case EditMode.View:
 			default:
 				break;
@@ -480,6 +482,10 @@ namespace CreVox
 						}
 					}
 					DrawGridMarker ();
+					break;
+
+				case EditMode.Edit:
+					
 					break;
 
 				default:
