@@ -13,7 +13,6 @@ namespace CreVox
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
 		public List<BlockHold> blockHolds = new List<BlockHold> ();
-		public List<BlockItem> blockItems = new List<BlockItem> ();
 	}
 
 	[RequireComponent (typeof(MeshFilter))]
@@ -25,7 +24,6 @@ namespace CreVox
 		public static int chunkSize{ get { return VGlobal.GetSetting ().chunkSize; } }
 
 		public ChunkData cData;
-		private Dictionary<WorldPos,Block> BlockDict = new Dictionary<WorldPos, Block> ();
 
 		public Volume volume;
 		[SerializeField] MeshFilter filter;
@@ -33,7 +31,6 @@ namespace CreVox
 
 		public void Init ()
 		{
-			BlockDict = new Dictionary<WorldPos, Block> ();
 			filter = gameObject.GetComponent<MeshFilter> ();
 			coll = gameObject.GetComponent<MeshCollider> ();
 //			coll.hideFlags = HideFlags.HideInHierarchy;
@@ -43,18 +40,6 @@ namespace CreVox
 		public void Destroy ()
 		{
 			cData = new ChunkData ();
-			foreach (Block block in cData.blocks)
-				if (block != null)
-					block.Destroy ();
-			foreach (BlockAir bAir in cData.blockAirs)
-				if (bAir != null)
-					bAir.Destroy ();
-			foreach (BlockItem bItem in cData.blockItems)
-				if (bItem != null)
-					bItem.Destroy ();
-			foreach (BlockHold bHold in cData.blockHolds)
-				if (bHold != null)
-					bHold.Destroy ();
 		}
 
 		void Start ()
@@ -65,15 +50,6 @@ namespace CreVox
 
 		public void UpdateChunk ()
 		{
-			foreach (Block block in cData.blocks) {
-				if (!BlockDict.ContainsKey (block.BlockPos))
-					setBlockDict (block.BlockPos, block);
-			}
-
-			foreach (BlockHold bHold in cData.blockHolds) {
-				if (!BlockDict.ContainsKey (bHold.BlockPos))
-					setBlockDict (bHold.BlockPos, bHold);
-			}
 
 			for (int i = 0; i < cData.blockAirs.Count; i++) {
 				BlockAir bAir = cData.blockAirs [i];
@@ -86,11 +62,7 @@ namespace CreVox
 				}
 				if (isEmpty) {
 					cData.blockAirs.Remove (bAir);
-					if (BlockDict.ContainsKey (bAir.BlockPos))
-						BlockDict.Remove (bAir.BlockPos);
 				} else { 
-					if (!BlockDict.ContainsKey (bAir.BlockPos))
-						setBlockDict (bAir.BlockPos, bAir);
 					WorldPos volumePos = new WorldPos (
 						                     cData.ChunkPos.x + bAir.BlockPos.x, 
 						                     cData.ChunkPos.y + bAir.BlockPos.y, 
@@ -115,20 +87,22 @@ namespace CreVox
 
 		public Block GetBlock (int x, int y, int z)
 		{
-			WorldPos blockPos = new WorldPos (x, y, z);
-			if (BlockDict.ContainsKey (blockPos))
-				return BlockDict [blockPos];
-			else
+			WorldPos pos = new WorldPos (x, y, z);
+			for (int i = 0; i < cData.blocks.Count; i++) {
+				if (cData.blocks [i].BlockPos.Compare (pos))
+					return cData.blocks [i];
+			}
+			for (int i = 0; i < cData.blockHolds.Count; i++) {
+				if (cData.blockHolds [i].BlockPos.Compare (pos))
+					return cData.blockHolds [i];
+			}
+			for (int i = 0; i < cData.blockAirs.Count; i++) {
+				if (cData.blockAirs [i].BlockPos.Compare (pos))
+					return cData.blockAirs [i];
+			}
 				return null;
 		}
 
-		public void setBlockDict (WorldPos blockPos, Block block)
-		{
-			if (BlockDict.ContainsKey (blockPos))
-				BlockDict.Remove (blockPos);
-			if (block != null)
-				BlockDict.Add (blockPos, block);
-		}
 
 
 		public static bool InRange (int index)
@@ -156,7 +130,7 @@ namespace CreVox
 			MeshData meshData = new MeshData ();
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				Block b = cData.blocks [i];
-				bool isCut = (volume == null) ? false : (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY);
+				bool isCut = (volume != null) ? (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY) : false;
 				if (!isCut)
 					meshData = b.ColliderAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
 			}

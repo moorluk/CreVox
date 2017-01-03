@@ -15,16 +15,21 @@ namespace CreVox
 	public class VolumeManager : MonoBehaviour
 	{
 		public List<Dungeon> dungeons;
-		private GameObject deco;
+		public PaletteItem[] itemArray;
 
 		void Awake ()
 		{
 			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-			if (VGlobal.GetSetting ().FakeDeco)
+			if (v.Length > 0) {
+				UpdateDungeon ();
+			}
+
+			if (VGlobal.GetSetting ().FakeDeco) {
 				for (int i = 0; i < v.Length; i++) {
 					v [i].enabled = false;
-					GameObject.Destroy( v [i].gameObject);
+					GameObject.Destroy (v [i].gameObject);
 				}
+			}
 		}
 
 		void Start ()
@@ -43,12 +48,6 @@ namespace CreVox
 			#endif
 
 			if (VGlobal.GetSetting().FakeDeco) {
-				if (!deco) {
-					deco = new GameObject ("Decoration");
-					deco.transform.parent = transform;
-					deco.transform.localPosition = Vector3.zero;
-					deco.transform.localRotation = Quaternion.Euler (Vector3.zero);
-				}
 				CreateVoxels ();
 			}
 		}
@@ -56,11 +55,18 @@ namespace CreVox
 		void CreateVoxels ()
 		{
 			for (int vi = 0; vi < dungeons.Count; vi++) {
-				GameObject volume = new GameObject ();
-				volume.name = "Volume" + dungeons [vi].position.ToString ();
-				volume.transform.parent = deco.transform;
+				GameObject volume = new GameObject ("Volume" + dungeons [vi].position.ToString ());
+				volume.transform.parent = transform;
 				volume.transform.localPosition = dungeons[vi].position;
 				volume.transform.localRotation = dungeons[vi].rotation;
+
+				itemArray = new PaletteItem[0];
+				if (dungeons [vi].volumeData.ArtPack.Length > 0)
+					itemArray = Resources.LoadAll<PaletteItem> (dungeons [vi].volumeData.ArtPack);
+				if (itemArray.Length < 1) {
+					itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+				}
+
 				for (int ci = 0; ci < dungeons [vi].volumeData.chunkDatas.Count; ci++) {
 					ChunkData cData = dungeons [vi].volumeData.chunkDatas [ci];
 					GameObject chunk = Instantiate (Resources.Load (PathCollect.chunk) as GameObject, Vector3.zero,Quaternion.Euler (Vector3.zero)) as GameObject;
@@ -71,7 +77,7 @@ namespace CreVox
 					chunk.transform.localRotation = Quaternion.Euler (Vector3.zero);
 					Material vMat = Resources.Load(dungeons [vi].volumeData.vMaterial,typeof(Material)) as Material;
 					if (vMat == null)
-						vMat = Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
+						vMat = Resources.Load(PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 					chunk.GetComponent<Renderer> ().sharedMaterial = vMat;
 					chunk.layer = LayerMask.NameToLayer("Floor");
 
@@ -79,19 +85,14 @@ namespace CreVox
 					c.cData = cData;
 					c.Init ();
 
-					CreateMarkers (c, dungeons [vi].volumeData.ArtPack);
+					PlacePieces (c);
 				}
+				PlaceItems (dungeons [vi].volumeData,volume.transform);
 			}
 		}
 
-		void CreateMarkers (Chunk _chunk,String _ArtPack)
+		void PlacePieces (Chunk _chunk)
 		{
-			PaletteItem[] itemArray = new PaletteItem[0];
-			if (_ArtPack.Length > 0)
-				itemArray = Resources.LoadAll<PaletteItem> (_ArtPack);
-			if (itemArray.Length < 1) {
-				itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
-			}
 			ChunkData cData = _chunk.cData;
 			foreach (BlockAir bAir in cData.blockAirs) {
 				for (int i = 0; i < bAir.pieceNames.Length; i++) {
@@ -101,7 +102,8 @@ namespace CreVox
 								bAir.BlockPos,
 								new WorldPos (i % 3, 0, (int)(i / 3)), 
 								itemArray [k].gameObject.GetComponent<LevelPiece> (),
-								_chunk.transform);
+								_chunk.transform
+							);
 						}
 					}
 				}
@@ -124,9 +126,30 @@ namespace CreVox
 			}
 		}
 
-		#if UNITY_EDITOR
+		void PlaceItems(VolumeData _vData,Transform _parent)
+		{
+			for (int i = 0; i < _vData.blockItems.Count; i++) {
+				for (int k = 0; k < itemArray.Length; k++) {
+					BlockItem blockItem = _vData.blockItems [i];
+					if (blockItem.pieceName == itemArray [k].name) {
+						PlaceItem (blockItem, i, itemArray [k].gameObject.GetComponent<LevelPiece> (), _parent);
+					}
+				}
+			}
+		}
+
+		public void PlaceItem(BlockItem blockItem, int _id, LevelPiece _piece, Transform _parent)
+		{
+			GameObject pObj;
+			pObj = GameObject.Instantiate(_piece.gameObject);
+			pObj.transform.parent = _parent;
+			pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
+			pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
+		}
+
 		public void UpdateDungeon ()
 		{
+			#if UNITY_EDITOR
 			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 			dungeons = new List<Dungeon> ();
 
@@ -137,7 +160,7 @@ namespace CreVox
 				newDungeon.rotation = v [i].transform.rotation;
 				dungeons.Add (newDungeon);
 			}
+			#endif
 		}
-		#endif
 	}
 }

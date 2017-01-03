@@ -22,15 +22,10 @@ namespace CreVox
 			newVol.AddComponent<Volume> ();
 			Volume volume = newVol.GetComponent<Volume> ();
 			volume.Reset ();
-			volume.Init (1, 1, 1);
 			volume.workFile = "";
 			volume.tempPath = "";
-			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-			sPath = EditorUtility.SaveFilePanel("save vData", sPath, volume.name + "_vData", "asset");
-			sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-			volume.vd = VolumeData.GetVData (sPath);
-			volume._useBytes = false;
-			volume.BuildVolume (new Save (), volume.vd);
+			volume.Init (1, 1, 1);
+			volume.WriteVData ();
 		}
 
 		[MenuItem("GameObject/3D Object/Volume Manager (CreVox)")]

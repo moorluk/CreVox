@@ -13,6 +13,7 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 		public Dictionary<WorldPos, Block> blocks = new Dictionary<WorldPos, Block>();
+		public List<BlockItem> blockItems;
 
 		public Save()
 		{
@@ -34,6 +35,7 @@ namespace CreVox
 					}
 				}
 			}
+			blockItems = volume.blockItems;
 		}
 
 		public void AddChunk(int _x, int _y, int _z, Chunk chunk)

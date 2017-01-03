@@ -51,6 +51,9 @@ namespace CreVox
 			if (_categorizedItems == null) {
 				InitContent();
 			}
+			if (_previews.Count != _items.Count) {
+				GeneratePreviews();
+			}
 		}
 
 		private void OnGUI()

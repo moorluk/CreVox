@@ -11,8 +11,9 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 		public List <ChunkData> chunkDatas = new List<ChunkData> ();
+		public List<BlockItem> blockItems = new List<BlockItem> ();
 		public string ArtPack = PathCollect.pieces;
-		public string vMaterial;
+		public string vMaterial = PathCollect.defaultVoxelMaterial;
 
 		public void Awake()
 		{

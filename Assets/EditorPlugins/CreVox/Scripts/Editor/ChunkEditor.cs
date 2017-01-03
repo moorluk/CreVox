@@ -7,18 +7,7 @@ namespace CreVox
 	[CustomEditor (typeof(Chunk))]
 	public class ChunkEditor : Editor
 	{
-
-		bool showBlocks = false;
-		bool showBlockAirs = false;
-		bool[] blockAirs;
-		bool showBlockHolds = false;
-		bool[] blockHolds;
-		bool showBlockItems = false;
-		bool[] blockItems;
-
-		bool filter;
-		float layerMin;
-		float layerMax;
+		VolumeDataEditor.BlockBool workbbool;
 
 		bool drawDef = false;
 		[SerializeField]Chunk chunk;
@@ -29,12 +18,11 @@ namespace CreVox
 		void OnEnable ()
 		{
 			chunk = (Chunk)target;
-			layerMin = 0;
-			layerMax = Chunk.chunkSize;
+			workbbool.layerMin = 0;
+			workbbool.layerMax = Chunk.chunkSize;
 
-			blockAirs = new bool[chunk.cData.blockAirs.Count];
-			blockHolds = new bool[chunk.cData.blockHolds.Count];
-			blockItems = new bool[chunk.cData.blockItems.Count];
+			workbbool.blockAirs = new bool[chunk.cData.blockAirs.Count];
+			workbbool.blockHolds = new bool[chunk.cData.blockHolds.Count];
 
 			defColor = GUI.color;
 			volColor = new Color (0.5f, 0.8f, 0.75f);
@@ -59,20 +47,19 @@ namespace CreVox
 				}
 
 				using (var h2 = new EditorGUILayout.HorizontalScope ()) {
-					filter = EditorGUILayout.ToggleLeft ("Filter", filter, GUILayout.Width (45));
-					if (filter)
-						EditorGUILayout.MinMaxSlider (ref layerMin, ref layerMax, 0f, (float)Chunk.chunkSize);
-					layerMin = (int)layerMin;
-					layerMax = (int)layerMax;
-					valueMinMax = layerMin + "~" + layerMax;
+					workbbool.filter = EditorGUILayout.ToggleLeft ("Filter", workbbool.filter, GUILayout.Width (45));
+					if (workbbool.filter)
+						EditorGUILayout.MinMaxSlider (ref workbbool.layerMin, ref workbbool.layerMax, 0f, (float)Chunk.chunkSize);
+					workbbool.layerMin = (int)workbbool.layerMin;
+					workbbool.layerMax = (int)workbbool.layerMax;
+					valueMinMax = workbbool.layerMin + "~" + workbbool.layerMax;
 				}
-				EditorGUILayout.LabelField ("Layer = " + (filter ? valueMinMax : "all"));
+				EditorGUILayout.LabelField ("Layer = " + (workbbool.filter ? valueMinMax : "all"));
 
 				EditorGUI.indentLevel++;
 				DrawBlock ();
 				DrawBlockAir ();
 				DrawBlockHold ();
-				DrawBlockItem ();
 			}
 
 			drawDef = EditorGUILayout.Foldout (drawDef, "Default");
@@ -82,15 +69,16 @@ namespace CreVox
 
 		public void DrawBlock ()
 		{
-			showBlocks = EditorGUILayout.Foldout (showBlocks, " Block(" + chunk.cData.blocks.Count);
-			if (showBlocks) {
+			workbbool.showBlocks = EditorGUILayout.Foldout (workbbool.showBlocks, " Block(" + chunk.cData.blocks.Count);
+			if (workbbool.showBlocks) {
 				EditorGUI.indentLevel++;
 				for (int i = 0; i < chunk.cData.blocks.Count; i++) {
-					if (filter ? (chunk.cData.blocks [i].BlockPos.y >= layerMin && chunk.cData.blocks [i].BlockPos.y <= layerMax) : true) {
+					Block workBlock = chunk.cData.blocks [i];
+					if (workbbool.filter ? (workBlock.BlockPos.y >= workbbool.layerMin && workBlock.BlockPos.y <= workbbool.layerMax) : true) {
 						EditorGUILayout.LabelField (
-							"[" + chunk.cData.blocks [i].BlockPos.x +
-							"," + chunk.cData.blocks [i].BlockPos.y +
-							"," + chunk.cData.blocks [i].BlockPos.z +
+							"[" + workBlock.BlockPos.x +
+							"," + workBlock.BlockPos.y +
+							"," + workBlock.BlockPos.z +
 							"]"
 						);
 					}
@@ -101,20 +89,21 @@ namespace CreVox
 
 		public void DrawBlockAir ()
 		{
-			showBlockAirs = EditorGUILayout.Foldout (showBlockAirs, " BlockAir(" + chunk.cData.blockAirs.Count);
-			if (showBlockAirs) {
+			workbbool.showBlockAirs = EditorGUILayout.Foldout (workbbool.showBlockAirs, " BlockAir(" + chunk.cData.blockAirs.Count);
+			if (workbbool.showBlockAirs) {
 				EditorGUI.indentLevel++;
 				for (int i = 0; i < chunk.cData.blockAirs.Count; i++) {
-					if (filter ? (chunk.cData.blockAirs [i].BlockPos.y >= layerMin && chunk.cData.blockAirs [i].BlockPos.y <= layerMax) : true) {
-						if (chunk.cData.blockAirs [i].pieceNames != null) {
-							blockAirs [i] = EditorGUILayout.Foldout (blockAirs [i], 
-								"[" + chunk.cData.blockAirs [i].BlockPos.x +
-								"," + chunk.cData.blockAirs [i].BlockPos.y +
-								"," + chunk.cData.blockAirs [i].BlockPos.z +
+					BlockAir workAir = chunk.cData.blockAirs [i];
+					if (workbbool.filter ? (workAir.BlockPos.y >= workbbool.layerMin && workAir.BlockPos.y <= workbbool.layerMax) : true) {
+						if (workAir.pieceNames != null) {
+							workbbool.blockAirs [i] = EditorGUILayout.Foldout (workbbool.blockAirs [i], 
+								"[" + workAir.BlockPos.x +
+								"," + workAir.BlockPos.y +
+								"," + workAir.BlockPos.z +
 								"]"
 							);
-							if (blockAirs [i]) {
-								GUILayout.SelectionGrid (-1, chunk.cData.blockAirs [i].pieceNames, 3
+							if (workbbool.blockAirs [i]) {
+								GUILayout.SelectionGrid (-1, workAir.pieceNames, 3
 									, EditorStyles.miniButton
 									, GUILayout.Width(Screen.width-45));
 							}
@@ -127,45 +116,26 @@ namespace CreVox
 
 		public void DrawBlockHold ()
 		{
-			showBlockHolds = EditorGUILayout.Foldout (showBlockHolds, " BlockHold(" + chunk.cData.blockHolds.Count);
-			if (showBlockHolds) {
+			workbbool.showBlockHolds = EditorGUILayout.Foldout (workbbool.showBlockHolds, " BlockHold(" + chunk.cData.blockHolds.Count);
+			if (workbbool.showBlockHolds) {
 				EditorGUI.indentLevel++;
 				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
-					if (filter ? (chunk.cData.blockHolds [i].BlockPos.y >= layerMin && chunk.cData.blockHolds [i].BlockPos.y <= layerMax) : true) {
-						if (chunk.cData.blockHolds [i].roots.Count > 0) {
-							blockHolds [i] = EditorGUILayout.Foldout (blockHolds [i],
-								"[" + chunk.cData.blockHolds [i].BlockPos.x +
-								"," + chunk.cData.blockHolds [i].BlockPos.y +
-								"," + chunk.cData.blockHolds [i].BlockPos.z +
-								"]" + ((chunk.cData.blockHolds [i].IsSolid (Direction.south)) ? "(Solid)" : "")
+					BlockHold workHold = chunk.cData.blockHolds [i];
+					if (workbbool.filter ? (workHold.BlockPos.y >= workbbool.layerMin && workHold.BlockPos.y <= workbbool.layerMax) : true) {
+						if (workHold.roots.Count > 0) {
+							workbbool.blockHolds [i] = EditorGUILayout.Foldout (workbbool.blockHolds [i],
+								"[" + workHold.BlockPos.x +
+								"," + workHold.BlockPos.y +
+								"," + workHold.BlockPos.z +
+								"]" + ((workHold.IsSolid (Direction.south)) ? "(Solid)" : "")
 							);
-							if (blockHolds [i]) {
-								for (int j = 0; j < chunk.cData.blockHolds [i].roots.Count; j++)
-									EditorGUILayout.LabelField ("[" + chunk.cData.blockHolds [i].roots [j].blockPos.ToString () + "]" +
-										" Marker(" + chunk.cData.blockHolds [i].roots [j].pieceID + ")",
+							if (workbbool.blockHolds [i]) {
+								for (int j = 0; j < workHold.roots.Count; j++)
+									EditorGUILayout.LabelField ("[" + workHold.roots [j].blockPos.ToString () + "]" +
+									" Marker(" + workHold.roots [j].pieceID + ")",
 										EditorStyles.helpBox);
 							}
 						}
-					}
-				}
-				EditorGUI.indentLevel--;
-			}
-		}
-
-		public void DrawBlockItem ()
-		{
-			showBlockItems = EditorGUILayout.Foldout (showBlockItems, " BlockItem(" + chunk.cData.blockItems.Count);
-			if (showBlockItems) {
-				EditorGUI.indentLevel++;
-				for (int i = 0; i < chunk.cData.blockItems.Count; i++) {
-					if (filter ? (chunk.cData.blockItems [i].BlockPos.y >= layerMin && chunk.cData.blockItems [i].BlockPos.y <= layerMax) : true) {
-						blockItems [i] = EditorGUILayout.Foldout (blockItems [i],
-							chunk.cData.blockItems [i].pieceName +
-							"[" + chunk.cData.blockItems [i].BlockPos.x +
-							"," + chunk.cData.blockItems [i].BlockPos.y +
-							"," + chunk.cData.blockItems [i].BlockPos.z +
-							"]"
-						);
 					}
 				}
 				EditorGUI.indentLevel--;

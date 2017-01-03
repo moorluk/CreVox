@@ -8,7 +8,7 @@ namespace CreVox
 	public class BlockAir : Block
 	{
 		public string[] pieceNames = new string[9];
-		[SerializeField]private bool[] isSolid = new bool[6];
+		public bool[] isSolid = new bool[6];
 
 		public BlockAir () : base ()
 		{
@@ -31,21 +31,16 @@ namespace CreVox
 
 		public override bool IsSolid (Direction direction)
 		{
-			if (isSolid == null || isSolid.Length != 6) {
-				isSolid = new bool[6];
-			}
 			return isSolid [(int)direction];
 		}
 
 		public void SetPiece (WorldPos bPos, WorldPos gPos, LevelPiece piece)
 		{
-			if (pieceNames == null)
-				pieceNames = new string[9];
 			GameObject pObj = (piece != null) ? piece.gameObject : null;
 			int id = gPos.z * 3 + gPos.x;
 
 			if (pObj != null) {
-				pieceNames [id] = pObj.GetComponent<PaletteItem> ().name;
+				pieceNames [id] = pObj.name;
 			} else {
 				pieceNames [id] = null;
 			}

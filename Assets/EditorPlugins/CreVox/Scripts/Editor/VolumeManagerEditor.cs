@@ -6,7 +6,6 @@ using UnityEditor;
 namespace CreVox
 {
 	[CustomEditor (typeof(VolumeManager))]
-	[ExecuteInEditMode]
 	public class VolumeManagerEditor : Editor
 	{
 		VolumeManager vm;
@@ -22,7 +21,6 @@ namespace CreVox
 		void OnEnable ()
 		{
 			Awake ();
-//			vm.UpdateDungeon ();
 		}
 		
 		float buttonW = 70;

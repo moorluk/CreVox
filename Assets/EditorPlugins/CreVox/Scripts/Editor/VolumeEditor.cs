@@ -90,12 +90,11 @@ namespace CreVox
 					EditorGUIUtility.labelWidth = defLabelWidth;
 					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
 						volume.Reset ();
-						volume.Init (cx, cy, cz);
 						volume.workFile = "";
 						volume.tempPath = "";
-						volume._useBytes = true;
-//						Save newSave = new Save ();
-//						volume.BuildVolume (newSave);
+						volume.Init (cx, cy, cz);
+						volume.vd = null;
+						volume.WriteVData();
 					}
 					GUILayout.EndHorizontal ();
 				}
@@ -232,7 +231,6 @@ namespace CreVox
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
-//				volume.PlacePieces ();
 				volume.UpdateChunks ();
 			}
 		}
@@ -254,8 +252,8 @@ namespace CreVox
 
 		private void OnSceneGUI ()
 		{
-			DrawModeGUI ();
 			ModeHandler ();
+			DrawModeGUI ();
 			if (!EditorApplication.isPlaying)
 				EventHandler ();
 		}
@@ -296,10 +294,10 @@ namespace CreVox
 			case EditMode.VoxelLayer:
 			case EditMode.Object:
 			case EditMode.ObjectLayer:
+			case EditMode.Edit:
 				Tools.current = Tool.None;
 				break;
 
-			case EditMode.Edit:
 			case EditMode.View:
 			default:
 				break;
@@ -370,8 +368,11 @@ namespace CreVox
 			bool isHit = Physics.Raycast (worldRay, out hit, (int)vg.editDis, _mask);
 
 			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
-				if (hit.normal.y <= 0)
+				if (hit.normal.y <= 0) {
+					volume.useBox = false;
 					return;
+				} else
+					volume.useBox = true;
 
 				RaycastHit hitFix = hit;
 				WorldPos pos = EditTerrain.GetBlockPos (hitFix, isNotLayer);
@@ -405,6 +406,67 @@ namespace CreVox
 			}
 		}
 
+		private bool isSelectItem;
+		private int workItemId; 
+		private void DrawEditMarker ()
+		{
+			Matrix4x4 defMatrix = Handles.matrix;
+			Color defColor = Handles.color;
+			Quaternion facingCamera;
+
+			RaycastHit hit;
+			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
+			bool isHit = Physics.Raycast (worldRay, out hit, VGlobal.GetSetting ().editDis, _mask);
+
+			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume 
+				&& hit.normal.y > 0){
+				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
+				Handles.DrawSolidDisc (hit.point,hit.normal, 0.5f);
+			}
+
+			for (int i = 0; i < volume.blockItems.Count; i++) {
+				BlockItem blockItem = volume.blockItems [i];
+				Transform ItemNode = volume.GetItemNode (blockItem).transform;
+
+				Vector3 pos = ItemNode.position;
+				pos = Handles.DoPositionHandle (pos, ItemNode.rotation);
+				ItemNode.position = pos;
+				blockItem.posX = ItemNode.localPosition.x;
+				blockItem.posY = ItemNode.localPosition.y;
+				blockItem.posZ = ItemNode.localPosition.z;
+				blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+
+				ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+				Quaternion tmp = ItemNode.localRotation;
+				Vector3 rot = tmp.eulerAngles;
+				rot.x = Mathf.Round(rot.x /15f) * 15f;
+				rot.y = Mathf.Round(rot.y /15f) * 15f;
+				rot.z = Mathf.Round(rot.z /15f) * 15f;
+				tmp.eulerAngles = rot;
+				ItemNode.localRotation = tmp;
+				blockItem.rotX = ItemNode.localRotation.x;
+				blockItem.rotY = ItemNode.localRotation.y;
+				blockItem.rotZ = ItemNode.localRotation.z;
+				blockItem.rotW = ItemNode.localRotation.w;
+
+				float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
+				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
+				facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
+				bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize,Handles.SphereCap);
+				if (selected) {
+					Debug.Log ("fire!!!");
+					isSelectItem = true;
+					workItemId = i;
+					Event.current.type = EventType.mouseDown;
+					Event.current.button = 0;
+				}
+				Handles.color = defColor;
+			}
+			Handles.matrix = defMatrix;
+			SceneView.RepaintAll ();
+		}
+
 		private void EventHandler ()
 		{
 			if (Event.current.alt) {
@@ -423,7 +485,7 @@ namespace CreVox
 
 				switch (currentEditMode) {
 				case EditMode.Voxel:
-				case EditMode.VoxelLayer: 
+				case EditMode.VoxelLayer:
 					volume.useBox = true;
 					break;
 
@@ -436,9 +498,10 @@ namespace CreVox
 				case EditMode.Voxel:
 					if (button == 0)
 						DrawMarker (false);
-					else if (button <= 1) {
+					else if (button == 1) {
 						DrawMarker (true);
 					}
+
 					if (Event.current.type == EventType.MouseDown) {
 						if (button == 0)
 							Paint (false);
@@ -448,9 +511,6 @@ namespace CreVox
 							Event.current.Use ();
 						}
 					}
-					if (Event.current.type == EventType.MouseUp) {
-						UpdateDirtyChunks ();
-					}               
 					break;
 
 				case EditMode.VoxelLayer: 
@@ -465,31 +525,53 @@ namespace CreVox
 							Event.current.Use ();
 						}
 					}
-					if (Event.current.type == EventType.MouseUp) {
-						UpdateDirtyChunks ();
-					}
 					break;
 
 				case EditMode.Object:
 				case EditMode.ObjectLayer:
+					DrawGridMarker ();
+
 					if (Event.current.type == EventType.MouseDown) {
 						if (button == 0)
-							PaintPieces (false);
+							PaintPiece (false);
 						else if (button == 1) {
-							PaintPieces (true);
+							PaintPiece (true);
 							Tools.viewTool = ViewTool.None;
 							Event.current.Use ();
 						}
 					}
-					DrawGridMarker ();
 					break;
 
 				case EditMode.Edit:
-					
+					DrawEditMarker ();
+
+					if (Event.current.type == EventType.MouseDown) {
+						Debug.Log (isSelectItem + ": " + workItemId);
+						if (!isSelectItem && button == 0) {
+							PaintItem (false);
+							Event.current.Use ();
+						} else if (isSelectItem) {
+							if (Event.current.shift)
+								PaintItem (true);
+							else {
+								GameObject ItemNode = volume.GetItemNode (volume.blockItems [workItemId]);
+								PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
+								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
+								Debug.Log (PrefabUtility.GetPrefabParent (ItemNode));
+								UpdateCurrentPieceInstance (item, preview);
+							}
+							isSelectItem = false;
+							workItemId = -1;
+						}
+					}
 					break;
 
 				default:
 					break;
+				}
+
+				if (Event.current.type == EventType.MouseUp) {
+					UpdateDirtyChunks ();
 				}
 			}
 		}
@@ -652,7 +734,7 @@ namespace CreVox
 			EditorUtility.SetDirty (volume.vd);
 		}
 
-		private void PaintPieces (bool isErase)
+		private void PaintPiece (bool isErase)
 		{
 			if (_pieceSelected == null)
 				return;
@@ -689,6 +771,32 @@ namespace CreVox
 					SceneView.RepaintAll ();
 				}
 			}
+		}
+
+		private void PaintItem (bool isErase)
+		{
+			if (_pieceSelected == null)
+				return;
+			
+			if (isErase) {
+				volume.PlaceItem (workItemId, null);
+			} else {
+				RaycastHit gHit;
+				Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+				LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
+				VGlobal vg = VGlobal.GetSetting ();
+				bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
+
+				if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
+					if (gHit.normal.y <= 0)
+						return;
+
+					gHit.point = volume.transform.InverseTransformPoint (gHit.point);
+					volume.PlaceItem (volume.blockItems.Count, _pieceSelected,gHit.point);
+					SceneView.RepaintAll ();
+				}
+			}
+			EditorUtility.SetDirty (volume.vd);
 		}
 
 		private void UpdateDirtyChunks ()
