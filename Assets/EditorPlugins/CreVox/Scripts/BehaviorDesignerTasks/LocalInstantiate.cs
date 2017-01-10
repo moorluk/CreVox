@@ -20,7 +20,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 
         public override TaskStatus OnUpdate()
 		{
-			Random.seed = System.Guid.NewGuid().GetHashCode();
+			Random.InitState(System.Guid.NewGuid().GetHashCode());
 			if (Random.value < successProbability) {
 				GameObject n;
 				if (target.Value != null)

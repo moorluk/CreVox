@@ -28,7 +28,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 
         public override TaskStatus OnUpdate()
 		{
-			Random.seed = System.Guid.NewGuid().GetHashCode();
+			Random.InitState(System.Guid.NewGuid().GetHashCode());
 			if (Random.value < successProbability) {
 				GameObject n;
 				if (target.Value != null)
@@ -41,12 +41,12 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 				n.transform.localPosition = position;
 				n.transform.localRotation = Quaternion.Euler(rotation);
 
-				Random.seed = System.Guid.NewGuid().GetHashCode();
+				Random.InitState(System.Guid.NewGuid().GetHashCode());
 				if (Random.value < messProbability) {
-					Random.seed = System.Guid.NewGuid().GetHashCode();
+					Random.InitState(System.Guid.NewGuid().GetHashCode());
 					float posR = Random.Range (-1.0f, 1.0f);
 					n.transform.localPosition += new Vector3 (randomOffset.x * posR, randomOffset.y * posR, randomOffset.z * posR);
-					Random.seed = System.Guid.NewGuid().GetHashCode();
+					Random.InitState(System.Guid.NewGuid().GetHashCode());
 					float rotR = Random.Range (-1.0f, 1.0f);
 					n.transform.Rotate (randomRotate.x * rotR, randomRotate.y * rotR, randomRotate.z * rotR, Space.Self);
 				}
