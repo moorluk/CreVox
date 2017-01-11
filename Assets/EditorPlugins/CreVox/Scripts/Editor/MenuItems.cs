@@ -8,10 +8,16 @@ namespace CreVox
 	public static class MenuItems
 	{
 
-		[MenuItem("Tools/Level Creator/Show Palette _&p")]
+		[MenuItem("Tools/CreVox/Show Palette _&p")]
 		private static void ShowPalette()
 		{
 			PaletteWindow.ShowPalette();
+		}
+
+		[MenuItem("Tools/CreVox/ArtPack Check")]
+		private static void ShowArtPack()
+		{
+			ArtPackWindow.ShowPalette();
 		}
 
 		[MenuItem("GameObject/3D Object/Volume (CreVox)")]

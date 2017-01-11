@@ -51,9 +51,6 @@ namespace CreVox
 			if (_categorizedItems == null) {
 				InitContent();
 			}
-			if (_previews.Count != _items.Count) {
-				GeneratePreviews();
-			}
 		}
 
 		private void OnGUI()
@@ -140,7 +137,7 @@ namespace CreVox
 				if (!_previews.ContainsKey(item)) {
 					Texture2D preview = AssetPreview.GetAssetPreview(item.gameObject);
 					if (preview == null)
-						preview = Texture2D.blackTexture;
+						preview = Texture2D.whiteTexture;
 					_previews.Add(item, preview);
 				}
 			}
@@ -153,7 +150,7 @@ namespace CreVox
 				int totalItems = _categorizedItems[_categorySelected].Count;
 				for (int i = 0; i < totalItems; i++) {
 					GUIContent guiContent = new GUIContent();
-					guiContent.text = _categorizedItems[_categorySelected][i].itemName;
+					guiContent.text = _categorizedItems[_categorySelected][i].gameObject.name + "\n" + _categorizedItems[_categorySelected][i].itemName;
 					guiContent.image = _previews[_categorizedItems[_categorySelected][i]];
 					guiContents.Add(guiContent);
 				}
@@ -164,7 +161,7 @@ namespace CreVox
 		private GUIStyle GetGUIStyle()
 		{
 			GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
-			guiStyle.fontSize = 14;
+			guiStyle.fontSize = Mathf.FloorToInt (ButtonWidth/8.5f);
 			guiStyle.alignment = TextAnchor.LowerCenter;
 			guiStyle.imagePosition = ImagePosition.ImageAbove;
 			guiStyle.fixedWidth = ButtonWidth;
