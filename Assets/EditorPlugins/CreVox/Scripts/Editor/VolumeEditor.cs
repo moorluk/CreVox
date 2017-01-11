@@ -228,10 +228,22 @@ namespace CreVox
 			}
 
 			DrawPieceSelectedGUI ();
+			DrawVData ();
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
 				volume.UpdateChunks ();
+			}
+		}
+
+		Editor vdEditor = null;
+		void DrawVData ()
+		{
+			if (volume.vd != null) {
+				if (vdEditor == null)
+					vdEditor = CreateEditor (volume.vd, typeof(VolumeDataEditor));
+				vdEditor.DrawHeader ();
+				vdEditor.OnInspectorGUI ();
 			}
 		}
 
