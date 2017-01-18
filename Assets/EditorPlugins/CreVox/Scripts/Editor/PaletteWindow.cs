@@ -133,11 +133,12 @@ namespace CreVox
 
 		private void GeneratePreviews()
 		{
+			AssetPreview.SetPreviewTextureCacheSize (_items.Count + 1);
 			foreach (PaletteItem item in _items) {
 				if (!_previews.ContainsKey(item)) {
 					Texture2D preview = AssetPreview.GetAssetPreview(item.gameObject);
 					if (preview == null)
-						preview = Texture2D.whiteTexture;
+						preview = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
 					_previews.Add(item, preview);
 				}
 			}
@@ -161,7 +162,7 @@ namespace CreVox
 		private GUIStyle GetGUIStyle()
 		{
 			GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
-			guiStyle.fontSize = Mathf.FloorToInt (ButtonWidth/8.5f);
+			guiStyle.fontSize = Mathf.FloorToInt (Mathf.Clamp (ButtonWidth/8.5f,9f,12f));
 			guiStyle.alignment = TextAnchor.LowerCenter;
 			guiStyle.imagePosition = ImagePosition.ImageAbove;
 			guiStyle.fixedWidth = ButtonWidth;

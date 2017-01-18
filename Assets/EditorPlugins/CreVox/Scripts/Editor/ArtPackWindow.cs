@@ -22,7 +22,6 @@ namespace CreVox
 		private Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
 
 		private List<string> _artPacks;
-//		private List<PaletteItem.Category> _categories;
 
 		private List<Item> _items;
 		private Dictionary<PaletteItem.Category, List<string>> itemNames;
@@ -49,11 +48,21 @@ namespace CreVox
 			DrawFunction ();
 		}
 
+		private Texture2D GetPreview(GameObject obj)
+		{
+			Texture2D thumbnail = null;
+			thumbnail = AssetPreview.GetAssetPreview (obj);
+			if (thumbnail == null)
+				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
+			return thumbnail;
+		}
+
 		private void InitContent ()
 		{
 			//GetItems
 			_items = new List<Item> ();
 			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
+			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count + 1);
 			foreach (PaletteItem p in itemsP) {
 				Item newItem = new Item();
 				newItem.paletteitem = p;
@@ -62,8 +71,8 @@ namespace CreVox
 				newItem.itemName = p.gameObject.name;
 				newItem.artPack = AssetDatabase.GetAssetPath (p.gameObject).Replace(_path + "/","");
 				newItem.artPack = newItem.artPack.Remove (newItem.artPack.IndexOf ("/"));
-				newItem.preview = (AssetPreview.GetAssetPreview (p.gameObject) == null) ? 
-					Texture2D.whiteTexture : AssetPreview.GetAssetPreview (p.gameObject);
+				newItem.preview = GetPreview(p.gameObject);
+
 				_items.Add (newItem);
 			}
 			Comparison<Item> t = new Comparison<Item> (delegate (Item x, Item y) {
@@ -133,27 +142,24 @@ namespace CreVox
 		{
 			Color def = GUI.color;
 			_scrollPosition = GUILayout.BeginScrollView (_scrollPosition);
-//			int rowCapacity = Mathf.FloorToInt (position.width / (ButtonWidth));
-//			int selectionGridIndex = -1;
-//			selectionGridIndex = GUILayout.SelectionGrid (selectionGridIndex, GetGUIContentsFromItems (), rowCapacity, GetGUIStyle ());
-//			GetSelectedItem (selectionGridIndex);
+
 			foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
-				GUILayout.Label (k.Key.ToString (), "In Title"/*, GUILayout.Width (ButtonWidth+3)*/);
+				GUILayout.Label (k.Key.ToString (), "In Title");
 				foreach (string n in k.Value) {
 					Predicate<Item> findItem = delegate(Item obj) {
 						return obj.itemName == n;
 					};
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
-//						GUILayout.Button (n, GUILayout.Width (ButtonWidth));
 						for (int i = 0; i < _artPacks.Count; i++) {
 							Item _item = _itemCells [_artPacks [i]] [k.Key].Find (findItem);
 							if (_item != null) {
+								GUILayout.Label (_item.preview, GetPreviewStyle());
 								string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
-								if (GUILayout.Button (new GUIContent (itemLebel, _item.preview), GetGUIStyle ()))
+								if (GUILayout.Button (itemLebel, GetLabelStyle ()))
 									Selection.activeGameObject = _item.itemObject;
 							} else {
 								GUI.color = Color.red;
-								GUILayout.Box ("", GetGUIStyle ());
+								GUILayout.Box ("","button", GUILayout.Width (ButtonWidth),GUILayout.ExpandHeight(true));
 								GUI.color = def;
 							}
 						}
@@ -199,17 +205,23 @@ namespace CreVox
 					}
 					usePrefab = EditorGUILayout.Toggle ("Use Prefab", usePrefab);
 					if (usePrefab) {
+						EditorGUI.BeginChangeCheck ();
 						oldMarker = (GameObject)EditorGUILayout.ObjectField ("Old Marker", oldMarker, typeof(GameObject), true);
 						using (var h = new EditorGUILayout.HorizontalScope ()) {
-							if (GUILayout.Button ("Get", GUILayout.Width (EditorGUIUtility.labelWidth - 4)))
-								oldName = oldMarker.name;
+							if (GUILayout.Button ("Get", GUILayout.Width (EditorGUIUtility.labelWidth - 4)) || EditorGUI.EndChangeCheck()){
+								if (oldMarker != null)
+									oldName = oldMarker.name;
+							}
 							oldName = EditorGUILayout.TextField (oldName);
 						}
 
+						EditorGUI.BeginChangeCheck ();
 						newMarker = (GameObject)EditorGUILayout.ObjectField ("New Marker", newMarker, typeof(GameObject), true);
 						using (var h = new EditorGUILayout.HorizontalScope ()) {
-							if (GUILayout.Button ("Get", GUILayout.Width (EditorGUIUtility.labelWidth - 4)))
-								newName = newMarker.name;
+							if (GUILayout.Button ("Get", GUILayout.Width (EditorGUIUtility.labelWidth - 4)) || EditorGUI.EndChangeCheck ()) {
+								if (oldMarker != null)
+									newName = newMarker.name;
+							}
 							newName = EditorGUILayout.TextField (newName);
 						}
 					} else {
@@ -256,14 +268,25 @@ namespace CreVox
 			}
 		}
 
-		private GUIStyle GetGUIStyle ()
+		private GUIStyle GetLabelStyle ()
 		{
 			GUIStyle guiStyle = new GUIStyle (GUI.skin.button);
-			guiStyle.fontSize = 12;
+			guiStyle.fontSize = Mathf.FloorToInt (Mathf.Clamp (ButtonWidth/12f,1f,14f));
 			guiStyle.alignment = TextAnchor.MiddleLeft;
 			guiStyle.imagePosition = ImagePosition.ImageLeft;
-			guiStyle.fixedWidth = ButtonWidth;
-			guiStyle.fixedHeight = Mathf.Clamp (ButtonWidth / 3, guiStyle.fontSize * 2 + 3, ButtonWidth);
+			guiStyle.fixedHeight = Mathf.Clamp (ButtonWidth / 3 , guiStyle.fontSize * 2, ButtonWidth);
+			guiStyle.fixedWidth = ButtonWidth - guiStyle.fixedHeight - 4f;
+			return guiStyle;
+		}
+
+		private GUIStyle GetPreviewStyle ()
+		{
+			float size = ButtonWidth / 3;
+			GUIStyle guiStyle = new GUIStyle (GUI.skin.label);
+			guiStyle.alignment = TextAnchor.LowerCenter;
+			guiStyle.imagePosition = ImagePosition.ImageAbove;
+			guiStyle.fixedHeight = size;
+			guiStyle.fixedWidth = size;
 			return guiStyle;
 		}
 	}
