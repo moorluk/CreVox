@@ -55,37 +55,37 @@ namespace CreVox
 		public bool _useBytes;
 		public List<BlockItem> blockItems = new List<BlockItem>();
 
-		public void WriteVData ()
-		{
-			if (vd == null) {
-				if (workFile != "")
-					vd = VolumeData.GetVData (workFile + "_vData.asset");
-				else {
-					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, volume.name + "_vData", "asset");
-					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-					vd = VolumeData.GetVData (sPath);
-				}
-
-				vd.chunkX = chunkX;
-				vd.chunkY = chunkY;
-				vd.chunkZ = chunkZ;
-				vd.chunkDatas = new List<ChunkData> ();
-				vd.blockItems = blockItems;
-				foreach (Chunk _chunk in chunks.Values) {
-					WorldPos _pos = _chunk.cData.ChunkPos;
-
-					ChunkData newChunkData = new ChunkData ();
-					newChunkData.ChunkPos = _pos;
-					newChunkData.blocks = _chunk.cData.blocks;
-					newChunkData.blockAirs = _chunk.cData.blockAirs;
-					newChunkData.blockHolds = _chunk.cData.blockHolds;
-
-					vd.chunkDatas.Add (newChunkData);
-					_chunk.cData = newChunkData;
-				}
-			}
-		}
+//		public void WriteVData ()
+//		{
+//			if (vd == null) {
+//				if (workFile != "")
+//					vd = VolumeData.GetVData (workFile + "_vData.asset");
+//				else {
+//					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+//					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, volume.name + "_vData", "asset");
+//					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
+//					vd = VolumeData.GetVData (sPath);
+//				}
+//
+//				vd.chunkX = chunkX;
+//				vd.chunkY = chunkY;
+//				vd.chunkZ = chunkZ;
+//				vd.chunkDatas = new List<ChunkData> ();
+//				vd.blockItems = blockItems;
+//				foreach (Chunk _chunk in chunks.Values) {
+//					WorldPos _pos = _chunk.cData.ChunkPos;
+//
+//					ChunkData newChunkData = new ChunkData ();
+//					newChunkData.ChunkPos = _pos;
+//					newChunkData.blocks = _chunk.cData.blocks;
+//					newChunkData.blockAirs = _chunk.cData.blockAirs;
+//					newChunkData.blockHolds = _chunk.cData.blockHolds;
+//
+//					vd.chunkDatas.Add (newChunkData);
+//					_chunk.cData = newChunkData;
+//				}
+//			}
+//		}
 
 		#endregion
 

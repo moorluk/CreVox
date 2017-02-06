@@ -61,7 +61,7 @@ namespace CreVox
 					}
 					if (GUILayout.Button (new GUIContent ("▲\nWrite", "將場景現況 寫入/新建 資料檔(轉檔用)"), "miniButtonRight", GUILayout.Height(bh))) {
 						volume._useBytes = false;
-						volume.WriteVData ();
+						WriteVData (volume);
 						EditorUtility.SetDirty (volume.vd);
 						volume.tempPath = "";
 						SceneView.RepaintAll ();
@@ -93,8 +93,8 @@ namespace CreVox
 						volume.workFile = "";
 						volume.tempPath = "";
 						volume.Init (cx, cy, cz);
-						volume.vd = null;
-						volume.WriteVData();
+//						volume.vd = null;
+						WriteVData(volume);
 					}
 					GUILayout.EndHorizontal ();
 				}
@@ -832,6 +832,40 @@ namespace CreVox
 
 			return false;
 		}
+
+		public static void WriteVData (Volume _volume)
+		{
+			VolumeData vd = _volume.vd;
+			if (vd == null) {
+				if (_volume.workFile != "")
+					vd = VolumeData.GetVData (_volume.workFile + "_vData.asset");
+				else {
+					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, _volume.name + "_vData", "asset");
+					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
+					vd = VolumeData.GetVData (sPath);
+				}
+
+				vd.chunkX = _volume.chunkX;
+				vd.chunkY = _volume.chunkY;
+				vd.chunkZ = _volume.chunkZ;
+				vd.chunkDatas = new List<ChunkData> ();
+				vd.blockItems = _volume.blockItems;
+				foreach (Chunk _chunk in _volume.chunks.Values) {
+					WorldPos _pos = _chunk.cData.ChunkPos;
+
+					ChunkData newChunkData = new ChunkData ();
+					newChunkData.ChunkPos = _pos;
+					newChunkData.blocks = _chunk.cData.blocks;
+					newChunkData.blockAirs = _chunk.cData.blockAirs;
+					newChunkData.blockHolds = _chunk.cData.blockHolds;
+
+					vd.chunkDatas.Add (newChunkData);
+					_chunk.cData = newChunkData;
+				}
+			}
+		}
+
 
 		#region SubscribeEvents
 

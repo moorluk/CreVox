@@ -31,7 +31,7 @@ namespace CreVox
 			volume.workFile = "";
 			volume.tempPath = "";
 			volume.Init (1, 1, 1);
-			volume.WriteVData ();
+			VolumeEditor.WriteVData (volume);
 		}
 
 		[MenuItem("GameObject/3D Object/Volume Manager (CreVox)")]
