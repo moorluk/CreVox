@@ -83,6 +83,7 @@ ModelImporter:
     100150: B02a_GiVcWm001
     100152: B02a_GiVcWm002
     100154: B02a_SiEpWm001
+    100156: B02a_GiVbWm001
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -161,6 +162,7 @@ ModelImporter:
     400150: B02a_GiVcWm001
     400152: B02a_GiVcWm002
     400154: B02a_SiEpWm001
+    400156: B02a_GiVbWm001
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -235,6 +237,7 @@ ModelImporter:
     2300142: B02a_GiVcWm001
     2300144: B02a_GiVcWm002
     2300146: B02a_SiEpWm001
+    2300148: B02a_GiVbWm001
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -309,6 +312,7 @@ ModelImporter:
     3300142: B02a_GiVcWm001
     3300144: B02a_GiVcWm002
     3300146: B02a_SiEpWm001
+    3300148: B02a_GiVbWm001
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -383,6 +387,7 @@ ModelImporter:
     4300142: B02a_GiVcWm001
     4300144: B02a_SiEpWm001
     4300146: B02a_GiVcWm002
+    4300148: B02a_GiVbWm001
   materials:
     importMaterials: 0
     materialName: 0
