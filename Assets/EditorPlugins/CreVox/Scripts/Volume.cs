@@ -170,6 +170,7 @@ namespace CreVox
 				chunks.Clear ();
 			}
 			nodes.Clear ();
+//			blockItems.Clear ();
 			itemNodes.Clear ();
 
 			#if UNITY_EDITOR
@@ -256,7 +257,7 @@ namespace CreVox
 					#if UNITY_EDITOR
 					GameObject.DestroyImmediate (chunks [chunkPos].gameObject);
 					#else
-					UnityEngine.Object.Destroy(chunk.gameObject);
+					UnityEngine.Object.Destroy(chunks [chunkPos].gameObject);
 					#endif
 					chunks [chunkPos].Destroy ();
 					chunks.Remove (chunkPos);

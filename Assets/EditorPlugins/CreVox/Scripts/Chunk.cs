@@ -118,8 +118,10 @@ namespace CreVox
 			MeshData meshData = new MeshData ();
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				Block b = cData.blocks [i];
+				#if UNITY_EDITOR
 				bool isCut = (volume == null) ? false : (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY);
 				if (!isCut)
+				#endif
 					meshData = b.MeahAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
 			}
 			AssignRenderMesh (meshData);
@@ -130,8 +132,10 @@ namespace CreVox
 			MeshData meshData = new MeshData ();
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				Block b = cData.blocks [i];
+				#if UNITY_EDITOR
 				bool isCut = (volume != null) ? (volume.cuter && b.BlockPos.y + cData.ChunkPos.y > volume.cutY) : false;
 				if (!isCut)
+				#endif
 					meshData = b.ColliderAddMe (this, b.BlockPos.x, b.BlockPos.y, b.BlockPos.z, meshData);
 			}
 			AssignCollisionMesh (meshData);

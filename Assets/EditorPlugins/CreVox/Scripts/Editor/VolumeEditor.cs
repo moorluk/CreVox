@@ -637,17 +637,17 @@ namespace CreVox
 			switch (funcKey) {
 			case "A":
 				if (_index == 0)
-					currentEditMode = (EditMode)_count;
+					selectedEditMode = (EditMode)_count;
 				else
-					currentEditMode = (EditMode)(_index - 1);
+					selectedEditMode = (EditMode)(_index - 1);
 				Repaint ();
 				break;
 
 			case "D":
 				if (_index == _count)
-					currentEditMode = (EditMode)0;
+					selectedEditMode = (EditMode)0;
 				else
-					currentEditMode = (EditMode)(_index + 1);
+					selectedEditMode = (EditMode)(_index + 1);
 				Repaint ();
 				break;
 

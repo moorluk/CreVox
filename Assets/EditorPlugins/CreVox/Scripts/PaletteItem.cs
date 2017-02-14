@@ -5,7 +5,6 @@ namespace CreVox
 
 	public class PaletteItem : MonoBehaviour
 	{
-#if UNITY_EDITOR
 		public enum Category
 		{
 			Build,
@@ -35,7 +34,6 @@ namespace CreVox
 		public MarkerType markType = MarkerType.Item;
 		public string itemName = "";
 //		public LevelPiece inspectedScript;
-#endif
 
 		// Use this for initialization
 //		void Start()
