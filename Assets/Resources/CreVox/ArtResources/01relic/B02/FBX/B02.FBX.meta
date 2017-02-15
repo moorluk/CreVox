@@ -84,6 +84,9 @@ ModelImporter:
     100152: B02a_GiVcWm002
     100154: B02a_SiEpWm001
     100156: B02a_GiVbWm001
+    100158: B02a_SiCpWm001_Collision
+    100160: B02a_GiEcWm002
+    100162: B02a_GoEbWm001
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -163,6 +166,9 @@ ModelImporter:
     400152: B02a_GiVcWm002
     400154: B02a_SiEpWm001
     400156: B02a_GiVbWm001
+    400158: B02a_SiCpWm001_Collision
+    400160: B02a_GiEcWm002
+    400162: B02a_GoEbWm001
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -238,6 +244,9 @@ ModelImporter:
     2300144: B02a_GiVcWm002
     2300146: B02a_SiEpWm001
     2300148: B02a_GiVbWm001
+    2300150: B02a_SiCpWm001_Collision
+    2300152: B02a_GiEcWm002
+    2300154: B02a_GoEbWm001
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -313,6 +322,9 @@ ModelImporter:
     3300144: B02a_GiVcWm002
     3300146: B02a_SiEpWm001
     3300148: B02a_GiVbWm001
+    3300150: B02a_SiCpWm001_Collision
+    3300152: B02a_GiEcWm002
+    3300154: B02a_GoEbWm001
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -388,6 +400,9 @@ ModelImporter:
     4300144: B02a_SiEpWm001
     4300146: B02a_GiVcWm002
     4300148: B02a_GiVbWm001
+    4300150: B02a_SiCpWm001_Collision
+    4300152: B02a_GoEbWm001
+    4300154: B02a_GiEcWm002
   materials:
     importMaterials: 0
     materialName: 0
@@ -434,6 +449,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -444,7 +460,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
   humanoidOversampling: 1
