@@ -26,6 +26,7 @@ ModelImporter:
     100036: Ground
     100038: GroundHalf
     100040: Wall.Recessed
+    100042: WallSeprator175
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -47,6 +48,7 @@ ModelImporter:
     400036: Ground
     400038: GroundHalf
     400040: Wall.Recessed
+    400042: WallSeprator175
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -67,6 +69,7 @@ ModelImporter:
     2300034: Ground
     2300036: GroundHalf
     2300038: Wall.Recessed
+    2300040: WallSeprator175
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -87,6 +90,7 @@ ModelImporter:
     3300034: Ground
     3300036: GroundHalf
     3300038: Wall.Recessed
+    3300040: WallSeprator175
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -107,6 +111,7 @@ ModelImporter:
     4300034: Ground
     4300036: GroundHalf
     4300038: Wall.Recessed
+    4300040: WallSeprator175
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
@@ -132,7 +137,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -171,6 +176,7 @@ ModelImporter:
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -181,7 +187,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
   humanoidOversampling: 1
