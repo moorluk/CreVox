@@ -111,6 +111,7 @@ ModelImporter:
     100206: B02a_SrCpWm001_Collision
     100208: B02a_GrEbWm001
     100210: B02a_GrVbWm001
+    100212: B02a_GrCcWm001
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -217,6 +218,7 @@ ModelImporter:
     400206: B02a_SrCpWm001_Collision
     400208: B02a_GrEbWm001
     400210: B02a_GrVbWm001
+    400212: B02a_GrCcWm001
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -319,6 +321,7 @@ ModelImporter:
     2300198: B02a_SrCpWm001_Collision
     2300200: B02a_GrEbWm001
     2300202: B02a_GrVbWm001
+    2300204: B02a_GrCcWm001
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -421,6 +424,7 @@ ModelImporter:
     3300198: B02a_SrCpWm001_Collision
     3300200: B02a_GrEbWm001
     3300202: B02a_GrVbWm001
+    3300204: B02a_GrCcWm001
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -523,6 +527,7 @@ ModelImporter:
     4300198: B02a_SrCpWm001_Collision
     4300200: B02a_GrEbWm001
     4300202: B02a_GrVbWm001
+    4300204: B02a_GrCcWm001
   materials:
     importMaterials: 0
     materialName: 1
