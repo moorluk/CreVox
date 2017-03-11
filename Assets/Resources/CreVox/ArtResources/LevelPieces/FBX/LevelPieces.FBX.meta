@@ -27,6 +27,8 @@ ModelImporter:
     100038: GroundHalf
     100040: Wall.Recessed
     100042: WallSeprator175
+    100044: Roof.flat.tiltcorner
+    100046: Roof.flat.tiltside
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -49,6 +51,8 @@ ModelImporter:
     400038: GroundHalf
     400040: Wall.Recessed
     400042: WallSeprator175
+    400044: Roof.flat.tiltcorner
+    400046: Roof.flat.tiltside
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -70,6 +74,8 @@ ModelImporter:
     2300036: GroundHalf
     2300038: Wall.Recessed
     2300040: WallSeprator175
+    2300042: Roof.flat.tiltcorner
+    2300044: Roof.flat.tiltside
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -91,6 +97,8 @@ ModelImporter:
     3300036: GroundHalf
     3300038: Wall.Recessed
     3300040: WallSeprator175
+    3300042: Roof.flat.tiltcorner
+    3300044: Roof.flat.tiltside
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -112,6 +120,8 @@ ModelImporter:
     4300036: GroundHalf
     4300038: Wall.Recessed
     4300040: WallSeprator175
+    4300042: Roof.flat.tiltside
+    4300044: Roof.flat.tiltcorner
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
