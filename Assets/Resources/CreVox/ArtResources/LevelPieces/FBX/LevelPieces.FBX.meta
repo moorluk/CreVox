@@ -29,6 +29,9 @@ ModelImporter:
     100042: WallSeprator175
     100044: Roof.flat.tiltcorner
     100046: Roof.flat.tiltside
+    100048: Roof.flat.tiltside001
+    100050: Doorthick
+    100052: Doorthin
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -53,6 +56,9 @@ ModelImporter:
     400042: WallSeprator175
     400044: Roof.flat.tiltcorner
     400046: Roof.flat.tiltside
+    400048: Roof.flat.tiltside001
+    400050: Doorthick
+    400052: Doorthin
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -76,6 +82,9 @@ ModelImporter:
     2300040: WallSeprator175
     2300042: Roof.flat.tiltcorner
     2300044: Roof.flat.tiltside
+    2300046: Roof.flat.tiltside001
+    2300048: Doorthick
+    2300050: Doorthin
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -99,6 +108,9 @@ ModelImporter:
     3300040: WallSeprator175
     3300042: Roof.flat.tiltcorner
     3300044: Roof.flat.tiltside
+    3300046: Roof.flat.tiltside001
+    3300048: Doorthick
+    3300050: Doorthin
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -122,6 +134,9 @@ ModelImporter:
     4300040: WallSeprator175
     4300042: Roof.flat.tiltside
     4300044: Roof.flat.tiltcorner
+    4300046: Roof.flat.tiltside001
+    4300048: Doorthick
+    4300050: Doorthin
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR
