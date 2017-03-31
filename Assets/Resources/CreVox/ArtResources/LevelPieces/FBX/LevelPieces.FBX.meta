@@ -32,6 +32,7 @@ ModelImporter:
     100048: Roof.flat.tiltside001
     100050: Doorthick
     100052: Doorthin
+    100054: Roof.flat.tiltconvex
     400000: //RootNode
     400002: Voxel
     400004: Voxel001
@@ -59,6 +60,7 @@ ModelImporter:
     400048: Roof.flat.tiltside001
     400050: Doorthick
     400052: Doorthin
+    400054: Roof.flat.tiltconvex
     2300000: Voxel
     2300002: Voxel001
     2300004: Wall
@@ -85,6 +87,7 @@ ModelImporter:
     2300046: Roof.flat.tiltside001
     2300048: Doorthick
     2300050: Doorthin
+    2300052: Roof.flat.tiltconvex
     3300000: Voxel
     3300002: Voxel001
     3300004: Wall
@@ -111,6 +114,7 @@ ModelImporter:
     3300046: Roof.flat.tiltside001
     3300048: Doorthick
     3300050: Doorthin
+    3300052: Roof.flat.tiltconvex
     4300000: Voxel
     4300002: Voxel001
     4300004: Wall
@@ -137,6 +141,7 @@ ModelImporter:
     4300046: Roof.flat.tiltside001
     4300048: Doorthick
     4300050: Doorthin
+    4300052: Roof.flat.tiltconvex
     6400000: Fence
     6400002: Fence_StairL
     6400004: Fence_StairR

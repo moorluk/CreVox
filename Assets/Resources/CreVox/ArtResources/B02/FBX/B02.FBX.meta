@@ -118,6 +118,8 @@ ModelImporter:
     100220: B02a_RfEcBm002
     100222: B02a_GiEpUm001
     100224: B02a_GrEpUm001
+    100226: B02a_RfEcBm003
+    100228: B02a_RfVcBm002
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -231,6 +233,8 @@ ModelImporter:
     400220: B02a_RfEcBm002
     400222: B02a_GiEpUm001
     400224: B02a_GrEpUm001
+    400226: B02a_RfEcBm003
+    400228: B02a_RfVcBm002
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -340,6 +344,8 @@ ModelImporter:
     2300212: B02a_RfEcBm002
     2300214: B02a_GiEpUm001
     2300216: B02a_GrEpUm001
+    2300218: B02a_RfEcBm003
+    2300220: B02a_RfVcBm002
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -449,6 +455,8 @@ ModelImporter:
     3300212: B02a_RfEcBm002
     3300214: B02a_GiEpUm001
     3300216: B02a_GrEpUm001
+    3300218: B02a_RfEcBm003
+    3300220: B02a_RfVcBm002
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -558,6 +566,8 @@ ModelImporter:
     4300212: B02a_RfEcBm002
     4300214: B02a_GiEpUm001
     4300216: B02a_GrEpUm001
+    4300218: B02a_RfVcBm002
+    4300220: B02a_RfEcBm003
   materials:
     importMaterials: 0
     materialName: 1
