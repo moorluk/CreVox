@@ -5,16 +5,17 @@ using CreVox;
 using UnityEditor;
 
 public class AddOn {
+	// Idk why the top and bottom is reverse.
 	public enum DirectionOfBlock {
-		LeftTop,
-		Top,
-		RightTop,
+		LeftBottom,
+		Bottom,
+		RightBottom,
 		Left,
 		Center,
 		Right,
-		LeftBottom,
-		Bottom,
-		RightBottom
+		LeftTop,
+		Top,
+		RightTop
 	}
 	public struct DoorInfo {
 		public WorldPos position;
@@ -23,63 +24,75 @@ public class AddOn {
 			this.position = position;
 			this.direction = direction;
 		}
+		public bool Compare(DoorInfo obj) {
+			return this.position.Compare(obj.position) && this.direction == obj.direction;
+		}
 	}
 	public static WorldPos[] DirectionTrans = new WorldPos[] {
-		new WorldPos(-1, 0, 1),
-		new WorldPos(0, 0, 1),
-		new WorldPos(1, 0, 1),
+		new WorldPos(-1, 0, -1),
+		new WorldPos(0, 0, -1),
+		new WorldPos(1, 0, -1),
 		new WorldPos(-1, 0, 0),
 		new WorldPos(0, 0, 0),
 		new WorldPos(1, 0, 0),
-		new WorldPos(-1, 0, -1),
-		new WorldPos(0, 0, -1),
-		new WorldPos(1, 0, -1)
+		new WorldPos(-1, 0, 1),
+		new WorldPos(0, 0, 1),
+		new WorldPos(1, 0, 1)
 	};
 
-	private static VolumeData resultVolumeData;
+	private static VolumeManager resultVolumeManager;
+	private static Volume NowNode;
 	private static List<DoorInfo> volumeDataConnections;
+	private static List<DoorInfo> _usedConnections;
 
-	// Initial the resultVolumeData.
-	public static void Initial(VolumeData vdataClone) {
-		VolumeData vdata = new VolumeData(vdataClone);
-		AssetDatabase.CreateAsset(vdata, "Assets/WillDelete/VolumeData/Result_vdata.asset");
-		resultVolumeData = (VolumeData) AssetDatabase.LoadAssetAtPath("Assets/WillDelete/VolumeData/Result_vdata.asset", typeof(VolumeData));
-		volumeDataConnections = GetDoorPosition(resultVolumeData);
+	// Create Volume object and return it.
+	private static Volume CreateVolumeObject(VolumeData vdata) {
+		GameObject volumeObject = new GameObject() { name = vdata.name };
+		Volume volume = volumeObject.AddComponent<Volume>();
+		volume.vd = vdata;
+
+		volumeObject.transform.parent = resultVolumeManager.transform;
+
+		Debug.Log("Add " + vdata.name);
+		return volume;
+	}
+
+	// Initial the resultVolumeData and create the VolumeManager.
+	public static void Initial(VolumeData vdata) {
+		GameObject volumeMangerObject = new GameObject() { name = "resultVolumeManger" };
+		resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
+		NowNode = CreateVolumeObject(vdata);
+
+		RefreshVolume();
 		Debug.Log("Initial finish.");
 	}
-	// Create volumeMananger and volumeData gameObject.
-	public static void CreateObject() {
-		GameObject volumeObject = new GameObject() { name = "Result" };
-		Volume volume = volumeObject.AddComponent<Volume>();
-		volume.vd = resultVolumeData;
-		
-		volume._useBytes = false;
-		volume.BuildVolume(new Save(), volume.vd);
-		volume.tempPath = "";
-		
-		GameObject volumeMangerObject = new GameObject() { name = "VolumeManger" };
-		volumeMangerObject.AddComponent<VolumeManager>();
-
-		volumeObject.transform.parent = volumeMangerObject.transform;
-
-		volumeMangerObject.GetComponent<VolumeManager>().UpdateDungeon();
+	public static void RefreshVolume() {
+		resultVolumeManager.UpdateDungeon();
 		SceneView.RepaintAll();
-		
-		Debug.Log("Create finish.");
+	}
+	// Add node.
+	public static void AddAndCombineVolume(VolumeData vdata) {
+		Volume volume = CreateVolumeObject(vdata);
+		CombineVolumeObject(NowNode, volume);
+		NowNode = volume;
+		RefreshVolume();
 	}
 	// Combine both volumeData.
-	public static void CombineVolumeData(VolumeData vdataAdd) {
+	public static void CombineVolumeObject(Volume volume1, Volume volume2) {
 		// Get the connection.
-		List<DoorInfo> connectionsAdd = GetDoorPosition(vdataAdd);
+		List<DoorInfo> connections_1 = GetDoorPosition(volume1.vd);
+		List<DoorInfo> connections_2 = GetDoorPosition(volume2.vd);
+
 		WorldPos relativePosition = new WorldPos();
 		//
 		bool canCombine = false;
-		foreach (var connectionAdd in connectionsAdd) {
-			foreach (var connection in volumeDataConnections) {
-				int combineArg = ( (int) connection.direction ) + ( (int) connectionAdd.direction );
+		foreach (var connection_2 in connections_2) {
+			foreach (var connection_1 in connections_1) {
+				int combineArg = ( (int) connection_1.direction ) + ( (int) connection_2.direction );
 				if(combineArg == 8) {
-					relativePosition = connection.position - connectionAdd.position;
-					relativePosition += DirectionTrans[(int)connection.direction];
+					relativePosition = connection_1.position - connection_2.position;
+					relativePosition += DirectionTrans[(int) connection_1.direction];
+					Debug.Log(connection_1.direction.ToString());
 					canCombine = true;
 					break;
 				}
@@ -91,48 +104,8 @@ public class AddOn {
 			Debug.Log("No door can combine.");
 			return;
 		}
-		if(relativePosition.x < 0) {
-			foreach (var chunkData in resultVolumeData.chunkDatas) {
-				chunkData.ChunkPos.x = chunkData.ChunkPos.x - relativePosition.x;
-				// Get minimum of vdata range.
-				resultVolumeData.chunkX = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkX, (float)chunkData.ChunkPos.x / 9.0f + 1));
-				resultVolumeData.chunkY = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkY, (float)chunkData.ChunkPos.y / 9.0f + 1));
-				resultVolumeData.chunkZ = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkZ, (float)chunkData.ChunkPos.z / 9.0f + 1));
-			}
-			relativePosition.x = 0; 
-		}
-		if (relativePosition.y < 0) {
-			foreach (var chunkData in resultVolumeData.chunkDatas) {
-				chunkData.ChunkPos.y = chunkData.ChunkPos.y - relativePosition.y;
-				// Get minimum of vdata range.
-				resultVolumeData.chunkX = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkX, (float)chunkData.ChunkPos.x / 9.0f + 1));
-				resultVolumeData.chunkY = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkY, (float)chunkData.ChunkPos.y / 9.0f + 1));
-				resultVolumeData.chunkZ = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkZ, (float)chunkData.ChunkPos.z / 9.0f + 1));
-			}
-			relativePosition.y = 0;
-		}
-		if (relativePosition.z < 0) {
-			foreach (var chunkData in resultVolumeData.chunkDatas) {
-				chunkData.ChunkPos.z = chunkData.ChunkPos.z - relativePosition.z;
-				// Get minimum of vdata range.
-				resultVolumeData.chunkX = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkX, (float)chunkData.ChunkPos.x / 9.0f + 1));
-				resultVolumeData.chunkY = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkY, (float)chunkData.ChunkPos.y / 9.0f + 1));
-				resultVolumeData.chunkZ = (int)Mathf.Ceil(Mathf.Max((float)resultVolumeData.chunkZ, (float)chunkData.ChunkPos.z / 9.0f + 1));
-			}
-			relativePosition.z = 0;
-		}
-		foreach (var chunkData in vdataAdd.chunkDatas) {
-			// Deep copy setting.
-			ChunkData newChunkData = new ChunkData(chunkData);
-			newChunkData.ChunkPos = chunkData.ChunkPos + relativePosition;
-			resultVolumeData.chunkDatas.Add(newChunkData);
-			// Get minimum of vdata range.
-			resultVolumeData.chunkX = (int) Mathf.Ceil(Mathf.Max((float) resultVolumeData.chunkX, (float) newChunkData.ChunkPos.x / 9.0f + 1));
-			resultVolumeData.chunkY = (int) Mathf.Ceil(Mathf.Max((float) resultVolumeData.chunkY, (float) newChunkData.ChunkPos.y / 9.0f + 1));
-			resultVolumeData.chunkZ = (int) Mathf.Ceil(Mathf.Max((float) resultVolumeData.chunkZ, (float) newChunkData.ChunkPos.z / 9.0f + 1));
-		}
+		volume2.transform.localPosition = volume1.transform.position + relativePosition.ToVector3() * 3;
 		Debug.Log("Combine finish.");
-		volumeDataConnections = GetDoorPosition(resultVolumeData);
 	}
 	// Get volumedata via path as string.
 	public static VolumeData GetVolumeData(string path) {
@@ -151,7 +124,37 @@ public class AddOn {
 				for(int i = 0; i < blockAir.pieceNames.Length; i++) {
 					// If get door then add.
 					if(blockAir.pieceNames[i] == "Door") {
-						doors.Add(new DoorInfo(blockAir.BlockPos, (DirectionOfBlock) i));
+						// Real position = chunk position + block position.
+						WorldPos realPos = chunk.ChunkPos + blockAir.BlockPos;
+						doors.Add(new DoorInfo(realPos, (DirectionOfBlock) i));
+					}
+				}
+			}
+		}
+		return doors;
+	}
+	// Get the list that contains postisions and directions of door(conntection).
+	private static List<DoorInfo> GetDoorPosition() {
+		List<DoorInfo> doors = new List<DoorInfo>();
+		// All vdata.
+		foreach (var volume in resultVolumeManager.transform.GetComponentsInChildren<Volume>()) {
+			VolumeData vdata = volume.vd;
+			// All chunk.
+			foreach (var chunk in vdata.chunkDatas) {
+				// All blockAir.
+				foreach (var blockAir in chunk.blockAirs) {
+					// All direction.
+					for (int i = 0; i < blockAir.pieceNames.Length; i++) {
+						// If get door then add.
+						if (blockAir.pieceNames[i] == "Door") {
+							// Real position = (gameObject.position / 3) + chunk position + block position.
+							WorldPos realPos = new WorldPos(volume.transform.position / 3) + chunk.ChunkPos + blockAir.BlockPos;
+							DoorInfo doorInfo = new DoorInfo(realPos, (DirectionOfBlock) i);
+							// Check used.
+							if(! _usedConnections.Exists(x => x.Compare(doorInfo))) {
+								doors.Add(doorInfo);
+							}
+						}
 					}
 				}
 			}

@@ -16,6 +16,14 @@ namespace CreVox
 			this.y = y;
 			this.z = z;
 		}
+		public WorldPos(Vector3 v3) {
+			this.x = (int) v3.x;
+			this.y = (int) v3.y;
+			this.z = (int) v3.z;
+		}
+		public Vector3 ToVector3() {
+			return new Vector3(this.x, this.y, this.z);
+		}
 		//Add this function:
 		public override bool Equals(object obj)
 		{
