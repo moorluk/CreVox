@@ -37,7 +37,7 @@ namespace CreVox
 			vd = (VolumeData)target;
 			defColor = GUI.color;
 			volColor = new Color (0.5f, 0.8f, 0.75f);
-
+			if (vd == null) { return; }
 			bbool = new BlockBool[vd.chunkDatas.Count];
 			for (int i = 0; i < bbool.Length; i++) {
 				bbool [i].blocks = new bool[vd.chunkDatas [i].blocks.Count];

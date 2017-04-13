@@ -358,6 +358,7 @@ namespace CreVox
 		{
 			Chunk containerChunk = GetChunk (x, y, z);
 			if (containerChunk != null) {
+				if (containerChunk.cData == null) { return null; }
 				Block block = containerChunk.GetBlock (
 					              x - containerChunk.cData.ChunkPos.x,
 					              y - containerChunk.cData.ChunkPos.y,
@@ -586,6 +587,7 @@ namespace CreVox
 			#endif
 
 			foreach (Chunk c in chunks.Values) {
+				if (c.cData == null) { continue; }
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
@@ -897,6 +899,7 @@ namespace CreVox
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			foreach (Chunk chunk in chunks.Values) {
+				if (chunk.cData == null) { continue; }
 				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
 					WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
 					WorldPos chunkPos = chunk.cData.ChunkPos;

@@ -13,6 +13,11 @@ namespace CreVox
 		public BlockAir () : base ()
 		{
 		}
+		// [XAOCX add]
+		public BlockAir(BlockAir clone) : base(clone) {
+			this.pieceNames = (string[]) clone.pieceNames.Clone();
+			this.isSolid = (bool[]) clone.isSolid.Clone();
+		}
 
 		public override void Destroy ()
 		{

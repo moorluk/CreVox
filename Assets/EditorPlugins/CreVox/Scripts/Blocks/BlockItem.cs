@@ -20,6 +20,17 @@ namespace CreVox
 		public BlockItem () : base ()
 		{
 		}
+		// [XAOCX add]
+		public BlockItem(BlockItem clone) : base(clone) {
+			this.pieceName = clone.pieceName;
+			this.posX = clone.posX;
+			this.posY = clone.posY;
+			this.posZ = clone.posZ;
+			this.rotX = clone.rotX;
+			this.rotY = clone.rotY;
+			this.rotZ = clone.rotZ;
+			this.rotW = clone.rotW;
+		}
 
 		public override void Destroy ()
 		{

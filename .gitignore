@@ -5,6 +5,9 @@ Temp/
 Obj/
 UnityGenerated/
 Library/
+Assets/Standard Assets/
+Assets/Editor/
+Assets/Plugins/
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -19,6 +22,8 @@ ExportedObj/
 *.user
 *.unityproj
 *.booproj
+*.unity
+*.unity.meta
 
 # ============ #
 # OS generated #
