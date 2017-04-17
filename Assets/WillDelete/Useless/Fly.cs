@@ -15,7 +15,7 @@ public class Fly : MonoBehaviour {
 		characterController = gameObject.GetComponent<CharacterController>();
 		originGravity = firstPersonController.m_GravityMultiplier;
 		currentGravity = originGravity;
-		delta = 1.0f;
+		delta = 0.0f;
 	}
 	
 	// Update is called once per frame
