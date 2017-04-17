@@ -12,7 +12,7 @@ public class TestSomeFunction : MonoBehaviour {
 		CreVox.VolumeData[] array = new CreVox.VolumeData[] { entrance, explore, none };
 		AddOn.Initial(array[Random.Range(0, 3)]);
 		for (int i = 0; i < RandomCreateCount; i++) {
-			AddOn.AddAndCombineVolume(array[Random.Range(0,3)]);
+			AddOn.AddAndCombineVolume(array[Random.Range(0, 3)]);
 		}
 
 	}

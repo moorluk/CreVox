@@ -52,7 +52,7 @@ public class AddOn {
 		volume.vd = vdata;
 
 		volumeObject.transform.parent = resultVolumeManager.transform;
-
+		volume.Init(volume.chunkX, volume.chunkY, volume.chunkZ);
 		Debug.Log("Add " + vdata.name);
 		return volume;
 	}
@@ -73,19 +73,21 @@ public class AddOn {
 	// Add node.
 	public static void AddAndCombineVolume(VolumeData vdata) {
 		Volume volume = CreateVolumeObject(vdata);
-		CombineVolumeObject(NowNode, volume);
-		NowNode = volume;
-		RefreshVolume();
+		if(CombineVolumeObject(NowNode, volume)){
+			NowNode = volume;
+			RefreshVolume();
+		}else {
+			Object.DestroyImmediate(volume.gameObject);
+		}
 	}
 	// Combine both volumeData.
-	public static void CombineVolumeObject(Volume volume1, Volume volume2) {
+	public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
 		// Get the connection.
 		List<DoorInfo> connections_1 = GetDoorPosition(volume1.vd);
 		List<DoorInfo> connections_2 = GetDoorPosition(volume2.vd);
 
 		WorldPos relativePosition = new WorldPos();
 		//
-		bool canCombine = false;
 		foreach (var connection_2 in connections_2) {
 			foreach (var connection_1 in connections_1) {
 				int combineArg = ( (int) connection_1.direction ) + ( (int) connection_2.direction );
@@ -93,19 +95,18 @@ public class AddOn {
 					relativePosition = connection_1.position - connection_2.position;
 					relativePosition += DirectionTrans[(int) connection_1.direction];
 					Debug.Log(connection_1.direction.ToString());
-					canCombine = true;
-					break;
+					volume2.transform.localPosition = volume1.transform.position + relativePosition.ToVector3() * 3;
+					if (! isCollider(volume2)) {
+						Debug.Log("Combine finish.");
+						return true;
+					}else {
+						Debug.Log("Next");
+					}
 				}
 			}
-			if (canCombine)
-				break;
 		}
-		if(! canCombine) {
-			Debug.Log("No door can combine.");
-			return;
-		}
-		volume2.transform.localPosition = volume1.transform.position + relativePosition.ToVector3() * 3;
-		Debug.Log("Combine finish.");
+		Debug.Log("No door can combine.");
+		return false;
 	}
 	// Get volumedata via path as string.
 	public static VolumeData GetVolumeData(string path) {
@@ -160,5 +161,22 @@ public class AddOn {
 			}
 		}
 		return doors;
+	}
+	private static bool isCollider(Volume volume) {
+		Chunk[] chunks = volume.GetComponentsInChildren<Chunk>();
+		foreach (var chunk in chunks) {
+			Debug.Log(resultVolumeManager.GetComponentsInChildren<Chunk>().Length);
+			foreach (var otherChunk in resultVolumeManager.GetComponentsInChildren<Chunk>()) {
+				if (otherChunk == chunk) {
+					Debug.Log("Pass");
+					continue;
+				}
+				Debug.Log("test...");
+				if (chunk.GetComponent<MeshCollider>().bounds.Intersects(otherChunk.GetComponent<MeshCollider>().bounds)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
