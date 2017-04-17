@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using CreVox;
 using UnityEditor;
+using System.Linq;
+
 namespace Test {
 	public class AddOn {
 		// Idk why the top and bottom is reverse.
@@ -41,18 +42,6 @@ namespace Test {
 		};
 
 		private static VolumeManager resultVolumeManager;
-		private static Volume NowNode;
-		private static List<VolumeData> _refrenceVolumeData = new List<VolumeData>() {
-			GetVolumeData("Assets/WillDelete/VolumeData/None_vData.asset"),
-			GetVolumeData("Assets/WillDelete/VolumeData/Entrance_vdata.asset"),
-			GetVolumeData("Assets/WillDelete/VolumeData/Explore_vData.asset"),
-			GetVolumeData("Assets/WillDelete/VolumeData/Goal_vData.asset"),
-			GetVolumeData("Assets/WillDelete/VolumeData/Boss_vData.asset"),
-		};
-		public static List<VolumeData> VolumeDataResource {
-			get { return _refrenceVolumeData; }
-			set { _refrenceVolumeData = value; }
-		}
 
 		// Create Volume object and return it.
 		private static Volume CreateVolumeObject(VolumeData vdata) {
@@ -67,27 +56,28 @@ namespace Test {
 		}
 
 		// Initial the resultVolumeData and create the VolumeManager.
-		public static void Initial(VolumeData vdata) {
+		public static Volume Initial(VolumeData vdata) {
 			GameObject volumeMangerObject = new GameObject() { name = "resultVolumeManger" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
-			NowNode = CreateVolumeObject(vdata);
+			Volume NowNode = CreateVolumeObject(vdata);
 
 			RefreshVolume();
 			Debug.Log("Initial finish.");
+			return NowNode;
 		}
 		public static void RefreshVolume() {
 			resultVolumeManager.UpdateDungeon();
 			SceneView.RepaintAll();
 		}
 		// Add node.
-		public static void AddAndCombineVolume(VolumeData vdata) {
+		public static Volume AddAndCombineVolume(Volume nowNode, VolumeData vdata) {
 			Volume volume = CreateVolumeObject(vdata);
-			if (CombineVolumeObject(NowNode, volume)) {
-				NowNode = volume;
+			if (CombineVolumeObject(nowNode, volume)) {
 				RefreshVolume();
-			} else {
-				Object.DestroyImmediate(volume.gameObject);
+				return volume;
 			}
+			Object.DestroyImmediate(volume.gameObject);
+			return null;
 		}
 		// Combine both volumeData.
 		public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
@@ -96,8 +86,9 @@ namespace Test {
 			List<DoorInfo> connections_2 = GetDoorPosition(volume2.vd);
 
 			WorldPos relativePosition = new WorldPos();
-			//
-			foreach (var connection_2 in connections_2) {
+			// Compare door connection.
+			
+			foreach (var connection_2 in connections_2.OrderBy(x => Random.value)) {
 				foreach (var connection_1 in connections_1) {
 					int combineArg = ((int)connection_1.direction) + ((int)connection_2.direction);
 					if (combineArg == 8) {
