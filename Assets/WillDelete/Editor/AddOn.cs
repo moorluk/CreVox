@@ -5,30 +5,8 @@ using UnityEditor;
 using System.Linq;
 
 namespace Test {
+	
 	public class AddOn {
-		// Idk why the top and bottom is reverse.
-		public enum DirectionOfBlock {
-			LeftBottom,
-			Bottom,
-			RightBottom,
-			Left,
-			Center,
-			Right,
-			LeftTop,
-			Top,
-			RightTop
-		}
-		public struct DoorInfo {
-			public WorldPos position;
-			public DirectionOfBlock direction;
-			public DoorInfo(WorldPos position, DirectionOfBlock direction) {
-				this.position = position;
-				this.direction = direction;
-			}
-			public bool Compare(DoorInfo obj) {
-				return this.position.Compare(obj.position) && this.direction == obj.direction;
-			}
-		}
 		public static WorldPos[] DirectionTrans = new WorldPos[] {
 			new WorldPos(-1, 0, -1),
 			new WorldPos(0, 0, -1),
@@ -40,14 +18,25 @@ namespace Test {
 			new WorldPos(0, 0, 1),
 			new WorldPos(1, 0, 1)
 		};
+		private static List<VolumeData> DEFAULT_VOLUME_DATA = new List<VolumeData>() {
+			GetVolumeData("Assets/WillDelete/VolumeData/Stair_vdata.asset")
+		};
 
 		private static VolumeManager resultVolumeManager;
+		private static Dictionary<VolumeData, List<DoorInfo>> doorInfoVdataTable;
+
+		private static int[] _orderByDirection = new int[] { 0,1,2,3,4,5,6,7,8 };
 
 		// Create Volume object and return it.
 		private static Volume CreateVolumeObject(VolumeData vdata) {
 			GameObject volumeObject = new GameObject() { name = vdata.name };
 			Volume volume = volumeObject.AddComponent<Volume>();
 			volume.vd = vdata;
+			VolumeExtend volumeExtend = volumeObject.AddComponent<VolumeExtend>();
+			if(! doorInfoVdataTable.ContainsKey(vdata)) {
+				doorInfoVdataTable[vdata] = GetDoorPosition(vdata);
+			}
+			volumeExtend.DoorInfos = new List<DoorInfo>(doorInfoVdataTable[vdata].Select( x => x.Clone() ).ToArray());
 
 			volumeObject.transform.parent = resultVolumeManager.transform;
 			volume.Init(volume.chunkX, volume.chunkY, volume.chunkZ);
@@ -57,6 +46,7 @@ namespace Test {
 
 		// Initial the resultVolumeData and create the VolumeManager.
 		public static Volume Initial(VolumeData vdata) {
+			doorInfoVdataTable = new Dictionary<VolumeData, List<DoorInfo>>();
 			GameObject volumeMangerObject = new GameObject() { name = "resultVolumeManger" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			Volume NowNode = CreateVolumeObject(vdata);
@@ -65,38 +55,60 @@ namespace Test {
 			Debug.Log("Initial finish.");
 			return NowNode;
 		}
+		// Update and repaint.
 		public static void RefreshVolume() {
 			resultVolumeManager.UpdateDungeon();
 			SceneView.RepaintAll();
 		}
-		// Add node.
+		// Add volume data.
 		public static Volume AddAndCombineVolume(Volume nowNode, VolumeData vdata) {
 			Volume volume = CreateVolumeObject(vdata);
 			if (CombineVolumeObject(nowNode, volume)) {
-				RefreshVolume();
 				return volume;
 			}
 			Object.DestroyImmediate(volume.gameObject);
 			return null;
 		}
+		public static void SetPriority(string number) {
+			for(int i = 0; i < 9; i++) {
+				_orderByDirection[i] = number[i] - '0';
+			}
+		}
+		public static void SetPriority(int LT, int B, int RT, int L, int CENTER, int R, int LB, int T, int RB) {
+			int[] set = new int[] { LT, B, RT, L, CENTER, R, LB, T, RB };
+			for (int i = 0; i < 9; i++) {
+				_orderByDirection[i] = set[i];
+			}
+		}
 		// Combine both volumeData.
 		public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
-			// Get the connection.
-			List<DoorInfo> connections_1 = GetDoorPosition(volume1.vd);
-			List<DoorInfo> connections_2 = GetDoorPosition(volume2.vd);
+			VolumeExtend volumeExtend_1 = volume1.GetComponent<VolumeExtend>();
+			VolumeExtend volumeExtend_2 = volume2.GetComponent<VolumeExtend>();
 
 			WorldPos relativePosition = new WorldPos();
 			// Compare door connection.
-			
-			foreach (var connection_2 in connections_2.OrderBy(x => Random.value)) {
+			//DoorInfo[] connections_2 = volumeExtend_2.DoorInfos.OrderBy(x => -_orderByDirection[(int)x.direction]).ToArray();
+			DoorInfo[] connections_2 = volumeExtend_2.DoorInfos.OrderBy(x => Random.value).ToArray();
+			DoorInfo[] connections_1 = volumeExtend_1.DoorInfos.ToArray();
+			foreach (var connection_2 in connections_2) {
+				if (connection_2.used) {
+					Debug.Log("2Used");
+					continue;
+				}
 				foreach (var connection_1 in connections_1) {
+					if (connection_1.used) {
+						Debug.Log("1Used");
+						continue;
+					}
 					int combineArg = ((int)connection_1.direction) + ((int)connection_2.direction);
 					if (combineArg == 8) {
 						relativePosition = connection_1.position - connection_2.position;
 						relativePosition += DirectionTrans[(int)connection_1.direction];
-						Debug.Log(connection_1.direction.ToString());
-						volume2.transform.localPosition = volume1.transform.position + relativePosition.ToVector3() * 3;
+						// Real position.
+						volume2.transform.localPosition = volume1.transform.position + Vector3.Scale(relativePosition.ToVector3(),new Vector3(3, 2, 3));
 						if (!isCollider(volume2)) {
+							connection_1.used = true;
+							connection_2.used = true;
 							Debug.Log("Combine finish.");
 							return true;
 						} else {
@@ -134,35 +146,13 @@ namespace Test {
 			}
 			return doors;
 		}
-		// Get the list that contains postisions and directions of door(conntection).
-		private static List<DoorInfo> GetDoorPosition() {
-			List<DoorInfo> doors = new List<DoorInfo>();
-			// All vdata.
-			foreach (var volume in resultVolumeManager.transform.GetComponentsInChildren<Volume>()) {
-				VolumeData vdata = volume.vd;
-				// All chunk.
-				foreach (var chunk in vdata.chunkDatas) {
-					// All blockAir.
-					foreach (var blockAir in chunk.blockAirs) {
-						// All direction.
-						for (int i = 0; i < blockAir.pieceNames.Length; i++) {
-							// If get door then add.
-							if (blockAir.pieceNames[i] == "Door") {
-								// Real position = (gameObject.position / 3) + chunk position + block position.
-								WorldPos realPos = new WorldPos(volume.transform.position / 3) + chunk.ChunkPos + blockAir.BlockPos;
-								DoorInfo doorInfo = new DoorInfo(realPos, (DirectionOfBlock)i);
-								doors.Add(doorInfo);
-							}
-						}
-					}
-				}
-			}
-			return doors;
-		}
+
+
+		// Collision
 		private static bool isCollider(Volume volume) {
 			foreach (var chunkdata in volume.vd.chunkDatas) {
 				foreach (var block in chunkdata.blocks) {
-					Vector3 realPosition = volume.transform.position + (chunkdata.ChunkPos + block.BlockPos).ToVector3() * 3;
+					Vector3 realPosition = volume.transform.position + (chunkdata.ChunkPos + block.BlockPos).ToVector3();
 					if (interact(realPosition, volume)) {
 						return true;
 					}
@@ -177,7 +167,7 @@ namespace Test {
 				}
 				foreach (var compareChunkdata in compareVolume.vd.chunkDatas) {
 					foreach (var compareBlock in compareChunkdata.blocks) {
-						Vector3 comparePosition = compareVolume.transform.position + (compareChunkdata.ChunkPos + compareBlock.BlockPos).ToVector3() * 3;
+						Vector3 comparePosition = compareVolume.transform.position + Vector3.Scale((compareChunkdata.ChunkPos + compareBlock.BlockPos).ToVector3(), new Vector3(3, 2, 3));
 						if (position == comparePosition) {
 							return true;
 						}

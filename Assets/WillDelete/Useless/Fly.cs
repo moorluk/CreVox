@@ -4,11 +4,15 @@ using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
 
 public class Fly : MonoBehaviour {
-	public FirstPersonController firstPersonController;
-	public CharacterController characterController;
-	public float originGravity;
-	public float currentGravity;
-	public float delta;
+	private FirstPersonController firstPersonController;
+	private CharacterController characterController;
+	private float originGravity;
+	private float currentGravity;
+	private float delta;
+
+	float mass = 3.0F; // defines the character mass
+	Vector3 impact = Vector3.zero;
+
 	// Use this for initialization
 	void Start () {
 		firstPersonController = gameObject.GetComponent<FirstPersonController>();

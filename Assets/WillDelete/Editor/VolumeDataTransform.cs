@@ -32,6 +32,7 @@ namespace Test {
 			RewriteSystem.CreVoxNode root = RewriteSystem.CreVoxAttach.RootNode;
 			Volume volume = AddOn.Initial(_refrenceTable[root.AlphabetID]);
 			Recursion(root, volume);
+			AddOn.RefreshVolume();
 		}
 		private static void Recursion(RewriteSystem.CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
@@ -42,6 +43,18 @@ namespace Test {
 					Debug.Log("Error.");
 				}
 			}
+		}
+		public static void RandomGenerate(int count) {
+			AddOn.SetPriority(
+				0,0,0,
+				0,0,0,
+				0,0,0
+				);
+			Volume volume = AddOn.Initial(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+			while(volume != null && --count > 0) {
+				volume = AddOn.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+			}
+			AddOn.RefreshVolume();
 		}
 
 	}

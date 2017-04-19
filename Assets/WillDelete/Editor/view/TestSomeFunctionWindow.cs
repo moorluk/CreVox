@@ -11,6 +11,7 @@ namespace Test {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 		private static List<VolumeData> vdatas = new List<VolumeData>();
+		public static int Count;
 
 		void Initial() {
 			alphabets.Clear();
@@ -58,6 +59,13 @@ namespace Test {
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.Generate();
 			}
+			if(GUILayout.Button("Random Generate")) {
+				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
+				VolumeDataTransform.VolumeDatas = vdatas;
+				VolumeDataTransform.InitialTable();
+				VolumeDataTransform.RandomGenerate(Count);
+			}
+			Count = EditorGUILayout.IntField("Random generate count", Count);
 		}
 	}
 }
