@@ -24,6 +24,9 @@ namespace CreVox
 		public Vector3 ToVector3() {
 			return new Vector3(this.x, this.y, this.z);
 		}
+		public Vector3 ToRealPosition() {
+			return Vector3.Scale(this.ToVector3(), new Vector3(3, 2, 3));
+		}
 		//Add this function:
 		public override bool Equals(object obj)
 		{
