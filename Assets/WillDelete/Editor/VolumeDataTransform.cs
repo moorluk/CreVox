@@ -4,6 +4,7 @@ using UnityEngine;
 using CreVox;
 using MissionGrammarSystem;
 using System;
+using System.Linq;
 
 namespace Test {
 	public class VolumeDataTransform {
@@ -45,14 +46,16 @@ namespace Test {
 			}
 		}
 		public static void RandomGenerate(int count) {
-			AddOn.SetPriority(
-				0,0,0,
-				0,0,0,
-				0,0,0
-				);
+			List<Volume> vols = new List<Volume>();
 			Volume volume = AddOn.Initial(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
-			while(volume != null && --count > 0) {
+			vols.Add(volume);
+			while (--count > 0) {
 				volume = AddOn.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+				if(volume != null) {
+					vols.Add(volume);
+				}else {
+					volume = vols[UnityEngine.Random.Range(0, vols.Count)];
+				}
 			}
 			AddOn.RefreshVolume();
 		}
