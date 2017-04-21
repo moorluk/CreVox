@@ -150,8 +150,9 @@ namespace CreVox
 			itemRoot.transform.parent = transform;
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            //VolumeAdapter.AfterVolumeInit(this);
 
-			CreateChunks ();
+            CreateChunks ();
 
 			#if UNITY_EDITOR
 			if (!EditorApplication.isPlaying) {
@@ -449,7 +450,7 @@ namespace CreVox
 				
 				if (_id < blockItems.Count) {
 					blockItem = blockItems [_id];
-				} else {
+                } else {
 					blockItem = new BlockItem ();
 					blockItem.BlockPos = EditTerrain.GetBlockPos(_position);
 					blockItem.pieceName = _piece.gameObject.name;
@@ -461,7 +462,7 @@ namespace CreVox
 					blockItem.rotZ = _piece.transform.localRotation.z;
 					blockItem.rotW = _piece.transform.localRotation.w;
 					blockItems.Add (blockItem);
-				}
+                }
 				if (!itemNodes.ContainsKey (blockItem)) {
 					GameObject pObj;
 					#if UNITY_EDITOR
@@ -473,7 +474,10 @@ namespace CreVox
 					pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 					pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 					itemNodes.Add (blockItem, pObj);
-				}
+                    LevelPiece p = pObj.GetComponent<LevelPiece>();
+                    if (p != null)
+                        p.SetupPiece(blockItem);
+                }
 			} else {
 				if (!(_id < blockItems.Count))
 					return;
@@ -483,7 +487,8 @@ namespace CreVox
 				itemNodes.Remove (blockItem);
 				blockItems.RemoveAt (_id);
 			}
-		}
+            
+        }
 
 		public void PlaceItems()
 		{
@@ -498,8 +503,9 @@ namespace CreVox
 				BlockItem bItem = blockItems [i];
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
-						PlaceItem (i, itemArray [k].gameObject.GetComponent<LevelPiece> ());
-					}
+                        LevelPiece p = itemArray[k].gameObject.GetComponent<LevelPiece>();
+                        PlaceItem (i, p);
+                    }
 				}
 			}
 		}

@@ -49,7 +49,7 @@ namespace CreVox
 
 			if (VGlobal.GetSetting().FakeDeco) {
 				CreateVoxels ();
-			}
+            }
 		}
 
 		void CreateVoxels ()
@@ -87,7 +87,7 @@ namespace CreVox
 
 					PlacePieces (c);
 				}
-				PlaceItems (dungeons [vi].volumeData,volume.transform);
+				CreateItems (dungeons [vi].volumeData,volume.transform);
 			}
 		}
 
@@ -126,26 +126,31 @@ namespace CreVox
 			}
 		}
 
-		void PlaceItems(VolumeData _vData,Transform _parent)
+		void CreateItems(VolumeData _vData,Transform _parent)
 		{
 			for (int i = 0; i < _vData.blockItems.Count; i++) {
 				for (int k = 0; k < itemArray.Length; k++) {
 					BlockItem blockItem = _vData.blockItems [i];
 					if (blockItem.pieceName == itemArray [k].name) {
-						PlaceItem (blockItem, i, itemArray [k].gameObject.GetComponent<LevelPiece> (), _parent);
+						CreateItem (blockItem, i, itemArray [k].gameObject.GetComponent<LevelPiece> (), _parent);
 					}
 				}
 			}
 		}
-
-		public void PlaceItem(BlockItem blockItem, int _id, LevelPiece _piece, Transform _parent)
+        
+		public void CreateItem(BlockItem blockItem, int _id, LevelPiece _piece, Transform _parent)
 		{
 			GameObject pObj;
 			pObj = GameObject.Instantiate(_piece.gameObject);
 			pObj.transform.parent = _parent;
 			pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 			pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
-		}
+            LevelPiece p = (LevelPiece)pObj.GetComponent<LevelPiece>();
+            if (p != null)
+            {
+                p.SetupPiece(blockItem);
+            }
+        }
 
 		public void UpdateDungeon ()
 		{

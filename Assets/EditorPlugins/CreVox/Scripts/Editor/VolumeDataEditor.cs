@@ -282,7 +282,10 @@ namespace CreVox
 					workItem.rotY = rot.y;
 					workItem.rotZ = rot.z;
 					workItem.rotW = rot.w;
-				}
+
+                    for(int j =0; j < workItem.attributes.Length; j++)
+                        EditorGUILayout.LabelField("Attrib" + j.ToString(), workItem.attributes[j]);
+                }
 			}
 		}
 	}

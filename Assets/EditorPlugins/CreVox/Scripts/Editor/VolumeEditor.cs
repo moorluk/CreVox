@@ -9,6 +9,7 @@ namespace CreVox
 	[CustomEditor (typeof(Volume))]
 	public class VolumeEditor : Editor
 	{
+        private int selectedItemID = 0;
 		Volume volume;
 		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
 		int cx = 1;
@@ -227,7 +228,7 @@ namespace CreVox
 				}
 			}
 
-			DrawPieceSelectedGUI ();
+			DrawPieceInspectedGUI ();
 			DrawVData ();
 
 			if (EditorGUI.EndChangeCheck()) {
@@ -316,7 +317,8 @@ namespace CreVox
 			}
 			if (selectedEditMode != currentEditMode) {
 				currentEditMode = selectedEditMode;
-				Repaint ();
+                _itemInspected = null;
+                Repaint ();
 			}
 		}
 
@@ -397,7 +399,7 @@ namespace CreVox
 				float gy = pos.y * vg.h + gPos.y - vg.hh;
 				float gz = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
-				LevelPiece.PivotType pivot = _pieceSelected.pivot;
+                LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
 					Handles.RectangleCap (0, new Vector3 (gx, gy, gz), Quaternion.Euler (90, 0, 0), 0.5f);
@@ -466,11 +468,14 @@ namespace CreVox
 				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
 				facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
 				bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize,Handles.SphereCap);
+                
 				if (selected) {
 					Debug.Log ("fire!!!");
 					isSelectItem = true;
 					workItemId = i;
-					Event.current.type = EventType.mouseDown;
+                    selectedItemID = i;
+                    Debug.Log("DrawEditMarker ID: " + workItemId.ToString());
+                    Event.current.type = EventType.mouseDown;
 					Event.current.button = 0;
 				}
 				Handles.color = defColor;
@@ -567,7 +572,8 @@ namespace CreVox
 								PaintItem (true);
 							else {
 								GameObject ItemNode = volume.GetItemNode (volume.blockItems [workItemId]);
-								PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
+                                _itemInspected = ItemNode.GetComponent<PaletteItem>();
+                                PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
 								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
 								Debug.Log (PrefabUtility.GetPrefabParent (ItemNode));
 								UpdateCurrentPieceInstance (item, preview);
@@ -589,6 +595,7 @@ namespace CreVox
 		}
 
 		#endregion
+
 
 		#region LayerControl
 
@@ -885,6 +892,33 @@ namespace CreVox
 						EditorGUILayout.LabelField (_itemSelected.itemName);
 					}
 				}
+			}
+		}
+
+		private PaletteItem _itemInspected;
+
+		private void DrawPieceInspectedGUI()
+		{
+			if (currentEditMode != EditMode.Edit)
+				return;
+
+			EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
+			if (_itemInspected != null) {
+				EditorGUILayout.BeginVertical ("box");
+				EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
+                if (_itemInspected.inspectedScript != null)
+                {
+                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor(_itemInspected.inspectedScript));
+                    Debug.Log("selectedItemID:" + selectedItemID.ToString());
+                    BlockItem item = volume.blockItems[selectedItemID];
+
+                    if (e != null)
+                        e.OnEditorGUI(ref item);
+                        //VolumeEditorAdapter.DrawInspector(e, ref item);
+                }
+				EditorGUILayout.EndVertical ();
+			} else {
+				EditorGUILayout.HelpBox ("No piece to edit!", MessageType.Info);
 			}
 		}
 
