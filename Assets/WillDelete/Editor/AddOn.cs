@@ -26,6 +26,7 @@ namespace Test {
 			new WorldPos(8, 0, 8),
 			new WorldPos(8, 0, 0)
 		};
+
 		// Volume Manager object.
 		private static VolumeManager resultVolumeManager;
 		private static Dictionary<VolumeData, List<DoorInfo>> doorInfoVdataTable;
