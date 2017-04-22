@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Test {
+namespace CrevoxExtend {
 	public struct DirectionOfBlock {
 		public int angle;
 		public DirectionOfBlock(float degree) {

@@ -6,7 +6,7 @@ using MissionGrammarSystem;
 using System;
 using System.Linq;
 
-namespace Test {
+namespace CrevoxExtend {
 	public class VolumeDataTransform {
 		private static List<Guid> _alphabetIDs = new List<Guid>();
 		private static List<VolumeData> _volumeDatas = new List<VolumeData>();
@@ -31,13 +31,13 @@ namespace Test {
 		}
 		public static void Generate() {
 			RewriteSystem.CreVoxNode root = RewriteSystem.CreVoxAttach.RootNode;
-			Volume volume = AddOn.Initial(_refrenceTable[root.AlphabetID]);
+			Volume volume = CrevoxOperation.InitialVolume(_refrenceTable[root.AlphabetID]);
 			Recursion(root, volume);
-			AddOn.RefreshVolume();
+			CrevoxOperation.RefreshVolume();
 		}
 		private static void Recursion(RewriteSystem.CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
-				Volume volume = AddOn.AddAndCombineVolume(volumeOrigin, _refrenceTable[child.AlphabetID]);
+				Volume volume = CrevoxOperation.AddAndCombineVolume(volumeOrigin, _refrenceTable[child.AlphabetID]);
 				if (volume !=null) {
 					Recursion(child, volume);
 				} else {
@@ -47,17 +47,17 @@ namespace Test {
 		}
 		public static void RandomGenerate(int count) {
 			List<Volume> vols = new List<Volume>();
-			Volume volume = AddOn.Initial(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+			Volume volume = CrevoxOperation.InitialVolume(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
 			vols.Add(volume);
 			while (--count > 0) {
-				volume = AddOn.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+				volume = CrevoxOperation.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
 				if(volume != null) {
 					vols.Add(volume);
 				}else {
 					volume = vols[UnityEngine.Random.Range(0, vols.Count)];
 				}
 			}
-			AddOn.RefreshVolume();
+			CrevoxOperation.RefreshVolume();
 		}
 
 	}

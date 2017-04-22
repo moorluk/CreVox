@@ -8,8 +8,8 @@ using System.Linq;
 using System.IO;
 using System;
 
-namespace Test {
-	class TestWindow : EditorWindow {
+namespace CrevoxExtend {
+	class VolumeDataTransformWindow : EditorWindow {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 		private static List<VolumeData> vdatas = new List<VolumeData>();
@@ -51,18 +51,15 @@ namespace Test {
 				string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
 				if(path != "") {	
 					string[] files = Directory.GetFiles(path);
-					Debug.Log("Folder:");
-					Debug.Log(path);
 					for (int i = 0; i < files.Length; i++) {
 						string fileName = files[i].Split('\\').Last();
-						if(fileName.Length <= 12 || fileName.Substring(fileName.Length - 12, 12) != "_vData.asset" ) {
+						if(fileName.Length <= 12 || fileName.Substring(fileName.Length - 12, 12).ToLower() != "_vdata.asset" ) {
 							continue;
 						}
 						fileName = fileName.Remove(fileName.Length - 12, 12);
 						for (int j = 0; j < alphabets.Count; j++) {
 							if(alphabets[j].Name.ToLower() == fileName.ToLower()) {
-								Debug.Log(files[i]);
-								vdatas[j] = AddOn.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", ""));
+								vdatas[j] = CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", ""));
 							}
 						}
 					}

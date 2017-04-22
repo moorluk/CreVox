@@ -16,6 +16,7 @@ namespace CreVox
 			this.y = y;
 			this.z = z;
 		}
+		// [XAOCX Add]
 		public WorldPos(Vector3 v3) {
 			this.x = (int) v3.x;
 			this.y = (int) v3.y;
@@ -26,6 +27,9 @@ namespace CreVox
 		}
 		public Vector3 ToRealPosition() {
 			return Vector3.Scale(this.ToVector3(), new Vector3(3, 2, 3));
+		}
+		public float Distance(WorldPos another) {
+			return Vector3.Distance(this.ToVector3(), another.ToVector3());
 		}
 		//Add this function:
 		public override bool Equals(object obj)

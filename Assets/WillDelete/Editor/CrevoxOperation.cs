@@ -4,9 +4,9 @@ using CreVox;
 using UnityEditor;
 using System.Linq;
 
-namespace Test {
+namespace CrevoxExtend {
 
-	public class AddOn {
+	public class CrevoxOperation {
 		// Constant parameter array.
 		public static WorldPos[] DirectionOffset = new WorldPos[] {
 			new WorldPos(-1, 0, -1),
@@ -31,8 +31,6 @@ namespace Test {
 		private static VolumeManager resultVolumeManager;
 		private static Dictionary<VolumeData, List<DoorInfo>> doorInfoVdataTable;
 
-		private static int[] _orderByDirection = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-
 		// Create Volume object and return it.
 		private static Volume CreateVolumeObject(VolumeData vdata) {
 			GameObject volumeObject = new GameObject() { name = vdata.name };
@@ -46,19 +44,15 @@ namespace Test {
 
 			volumeObject.transform.parent = resultVolumeManager.transform;
 			volume.Init(volume.chunkX, volume.chunkY, volume.chunkZ);
-			Debug.Log("Add " + vdata.name);
 			return volume;
 		}
 
 		// Initial the resultVolumeData and create the VolumeManager.
-		public static Volume Initial(VolumeData vdata) {
+		public static Volume InitialVolume(VolumeData vdata) {
 			doorInfoVdataTable = new Dictionary<VolumeData, List<DoorInfo>>();
 			GameObject volumeMangerObject = new GameObject() { name = "resultVolumeManger" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			Volume NowNode = CreateVolumeObject(vdata);
-
-			RefreshVolume();
-			Debug.Log("Initial finish.");
 			return NowNode;
 		}
 		// Update and repaint.
@@ -75,17 +69,7 @@ namespace Test {
 			Object.DestroyImmediate(volume.gameObject);
 			return null;
 		}
-		public static void SetPriority(string number) {
-			for (int i = 0; i < 9; i++) {
-				_orderByDirection[i] = number[i] - '0';
-			}
-		}
-		public static void SetPriority(int LB, int B, int RB, int L, int CENTER, int R, int LT, int T, int RT) {
-			int[] set = new int[] { LB, B, RB, L, CENTER, R, LT, T, RT };
-			for (int i = 0; i < 9; i++) {
-				_orderByDirection[i] = set[i];
-			}
-		}
+
 		// Combine both volumeData.
 		public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
 			VolumeExtend volumeExtend1 = volume1.GetComponent<VolumeExtend>();
@@ -100,12 +84,10 @@ namespace Test {
 			DoorInfo[] connections1 = volumeExtend1.DoorInfos.ToArray();
 			foreach (var connection2 in connections2) {
 				if (connection2.used) {
-					Debug.Log("2 Used");
 					continue;
 				}
 				foreach (var connection1 in connections1) {
 					if (connection1.used) {
-						Debug.Log("1 Used");
 						continue;
 					}
 					// Added vdata need to rotate for matching  origin vdata.
@@ -120,13 +102,11 @@ namespace Test {
 					volume2.transform.eulerAngles = new Vector3(0, rotateAngle , 0);
 					// Real position.
 					volume2.transform.localPosition = volume1.transform.position - RotationOffset[rotationOfVolume1 / 90].ToRealPosition() + relativePosition.ToRealPosition() + RotationOffset[rotateAngle / 90].ToRealPosition();
-					if (!isCollider(volume2)) {
+					if (!IsCollider(volume2)) {
 						connection1.used = true;
 						connection2.used = true;
 						Debug.Log("Combine finish.");
 						return true;
-					} else {
-						Debug.Log("Next");
 					}
 
 				}
@@ -137,7 +117,6 @@ namespace Test {
 		// Get volumedata via path as string.
 		public static VolumeData GetVolumeData(string path) {
 			VolumeData vdata = (VolumeData) AssetDatabase.LoadAssetAtPath(path, typeof(VolumeData));
-			Debug.Log("Get vdata : " + vdata.name);
 			return vdata;
 		}
 		// Get the list that contains postisions and directions of door(conntection) via volumedata.
@@ -161,34 +140,115 @@ namespace Test {
 			return doors;
 		}
 
-
+		#region 重疊判定
+		// The set about Size of BlockAir object.
+		private static Dictionary<string, Vector3> BlockAirScale = new Dictionary<string, Vector3>() {
+			{ "Door", new Vector3(1, 3, 1) },
+			{ "Wall", new Vector3(1, 3, 1) },
+			{ "Gnd.in.bottom", new Vector3(1, 1, 1) },
+			{ "Stair", new Vector3(1, 1, 1) },
+			{ "Fence", new Vector3(1, 1, 1) }
+		};
+		private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
+		private static Vector3 OFFSET_SIZE = new Vector3(0.2f, 0.2f, 0.2f);
+		const float CHUNK_DISTANCE_MAXIMUM = 41.5692f; // Vector3.Magnitude(new Vector3(24, 24, 24))
+		
 		// Collision
-		private static bool isCollider(Volume volume) {
+		private static bool IsCollider(Volume volume) {
 			foreach (var chunkdata in volume.vd.chunkDatas) {
-				foreach (var block in chunkdata.blocks) {
-					Vector3 realPosition = volume.transform.position + ( chunkdata.ChunkPos + block.BlockPos ).ToRealPosition() - RotationOffset[(int)volume.transform.eulerAngles.y / 90].ToRealPosition();
-					if (interact(realPosition, volume)) {
-						return true;
+				foreach (var compareVolume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
+					if (compareVolume == volume) {
+						continue;
 					}
-				}
-			}
-			return false;
-		}
-		private static bool interact(Vector3 position, Volume volume) {
-			foreach (var compareVolume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
-				if (compareVolume == volume) {
-					continue;
-				}
-				foreach (var compareChunkdata in compareVolume.vd.chunkDatas) {
-					foreach (var compareBlock in compareChunkdata.blocks) {
-						Vector3 comparePosition = compareVolume.transform.position + ( compareChunkdata.ChunkPos + compareBlock.BlockPos ).ToRealPosition() - RotationOffset[(int) compareVolume.transform.eulerAngles.y / 90].ToRealPosition();
-						if (position == comparePosition) {
+					Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int) volume.transform.eulerAngles.y / 90].ToRealPosition();
+					foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
+						Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int) compareVolume.transform.eulerAngles.y / 90].ToRealPosition();
+						// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
+						if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
+							continue;
+						}
+						// Chunk interact.
+						if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition)) {
 							return true;
 						}
 					}
+				}	
+			}
+			return false;
+		}
+		// Chunk interact.
+		private static bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition) {
+			// Get all of Blocks.
+			foreach (var block in chunkData.blocks) {
+				Vector3 blockPosition = chunkPosition + block.BlockPos.ToRealPosition();
+				// Transform Block into Bounds.
+				Bounds bounds = new Bounds(blockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2 - OFFSET_SIZE);
+				// Bounds interact.
+				if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+					return true;
+				}
+			}
+			// Get all of BlockAirs.
+			foreach (var blockAir in chunkData.blockAirs) {
+				Vector3 blockPosition = chunkPosition + blockAir.BlockPos.ToRealPosition();
+				// Through pass all of pieceNames to get maximum of item size.
+				Vector3 maximumScale = new Vector3(1, 1, 1);
+				foreach (var names in blockAir.pieceNames) {
+					if (names == "") { continue; }
+					try{
+					if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
+					if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
+					if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+					}catch{ Debug.Log("Missing name: " + names); }
+				}
+				// Transform relative size into absolute size.
+				maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
+				// Transform BlockAirs into Bounds.
+				Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - OFFSET_SIZE);
+				// Bounds interact.
+				if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+					return true;
+				}
+			}
+			// No interact then return false.
+			return false;
+		}
+		// Bounds Interact.
+		private static bool BoundsInteract(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition) {
+			// Get all of Blocks.
+			foreach (var compareBlock in compareChunkData.blocks) {
+				Vector3 compareBlockPosition = compareChunkPosition + compareBlock.BlockPos.ToRealPosition();
+				// Transform into Bounds.
+				Bounds compareBounds = new Bounds(compareBlockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2);
+				// Both bounds interact.
+				if (bounds.Intersects(compareBounds)) {
+					return true;
+				}
+			}
+			// Get all of BlockAirs.
+			foreach (var compareBlockAir in compareChunkData.blockAirs) {
+				Vector3 compareBlockPosition = compareChunkPosition + compareBlockAir.BlockPos.ToRealPosition();
+				// Through pass all of pieceNames to get maximum of item size.
+				Vector3 maximumScale = new Vector3(1, 1, 1);
+				foreach (var names in compareBlockAir.pieceNames) {
+					if (names == "") { continue; }
+					try {
+						if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
+						if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
+						if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+					} catch { Debug.Log("Missing name: " + names); }
+				}
+				// Transform relative size into absolute size.
+				maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
+				// Transform BlockAirs into Bounds.
+				Bounds compareBounds = new Bounds(compareBlockPosition + maximumScale, maximumScale * 2);
+				if (bounds.Intersects(compareBounds)) {
+					// Both bounds interact.
+					return true;
 				}
 			}
 			return false;
 		}
+		#endregion
 	}
 }
