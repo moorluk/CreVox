@@ -120,6 +120,14 @@ ModelImporter:
     100224: B02a_GrEpUm001
     100226: B02a_RfEcBm003
     100228: B02a_RfVcBm002
+    100230: B02a_SiEcWm001
+    100232: B02a_SiEcWm002
+    100234: B02a_SiCcAm001
+    100236: B02a_GsEbWm001
+    100238: B02a_SiCpWm002
+    100240: B02a_SiCpWm002_Collision
+    100242: B02a_GsEbWm002
+    100244: B02a_GsEbWm003
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -235,6 +243,14 @@ ModelImporter:
     400224: B02a_GrEpUm001
     400226: B02a_RfEcBm003
     400228: B02a_RfVcBm002
+    400230: B02a_SiEcWm001
+    400232: B02a_SiEcWm002
+    400234: B02a_SiCcAm001
+    400236: B02a_GsEbWm001
+    400238: B02a_SiCpWm002
+    400240: B02a_SiCpWm002_Collision
+    400242: B02a_GsEbWm002
+    400244: B02a_GsEbWm003
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -346,6 +362,14 @@ ModelImporter:
     2300216: B02a_GrEpUm001
     2300218: B02a_RfEcBm003
     2300220: B02a_RfVcBm002
+    2300222: B02a_SiEcWm001
+    2300224: B02a_SiEcWm002
+    2300226: B02a_SiCcAm001
+    2300228: B02a_GsEbWm001
+    2300230: B02a_SiCpWm002
+    2300232: B02a_SiCpWm002_Collision
+    2300234: B02a_GsEbWm002
+    2300236: B02a_GsEbWm003
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -457,6 +481,14 @@ ModelImporter:
     3300216: B02a_GrEpUm001
     3300218: B02a_RfEcBm003
     3300220: B02a_RfVcBm002
+    3300222: B02a_SiEcWm001
+    3300224: B02a_SiEcWm002
+    3300226: B02a_SiCcAm001
+    3300228: B02a_GsEbWm001
+    3300230: B02a_SiCpWm002
+    3300232: B02a_SiCpWm002_Collision
+    3300234: B02a_GsEbWm002
+    3300236: B02a_GsEbWm003
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -568,6 +600,14 @@ ModelImporter:
     4300216: B02a_GrEpUm001
     4300218: B02a_RfVcBm002
     4300220: B02a_RfEcBm003
+    4300222: B02a_SiEcWm001
+    4300224: B02a_SiEcWm002
+    4300226: B02a_SiCcAm001
+    4300228: B02a_SiCpWm002
+    4300230: B02a_GsEbWm001
+    4300232: B02a_SiCpWm002_Collision
+    4300234: B02a_GsEbWm002
+    4300236: B02a_GsEbWm003
   materials:
     importMaterials: 0
     materialName: 1
