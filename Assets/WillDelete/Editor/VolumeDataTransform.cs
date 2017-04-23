@@ -19,7 +19,7 @@ namespace CrevoxExtend {
 			get { return _volumeDatas; }
 			set { _volumeDatas = value; }
 		}
-		public static Dictionary<Guid,VolumeData> RefrenceTable {
+		public static Dictionary<Guid, VolumeData> RefrenceTable {
 			get { return _refrenceTable; }
 			set { _refrenceTable = value; }
 		}
@@ -29,31 +29,38 @@ namespace CrevoxExtend {
 				_refrenceTable[_alphabetIDs[i]] = _volumeDatas[i];
 			}
 		}
+		// Generate the volume data that refer graph grammar.
 		public static void Generate() {
+			// Get root.
 			RewriteSystem.CreVoxNode root = RewriteSystem.CreVoxAttach.RootNode;
+			// Initial root.
 			Volume volume = CrevoxOperation.InitialVolume(_refrenceTable[root.AlphabetID]);
-			Recursion(root, volume);
+			GenerateRecursion(root, volume);
+			// Update volume manager and scene.
 			CrevoxOperation.RefreshVolume();
 		}
-		private static void Recursion(RewriteSystem.CreVoxNode node, Volume volumeOrigin) {
+		// Dfs generate.
+		private static bool GenerateRecursion(RewriteSystem.CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
-				Volume volume = CrevoxOperation.AddAndCombineVolume(volumeOrigin, _refrenceTable[child.AlphabetID]);
-				if (volume !=null) {
-					Recursion(child, volume);
-				} else {
-					Debug.Log("Error.");
-				}
+				Volume volume = CrevoxOperation.CreateVolumeObject(_refrenceTable[child.AlphabetID]);
+				do {
+					if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
+						return false;
+					}
+				} while (!GenerateRecursion(child, volume));
 			}
+			return true;
 		}
+		// [TEST] Will delete.
 		public static void RandomGenerate(int count) {
 			List<Volume> vols = new List<Volume>();
 			Volume volume = CrevoxOperation.InitialVolume(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
 			vols.Add(volume);
 			while (--count > 0) {
 				volume = CrevoxOperation.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
-				if(volume != null) {
+				if (volume != null) {
 					vols.Add(volume);
-				}else {
+				} else {
 					volume = vols[UnityEngine.Random.Range(0, vols.Count)];
 				}
 			}

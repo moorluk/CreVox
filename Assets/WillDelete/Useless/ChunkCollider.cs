@@ -10,7 +10,18 @@ public class ChunkCollider : MonoBehaviour {
 	private void Update() {
 		isColi = IsCollider(GetComponent<Volume>());
 	}
-
+	// Compute the position after rotated.
+	public static WorldPos AbsolutePosition(WorldPos position, float degree) {
+		Vector2 aPoint = new Vector2(position.x, position.z);
+		// Set 4, 4 to be center point.
+		aPoint -= new Vector2(4, 4);
+		float rad = degree * Mathf.Deg2Rad;
+		float sin = Mathf.Sin(rad);
+		float cos = Mathf.Cos(rad);
+		return new WorldPos((int) Mathf.Round(aPoint.x * cos + aPoint.y * sin + 4),
+			position.y,
+			(int) Mathf.Round(aPoint.y * cos - aPoint.x * sin + 4));
+	}
 	private static WorldPos[] RotationOffset = new WorldPos[] {
 			new WorldPos(0, 0, 0),
 			new WorldPos(0, 0, 8),
@@ -29,9 +40,10 @@ public class ChunkCollider : MonoBehaviour {
 				foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
 					Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int) compareVolume.transform.eulerAngles.y / 90].ToRealPosition();
 					if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
+						Debug.Log("dis");
 						continue;
 					}
-					if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition)) {
+					if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, volume.transform.eulerAngles.y, compareVolume.transform.eulerAngles.y)) {
 						return true;
 					}
 				}
@@ -46,16 +58,16 @@ public class ChunkCollider : MonoBehaviour {
 			{ "Stair", new Vector3(1, 1, 1) }
 		};
 	private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
-	private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition) {
+	private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 		foreach (var block in chunkData.blocks) {
-			Vector3 blockPosition = chunkPosition + block.BlockPos.ToRealPosition();
+			Vector3 blockPosition = chunkPosition + AbsolutePosition(block.BlockPos, rotateAngle).ToRealPosition();
 			Bounds bounds = new Bounds(blockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2 - new Vector3(0.2f, 0.2f, 0.2f));
-			if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+			if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 				return true;
 			}
 		}
 		foreach (var blockAir in chunkData.blockAirs) {
-			Vector3 blockPosition = chunkPosition + blockAir.BlockPos.ToRealPosition();
+			Vector3 blockPosition = chunkPosition + AbsolutePosition(blockAir.BlockPos, rotateAngle).ToRealPosition();
 			Vector3 maximumScale = new Vector3(1, 1, 1);
 			foreach (var names in blockAir.pieceNames) {
 				if (names == "") { continue; }
@@ -64,25 +76,25 @@ public class ChunkCollider : MonoBehaviour {
 				if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
 			}
 			maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
-			Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - new Vector3(1f, 1f, 1f));
-			if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+			Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - new Vector3(0.2f, 0.2f, 0.2f));
+			if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	private bool BoundsInteract(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition) {
+	private bool BoundsIntersect(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 
 		foreach (var compareBlock in compareChunkData.blocks) {
-			Vector3 compareBlockPosition = compareChunkPosition + compareBlock.BlockPos.ToRealPosition();
+			Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlock.BlockPos, compareRotateAngle).ToRealPosition();
 			Bounds compareBounds = new Bounds(compareBlockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2);
 			if (bounds.Intersects(compareBounds)) {
-				
+				Debug.Log(compareBlock.BlockPos);
 				return true;
 			}
 		}
 		foreach (var compareBlockAir in compareChunkData.blockAirs) {
-			Vector3 compareBlockPosition = compareChunkPosition + compareBlockAir.BlockPos.ToRealPosition();
+			Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlockAir.BlockPos, compareRotateAngle).ToRealPosition();
 			Vector3 maximumScale = new Vector3(1, 1, 1);
 			foreach (var names in compareBlockAir.pieceNames) {
 				if (names == "") { continue; }
@@ -93,9 +105,6 @@ public class ChunkCollider : MonoBehaviour {
 			maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
 			Bounds compareBounds = new Bounds(compareBlockPosition + maximumScale, maximumScale * 2);
 			if (bounds.Intersects(compareBounds)) {
-				Debug.Log(MINIMUM_SIZE);
-				Debug.Log(bounds);
-				Debug.Log(compareBounds);
 				return true;
 			}
 		}

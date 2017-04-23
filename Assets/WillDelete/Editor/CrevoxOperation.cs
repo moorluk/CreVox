@@ -7,18 +7,6 @@ using System.Linq;
 namespace CrevoxExtend {
 
 	public class CrevoxOperation {
-		// Constant parameter array.
-		public static WorldPos[] DirectionOffset = new WorldPos[] {
-			new WorldPos(-1, 0, -1),
-			new WorldPos(0, 0, -1),
-			new WorldPos(1, 0, -1),
-			new WorldPos(-1, 0, 0),
-			new WorldPos(0, 0, 0),
-			new WorldPos(1, 0, 0),
-			new WorldPos(-1, 0, 1),
-			new WorldPos(0, 0, 1),
-			new WorldPos(1, 0, 1)
-		};
 		// Offset about 0, 90, 180, 270 degrees.
 		private static WorldPos[] RotationOffset = new WorldPos[] {
 			new WorldPos(0, 0, 0),
@@ -26,13 +14,24 @@ namespace CrevoxExtend {
 			new WorldPos(8, 0, 8),
 			new WorldPos(8, 0, 0)
 		};
-
+		// Compute the position after rotated.
+		public static WorldPos AbsolutePosition(WorldPos position, float degree) {
+			Vector2 aPoint = new Vector2(position.x, position.z);
+			// Set 4, 4 to be center point.
+			aPoint -= new Vector2(4, 4);
+			float rad = degree * Mathf.Deg2Rad;
+			float sin = Mathf.Sin(rad);
+			float cos = Mathf.Cos(rad);
+			return new WorldPos((int) Mathf.Round(aPoint.x * cos + aPoint.y * sin + 4),
+				position.y,
+				(int) Mathf.Round(aPoint.y * cos - aPoint.x * sin + 4));
+		}
 		// Volume Manager object.
 		private static VolumeManager resultVolumeManager;
 		private static Dictionary<VolumeData, List<DoorInfo>> doorInfoVdataTable;
 
 		// Create Volume object and return it.
-		private static Volume CreateVolumeObject(VolumeData vdata) {
+		public static Volume CreateVolumeObject(VolumeData vdata) {
 			GameObject volumeObject = new GameObject() { name = vdata.name };
 			Volume volume = volumeObject.AddComponent<Volume>();
 			volume.vd = vdata;
@@ -69,7 +68,14 @@ namespace CrevoxExtend {
 			Object.DestroyImmediate(volume.gameObject);
 			return null;
 		}
-
+		public struct PairOfDoor {
+			DoorInfo first;
+			DoorInfo second;
+			public PairOfDoor(DoorInfo f, DoorInfo s) {
+				this.first = f;
+				this.second = s;
+			}
+		}
 		// Combine both volumeData.
 		public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
 			VolumeExtend volumeExtend1 = volume1.GetComponent<VolumeExtend>();
@@ -79,7 +85,6 @@ namespace CrevoxExtend {
 			int rotationOfVolume1 = (int) volume1.transform.eulerAngles.y;
 			int rotationOfVolume2 = (int) volume2.transform.eulerAngles.y;
 			// Compare door connection.
-			//DoorInfo[] connections_2 = volumeExtend_2.DoorInfos.OrderBy(x => -_orderByDirection[(int)x.direction]).ToArray();
 			DoorInfo[] connections2 = volumeExtend2.DoorInfos.OrderBy(x => Random.value).ToArray();
 			DoorInfo[] connections1 = volumeExtend1.DoorInfos.ToArray();
 			foreach (var connection2 in connections2) {
@@ -91,16 +96,16 @@ namespace CrevoxExtend {
 						continue;
 					}
 					// Added vdata need to rotate for matching  origin vdata.
-					int rotateAngle = (((( connection1.direction.angle + (int)volume1.transform.eulerAngles.y ) + 180) % 360) - connection2.direction.angle);
-					if(rotateAngle < 0) {
+					int rotateAngle = ( ( ( ( connection1.direction.Angle + (int) volume1.transform.eulerAngles.y ) + 180 ) % 360 ) - connection2.direction.Angle );
+					if (rotateAngle < 0) {
 						rotateAngle += 360;
 					}
 					// Relative position between connections.
-					relativePosition = connection1.AbsolutePosition(rotationOfVolume1) - connection2.AbsolutePosition(rotateAngle);
-					relativePosition += DirectionOffset[connection1.AbsoluteDirection(rotationOfVolume1).ToIndex()];
+					relativePosition = AbsolutePosition(connection1.position, rotationOfVolume1) - AbsolutePosition(connection2.position, rotateAngle);
+					relativePosition += connection1.AbsoluteDirection(rotationOfVolume1).RelativePosition;
 					// Rotation
-					volume2.transform.eulerAngles = new Vector3(0, rotateAngle , 0);
-					// Real position.
+					volume2.transform.eulerAngles = new Vector3(0, rotateAngle, 0);
+					// Absolute position.
 					volume2.transform.localPosition = volume1.transform.position - RotationOffset[rotationOfVolume1 / 90].ToRealPosition() + relativePosition.ToRealPosition() + RotationOffset[rotateAngle / 90].ToRealPosition();
 					if (!IsCollider(volume2)) {
 						connection1.used = true;
@@ -132,8 +137,14 @@ namespace CrevoxExtend {
 						if (blockAir.pieceNames[i] == "Door") {
 							// Real position = chunk position + block position.
 							WorldPos realPos = chunk.ChunkPos + blockAir.BlockPos;
-							doors.Add(new DoorInfo(realPos, new DirectionOfBlock(i)));
-						}
+							doors.Add(new DoorInfo(realPos, new DirectionOfBlock(( i - 1 ) / 2)));
+						} /*else if(blockAir.pieceNames[i] == "Gnd.rise") {
+							WorldPos realPos = chunk.ChunkPos + blockAir.BlockPos;
+							doors.Add(new DoorInfo(realPos, new DirectionOfBlock(9)));
+						} else if(blockAir.pieceNames[i] == "Gnd.sink") {
+							WorldPos realPos = chunk.ChunkPos + blockAir.BlockPos;
+							doors.Add(new DoorInfo(realPos, new DirectionOfBlock(10)));
+						}*/
 					}
 				}
 			}
@@ -152,7 +163,7 @@ namespace CrevoxExtend {
 		private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
 		private static Vector3 OFFSET_SIZE = new Vector3(0.2f, 0.2f, 0.2f);
 		const float CHUNK_DISTANCE_MAXIMUM = 41.5692f; // Vector3.Magnitude(new Vector3(24, 24, 24))
-		
+
 		// Collision
 		private static bool IsCollider(Volume volume) {
 			foreach (var chunkdata in volume.vd.chunkDatas) {
@@ -160,53 +171,55 @@ namespace CrevoxExtend {
 					if (compareVolume == volume) {
 						continue;
 					}
-					Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int) volume.transform.eulerAngles.y / 90].ToRealPosition();
+					float rotateAngle = volume.transform.eulerAngles.y >= 0 ? volume.transform.eulerAngles.y : volume.transform.eulerAngles.y + 360;
+					float compareRotateAngle = compareVolume.transform.eulerAngles.y >= 0 ? compareVolume.transform.eulerAngles.y : compareVolume.transform.eulerAngles.y + 360;
+					Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int) rotateAngle / 90].ToRealPosition();
 					foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
-						Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int) compareVolume.transform.eulerAngles.y / 90].ToRealPosition();
+						Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int) compareRotateAngle / 90].ToRealPosition();
 						// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
 						if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
 							continue;
 						}
 						// Chunk interact.
-						if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition)) {
+						if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 							return true;
 						}
 					}
-				}	
+				}
 			}
 			return false;
 		}
 		// Chunk interact.
-		private static bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition) {
+		private static bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 			// Get all of Blocks.
 			foreach (var block in chunkData.blocks) {
-				Vector3 blockPosition = chunkPosition + block.BlockPos.ToRealPosition();
+				Vector3 blockPosition = chunkPosition + AbsolutePosition(block.BlockPos, rotateAngle).ToRealPosition();
 				// Transform Block into Bounds.
 				Bounds bounds = new Bounds(blockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2 - OFFSET_SIZE);
 				// Bounds interact.
-				if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+				if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 					return true;
 				}
 			}
 			// Get all of BlockAirs.
 			foreach (var blockAir in chunkData.blockAirs) {
-				Vector3 blockPosition = chunkPosition + blockAir.BlockPos.ToRealPosition();
+				Vector3 blockPosition = chunkPosition + AbsolutePosition(blockAir.BlockPos, rotateAngle).ToRealPosition();
 				// Through pass all of pieceNames to get maximum of item size.
 				Vector3 maximumScale = new Vector3(1, 1, 1);
 				foreach (var names in blockAir.pieceNames) {
 					if (names == "") { continue; }
-					try{
-					if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
-					if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
-					if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
-					}catch{ Debug.Log("Missing name: " + names); }
+					try {
+						if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
+						if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
+						if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+					} catch { Debug.Log("Missing name: " + names); }
 				}
 				// Transform relative size into absolute size.
 				maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
 				// Transform BlockAirs into Bounds.
 				Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - OFFSET_SIZE);
 				// Bounds interact.
-				if (BoundsInteract(bounds, compareChunkData, compareChunkPosition)) {
+				if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 					return true;
 				}
 			}
@@ -214,10 +227,10 @@ namespace CrevoxExtend {
 			return false;
 		}
 		// Bounds Interact.
-		private static bool BoundsInteract(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition) {
+		private static bool BoundsIntersect(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 			// Get all of Blocks.
 			foreach (var compareBlock in compareChunkData.blocks) {
-				Vector3 compareBlockPosition = compareChunkPosition + compareBlock.BlockPos.ToRealPosition();
+				Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlock.BlockPos, compareRotateAngle).ToRealPosition();
 				// Transform into Bounds.
 				Bounds compareBounds = new Bounds(compareBlockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2);
 				// Both bounds interact.
@@ -227,7 +240,7 @@ namespace CrevoxExtend {
 			}
 			// Get all of BlockAirs.
 			foreach (var compareBlockAir in compareChunkData.blockAirs) {
-				Vector3 compareBlockPosition = compareChunkPosition + compareBlockAir.BlockPos.ToRealPosition();
+				Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlockAir.BlockPos, compareRotateAngle).ToRealPosition();
 				// Through pass all of pieceNames to get maximum of item size.
 				Vector3 maximumScale = new Vector3(1, 1, 1);
 				foreach (var names in compareBlockAir.pieceNames) {

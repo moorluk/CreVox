@@ -13,9 +13,9 @@ namespace CrevoxExtend {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 		private static List<VolumeData> vdatas = new List<VolumeData>();
-		public static int Count;
+		private static int _randomCount;
 
-		void Initial() {
+		void Initialize() {
 			alphabets.Clear();
 			vdatas.Clear();
 			foreach (var node in Alphabet.Nodes) {
@@ -27,11 +27,11 @@ namespace CrevoxExtend {
 			}
 		}
 		void Awake() {
-			Initial();
+			Initialize();
 		}
 		void OnFocus() {
 			if (isChanged()) {
-				Initial();
+				Initialize();
 			}
 		}
 		bool isChanged() {
@@ -47,45 +47,55 @@ namespace CrevoxExtend {
 			return false;
 		}
 		void OnGUI() {
-			if(GUILayout.Button("Open Folder")) {
+			if (GUILayout.Button("Open Folder")) {
+				// Open folder.
 				string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
-				if(path != "") {	
+				if (path != "") {
+					// Get the files.
 					string[] files = Directory.GetFiles(path);
 					for (int i = 0; i < files.Length; i++) {
+						// Get the file name.
 						string fileName = files[i].Split('\\').Last();
-						if(fileName.Length <= 12 || fileName.Substring(fileName.Length - 12, 12).ToLower() != "_vdata.asset" ) {
+						// If the file name is illegal then continue.
+						if (fileName.Length <= 12 || fileName.Substring(fileName.Length - 12, 12).ToLower() != "_vdata.asset") {
 							continue;
 						}
+						// Get the keyword of file name.
 						fileName = fileName.Remove(fileName.Length - 12, 12);
+						// Keyword compare.
 						for (int j = 0; j < alphabets.Count; j++) {
-							if(alphabets[j].Name.ToLower() == fileName.ToLower()) {
+							if (alphabets[j].Name.ToLower() == fileName.ToLower()) {
 								vdatas[j] = CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", ""));
 							}
 						}
 					}
 				}
 			}
+			// Node list.
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height * 0.75f));
-			for(int i = 0; i < alphabets.Count; i++) {
+			for (int i = 0; i < alphabets.Count; i++) {
 				EditorGUILayout.BeginHorizontal();
 				GUILayout.Label(alphabets[i].ExpressName, GUILayout.Width(Screen.width / 2));
 				vdatas[i] = (VolumeData) EditorGUILayout.ObjectField(vdatas[i], typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
 				EditorGUILayout.EndHorizontal();
 			}
 			EditorGUILayout.EndScrollView();
+			// Generate button.
 			if (GUILayout.Button("Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				VolumeDataTransform.VolumeDatas = vdatas;
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.Generate();
 			}
-			if(GUILayout.Button("Random Generate")) {
+			// [TEST] Will delete.
+			// Random generate button.
+			if (GUILayout.Button("Random Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				VolumeDataTransform.VolumeDatas = vdatas;
 				VolumeDataTransform.InitialTable();
-				VolumeDataTransform.RandomGenerate(Count);
+				VolumeDataTransform.RandomGenerate(_randomCount);
 			}
-			Count = EditorGUILayout.IntField("Random generate count", Count);
+			_randomCount = EditorGUILayout.IntField("Random generate count", _randomCount);
 		}
 	}
 }
