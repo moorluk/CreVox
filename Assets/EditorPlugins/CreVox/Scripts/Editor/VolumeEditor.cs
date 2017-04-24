@@ -238,6 +238,7 @@ namespace CreVox
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
 				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack(" + vg.volumeShowArtPack + ")", vg.volumeShowArtPack);
 				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
 				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
 			}

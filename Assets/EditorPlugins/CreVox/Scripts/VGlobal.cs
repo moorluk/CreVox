@@ -16,6 +16,7 @@ namespace CreVox
 		}
 
 		public bool saveBackup;
+		public bool volumeShowArtPack;
 		public bool FakeDeco;
 		public bool debugRuler;
 

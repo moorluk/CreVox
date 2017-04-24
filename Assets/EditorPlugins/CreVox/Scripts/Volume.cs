@@ -222,12 +222,12 @@ namespace CreVox
 			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
-			if (vertexMaterial != null && EditorApplication.isPlaying)
-				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+			if (vertexMaterial != null/* && EditorApplication.isPlaying*/)
+				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
 			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco?vertexMaterial:Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
+				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack?vertexMaterial : Resources.Load(PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer("Floor");
 			#endif
 			Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
@@ -495,11 +495,7 @@ namespace CreVox
 		public void PlaceItems()
 		{
 			PaletteItem[] itemArray;
-			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? ArtPack : PathCollect.pieces);
-			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? ArtPack : PathCollect.pieces);
-			#endif
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
 
 			for (int i = 0; i < blockItems.Count; i++) {
 				BlockItem bItem = blockItems [i];
@@ -587,11 +583,7 @@ namespace CreVox
 		private void PlacePieces ()
 		{
 			PaletteItem[] itemArray;
-			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? ArtPack : PathCollect.pieces);
-			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? ArtPack : PathCollect.pieces);
-			#endif
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
 
 			foreach (Chunk c in chunks.Values) {
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
