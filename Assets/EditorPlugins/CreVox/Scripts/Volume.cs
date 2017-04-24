@@ -17,6 +17,8 @@ namespace CreVox
 
 		public string workFile;
 		public string tempPath;
+		public string ArtPack = PathCollect.pieces;
+		public string vMaterial = PathCollect.defaultVoxelMaterial;
 
 		public Material vertexMaterial;
 
@@ -494,9 +496,9 @@ namespace CreVox
 		{
 			PaletteItem[] itemArray;
 			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? vd.ArtPack : PathCollect.pieces);
+			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? ArtPack : PathCollect.pieces);
 			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? vd.ArtPack : PathCollect.pieces);
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? ArtPack : PathCollect.pieces);
 			#endif
 
 			for (int i = 0; i < blockItems.Count; i++) {
@@ -586,9 +588,9 @@ namespace CreVox
 		{
 			PaletteItem[] itemArray;
 			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? vd.ArtPack : PathCollect.pieces);
+			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? ArtPack : PathCollect.pieces);
 			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? vd.ArtPack : PathCollect.pieces);
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? ArtPack : PathCollect.pieces);
 			#endif
 
 			foreach (Chunk c in chunks.Values) {

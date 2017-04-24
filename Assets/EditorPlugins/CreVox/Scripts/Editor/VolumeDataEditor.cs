@@ -120,21 +120,6 @@ namespace CreVox
 				EditorGUI.indentLevel--;
 				EditorGUIUtility.labelWidth = labelDefW;
 			}
-
-			using (var v = new EditorGUILayout.VerticalScope ("Box")) {
-				float labelDefW = EditorGUIUtility.labelWidth;
-				EditorGUIUtility.labelWidth = 50f;
-				GUI.color = volColor;
-				using (var h1 = new EditorGUILayout.HorizontalScope (EditorStyles.helpBox)) {
-					GUI.color = defColor;
-					EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel, GUILayout.Width (60));
-				}
-
-				EditorGUILayout.LabelField ("ArtPack",vd.ArtPack.Replace(PathCollect.artPack + "/",""), "miniLabel");
-				EditorGUILayout.LabelField ("Material",vd.vMaterial.Replace(vd.ArtPack + "/",""), "miniLabel");
-				EditorGUIUtility.labelWidth = labelDefW;
-			}
-
 		}
 
 		void DrawChunkData(int _index)

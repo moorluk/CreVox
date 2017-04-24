@@ -193,11 +193,11 @@ namespace CreVox
 					if (mats.Length == 1) {
 						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-						volume.vd.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
+						volume.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
 					} else
 						volume.vertexMaterial = null;
 					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
-					volume.vd.ArtPack = ppath;
+					volume.ArtPack = ppath;
 					EditorUtility.SetDirty (volume.vd);
 
 					volume.LoadTempWorld ();
@@ -206,7 +206,7 @@ namespace CreVox
 
 				EditorGUIUtility.labelWidth = 120f;
 				if (volume.vd != null)
-					EditorGUILayout.LabelField ((volume.vd.ArtPack != null)?volume.vd.ArtPack:"", EditorStyles.miniLabel);
+					EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"", EditorStyles.miniLabel);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
 					, volume.vertexMaterial

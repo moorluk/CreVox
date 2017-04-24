@@ -68,7 +68,7 @@ namespace CreVox
 					EditorGUIUtility.labelWidth = 80;
 					EditorGUILayout.Vector3Field ("Position", vm.dungeons [i].position);
 					EditorGUILayout.Vector3Field ("Rotation", vm.dungeons [i].rotation.eulerAngles);
-					EditorGUILayout.LabelField ("ArtPack",vm.dungeons [i].volumeData.ArtPack.Replace("CreVox/VolumeArtPack/",""),"miniLabel");
+					EditorGUILayout.LabelField ("ArtPack",vm.dungeons [i].ArtPack.Replace("CreVox/VolumeArtPack/",""),"miniLabel");
 				}
 			}
 		}
