@@ -19,17 +19,9 @@ namespace CreVox
 			}
 		}
 
-		private int maxX, minX, maxY, minY, maxZ, minZ;
-
 		public override void OnInspectorGUI ()
 		{
             lp = (LevelPiece)target;
-            maxX = lp.maxX;
-            minX = lp.minX;
-            maxY = lp.maxY;
-            minY = lp.minY;
-            maxZ = lp.maxZ;
-            minZ = lp.minZ;
 
             EditorGUI.BeginChangeCheck ();
 			lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);
@@ -71,23 +63,23 @@ namespace CreVox
 			using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
 				GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxX", "miniLabel");
-				maxX = EditorGUILayout.IntField (maxX);
+				lp.maxX = EditorGUILayout.IntField (lp.maxX);
 				GUILayout.Label ("MinX", "miniLabel");
-				minX = EditorGUILayout.IntField (minX);
+				lp.minX = EditorGUILayout.IntField (lp.minX);
 				GUILayout.EndVertical ();
 
 				GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxY", "miniLabel");
-				maxY = EditorGUILayout.IntField (maxY);
+				lp.maxY = EditorGUILayout.IntField (lp.maxY);
 				GUILayout.Label ("MinY", "miniLabel");
-				minY = EditorGUILayout.IntField (minY);
+				lp.minY = EditorGUILayout.IntField (lp.minY);
 				GUILayout.EndVertical ();
 
 				GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxZ", "miniLabel");
-				maxZ = EditorGUILayout.IntField (maxZ);
+				lp.maxZ = EditorGUILayout.IntField (lp.maxZ);
 				GUILayout.Label ("MinZ", "miniLabel");
-				minZ = EditorGUILayout.IntField (minZ);
+				lp.minZ = EditorGUILayout.IntField (lp.minZ);
 				GUILayout.EndVertical ();
 
 				if (GUILayout.Button ("init", GUILayout.Height (30), GUILayout.Width (50))) {
@@ -115,16 +107,10 @@ namespace CreVox
 
 		void CreateHoldBlockList ()
 		{
-			lp.maxX = maxX;
-			lp.minX = minX;
-			lp.maxY = maxY;
-			lp.minY = minY;
-			lp.maxZ = maxZ;
-			lp.minZ = minZ;
 			lp.holdBlocks.Clear ();
-			for (int y = minY; y < maxY + 1; y++) {
-				for (int x = minX; x < maxX + 1; x++) {
-					for (int z = minZ; z < maxZ + 1; z++) {
+			for (int y = lp.minY; y < lp.maxY + 1; y++) {
+				for (int x = lp.minX; x < lp.maxX + 1; x++) {
+					for (int z = lp.minZ; z < lp.maxZ + 1; z++) {
 						if (!(x == 0 && y == 0 && z == 0)) {
                             LevelPiece.Hold newHold = new LevelPiece.Hold ();
 							newHold.offset.x = x;
