@@ -12,18 +12,19 @@ namespace CrevoxExtend {
 	class VolumeDataTransformWindow : EditorWindow {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
-		private static List<VolumeData> vdatas = new List<VolumeData>();
 		private static int _randomCount;
+
+		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 
 		void Initialize() {
 			alphabets.Clear();
-			vdatas.Clear();
+			volumeDatas.Clear();
 			foreach (var node in Alphabet.Nodes) {
 				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
 					continue;
 				}
 				alphabets.Add(node);
-				vdatas.Add(null);
+				volumeDatas.Add(new List<VolumeData>());
 			}
 		}
 		void Awake() {
@@ -46,8 +47,13 @@ namespace CrevoxExtend {
 			}
 			return false;
 		}
+
 		void OnGUI() {
 			if (GUILayout.Button("Open Folder")) {
+				// First clear all origin volumeDatas.
+				for (int j = 0; j < alphabets.Count; j++) {
+					volumeDatas[j].Clear();
+				}
 				// Open folder.
 				string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
 				if (path != "") {
@@ -64,9 +70,16 @@ namespace CrevoxExtend {
 						fileName = fileName.Remove(fileName.Length - 12, 12);
 						// Keyword compare.
 						for (int j = 0; j < alphabets.Count; j++) {
-							if (alphabets[j].Name.ToLower() == fileName.ToLower()) {
-								vdatas[j] = CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", ""));
+							if (fileName.Length < alphabets[j].Name.Length) { continue; }
+							else if (alphabets[j].Name.ToLower() == fileName.Substring(0, alphabets[j].Name.Length).ToLower()) {
+								volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
 							}
+						}
+					}
+					// if not find match vData, default null.
+					for (int j = 0; j < alphabets.Count; j++) {
+						if (volumeDatas[j].Count < 1) {
+							volumeDatas[j].Add(null);
 						}
 					}
 				}
@@ -74,16 +87,24 @@ namespace CrevoxExtend {
 			// Node list.
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height * 0.75f));
 			for (int i = 0; i < alphabets.Count; i++) {
-				EditorGUILayout.BeginHorizontal();
-				GUILayout.Label(alphabets[i].ExpressName, GUILayout.Width(Screen.width / 2));
-				vdatas[i] = (VolumeData) EditorGUILayout.ObjectField(vdatas[i], typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
-				EditorGUILayout.EndHorizontal();
+				EditorGUILayout.LabelField(alphabets[i].ExpressName);
+				for (int j = 0; j < volumeDatas[i].Count; j++) {
+					EditorGUILayout.BeginHorizontal();
+					volumeDatas[i][j] = (VolumeData)EditorGUILayout.ObjectField(volumeDatas[i][j], typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
+					if (GUILayout.Button("Delete")) {
+						volumeDatas[i].RemoveAt(j);
+					}
+					EditorGUILayout.EndHorizontal();
+				}
+				if (GUILayout.Button("Add New vData")) {
+					volumeDatas[i].Add(null);
+				}
 			}
 			EditorGUILayout.EndScrollView();
 			// Generate button.
 			if (GUILayout.Button("Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.VolumeDatas = vdatas;
+				VolumeDataTransform.SameVolumeDatas = volumeDatas;
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.Generate();
 			}
@@ -91,7 +112,7 @@ namespace CrevoxExtend {
 			// Random generate button.
 			if (GUILayout.Button("Random Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.VolumeDatas = vdatas;
+				VolumeDataTransform.SameVolumeDatas = volumeDatas;
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.RandomGenerate(_randomCount);
 			}
