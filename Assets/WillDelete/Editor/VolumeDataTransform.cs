@@ -32,7 +32,7 @@ namespace CrevoxExtend {
 		// Generate the volume data that refer graph grammar.
 		public static void Generate() {
 			// Get root.
-			RewriteSystem.CreVoxNode root = RewriteSystem.CreVoxAttach.RootNode;
+			CreVoxNode root = CreVoxAttach.RootNode;
 			// Initial root.
 			Volume volume = CrevoxOperation.InitialVolume(_refrenceTable[root.AlphabetID]);
 			GenerateRecursion(root, volume);
@@ -40,16 +40,16 @@ namespace CrevoxExtend {
 			CrevoxOperation.RefreshVolume();
 		}
 		// Dfs generate.
-		private static bool GenerateRecursion(RewriteSystem.CreVoxNode node, Volume volumeOrigin) {
+		private static void GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
 				Volume volume = CrevoxOperation.CreateVolumeObject(_refrenceTable[child.AlphabetID]);
-				do {
-					if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
-						return false;
-					}
-				} while (!GenerateRecursion(child, volume));
+				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
+						GenerateRecursion(child, volume);
+				}else {
+					MonoBehaviour.DestroyImmediate(volume.gameObject);
+					Debug.Log("Error");
+				}
 			}
-			return true;
 		}
 		// [TEST] Will delete.
 		public static void RandomGenerate(int count) {
