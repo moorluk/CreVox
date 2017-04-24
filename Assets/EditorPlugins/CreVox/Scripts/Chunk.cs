@@ -13,8 +13,9 @@ namespace CreVox
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
 		public List<BlockHold> blockHolds = new List<BlockHold> ();
+		// [XAOCX add]
 		public ChunkData() { }
-		public ChunkData(ChunkData clone) {
+		public ChunkData(ChunkData clone){
 			this.ChunkPos = clone.ChunkPos;
 			this.blocks = new List<Block>();
 			foreach (var block in clone.blocks) {
@@ -29,6 +30,7 @@ namespace CreVox
 				this.blockHolds.Add(new BlockHold(blockHold));
 			}
 		}
+		// ==============
 	}
 
 	[RequireComponent (typeof(MeshFilter))]
@@ -66,7 +68,7 @@ namespace CreVox
 
 		public void UpdateChunk ()
 		{
-			if (cData == null) { return; }
+
 			for (int i = 0; i < cData.blockAirs.Count; i++) {
 				BlockAir bAir = cData.blockAirs [i];
 				bool isEmpty = true;
@@ -104,9 +106,6 @@ namespace CreVox
 		public Block GetBlock (int x, int y, int z)
 		{
 			WorldPos pos = new WorldPos (x, y, z);
-			if (cData == null) {
-				return null;
-			}
 			for (int i = 0; i < cData.blocks.Count; i++) {
 				if (cData.blocks [i].BlockPos.Compare (pos))
 					return cData.blocks [i];

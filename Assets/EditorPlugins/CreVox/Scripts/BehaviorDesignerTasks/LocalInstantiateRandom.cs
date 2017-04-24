@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 {
@@ -29,8 +28,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 
         public override TaskStatus OnUpdate()
 		{
-			UnityEngine.Random.InitState(System.Guid.NewGuid().GetHashCode());
-			if (UnityEngine.Random.value < successProbability) {
+			Random.InitState(System.Guid.NewGuid().GetHashCode());
+			if (Random.value < successProbability) {
 				GameObject n;
 				if (target.Value != null)
 					n = GameObject.Instantiate (target.Value, position, Quaternion.Euler(rotation)) as GameObject;
@@ -42,13 +41,13 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 				n.transform.localPosition = position;
 				n.transform.localRotation = Quaternion.Euler(rotation);
 
-				UnityEngine.Random.InitState(System.Guid.NewGuid().GetHashCode());
-				if (UnityEngine.Random.value < messProbability) {
-					UnityEngine.Random.InitState(System.Guid.NewGuid().GetHashCode());
-					float posR = UnityEngine.Random.Range (-1.0f, 1.0f);
+				Random.InitState(System.Guid.NewGuid().GetHashCode());
+				if (Random.value < messProbability) {
+					Random.InitState(System.Guid.NewGuid().GetHashCode());
+					float posR = Random.Range (-1.0f, 1.0f);
 					n.transform.localPosition += new Vector3 (randomOffset.x * posR, randomOffset.y * posR, randomOffset.z * posR);
-					UnityEngine.Random.InitState(System.Guid.NewGuid().GetHashCode());
-					float rotR = UnityEngine.Random.Range (-1.0f, 1.0f);
+					Random.InitState(System.Guid.NewGuid().GetHashCode());
+					float rotR = Random.Range (-1.0f, 1.0f);
 					n.transform.Rotate (randomRotate.x * rotR, randomRotate.y * rotR, randomRotate.z * rotR, Space.Self);
 				}
 				return TaskStatus.Success;
@@ -57,5 +56,3 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
         }
     }
 }
-
-//Change all the random with unity engine random

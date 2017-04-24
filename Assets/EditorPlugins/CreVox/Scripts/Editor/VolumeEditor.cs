@@ -9,6 +9,7 @@ namespace CreVox
 	[CustomEditor (typeof(Volume))]
 	public class VolumeEditor : Editor
 	{
+        private int selectedItemID = 0;
 		Volume volume;
 		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
 		int cx = 1;
@@ -192,11 +193,11 @@ namespace CreVox
 					if (mats.Length == 1) {
 						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-						volume.vd.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
+						volume.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
 					} else
 						volume.vertexMaterial = null;
 					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
-					volume.vd.ArtPack = ppath;
+					volume.ArtPack = ppath;
 					EditorUtility.SetDirty (volume.vd);
 
 					volume.LoadTempWorld ();
@@ -205,29 +206,22 @@ namespace CreVox
 
 				EditorGUIUtility.labelWidth = 120f;
 				if (volume.vd != null)
-					EditorGUILayout.LabelField ((volume.vd.ArtPack != null)?volume.vd.ArtPack:"", EditorStyles.miniLabel);
+					EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"", EditorStyles.miniLabel);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
 					, volume.vertexMaterial
 					, typeof(Material)
 					, false);
 			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				EditorGUI.BeginChangeCheck ();
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
-				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
-				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
-				if (EditorGUI.EndChangeCheck ()) {
+			EditorGUI.BeginChangeCheck ();
+			DrawVGlobal ();
+			if (EditorGUI.EndChangeCheck ()) {
 					EditorUtility.SetDirty (vg);
-					if (!UnityEditor.EditorApplication.isPlaying) {
-						volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-					}
+				if (!UnityEditor.EditorApplication.isPlaying) {
+					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
-
-			DrawPieceSelectedGUI ();
+			DrawPieceInspectedGUI ();
 			DrawVData ();
 
 			if (EditorGUI.EndChangeCheck()) {
@@ -237,6 +231,19 @@ namespace CreVox
 		}
 
 		Editor vdEditor = null;
+
+		public static void DrawVGlobal ()
+		{
+			VGlobal vg = VGlobal.GetSetting ();
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack(" + vg.volumeShowArtPack + ")", vg.volumeShowArtPack);
+				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
+				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
+			}
+		}
+
 		void DrawVData ()
 		{
 			if (volume.vd != null) {
@@ -316,7 +323,8 @@ namespace CreVox
 			}
 			if (selectedEditMode != currentEditMode) {
 				currentEditMode = selectedEditMode;
-				Repaint ();
+                _itemInspected = null;
+                Repaint ();
 			}
 		}
 
@@ -397,7 +405,7 @@ namespace CreVox
 				float gy = pos.y * vg.h + gPos.y - vg.hh;
 				float gz = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
-				LevelPiece.PivotType pivot = _pieceSelected.pivot;
+                LevelPiece.PivotType pivot = _pieceSelected.pivot;
 				if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
 					Handles.color = Color.red;
 					Handles.RectangleCap (0, new Vector3 (gx, gy, gz), Quaternion.Euler (90, 0, 0), 0.5f);
@@ -466,11 +474,14 @@ namespace CreVox
 				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
 				facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
 				bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize,Handles.SphereCap);
+                
 				if (selected) {
 					Debug.Log ("fire!!!");
 					isSelectItem = true;
 					workItemId = i;
-					Event.current.type = EventType.mouseDown;
+                    selectedItemID = i;
+                    Debug.Log("DrawEditMarker ID: " + workItemId.ToString());
+                    Event.current.type = EventType.mouseDown;
 					Event.current.button = 0;
 				}
 				Handles.color = defColor;
@@ -567,7 +578,8 @@ namespace CreVox
 								PaintItem (true);
 							else {
 								GameObject ItemNode = volume.GetItemNode (volume.blockItems [workItemId]);
-								PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
+                                _itemInspected = ItemNode.GetComponent<PaletteItem>();
+                                PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
 								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
 								Debug.Log (PrefabUtility.GetPrefabParent (ItemNode));
 								UpdateCurrentPieceInstance (item, preview);
@@ -590,6 +602,7 @@ namespace CreVox
 
 		#endregion
 
+
 		#region LayerControl
 
 		private int fixPointY = 0;
@@ -599,7 +612,8 @@ namespace CreVox
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
 			float bwidth = 70f;
-			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, bwidth * 2 + 10f, 85f), "", EditorStyles.textArea)) {
+			float tile = (_pieceSelected == null) ? 2f : 3f;
+			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
 				using (var h = new GUILayout.HorizontalScope ()) {
 					GUI.color = Color.white;
 					using (var v = new GUILayout.VerticalScope ()) {
@@ -625,6 +639,21 @@ namespace CreVox
 							HotkeyFunction ("F");
 						GUI.color = Color.white;
 					}
+
+					DrawPieceSelectedGUI ();
+				}
+			}
+		}
+		private PaletteItem _itemSelected;
+		private Texture2D _itemPreview;
+		private LevelPiece _pieceSelected;
+
+		private void DrawPieceSelectedGUI ()
+		{
+			using (var v = new EditorGUILayout.VerticalScope ()) {
+				if (_pieceSelected != null) {
+					EditorGUILayout.LabelField (new GUIContent (_itemPreview), GUILayout.Height (65));
+					EditorGUILayout.LabelField (_itemSelected.itemName);
 				}
 			}
 		}
@@ -869,22 +898,30 @@ namespace CreVox
 
 		#region SubscribeEvents
 
-		private PaletteItem _itemSelected;
-		private Texture2D _itemPreview;
-		private LevelPiece _pieceSelected;
+		private PaletteItem _itemInspected;
 
-		private void DrawPieceSelectedGUI ()
+		private void DrawPieceInspectedGUI()
 		{
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
-				if (_pieceSelected == null) {
-					EditorGUILayout.HelpBox ("No piece selected!", MessageType.Info);
-				} else {
-					using (var v2 = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-						EditorGUILayout.LabelField (new GUIContent (_itemPreview), GUILayout.Height (40));
-						EditorGUILayout.LabelField (_itemSelected.itemName);
-					}
-				}
+			if (currentEditMode != EditMode.Edit)
+				return;
+
+			EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
+			if (_itemInspected != null) {
+				EditorGUILayout.BeginVertical ("box");
+				EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
+                if (_itemInspected.inspectedScript != null)
+                {
+                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor(_itemInspected.inspectedScript));
+                    Debug.Log("selectedItemID:" + selectedItemID.ToString());
+                    BlockItem item = volume.blockItems[selectedItemID];
+
+                    if (e != null)
+                        e.OnEditorGUI(ref item);
+                        //VolumeEditorAdapter.DrawInspector(e, ref item);
+                }
+				EditorGUILayout.EndVertical ();
+			} else {
+				EditorGUILayout.HelpBox ("No piece to edit!", MessageType.Info);
 			}
 		}
 

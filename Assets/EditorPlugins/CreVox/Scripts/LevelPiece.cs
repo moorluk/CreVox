@@ -29,8 +29,13 @@ namespace CreVox
 		public bool isHold = false;
 		public List<Hold> holdBlocks;
 		public int maxX, minX, maxY, minY, maxZ, minZ;
+        //public string[] attributes = new string[5];
 
-		public bool IsSolid (Direction direction)
+        public virtual void SetupPiece(BlockItem item)
+        {
+        }
+
+        public bool IsSolid (Direction direction)
 		{
 			int angle = (int)(gameObject.transform.localEulerAngles.y + 360) % 360;
 			if (direction == Direction.north) {

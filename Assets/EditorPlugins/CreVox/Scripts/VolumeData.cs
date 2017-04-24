@@ -12,11 +12,9 @@ namespace CreVox
 		public int chunkZ = 1;
 		public List <ChunkData> chunkDatas = new List<ChunkData> ();
 		public List<BlockItem> blockItems = new List<BlockItem> ();
-		public string ArtPack = PathCollect.pieces;
-		public string vMaterial = PathCollect.defaultVoxelMaterial;
 		// [XAOCX add]
-		public VolumeData():base() { }
-		public VolumeData(VolumeData clone):base() {
+		public VolumeData() : base() { }
+		public VolumeData(VolumeData clone) : base() {
 			this.chunkX = clone.chunkX;
 			this.chunkY = clone.chunkY;
 			this.chunkZ = clone.chunkZ;
@@ -28,10 +26,7 @@ namespace CreVox
 			foreach (var blockItem in clone.blockItems) {
 				this.blockItems.Add(new BlockItem(blockItem));
 			}
-			this.ArtPack = clone.ArtPack;
-			this.vMaterial = clone.vMaterial;
 		}
-
 		public void Awake()
 		{
 			if (chunkDatas.Count < 1)

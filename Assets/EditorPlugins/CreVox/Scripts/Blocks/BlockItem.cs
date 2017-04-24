@@ -17,9 +17,14 @@ namespace CreVox
 		public float rotZ = 0;
 		public float rotW = 1;
 
-		public BlockItem () : base ()
+        public string[] attributes;
+
+        public BlockItem () : base ()
 		{
-		}
+            attributes = new string[5];
+            for (int i = 0; i < attributes.Length; i++)
+                attributes[i] = "";
+        }
 		// [XAOCX add]
 		public BlockItem(BlockItem clone) : base(clone) {
 			this.pieceName = clone.pieceName;
@@ -30,6 +35,7 @@ namespace CreVox
 			this.rotY = clone.rotY;
 			this.rotZ = clone.rotZ;
 			this.rotW = clone.rotW;
+			this.attributes = (string[])clone.attributes.Clone();
 		}
 
 		public override void Destroy ()

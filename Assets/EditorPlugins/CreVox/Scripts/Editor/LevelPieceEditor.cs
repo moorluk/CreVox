@@ -21,20 +21,17 @@ namespace CreVox
 
 		private int maxX, minX, maxY, minY, maxZ, minZ;
 
-		private void OnEnable ()
-		{
-			lp = (LevelPiece)target;
-			maxX = lp.maxX;
-			minX = lp.minX;
-			maxY = lp.maxY;
-			minY = lp.minY;
-			maxZ = lp.maxZ;
-			minZ = lp.minZ;
-		}
-
 		public override void OnInspectorGUI ()
 		{
-			EditorGUI.BeginChangeCheck ();
+            lp = (LevelPiece)target;
+            maxX = lp.maxX;
+            minX = lp.minX;
+            maxY = lp.maxY;
+            minY = lp.minY;
+            maxZ = lp.maxZ;
+            minZ = lp.minZ;
+
+            EditorGUI.BeginChangeCheck ();
 			lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);
 			drawIsSolid = EditorGUILayout.Foldout (drawIsSolid, "Is Solid");
 			if (drawIsSolid) {
@@ -64,7 +61,12 @@ namespace CreVox
 				EditorUtility.SetDirty (lp);
 		}
 
-		void DrawInit ()
+        public virtual void OnEditorGUI(ref BlockItem item)
+        {
+            EditorGUILayout.LabelField("Nothing to edit");
+        }
+
+        void DrawInit ()
 		{
 			using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
 				GUILayout.BeginVertical ();
@@ -98,7 +100,7 @@ namespace CreVox
 		{
 			using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
 				for (int i = 0; i < lp.holdBlocks.Count; i++) {
-					LevelPiece.Hold holdBlock = lp.holdBlocks [i];
+                    LevelPiece.Hold holdBlock = lp.holdBlocks [i];
 					using (var h = new EditorGUILayout.HorizontalScope ("textfield")) {
 						GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", "In TitleText");
 						GUILayout.Space(Screen.width - 200);
@@ -124,7 +126,7 @@ namespace CreVox
 				for (int x = minX; x < maxX + 1; x++) {
 					for (int z = minZ; z < maxZ + 1; z++) {
 						if (!(x == 0 && y == 0 && z == 0)) {
-							LevelPiece.Hold newHold = new LevelPiece.Hold ();
+                            LevelPiece.Hold newHold = new LevelPiece.Hold ();
 							newHold.offset.x = x;
 							newHold.offset.y = y;
 							newHold.offset.z = z;

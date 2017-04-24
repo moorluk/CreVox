@@ -8,9 +8,18 @@ namespace CreVox
 	[CreateAssetMenu(menuName = "CreVox/Global Setting")]
 	public class VGlobal : ScriptableObject
 	{
+		[System.Serializable]
+		public struct ArtPackParent
+		{
+			public string pack;
+			public string parentPack;
+		}
+
 		public bool saveBackup;
+		public bool volumeShowArtPack;
 		public bool FakeDeco;
 		public bool debugRuler;
+
 		public float editDis;
 
 		public int chunkSize = 16;
@@ -21,6 +30,8 @@ namespace CreVox
 		public float hw = 1.5f;
 		public float hh = 1f;
 		public float hd = 1.5f;
+
+		public List<ArtPackParent> artpackParentList;
 
 		public static VGlobal GetSetting(string _settingPath = null)
 		{

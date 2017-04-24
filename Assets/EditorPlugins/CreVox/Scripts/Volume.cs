@@ -17,6 +17,8 @@ namespace CreVox
 
 		public string workFile;
 		public string tempPath;
+		public string ArtPack = PathCollect.pieces;
+		public string vMaterial = PathCollect.defaultVoxelMaterial;
 
 		public Material vertexMaterial;
 
@@ -150,8 +152,9 @@ namespace CreVox
 			itemRoot.transform.parent = transform;
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            //VolumeAdapter.AfterVolumeInit(this);
 
-			CreateChunks ();
+            CreateChunks ();
 
 			#if UNITY_EDITOR
 			if (!EditorApplication.isPlaying) {
@@ -219,12 +222,12 @@ namespace CreVox
 			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
-			if (vertexMaterial != null && EditorApplication.isPlaying)
-				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+			if (vertexMaterial != null/* && EditorApplication.isPlaying*/)
+				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
 			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vg.FakeDeco?vertexMaterial:Resources.Load(PathCollect.pieces + "/Materials/Mat_Voxel", typeof(Material)) as Material;
+				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack?vertexMaterial : Resources.Load(PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer("Floor");
 			#endif
 			Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
@@ -358,7 +361,6 @@ namespace CreVox
 		{
 			Chunk containerChunk = GetChunk (x, y, z);
 			if (containerChunk != null) {
-				if (containerChunk.cData == null) { return null; }
 				Block block = containerChunk.GetBlock (
 					              x - containerChunk.cData.ChunkPos.x,
 					              y - containerChunk.cData.ChunkPos.y,
@@ -450,7 +452,7 @@ namespace CreVox
 				
 				if (_id < blockItems.Count) {
 					blockItem = blockItems [_id];
-				} else {
+                } else {
 					blockItem = new BlockItem ();
 					blockItem.BlockPos = EditTerrain.GetBlockPos(_position);
 					blockItem.pieceName = _piece.gameObject.name;
@@ -462,7 +464,7 @@ namespace CreVox
 					blockItem.rotZ = _piece.transform.localRotation.z;
 					blockItem.rotW = _piece.transform.localRotation.w;
 					blockItems.Add (blockItem);
-				}
+                }
 				if (!itemNodes.ContainsKey (blockItem)) {
 					GameObject pObj;
 					#if UNITY_EDITOR
@@ -474,7 +476,10 @@ namespace CreVox
 					pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 					pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 					itemNodes.Add (blockItem, pObj);
-				}
+                    LevelPiece p = pObj.GetComponent<LevelPiece>();
+                    if (p != null)
+                        p.SetupPiece(blockItem);
+                }
 			} else {
 				if (!(_id < blockItems.Count))
 					return;
@@ -484,23 +489,21 @@ namespace CreVox
 				itemNodes.Remove (blockItem);
 				blockItems.RemoveAt (_id);
 			}
-		}
+            
+        }
 
 		public void PlaceItems()
 		{
 			PaletteItem[] itemArray;
-			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? vd.ArtPack : PathCollect.pieces);
-			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? vd.ArtPack : PathCollect.pieces);
-			#endif
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
 
 			for (int i = 0; i < blockItems.Count; i++) {
 				BlockItem bItem = blockItems [i];
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
-						PlaceItem (i, itemArray [k].gameObject.GetComponent<LevelPiece> ());
-					}
+                        LevelPiece p = itemArray[k].gameObject.GetComponent<LevelPiece>();
+                        PlaceItem (i, p);
+                    }
 				}
 			}
 		}
@@ -580,14 +583,9 @@ namespace CreVox
 		private void PlacePieces ()
 		{
 			PaletteItem[] itemArray;
-			#if UNITY_EDITOR
-			itemArray = Resources.LoadAll<PaletteItem> ((EditorApplication.isPlaying && VGlobal.GetSetting ().FakeDeco) ? vd.ArtPack : PathCollect.pieces);
-			#else
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().FakeDeco ? vd.ArtPack : PathCollect.pieces);
-			#endif
+			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
 
 			foreach (Chunk c in chunks.Values) {
-				if (c.cData == null) { continue; }
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
@@ -899,7 +897,6 @@ namespace CreVox
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			foreach (Chunk chunk in chunks.Values) {
-				if (chunk.cData == null) { continue; }
 				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
 					WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
 					WorldPos chunkPos = chunk.cData.ChunkPos;

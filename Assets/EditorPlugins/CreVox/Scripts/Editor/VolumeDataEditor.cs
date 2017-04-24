@@ -37,7 +37,7 @@ namespace CreVox
 			vd = (VolumeData)target;
 			defColor = GUI.color;
 			volColor = new Color (0.5f, 0.8f, 0.75f);
-			if (vd == null) { return; }
+
 			bbool = new BlockBool[vd.chunkDatas.Count];
 			for (int i = 0; i < bbool.Length; i++) {
 				bbool [i].blocks = new bool[vd.chunkDatas [i].blocks.Count];
@@ -120,21 +120,6 @@ namespace CreVox
 				EditorGUI.indentLevel--;
 				EditorGUIUtility.labelWidth = labelDefW;
 			}
-
-			using (var v = new EditorGUILayout.VerticalScope ("Box")) {
-				float labelDefW = EditorGUIUtility.labelWidth;
-				EditorGUIUtility.labelWidth = 50f;
-				GUI.color = volColor;
-				using (var h1 = new EditorGUILayout.HorizontalScope (EditorStyles.helpBox)) {
-					GUI.color = defColor;
-					EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel, GUILayout.Width (60));
-				}
-
-				EditorGUILayout.LabelField ("ArtPack",vd.ArtPack.Replace(PathCollect.artPack + "/",""), "miniLabel");
-				EditorGUILayout.LabelField ("Material",vd.vMaterial.Replace(vd.ArtPack + "/",""), "miniLabel");
-				EditorGUIUtility.labelWidth = labelDefW;
-			}
-
 		}
 
 		void DrawChunkData(int _index)
@@ -282,7 +267,10 @@ namespace CreVox
 					workItem.rotY = rot.y;
 					workItem.rotZ = rot.z;
 					workItem.rotW = rot.w;
-				}
+
+                    for(int j =0; j < workItem.attributes.Length; j++)
+                        EditorGUILayout.LabelField("Attrib" + j.ToString(), workItem.attributes[j]);
+                }
 			}
 		}
 	}

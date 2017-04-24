@@ -39,6 +39,8 @@ namespace CreVox
 		private void Update()
 		{
 			if (_previews.Count != _items.Count) {
+				InitCategories();
+				InitContent();
 				GeneratePreviews();
 			}
 		}
@@ -133,7 +135,7 @@ namespace CreVox
 
 		private void GeneratePreviews()
 		{
-			AssetPreview.SetPreviewTextureCacheSize (_items.Count + 1);
+			AssetPreview.SetPreviewTextureCacheSize (_items.Count *2);
 			foreach (PaletteItem item in _items) {
 				if (!_previews.ContainsKey(item)) {
 					Texture2D preview = AssetPreview.GetAssetPreview(item.gameObject);
