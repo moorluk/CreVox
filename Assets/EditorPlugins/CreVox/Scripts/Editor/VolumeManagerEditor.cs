@@ -32,16 +32,11 @@ namespace CreVox
 
 			DrawDef ();
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				EditorGUI.BeginChangeCheck ();
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
-				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
-				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
-				if (EditorGUI.EndChangeCheck ()) {
-					EditorUtility.SetDirty (vg);
-					UpdateStatus ();
-				}
+			EditorGUI.BeginChangeCheck ();
+			VolumeEditor.DrawVGlobal();
+			if (EditorGUI.EndChangeCheck ()) {
+				EditorUtility.SetDirty (vg);
+				UpdateStatus ();
 			}
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {

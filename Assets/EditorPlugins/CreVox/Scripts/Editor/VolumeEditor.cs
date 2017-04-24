@@ -213,21 +213,14 @@ namespace CreVox
 					, typeof(Material)
 					, false);
 			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				EditorGUI.BeginChangeCheck ();
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
-				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
-				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
-				if (EditorGUI.EndChangeCheck ()) {
+			EditorGUI.BeginChangeCheck ();
+			DrawVGlobal ();
+			if (EditorGUI.EndChangeCheck ()) {
 					EditorUtility.SetDirty (vg);
-					if (!UnityEditor.EditorApplication.isPlaying) {
-						volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-					}
+				if (!UnityEditor.EditorApplication.isPlaying) {
+					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
-
 			DrawPieceInspectedGUI ();
 			DrawVData ();
 
@@ -238,6 +231,18 @@ namespace CreVox
 		}
 
 		Editor vdEditor = null;
+
+		public static void DrawVGlobal ()
+		{
+			VGlobal vg = VGlobal.GetSetting ();
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
+				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
+			}
+		}
+
 		void DrawVData ()
 		{
 			if (volume.vd != null) {
@@ -606,7 +611,8 @@ namespace CreVox
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
 			float bwidth = 70f;
-			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, bwidth * 2 + 10f, 85f), "", EditorStyles.textArea)) {
+			float tile = (_pieceSelected == null) ? 2f : 3f;
+			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
 				using (var h = new GUILayout.HorizontalScope ()) {
 					GUI.color = Color.white;
 					using (var v = new GUILayout.VerticalScope ()) {
@@ -632,6 +638,21 @@ namespace CreVox
 							HotkeyFunction ("F");
 						GUI.color = Color.white;
 					}
+
+					DrawPieceSelectedGUI ();
+				}
+			}
+		}
+		private PaletteItem _itemSelected;
+		private Texture2D _itemPreview;
+		private LevelPiece _pieceSelected;
+
+		private void DrawPieceSelectedGUI ()
+		{
+			using (var v = new EditorGUILayout.VerticalScope ()) {
+				if (_pieceSelected != null) {
+					EditorGUILayout.LabelField (new GUIContent (_itemPreview), GUILayout.Height (65));
+					EditorGUILayout.LabelField (_itemSelected.itemName);
 				}
 			}
 		}
@@ -875,25 +896,6 @@ namespace CreVox
 
 
 		#region SubscribeEvents
-
-		private PaletteItem _itemSelected;
-		private Texture2D _itemPreview;
-		private LevelPiece _pieceSelected;
-
-		private void DrawPieceSelectedGUI ()
-		{
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Piece Selected", EditorStyles.boldLabel);
-				if (_pieceSelected == null) {
-					EditorGUILayout.HelpBox ("No piece selected!", MessageType.Info);
-				} else {
-					using (var v2 = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-						EditorGUILayout.LabelField (new GUIContent (_itemPreview), GUILayout.Height (40));
-						EditorGUILayout.LabelField (_itemSelected.itemName);
-					}
-				}
-			}
-		}
 
 		private PaletteItem _itemInspected;
 

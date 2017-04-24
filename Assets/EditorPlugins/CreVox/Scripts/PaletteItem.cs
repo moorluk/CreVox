@@ -14,7 +14,8 @@ namespace CreVox
 			Trap,
 			Sign,
 			Movement,
-			Chara
+			Chara,
+			Obstacle
 		}
 		public enum MarkerType
 		{
