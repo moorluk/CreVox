@@ -60,6 +60,7 @@ namespace CrevoxExtend {
 					// Get the files.
 					string[] files = Directory.GetFiles(path);
 					for (int i = 0; i < files.Length; i++) {
+						Debug.Log(files[i]);
 						// Get the file name.
 						string fileName = files[i].Split('\\').Last();
 						// If the file name is illegal then continue.
