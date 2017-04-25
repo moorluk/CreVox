@@ -9,24 +9,25 @@ using System.Linq;
 namespace CrevoxExtend {
 	public class VolumeDataTransform {
 		private static List<Guid> _alphabetIDs = new List<Guid>();
-		private static List<VolumeData> _volumeDatas = new List<VolumeData>();
-		private static Dictionary<Guid, VolumeData> _refrenceTable = new Dictionary<Guid, VolumeData>();
+		private static Dictionary<Guid, List<VolumeData>> _refrenceTable = new Dictionary<Guid, List<VolumeData>>();
+
+		private static List<List<VolumeData>> sameVolumeDatas = new List<List<VolumeData>>();
 		public static List<Guid> AlphabetIDs {
 			get { return _alphabetIDs; }
 			set { _alphabetIDs = value; }
 		}
-		public static List<VolumeData> VolumeDatas {
-			get { return _volumeDatas; }
-			set { _volumeDatas = value; }
-		}
-		public static Dictionary<Guid, VolumeData> RefrenceTable {
+		public static Dictionary<Guid, List<VolumeData>> RefrenceTable {
 			get { return _refrenceTable; }
 			set { _refrenceTable = value; }
 		}
+		public static List<List<VolumeData>> SameVolumeDatas {
+			get { return sameVolumeDatas; }
+			set { sameVolumeDatas = value; }
+		}
 		public static void InitialTable() {
-			_refrenceTable = new Dictionary<Guid, VolumeData>();
+			_refrenceTable = new Dictionary<Guid, List<VolumeData>>();
 			for (int i = 0; i < _alphabetIDs.Count; i++) {
-				_refrenceTable[_alphabetIDs[i]] = _volumeDatas[i];
+				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
 			}
 		}
 		// Generate the volume data that refer graph grammar.
@@ -34,7 +35,7 @@ namespace CrevoxExtend {
 			// Get root.
 			CreVoxNode root = CreVoxAttach.RootNode;
 			// Initial root.
-			Volume volume = CrevoxOperation.InitialVolume(_refrenceTable[root.AlphabetID]);
+			Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
 			GenerateRecursion(root, volume);
 			// Update volume manager and scene.
 			CrevoxOperation.RefreshVolume();
@@ -42,7 +43,7 @@ namespace CrevoxExtend {
 		// Dfs generate.
 		private static void GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
-				Volume volume = CrevoxOperation.CreateVolumeObject(_refrenceTable[child.AlphabetID]);
+				Volume volume = CrevoxOperation.CreateVolumeObject(SelectData(_refrenceTable[child.AlphabetID]));
 				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
 						GenerateRecursion(child, volume);
 				}else {
@@ -54,10 +55,10 @@ namespace CrevoxExtend {
 		// [TEST] Will delete.
 		public static void RandomGenerate(int count) {
 			List<Volume> vols = new List<Volume>();
-			Volume volume = CrevoxOperation.InitialVolume(_volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+			Volume volume = CrevoxOperation.InitialVolume(SelectData(sameVolumeDatas[UnityEngine.Random.Range(0, sameVolumeDatas.Count)]));
 			vols.Add(volume);
 			while (--count > 0) {
-				volume = CrevoxOperation.AddAndCombineVolume(volume, _volumeDatas[UnityEngine.Random.Range(0, _volumeDatas.Count)]);
+				volume = CrevoxOperation.AddAndCombineVolume(volume, SelectData(sameVolumeDatas[UnityEngine.Random.Range(0, sameVolumeDatas.Count)]));
 				if (volume != null) {
 					vols.Add(volume);
 				} else {
@@ -65,6 +66,10 @@ namespace CrevoxExtend {
 				}
 			}
 			CrevoxOperation.RefreshVolume();
+		}
+		// Random select from multi vDatas.
+		private static VolumeData SelectData(List<VolumeData> sameRoomData) {
+				return sameRoomData[(int)UnityEngine.Random.Range(0, sameRoomData.Count)];
 		}
 
 	}
