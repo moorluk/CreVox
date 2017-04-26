@@ -96,6 +96,9 @@ namespace CrevoxExtend {
 				}
 			}
 			EditorGUILayout.EndScrollView();
+			// If symbol has none vData, user cannot press Generate.
+			// Add null prevent.
+			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Exists(v => v == null)));
 			// Generate button.
 			if (GUILayout.Button("Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
@@ -105,6 +108,7 @@ namespace CrevoxExtend {
 			}
 			// [TEST] Will delete.
 			// Random generate button.
+			
 			if (GUILayout.Button("Random Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				VolumeDataTransform.SameVolumeDatas = volumeDatas;
@@ -112,6 +116,7 @@ namespace CrevoxExtend {
 				VolumeDataTransform.RandomGenerate(_randomCount);
 			}
 			_randomCount = EditorGUILayout.IntField("Random generate count", _randomCount);
+			EditorGUI.EndDisabledGroup();
 		}
 	}
 }
