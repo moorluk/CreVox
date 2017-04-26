@@ -98,7 +98,7 @@ namespace CrevoxExtend {
 			EditorGUILayout.EndScrollView();
 			// If symbol has none vData, user cannot press Generate.
 			// Add null prevent.
-			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Exists(v => v == null)));
+			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Count == 0||vs.Exists(v => v == null)));
 			// Generate button.
 			if (GUILayout.Button("Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
