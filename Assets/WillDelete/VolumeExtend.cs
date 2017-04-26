@@ -3,57 +3,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace CrevoxExtend {
-	public struct DirectionOfBlock {
-		public int Angle;
-		public DirectionOfBlock(float degree) {
-			this.Angle = (int) degree;
-		}
-		public DirectionOfBlock(int index) {
-			this.Angle = Index2Angle[index];
-		}
-		public WorldPos RelativePosition {
-			get { return DirectionOffset[this.Angle / 90]; }
-		}
-		// Constant array.
-		private static int[] Index2Angle = new int[] { 90, 180, 0, 270 };
-		public static WorldPos[] DirectionOffset = new WorldPos[] {
-			new WorldPos(1, 0, 0),
-			new WorldPos(0, 0, -1),
-			new WorldPos(-1, 0, 0),
-			new WorldPos(0, 0, 1)
-		};
-
+	public enum ConnectionInfoType {
+		StartingNode,
+		Connection
 	}
-	public class DoorInfo {
+	public class ConnectionInfo {
 		public WorldPos position;
-		public DirectionOfBlock direction;
+		public Quaternion rotation;
+		public ConnectionInfoType type;
 		public bool used;
-		public DoorInfo(WorldPos position, DirectionOfBlock direction) {
+		public ConnectionInfo(WorldPos position, Quaternion rotation, ConnectionInfoType type) {
 			this.position = position;
-			this.direction = direction;
+			this.rotation = rotation;
+			this.type = type;
 			used = false;
 		}
-		public DoorInfo(DoorInfo clone) {
+		public ConnectionInfo(ConnectionInfo clone) {
 			this.position = clone.position;
-			this.direction = clone.direction;
+			this.rotation = clone.rotation;
+			this.type = clone.type;
 			this.used = clone.used;
 		}
-		public DoorInfo Clone() {
-			return new DoorInfo(this);
+		public ConnectionInfo Clone() {
+			return new ConnectionInfo(this);
 		}
-		public bool Compare(DoorInfo obj) {
-			return this.position.Compare(obj.position) && this.direction.Angle == obj.direction.Angle;
+		public bool Compare(ConnectionInfo obj) {
+			return this.position.Compare(obj.position) && this.rotation == obj.rotation && this.type == obj.type && this.used == obj.used;
 		}
-		// 
-		public DirectionOfBlock AbsoluteDirection(float degree) {
-			return new DirectionOfBlock(( degree + this.direction.Angle ) % 360);
+		public WorldPos RelativePosition( float degree) {
+			int absoluteDegree = ((int) (degree + this.rotation.eulerAngles.y) % 360);
+			 return DirectionOffset[absoluteDegree / 90];
 		}
+		// Constant array.
+		public static WorldPos[] DirectionOffset = new WorldPos[] {
+			new WorldPos(0, 0, 1),
+			new WorldPos(1, 0, 0),
+			new WorldPos(0, 0, -1),
+			new WorldPos(-1, 0, 0)
+		};
 	}
 	public class VolumeExtend : MonoBehaviour {
-		private List<DoorInfo> _doorInfos;
-		public List<DoorInfo> DoorInfos {
-			get { return _doorInfos; }
-			set { _doorInfos = value; }
+		private List<ConnectionInfo> _connectionInfos;
+		public List<ConnectionInfo> ConnectionInfos {
+			get { return _connectionInfos; }
+			set { _connectionInfos = value; }
 		}
 	}
 }

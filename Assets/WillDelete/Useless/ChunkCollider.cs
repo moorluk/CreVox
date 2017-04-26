@@ -28,22 +28,35 @@ public class ChunkCollider : MonoBehaviour {
 			new WorldPos(8, 0, 8),
 			new WorldPos(8, 0, 0)
 		};
-	// Collision
+	// The set about Size of BlockAir object.
+	private static Dictionary<string, Vector3> BlockAirScale = new Dictionary<string, Vector3>() {
+			{ "Door", new Vector3(1, 3, 1) },
+			{ "Wall", new Vector3(1, 3, 1) },
+			{ "WindowX1.0", new Vector3(0, 0, 0) },
+			{ "WindowX2.0", new Vector3(0, 0, 0)}
+		};
+	private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
+	private static Vector3 OFFSET_SIZE = new Vector3(0.2f, 0.2f, 0.2f);
 	const float CHUNK_DISTANCE_MAXIMUM = 41.5692f; // Vector3.Magnitude(new Vector3(24, 24, 24))
+
+	// Collision
 	private bool IsCollider(Volume volume) {
 		foreach (var chunkdata in volume.vd.chunkDatas) {
 			foreach (var compareVolume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
-				if (compareVolume == volume) {
+				if (compareVolume.GetHashCode() == volume.GetHashCode()) {
 					continue;
 				}
-				Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int) volume.transform.eulerAngles.y / 90].ToRealPosition();
+				float rotateAngle = volume.transform.eulerAngles.y >= 0 ? volume.transform.eulerAngles.y : volume.transform.eulerAngles.y + 360;
+				float compareRotateAngle = compareVolume.transform.eulerAngles.y >= 0 ? compareVolume.transform.eulerAngles.y : compareVolume.transform.eulerAngles.y + 360;
+				Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int)rotateAngle / 90].ToRealPosition();
 				foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
-					Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int) compareVolume.transform.eulerAngles.y / 90].ToRealPosition();
+					Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int)compareRotateAngle / 90].ToRealPosition();
+					// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
 					if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
-						Debug.Log("dis");
 						continue;
 					}
-					if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, volume.transform.eulerAngles.y, compareVolume.transform.eulerAngles.y)) {
+					// Chunk interact.
+					if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 						return true;
 					}
 				}
@@ -51,60 +64,90 @@ public class ChunkCollider : MonoBehaviour {
 		}
 		return false;
 	}
-	private Dictionary<string, Vector3> BlockAirScale = new Dictionary<string, Vector3>() {
-			{ "Door", new Vector3(1, 3, 1) },
-			{ "Wall", new Vector3(1, 3, 1) },
-			{ "Gnd.in.bottom", new Vector3(1, 1, 1) },
-			{ "Stair", new Vector3(1, 1, 1) }
-		};
-	private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
+	// Chunk interact.
 	private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
+		// Get all of Blocks.
 		foreach (var block in chunkData.blocks) {
 			Vector3 blockPosition = chunkPosition + AbsolutePosition(block.BlockPos, rotateAngle).ToRealPosition();
-			Bounds bounds = new Bounds(blockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2 - new Vector3(0.2f, 0.2f, 0.2f));
+			// Transform Block into Bounds.
+			Bounds bounds = new Bounds(blockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2 - OFFSET_SIZE);
+			// Bounds interact.
 			if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 				return true;
 			}
 		}
+		// Get all of BlockAirs.
 		foreach (var blockAir in chunkData.blockAirs) {
 			Vector3 blockPosition = chunkPosition + AbsolutePosition(blockAir.BlockPos, rotateAngle).ToRealPosition();
-			Vector3 maximumScale = new Vector3(1, 1, 1);
+			// Through pass all of pieceNames to get maximum of item size.
+			Vector3 maximumScale = new Vector3(0, 0, 0);
 			foreach (var names in blockAir.pieceNames) {
 				if (names == "") { continue; }
-				if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
-				if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
-				if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+				if (BlockAirScale.ContainsKey(names)) {
+					if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
+					if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
+					if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+				} else {
+					if (maximumScale.x < 1) { maximumScale.x = 1; }
+					if (maximumScale.y < 1) { maximumScale.y = 1; }
+					if (maximumScale.z < 1) { maximumScale.z = 1; }
+
+				}
 			}
+			// Transform relative size into absolute size.
 			maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
-			Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - new Vector3(0.2f, 0.2f, 0.2f));
+			// Transform BlockAirs into Bounds.
+			Bounds bounds = new Bounds(blockPosition + maximumScale, maximumScale * 2 - OFFSET_SIZE);
+			// Bounds interact.
 			if (BoundsIntersect(bounds, compareChunkData, compareChunkPosition, rotateAngle, compareRotateAngle)) {
 				return true;
 			}
 		}
+		// No interact then return false.
 		return false;
 	}
+	// Bounds Interact.
 	private bool BoundsIntersect(Bounds bounds, ChunkData compareChunkData, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
-
+		// Get all of Blocks.
 		foreach (var compareBlock in compareChunkData.blocks) {
 			Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlock.BlockPos, compareRotateAngle).ToRealPosition();
+			// Transform into Bounds.
 			Bounds compareBounds = new Bounds(compareBlockPosition + MINIMUM_SIZE, MINIMUM_SIZE * 2);
+			// Both bounds interact.
 			if (bounds.Intersects(compareBounds)) {
-				Debug.Log(compareBlock.BlockPos);
 				return true;
 			}
 		}
+		// Get all of BlockAirs.
 		foreach (var compareBlockAir in compareChunkData.blockAirs) {
 			Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlockAir.BlockPos, compareRotateAngle).ToRealPosition();
-			Vector3 maximumScale = new Vector3(1, 1, 1);
+			// Through pass all of pieceNames to get maximum of item size.
+			Vector3 maximumScale = new Vector3(0, 0, 0);
 			foreach (var names in compareBlockAir.pieceNames) {
 				if (names == "") { continue; }
-				if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
-				if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
-				if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+				if (BlockAirScale.ContainsKey(names)) {
+					if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
+					if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
+					if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
+				} else {
+					if (maximumScale.x < 1) { maximumScale.x = 1; }
+					if (maximumScale.y < 1) { maximumScale.y = 1; }
+					if (maximumScale.z < 1) { maximumScale.z = 1; }
+
+				}
 			}
+			// Transform relative size into absolute size.
 			maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
+			// Transform BlockAirs into Bounds.
 			Bounds compareBounds = new Bounds(compareBlockPosition + maximumScale, maximumScale * 2);
 			if (bounds.Intersects(compareBounds)) {
+				Debug.Log(compareBlockAir.BlockPos);
+				foreach (var names in compareBlockAir.pieceNames) {
+					if (names != "") {
+						Debug.Log(names);
+					}
+				}
+				// Both bounds interact.
 				return true;
 			}
 		}
