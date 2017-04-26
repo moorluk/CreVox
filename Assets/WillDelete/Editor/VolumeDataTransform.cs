@@ -41,16 +41,20 @@ namespace CrevoxExtend {
 			CrevoxOperation.RefreshVolume();
 		}
 		// Dfs generate.
-		private static void GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
+		private static bool GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
 				Volume volume = CrevoxOperation.CreateVolumeObject(SelectData(_refrenceTable[child.AlphabetID]));
 				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
-						GenerateRecursion(child, volume);
+					if(! GenerateRecursion(child, volume)) {
+						return false;
+					}
 				}else {
 					MonoBehaviour.DestroyImmediate(volume.gameObject);
 					Debug.Log("Error");
+					return false;
 				}
 			}
+			return true;
 		}
 		// [TEST] Will delete.
 		public static void RandomGenerate(int count) {

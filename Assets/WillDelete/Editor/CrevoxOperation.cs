@@ -7,24 +7,26 @@ using System.Linq;
 namespace CrevoxExtend {
 
 	public class CrevoxOperation {
-		// Offset about 0, 90, 180, 270 degrees.
-		private static WorldPos[] RotationOffset = new WorldPos[] {
-			new WorldPos(0, 0, 0),
-			new WorldPos(0, 0, 8),
-			new WorldPos(8, 0, 8),
-			new WorldPos(8, 0, 0)
-		};
 		// Compute the position after rotated.
 		public static WorldPos AbsolutePosition(WorldPos position, float degree) {
 			Vector2 aPoint = new Vector2(position.x, position.z);
 			// Set 4, 4 to be center point.
-			aPoint -= new Vector2(4, 4);
 			float rad = degree * Mathf.Deg2Rad;
 			float sin = Mathf.Sin(rad);
 			float cos = Mathf.Cos(rad);
-			return new WorldPos((int) Mathf.Round(aPoint.x * cos + aPoint.y * sin + 4),
+			return new WorldPos((int) Mathf.Round(aPoint.x * cos + aPoint.y * sin),
 				position.y,
-				(int) Mathf.Round(aPoint.y * cos - aPoint.x * sin + 4));
+				(int) Mathf.Round(aPoint.y * cos - aPoint.x * sin));
+		}
+		public static Vector3 AbsolutePosition(Vector3 position, float degree) {
+			Vector2 aPoint = new Vector2(position.x, position.z);
+			// Set 4, 4 to be center point.
+			float rad = degree * Mathf.Deg2Rad;
+			float sin = Mathf.Sin(rad);
+			float cos = Mathf.Cos(rad);
+			return new Vector3(Mathf.Round(aPoint.x * cos + aPoint.y * sin),
+				position.y,
+				Mathf.Round(aPoint.y * cos - aPoint.x * sin));
 		}
 		// Volume Manager object.
 		private static VolumeManager resultVolumeManager;
@@ -78,7 +80,7 @@ namespace CrevoxExtend {
 			Quaternion rotationOfVolume2 = volume2.transform.rotation;
 			// Compare door connection.
 			ConnectionInfo[] connections2 = volumeExtend2.ConnectionInfos.OrderBy(x => Random.value).ToArray();
-			ConnectionInfo[] connections1 = volumeExtend1.ConnectionInfos.ToArray();
+			ConnectionInfo[] connections1 = volumeExtend1.ConnectionInfos.OrderBy(x => Random.value).ToArray();
 			foreach (var connection2 in connections2) {
 				if (connection2.used) {
 					continue;
@@ -102,14 +104,13 @@ namespace CrevoxExtend {
 					// Rotation
 					volume2.transform.eulerAngles = new Vector3(0, rotateAngle, 0);
 					// Absolute position.
-					volume2.transform.localPosition = volume1.transform.position - RotationOffset[(int) rotationOfVolume1.eulerAngles.y / 90].ToRealPosition() + relativePosition.ToRealPosition() + RotationOffset[rotateAngle / 90].ToRealPosition();
+					volume2.transform.localPosition = volume1.transform.position + relativePosition.ToRealPosition();
 					if (!IsCollider(volume2)) {
 						connection1.used = true;
 						connection2.used = true;
 						Debug.Log("Combine finish.");
 						return true;
 					}
-
 				}
 			}
 			Debug.Log("No door can combine.");
@@ -144,8 +145,8 @@ namespace CrevoxExtend {
 		};
 		private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
 		private static Vector3 OFFSET_SIZE = new Vector3(0.2f, 0.2f, 0.2f);
-		const float CHUNK_DISTANCE_MAXIMUM = 41.5692f; // Vector3.Magnitude(new Vector3(24, 24, 24))
-
+		static float CHUNK_DISTANCE_MAXIMUM = 37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
+		
 		// Collision
 		private static bool IsCollider(Volume volume) {
 			foreach (var chunkdata in volume.vd.chunkDatas) {
@@ -155,11 +156,12 @@ namespace CrevoxExtend {
 					}
 					float rotateAngle = volume.transform.eulerAngles.y >= 0 ? volume.transform.eulerAngles.y : volume.transform.eulerAngles.y + 360;
 					float compareRotateAngle = compareVolume.transform.eulerAngles.y >= 0 ? compareVolume.transform.eulerAngles.y : compareVolume.transform.eulerAngles.y + 360;
-					Vector3 chunkPosition = volume.transform.position + chunkdata.ChunkPos.ToRealPosition() - RotationOffset[(int)rotateAngle / 90].ToRealPosition();
+					Vector3 chunkPosition = volume.transform.position + AbsolutePosition(chunkdata.ChunkPos, rotateAngle).ToRealPosition();
 					foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
-						Vector3 compareChunkPosition = compareVolume.transform.position + compareChunkData.ChunkPos.ToRealPosition() - RotationOffset[(int)compareRotateAngle / 90].ToRealPosition();
+						Vector3 compareChunkPosition = compareVolume.transform.position + AbsolutePosition(compareChunkData.ChunkPos, compareRotateAngle).ToRealPosition();
 						// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
 						if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
+							//Debug.Log(compareVolume.name);
 							continue;
 						}
 						// Chunk interact.
