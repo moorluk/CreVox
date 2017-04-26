@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 using CreVox;
 using MissionGrammarSystem;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -15,6 +16,7 @@ namespace CrevoxExtend {
 		private static int _randomCount;
 
 		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
+		private static string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
 
 		void Initialize() {
 			alphabets.Clear();
@@ -60,22 +62,14 @@ namespace CrevoxExtend {
 					// Get the files.
 					string[] files = Directory.GetFiles(path);
 					for (int i = 0; i < files.Length; i++) {
-						Debug.Log(files[i]);
-						// Get the file name.
-						string fileName = files[i].Split('\\').Last();
-						// If the file name is illegal then continue.
-						if (fileName.Length <= 12 || fileName.Substring(fileName.Length - 12, 12).ToLower() != "_vdata.asset") {
-							continue;
-						}
-						// Get the keyword of file name.
-						fileName = fileName.Remove(fileName.Length - 12, 12);
-						// Keyword compare.
-						for (int j = 0; j < alphabets.Count; j++) {
-							if (fileName.Length < alphabets[j].Name.Length) { continue; }
-							else if (alphabets[j].Name.ToLower() == fileName.Substring(0, alphabets[j].Name.Length).ToLower()) {
-								volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+						if (Regex.IsMatch(files[i], regex)){
+							for (int j = 0; j < alphabets.Count; j++) {
+								if (alphabets[j].Name.ToLower() == Regex.Match(files[i], regex).Groups[1].Value.ToLower()) {
+									volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+								}
 							}
 						}
+						
 					}
 					// if not find match vData, default null.
 					for (int j = 0; j < alphabets.Count; j++) {
