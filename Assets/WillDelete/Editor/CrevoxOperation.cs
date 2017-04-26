@@ -141,7 +141,8 @@ namespace CrevoxExtend {
 			{ "Door", new Vector3(1, 3, 1) },
 			{ "Wall", new Vector3(1, 3, 1) },
 			{ "WindowX1.0", new Vector3(0, 0, 0) },
-			{ "WindowX2.0", new Vector3(0, 0, 0)}
+			{ "WindowX2.0", new Vector3(0, 0, 0)},
+			{ "Any", new Vector3(1, 1, 1)}
 		};
 		private static Vector3 MINIMUM_SIZE = new Vector3(1.5f, 1.0f, 1.5f);
 		private static Vector3 OFFSET_SIZE = new Vector3(0.2f, 0.2f, 0.2f);
@@ -192,16 +193,13 @@ namespace CrevoxExtend {
 				Vector3 maximumScale = new Vector3(0, 0, 0);
 				foreach (var names in blockAir.pieceNames) {
 					if (names == "") { continue; }
+					string objectName = "Any";
 					if (BlockAirScale.ContainsKey(names)) {
-						if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
-						if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
-						if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
-					} else {
-						if (maximumScale.x < 1) { maximumScale.x = 1; }
-						if (maximumScale.y < 1) { maximumScale.y = 1; }
-						if (maximumScale.z < 1) { maximumScale.z = 1; }
-
+						objectName = names;
 					}
+					if (maximumScale.x < BlockAirScale[objectName].x) { maximumScale.x = BlockAirScale[objectName].x; }
+					if (maximumScale.y < BlockAirScale[objectName].y) { maximumScale.y = BlockAirScale[objectName].y; }
+					if (maximumScale.z < BlockAirScale[objectName].z) { maximumScale.z = BlockAirScale[objectName].z; }
 				}
 				// Transform relative size into absolute size.
 				maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);
@@ -234,16 +232,13 @@ namespace CrevoxExtend {
 				Vector3 maximumScale = new Vector3(0, 0, 0);
 				foreach (var names in compareBlockAir.pieceNames) {
 					if (names == "") { continue; }
+					string objectName = "Any";
 					if (BlockAirScale.ContainsKey(names)) {
-						if (maximumScale.x < BlockAirScale[names].x) { maximumScale.x = BlockAirScale[names].x; }
-						if (maximumScale.y < BlockAirScale[names].y) { maximumScale.y = BlockAirScale[names].y; }
-						if (maximumScale.z < BlockAirScale[names].z) { maximumScale.z = BlockAirScale[names].z; }
-					} else {
-						if (maximumScale.x < 1) { maximumScale.x = 1; }
-						if (maximumScale.y < 1) { maximumScale.y = 1; }
-						if (maximumScale.z < 1) { maximumScale.z = 1; }
-
+						objectName = names;
 					}
+					if (maximumScale.x < BlockAirScale[objectName].x) { maximumScale.x = BlockAirScale[objectName].x; }
+					if (maximumScale.y < BlockAirScale[objectName].y) { maximumScale.y = BlockAirScale[objectName].y; }
+					if (maximumScale.z < BlockAirScale[objectName].z) { maximumScale.z = BlockAirScale[objectName].z; }
 				}
 				// Transform relative size into absolute size.
 				maximumScale = Vector3.Scale(MINIMUM_SIZE, maximumScale);

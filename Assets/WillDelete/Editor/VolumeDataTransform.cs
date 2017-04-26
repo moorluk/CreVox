@@ -49,7 +49,7 @@ namespace CrevoxExtend {
 						return false;
 					}
 				}else {
-					//MonoBehaviour.DestroyImmediate(volume.gameObject);
+					MonoBehaviour.DestroyImmediate(volume.gameObject);
 					Debug.Log("Error");
 					return false;
 				}
