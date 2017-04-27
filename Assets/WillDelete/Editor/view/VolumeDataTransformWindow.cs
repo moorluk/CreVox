@@ -1,32 +1,29 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEditor;
-using CreVox;
-using MissionGrammarSystem;
-using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Linq;
 using System.IO;
 using System;
+// Import CreVox and DungeonGenerator.
+using CreVox;
+using MissionGrammarSystem;
 
 namespace CrevoxExtend {
 	class VolumeDataTransformWindow : EditorWindow {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
-		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 		private static int _randomCount;
 
-		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
-		private static string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
+		private static Dictionary<GraphGrammarNode, List<VolumeData>> _volumeList = new Dictionary<GraphGrammarNode, List<VolumeData>>();
 
 		void Initialize() {
-			alphabets.Clear();
-			volumeDatas.Clear();
+			_volumeList.Clear();
 			foreach (var node in Alphabet.Nodes) {
 				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
 					continue;
 				}
-				alphabets.Add(node);
-				volumeDatas.Add(new List<VolumeData>());
+				_volumeList.Add(node, new List<VolumeData>());
 			}
 		}
 		void Awake() {
@@ -38,85 +35,86 @@ namespace CrevoxExtend {
 			}
 		}
 		bool isChanged() {
-			for (int i = 0, index = 0; i < Alphabet.Nodes.Count; i++) {
-				if (Alphabet.Nodes[i] == Alphabet.AnyNode || Alphabet.Nodes[i].Terminal == NodeTerminalType.NonTerminal) {
+			// If count is different than before (reduce one because 'any node').
+			if (Alphabet.Nodes.Count - 1 > _volumeList.Values.Sum(vs => vs.Count)) { return true; }
+			// Each node.
+			foreach (var node in Alphabet.Nodes) {
+				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
 					continue;
 				}
-				if (index >= alphabets.Count || Alphabet.Nodes[i].AlphabetID != alphabets[index].AlphabetID) {
+				if (! _volumeList.Keys.ToList().Exists(n => n.AlphabetID == node.AlphabetID)) {
 					return true;
 				}
-				index++;
 			}
 			return false;
 		}
-
 		void OnGUI() {
+			// Instruction. Import the prefabs.
 			if (GUILayout.Button("Open Folder")) {
-				// First clear all origin volumeDatas.
-				for (int j = 0; j < alphabets.Count; j++) {
-					volumeDatas[j].Clear();
-				}
-				// Open folder.
-				string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
-				if (path != "") {
-					// Get the files.
-					string[] files = Directory.GetFiles(path);
-					for (int i = 0; i < files.Length; i++) {
-						if (Regex.IsMatch(files[i], regex)){
-							for (int j = 0; j < alphabets.Count; j++) {
-								if (alphabets[j].Name.ToLower() == Regex.Match(files[i], regex).Groups[1].Value.ToLower()) {
-									volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
-								}
-							}
-						}
-						
-					}
-					// if not find match vData, default null.
-					for (int j = 0; j < alphabets.Count; j++) {
-						if (volumeDatas[j].Count < 1) {
-							volumeDatas[j].Add(null);
-						}
-					}
-				}
+				ImportPrefabsAutomatically();
 			}
 			// Node list.
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height * 0.75f));
-			for (int i = 0; i < alphabets.Count; i++) {
-				EditorGUILayout.LabelField(alphabets[i].ExpressName);
-				for (int j = 0; j < volumeDatas[i].Count; j++) {
+			foreach (var volumePair in _volumeList) {
+				var volumes = volumePair.Value;
+				EditorGUILayout.LabelField(volumePair.Key.ExpressName);
+				foreach (VolumeData volume in volumes.ToList()) {
 					EditorGUILayout.BeginHorizontal();
-					volumeDatas[i][j] = (VolumeData)EditorGUILayout.ObjectField(volumeDatas[i][j], typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
-					if (GUILayout.Button("Delete")) {
-						volumeDatas[i].RemoveAt(j);
-					}
+					// Input field.
+					volumes[volumes.IndexOf(volume)] = (VolumeData) EditorGUILayout.ObjectField(volume, typeof (VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
+					// Delete.
+					if (GUILayout.Button("Delete")) { volumes.Remove(volume); }
 					EditorGUILayout.EndHorizontal();
 				}
-				if (GUILayout.Button("Add New vData")) {
-					volumeDatas[i].Add(null);
-				}
+				// Append.
+				if (GUILayout.Button("Add New vData")) { volumes.Add(null); }
 			}
 			EditorGUILayout.EndScrollView();
 			// If symbol has none vData, user cannot press Generate.
-			// Add null prevent.
-			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Count == 0||vs.Exists(v => v == null)));
+			EditorGUI.BeginDisabledGroup(_volumeList.Values.ToList().Exists(vs => vs.Count == 0 || vs.Exists(v => v == null)));
 			// Generate button.
 			if (GUILayout.Button("Generate")) {
-				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.SameVolumeDatas = volumeDatas;
+				VolumeDataTransform.AlphabetIDs = _volumeList.Keys.Select(n => n.AlphabetID).ToList();
+				VolumeDataTransform.SameVolumeDatas = _volumeList.Values.ToList();
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.Generate();
 			}
-			// [TEST] Will delete.
 			// Random generate button.
-			
 			if (GUILayout.Button("Random Generate")) {
-				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.SameVolumeDatas = volumeDatas;
+				VolumeDataTransform.AlphabetIDs = _volumeList.Keys.Select(n => n.AlphabetID).ToList();
+				VolumeDataTransform.SameVolumeDatas = _volumeList.Values.ToList();
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.RandomGenerate(_randomCount);
 			}
 			_randomCount = EditorGUILayout.IntField("Random generate count", _randomCount);
 			EditorGUI.EndDisabledGroup();
+		}
+
+		// Import prefabs automatically via path of folder.
+		void ImportPrefabsAutomatically() {
+			string path;
+			// First clear all volumeData in volumeList.
+			foreach (var volumeData in _volumeList.Values.ToList()) { volumeData.Clear(); }
+			// Open folder.
+			path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
+			if (path != string.Empty) {
+				// All prefabs in the path.
+				foreach (string file in Directory.GetFiles(path)) {
+					// Exactly, only once or no.
+					foreach (Match m in Regex.Matches(file, @".*[\\\/](\w+)_.+_vData\.asset$")) {
+						var matchedVolumes =
+							from pair in _volumeList
+							where pair.Key.Name.ToLower() == m.Groups[1].Value.ToLower()
+							select pair;
+
+						foreach (var volume in matchedVolumes) {
+							_volumeList[volume.Key].Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+						}
+					}
+				}
+				// If not find matched vData, default null.
+				_volumeList.Values.Where(vs => vs.Count == 0).ToList().ForEach(vs => vs.Add(null));
+			}
 		}
 	}
 }
