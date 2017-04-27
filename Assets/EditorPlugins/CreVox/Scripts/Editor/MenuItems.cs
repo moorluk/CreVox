@@ -27,9 +27,6 @@ namespace CreVox
 			newVol.name = "New Volume";
 			newVol.AddComponent<Volume> ();
 			Volume volume = newVol.GetComponent<Volume> ();
-			volume.Reset ();
-			volume.workFile = "";
-			volume.tempPath = "";
 			volume.Init (1, 1, 1);
 			VolumeEditor.WriteVData (volume);
 		}

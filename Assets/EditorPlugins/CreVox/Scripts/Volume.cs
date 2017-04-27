@@ -13,19 +13,12 @@ namespace CreVox
 	[ExecuteInEditMode]
 	public class Volume : MonoBehaviour
 	{
-		public Volume volume;
-
-		public string workFile;
-		public string tempPath;
 		public string ArtPack = PathCollect.pieces;
 		public string vMaterial = PathCollect.defaultVoxelMaterial;
 
 		public Material vertexMaterial;
 
-		void Awake ()
-		{
-			volume = this;
-		}
+		public VolumeData vd;
 
 		void Start ()
 		{
@@ -51,46 +44,6 @@ namespace CreVox
 			#endif
 		}
 
-		#region VolumeData
-
-		public VolumeData vd;
-		public bool _useBytes;
-		public List<BlockItem> blockItems = new List<BlockItem>();
-
-//		public void WriteVData ()
-//		{
-//			if (vd == null) {
-//				if (workFile != "")
-//					vd = VolumeData.GetVData (workFile + "_vData.asset");
-//				else {
-//					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-//					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, volume.name + "_vData", "asset");
-//					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-//					vd = VolumeData.GetVData (sPath);
-//				}
-//
-//				vd.chunkX = chunkX;
-//				vd.chunkY = chunkY;
-//				vd.chunkZ = chunkZ;
-//				vd.chunkDatas = new List<ChunkData> ();
-//				vd.blockItems = blockItems;
-//				foreach (Chunk _chunk in chunks.Values) {
-//					WorldPos _pos = _chunk.cData.ChunkPos;
-//
-//					ChunkData newChunkData = new ChunkData ();
-//					newChunkData.ChunkPos = _pos;
-//					newChunkData.blocks = _chunk.cData.blocks;
-//					newChunkData.blockAirs = _chunk.cData.blockAirs;
-//					newChunkData.blockHolds = _chunk.cData.blockHolds;
-//
-//					vd.chunkDatas.Add (newChunkData);
-//					_chunk.cData = newChunkData;
-//				}
-//			}
-//		}
-
-		#endregion
-
 		#region Chunk
 
 		private GameObject chunkPrefab;
@@ -99,44 +52,25 @@ namespace CreVox
 		public int chunkY = 1;
 		public int chunkZ = 1;
 
-		public void BuildVolume (Save _save, VolumeData _VData = null)
+		public void BuildVolume ()
 		{
-			if (_VData == null && _useBytes == false) {
+			if (vd == null) {
 				return;
 			}
-			Reset ();
-
-			if (_useBytes) { //load .bytes
-				vd = null;
-				Init (_save.chunkX, _save.chunkY, _save.chunkZ);
-				blockItems = _save.blockItems;
-				foreach (var blockPair in _save.blocks) {
-					Block block = blockPair.Value;
-					if (block != null) {
-						if (block is BlockAir) {
-							BlockAir bAir = blockPair.Value as BlockAir;
-							SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, bAir);
-							if (RemoveNodeIfIsEmpty (bAir.BlockPos))
-								SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, null);
-						} else if (!(block is BlockHold)) {
-							SetBlock (blockPair.Key.x, blockPair.Key.y, blockPair.Key.z, new Block ());
-						}
-					}
-				}
-			} else { //load ScriptableObject
-				Init (_VData.chunkX, _VData.chunkY, _VData.chunkZ);
-				blockItems = _VData.blockItems;
-				foreach (Chunk c in chunks.Values) {
-					c.cData = _VData.GetChunk (c.cData.ChunkPos);
-				}
+			Init (vd.chunkX, vd.chunkY, vd.chunkZ);
+			foreach (Chunk c in chunks.Values) {
+				c.cData = vd.GetChunk (c.cData.ChunkPos);
 			}
 			PlacePieces ();
+//			blockItems = vd.blockItems;
 			PlaceItems ();
+
 			UpdateChunks ();
 		}
 
 		public void Init (int _chunkX, int _chunkY, int _chunkZ)
 		{
+			Reset ();
 			chunkPrefab = Resources.Load (PathCollect.chunk) as GameObject;
 
 			chunkX = _chunkX;
@@ -176,6 +110,9 @@ namespace CreVox
 //			blockItems.Clear ();
 			itemNodes.Clear ();
 
+			for (int i = transform.childCount; i > 0; i--)
+				GameObject.DestroyImmediate (transform.GetChild (i - 1).gameObject);
+
 			#if UNITY_EDITOR
 			mColl = null;
 			bColl = null;
@@ -184,9 +121,6 @@ namespace CreVox
 			if (layerRuler)
 				GameObject.DestroyImmediate (layerRuler);
 			#endif
-
-			for (int i = transform.childCount; i > 0; i--)
-				GameObject.DestroyImmediate (transform.GetChild (i - 1).gameObject);
 		}
 
 		public void UpdateChunks ()
@@ -340,6 +274,7 @@ namespace CreVox
 		}
 
 		public GameObject itemRoot;
+//		public List<BlockItem> blockItems = new List<BlockItem>();
 		Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject>();
 
 		public GameObject GetItemNode (BlockItem blockItem)
@@ -450,8 +385,8 @@ namespace CreVox
 				if (_piece.GetComponent<PaletteItem> ().markType != PaletteItem.MarkerType.Item)
 					return;
 				
-				if (_id < blockItems.Count) {
-					blockItem = blockItems [_id];
+				if (_id < vd.blockItems.Count) {
+					blockItem = vd.blockItems [_id];
                 } else {
 					blockItem = new BlockItem ();
 					blockItem.BlockPos = EditTerrain.GetBlockPos(_position);
@@ -463,7 +398,7 @@ namespace CreVox
 					blockItem.rotY = _piece.transform.localRotation.y;
 					blockItem.rotZ = _piece.transform.localRotation.z;
 					blockItem.rotW = _piece.transform.localRotation.w;
-					blockItems.Add (blockItem);
+					vd.blockItems.Add (blockItem);
                 }
 				if (!itemNodes.ContainsKey (blockItem)) {
 					GameObject pObj;
@@ -481,13 +416,13 @@ namespace CreVox
                         p.SetupPiece(blockItem);
                 }
 			} else {
-				if (!(_id < blockItems.Count))
+				if (!(_id < vd.blockItems.Count))
 					return;
 				
-				blockItem = blockItems [_id];
+				blockItem = vd.blockItems [_id];
 				GameObject.DestroyImmediate (itemNodes [blockItem]);
 				itemNodes.Remove (blockItem);
-				blockItems.RemoveAt (_id);
+				vd.blockItems.RemoveAt (_id);
 			}
             
         }
@@ -497,8 +432,8 @@ namespace CreVox
 			PaletteItem[] itemArray;
 			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
 
-			for (int i = 0; i < blockItems.Count; i++) {
-				BlockItem bItem = blockItems [i];
+			for (int i = 0; i < vd.blockItems.Count; i++) {
+				BlockItem bItem = vd.blockItems [i];
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
                         LevelPiece p = itemArray[k].gameObject.GetComponent<LevelPiece>();
@@ -723,35 +658,29 @@ namespace CreVox
 
 		public void SaveTempWorld ()
 		{
+//			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+//			sPath = EditorUtility.SaveFilePanel ("save vData", sPath, vd.name, "asset");
+//			if (sPath.Length < 1)
+//				return;
+//			sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
+			string vdName = AssetDatabase.GetAssetPath(vd);
+			vdName = vdName.Substring (vdName.LastIndexOf ("/") + 1);
 			string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
-			tempPath = PathCollect.save + "/_TempBackup/" + date + "_" + workFile.Substring (workFile.LastIndexOf ("/") + 1);
-			Serialization.SaveWorld (volume, PathCollect.resourcesPath + tempPath + ".bytes");
+			string backupPath = PathCollect.resourcesPath + PathCollect.save + "/_TempBackup/" + date + "_" + vdName;
+
+			VolumeData vdBackup = ScriptableObject.CreateInstance<VolumeData> ();
+			vdBackup.blockItems = vd.blockItems;
+			vdBackup.chunkDatas = vd.chunkDatas;
+			vdBackup.chunkX = vd.chunkX;
+			vdBackup.chunkY = vd.chunkY;
+			vdBackup.chunkZ = vd.chunkZ;
+			UnityEditor.AssetDatabase.CreateAsset (vdBackup, backupPath);
 			AssetDatabase.Refresh ();
 		}
 		#endif
 		public void LoadTempWorld ()
 		{
-			if (_useBytes) {
-				Save save = Serialization.LoadRTWorld (tempPath);
-				if (save != null)
-					Debug.Log ("Volume[<B>" + transform.name + "] <color=#05EE61>Load tempPath :</color></B>\n" + tempPath);
-				else {
-					save = Serialization.LoadRTWorld (workFile);
-					if (save != null)
-						Debug.Log ("Volume<B>[" + transform.name + "] <color=#059E61>Load workFile :</color></B>\n" + workFile);
-					else {
-						Debug.LogError ("Volume[" + transform.name + "] Loading .bytes Fail !!!");
-					}
-				}
-
-				if (save != null) {
-					volume.BuildVolume (save);
-				} else
-					Debug.LogError ("No ChunkData Source!!!");
-			} else {
-				if (vd != null)
-					volume.BuildVolume (null, vd);
-			}
+			BuildVolume ();
 
 			#if UNITY_EDITOR
 			SceneView.RepaintAll ();
@@ -761,7 +690,6 @@ namespace CreVox
 		#endregion
 
 		#region Ruler
-
 		#if UNITY_EDITOR
 		[SerializeField]
 		private MeshCollider mColl;
@@ -857,9 +785,7 @@ namespace CreVox
 		#endregion
 
 		#region Editor Scene UI
-
 		#if UNITY_EDITOR
-
 		public Color YColor;
 		public bool pointer;
 		public int pointY;
@@ -888,7 +814,7 @@ namespace CreVox
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
 				DrawBlockHold ();
-				DrawBlockItem ();
+//				DrawBlockItem ();
 			}
 			Gizmos.matrix = oldMatrix;
 		}
@@ -897,18 +823,20 @@ namespace CreVox
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			foreach (Chunk chunk in chunks.Values) {
-				for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
-					WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
-					WorldPos chunkPos = chunk.cData.ChunkPos;
-					Vector3 localPos = new Vector3 (
-						(blockHoldPos.x + chunkPos.x) * vg.w, 
-						(blockHoldPos.y + chunkPos.y) * vg.h, 
-						(blockHoldPos.z + chunkPos.z) * vg.d
-					);
-					Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.15f);
-					Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
-					Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 1.0f);
-					Gizmos.DrawSphere (localPos, 0.1f);
+				if (chunk != null) {
+					for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
+						WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
+						WorldPos chunkPos = chunk.cData.ChunkPos;
+						Vector3 localPos = new Vector3 (
+							                  (blockHoldPos.x + chunkPos.x) * vg.w, 
+							                  (blockHoldPos.y + chunkPos.y) * vg.h, 
+							                  (blockHoldPos.z + chunkPos.z) * vg.d
+						                  );
+						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.15f);
+						Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
+						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 1.0f);
+						Gizmos.DrawSphere (localPos, 0.1f);
+					}
 				}
 			}
 		}
@@ -917,8 +845,8 @@ namespace CreVox
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			foreach (Chunk chunk in chunks.Values) {
-				for (int i = 0; i < blockItems.Count; i++) {
-					WorldPos blockItemPos = blockItems [i].BlockPos;
+				for (int i = 0; i < vd.blockItems.Count; i++) {
+					WorldPos blockItemPos = vd.blockItems [i].BlockPos;
 					WorldPos chunkPos = chunk.cData.ChunkPos;
 					Vector3 localPos = new Vector3 (
 						(blockItemPos.x + chunkPos.x) * vg.w, 

@@ -22,8 +22,7 @@ namespace CreVox
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
-			if (volume.vd && !volume._useBytes)
-				volume.BuildVolume (null, volume.vd);
+			volume.BuildVolume ();
 			SubscribeEvents ();
 		}
 
@@ -36,146 +35,44 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-			float buttonW = 40;
-			float bh = 23.5f;
+			float buttonW = 60;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
 			VGlobal vg = VGlobal.GetSetting ();
+			GUI.color = Color.white;
 
-			GUI.color = Color.gray;
-			using (var v0 = new EditorGUILayout.VerticalScope ("ProgressBarBack")) {
-				GUI.color = Color.white;
-				GUI.backgroundColor = volume._useBytes ? Color.white : Color.green;
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					GUI.backgroundColor = Color.white;
-					EditorGUILayout.LabelField ("", "VolumeData", "BoldLabel");
-					EditorGUI.indentLevel++;
-					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
-					EditorGUI.indentLevel--;
-				}
-
-				using (var h = new EditorGUILayout.HorizontalScope (GUILayout.Height(10))) {
-					if (GUILayout.Button (new GUIContent ("Link\n▼", "將資料檔連結到場景"), "miniButtonLeft",GUILayout.Height(bh))) {
-						volume._useBytes = false;
-						volume.BuildVolume (new Save (), volume.vd);
-						volume.tempPath = "";
-						SceneView.RepaintAll ();
-					}
-					if (GUILayout.Button (new GUIContent ("▲\nWrite", "將場景現況 寫入/新建 資料檔(轉檔用)"), "miniButtonRight", GUILayout.Height(bh))) {
-						volume._useBytes = false;
-						WriteVData (volume);
-						EditorUtility.SetDirty (volume.vd);
-						volume.tempPath = "";
-						SceneView.RepaintAll ();
-					}
-				}
-
-				bool linking;
-				if (volume.chunks != null && volume.chunks.Count > 0 && volume.vd != null && volume.vd.chunkDatas.Count > 0)
-					linking = ReferenceEquals (volume.chunks [volume.vd.chunkDatas [0].ChunkPos].cData, volume.vd.chunkDatas [0]);
-				else {
-//					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
-//						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
-					linking = false;
-				}
-				
-				GUI.backgroundColor = linking ? Color.green : Color.red;
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					GUI.backgroundColor = Color.white;
-					EditorGUILayout.LabelField ("","Volume in Scene (" + (linking ? "連結中)" : "未連結)"), "BoldLabel");
-					GUILayout.BeginHorizontal ();
-					EditorGUIUtility.labelWidth = 15;
-					EditorGUILayout.LabelField ("New");
-					cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (buttonW-5));
-					cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (buttonW-5));
-					cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (buttonW-5));
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Create New VolumeData", EditorStyles.boldLabel);
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					EditorGUIUtility.labelWidth = 10;
+					cx = EditorGUILayout.IntField ("X", cx);
+					cy = EditorGUILayout.IntField ("Y", cy);
+					cz = EditorGUILayout.IntField ("Z", cz);
 					EditorGUIUtility.labelWidth = defLabelWidth;
 					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
-						volume.Reset ();
-						volume.workFile = "";
-						volume.tempPath = "";
+						volume.vd = null;
 						volume.Init (cx, cy, cz);
-//						volume.vd = null;
-						WriteVData(volume);
-					}
-					GUILayout.EndHorizontal ();
-				}
-
-				using (var h = new EditorGUILayout.HorizontalScope ()) {
-					if (GUILayout.Button (new GUIContent ("Save\n▼", "存byte檔；同時按 SHIFT 快速存檔"), "miniButtonLeft", GUILayout.Height(bh))) {
-						if (Event.current.shift) {
-							if (volume.workFile != "") {
-								string sPath = 
-									Application.dataPath
-									+ PathCollect.resourcesPath.Substring (6)
-									+ volume.workFile + ".bytes";
-								Serialization.SaveWorld (volume, sPath);
-								volume.tempPath = "";
-							}
-						} else {
-							string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
-							if (sPath != "") {
-								Serialization.SaveWorld (volume, sPath);
-								volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-								volume.tempPath = "";
-							}
-						}
-					}
-					if (GUILayout.Button (new GUIContent ("▲\nLoad", "讀byte檔；同時按 SHIFT 快速讀檔"), "miniButtonRight", GUILayout.Height(bh))) {
-						if (Event.current.shift) {
-							if (volume.workFile != "") {
-								string lPath = 
-									Application.dataPath
-									+ PathCollect.resourcesPath.Substring (6)
-									+ volume.workFile + ".bytes";
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									volume._useBytes = true;
-									volume.BuildVolume (save, volume.vd);
-									volume.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						} else {
-							string lPath = Serialization.GetLoadLocation (volume.workFile == "" ? null : volume.workFile);
-							if (lPath != "") {
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									volume._useBytes = true;
-									volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.LastIndexOf (PathCollect.resourceSubPath));
-									volume.BuildVolume (save);
-									volume.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						}
-					}
-				}
-
-				EditorGUI.BeginChangeCheck ();
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					EditorGUILayout.LabelField ("", "Bytes(Old)", "BoldLabel");
-					int cha = 17;
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));
-						if (volume.workFile != null) {
-							if (volume.workFile.Length > cha) {
-								if (volume.workFile.Contains (PathCollect.save))
-									EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
-							}
-						}
-					}
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						EditorGUILayout.LabelField ("Backup:", GUILayout.Width (50f));
-						if (volume.tempPath != null) {
-							if (volume.tempPath.Length > cha) {
-								if (volume.tempPath.Contains (PathCollect.save))
-									EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
-							}
-						}
+						WriteVData (volume);
 					}
 				}
 			}
 
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				GUI.backgroundColor = Color.white;
+				EditorGUILayout.LabelField ("VolumeData", EditorStyles.boldLabel);
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					EditorGUI.BeginChangeCheck ();
+					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
+					if (EditorGUI.EndChangeCheck ()) {
+						volume.BuildVolume ();
+						SceneView.RepaintAll ();
+					}
+					if (GUILayout.Button ("Backup", GUILayout.Width (buttonW))) {
+						volume.SaveTempWorld ();
+					}
+				}
+			}
+
+			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
@@ -190,12 +87,9 @@ namespace CreVox
 					
 					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourcesPath));
 					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
-					if (mats.Length == 1) {
-						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
+					string matPath = (mats.Length == 1) ? AssetDatabase.GUIDToAssetPath (mats [0]) : PathCollect.defaultVoxelMaterial;
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
 						volume.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
-					} else
-						volume.vertexMaterial = null;
 					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
 					volume.ArtPack = ppath;
 					EditorUtility.SetDirty (volume.vd);
@@ -205,8 +99,7 @@ namespace CreVox
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.labelWidth = 120f;
-				if (volume.vd != null)
-					EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"", EditorStyles.miniLabel);
+				EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"(none.)", EditorStyles.miniLabel);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
 					, volume.vertexMaterial
@@ -216,13 +109,14 @@ namespace CreVox
 			EditorGUI.BeginChangeCheck ();
 			DrawVGlobal ();
 			if (EditorGUI.EndChangeCheck ()) {
-					EditorUtility.SetDirty (vg);
+				EditorUtility.SetDirty (vg);
+				volume.BuildVolume ();
+				SceneView.RepaintAll ();
 				if (!UnityEditor.EditorApplication.isPlaying) {
 					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
 			DrawPieceInspectedGUI ();
-			DrawVData ();
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
@@ -237,20 +131,10 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File(" + vg.saveBackup + ")", vg.saveBackup);
 				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack(" + vg.volumeShowArtPack + ")", vg.volumeShowArtPack);
 				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
 				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
-			}
-		}
-
-		void DrawVData ()
-		{
-			if (volume.vd != null) {
-				if (vdEditor == null)
-					vdEditor = CreateEditor (volume.vd, typeof(VolumeDataEditor));
-				vdEditor.DrawHeader ();
-				vdEditor.OnInspectorGUI ();
 			}
 		}
 
@@ -445,8 +329,8 @@ namespace CreVox
 				Handles.DrawSolidDisc (hit.point,hit.normal, 0.5f);
 			}
 
-			for (int i = 0; i < volume.blockItems.Count; i++) {
-				BlockItem blockItem = volume.blockItems [i];
+			for (int i = 0; i < volume.vd.blockItems.Count; i++) {
+				BlockItem blockItem = volume.vd.blockItems [i];
 				Transform ItemNode = volume.GetItemNode (blockItem).transform;
 
 				Vector3 pos = ItemNode.position;
@@ -577,7 +461,7 @@ namespace CreVox
 							if (Event.current.shift)
 								PaintItem (true);
 							else {
-								GameObject ItemNode = volume.GetItemNode (volume.blockItems [workItemId]);
+								GameObject ItemNode = volume.GetItemNode (volume.vd.blockItems [workItemId]);
                                 _itemInspected = ItemNode.GetComponent<PaletteItem>();
                                 PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
 								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
@@ -833,7 +717,7 @@ namespace CreVox
 						return;
 
 					gHit.point = volume.transform.InverseTransformPoint (gHit.point);
-					volume.PlaceItem (volume.blockItems.Count, _pieceSelected,gHit.point);
+					volume.PlaceItem (volume.vd.blockItems.Count, _pieceSelected,gHit.point);
 					SceneView.RepaintAll ();
 				}
 			}
@@ -864,34 +748,33 @@ namespace CreVox
 
 		public static void WriteVData (Volume _volume)
 		{
-			VolumeData vd = _volume.vd;
-			if (vd == null) {
-				if (_volume.workFile != "")
-					vd = VolumeData.GetVData (_volume.workFile + "_vData.asset");
-				else {
-					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, _volume.name + "_vData", "asset");
-					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-					vd = VolumeData.GetVData (sPath);
-				}
+			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+			sPath = EditorUtility.SaveFilePanel ("save vData", sPath, _volume.name + "_vData", "asset");
+			if (sPath.Length < 1)
+				return;
+			sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
 
-				vd.chunkX = _volume.chunkX;
-				vd.chunkY = _volume.chunkY;
-				vd.chunkZ = _volume.chunkZ;
-				vd.chunkDatas = new List<ChunkData> ();
-				vd.blockItems = _volume.blockItems;
-				foreach (Chunk _chunk in _volume.chunks.Values) {
-					WorldPos _pos = _chunk.cData.ChunkPos;
+			VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
+			UnityEditor.AssetDatabase.CreateAsset (vd, sPath);
+			UnityEditor.AssetDatabase.Refresh();
 
-					ChunkData newChunkData = new ChunkData ();
-					newChunkData.ChunkPos = _pos;
-					newChunkData.blocks = _chunk.cData.blocks;
-					newChunkData.blockAirs = _chunk.cData.blockAirs;
-					newChunkData.blockHolds = _chunk.cData.blockHolds;
+			_volume.vd = vd;
+			vd.chunkX = _volume.chunkX;
+			vd.chunkY = _volume.chunkY;
+			vd.chunkZ = _volume.chunkZ;
+			vd.chunkDatas = new List<ChunkData> ();
+			vd.blockItems = _volume.vd.blockItems;
+			foreach (Chunk _chunk in _volume.chunks.Values) {
+				WorldPos _pos = _chunk.cData.ChunkPos;
 
-					vd.chunkDatas.Add (newChunkData);
-					_chunk.cData = newChunkData;
-				}
+				ChunkData newChunkData = new ChunkData ();
+				newChunkData.ChunkPos = _pos;
+				newChunkData.blocks = _chunk.cData.blocks;
+				newChunkData.blockAirs = _chunk.cData.blockAirs;
+				newChunkData.blockHolds = _chunk.cData.blockHolds;
+
+				vd.chunkDatas.Add (newChunkData);
+				_chunk.cData = newChunkData;
 			}
 		}
 
@@ -913,7 +796,7 @@ namespace CreVox
                 {
                     LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor(_itemInspected.inspectedScript));
                     Debug.Log("selectedItemID:" + selectedItemID.ToString());
-                    BlockItem item = volume.blockItems[selectedItemID];
+					BlockItem item = volume.vd.blockItems[selectedItemID];
 
                     if (e != null)
                         e.OnEditorGUI(ref item);
