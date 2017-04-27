@@ -30,12 +30,15 @@ namespace CrevoxExtend {
 				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
 			}
 		}
+		private static List<CreVoxNode> _usedNode;
 		// Generate the volume data that refer graph grammar.
 		public static void Generate() {
+			_usedNode = new List<CreVoxNode>();
 			// Get root.
 			CreVoxNode root = CreVoxAttach.RootNode;
 			// Initial root.
 			Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
+			_usedNode.Add(root);
 			GenerateRecursion(root, volume);
 			// Update volume manager and scene.
 			CrevoxOperation.RefreshVolume();
@@ -43,9 +46,13 @@ namespace CrevoxExtend {
 		// Dfs generate.
 		private static bool GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
+				if(_usedNode.Exists( n => n.SymbolID == child.SymbolID)) {
+					continue;
+				}
 				Volume volume = CrevoxOperation.CreateVolumeObject(SelectData(_refrenceTable[child.AlphabetID]));
 				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
-					if(! GenerateRecursion(child, volume)) {
+					_usedNode.Add(child);
+					if (! GenerateRecursion(child, volume)) {
 						return false;
 					}
 				}else {
