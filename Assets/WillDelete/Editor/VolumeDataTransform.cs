@@ -39,25 +39,46 @@ namespace CrevoxExtend {
 			// Initial root.
 			Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
 			_usedNode.Add(root);
-			GenerateRecursion(root, volume);
-			// Update volume manager and scene.
-			CrevoxOperation.RefreshVolume();
+			if (GenerateRecursion(root, volume)) {
+				Debug.Log("Successful.");
+				// Update volume manager and scene.
+				CrevoxOperation.RefreshVolume();
+			} else {
+				Debug.Log("Error");
+			}
 		}
 		// Dfs generate.
 		private static bool GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
 			foreach (var child in node.Children) {
-				if(_usedNode.Exists( n => n.SymbolID == child.SymbolID)) {
+				if (_usedNode.Exists(n => n.SymbolID == child.SymbolID)) {
 					continue;
 				}
-				Volume volume = CrevoxOperation.CreateVolumeObject(SelectData(_refrenceTable[child.AlphabetID]));
+				Volume volume = null;
+				// Find the suitable vdata by random ordering.
+				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy( x=> UnityEngine.Random.value)) {
+					volume = CrevoxOperation.CreateVolumeObject(vdata);
+					if(volume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
+						Debug.Log("Find the count is " + volume.GetComponent<VolumeExtend>().ConnectionInfos.Count);
+						break;
+					} else {
+						// Cannot connect, so delete it.
+						MonoBehaviour.DestroyImmediate(volume.gameObject);
+						volume = null;
+					}
+				}
+				// No vdata have enough connection.
+				if(volume == null) {
+					Debug.Log("There is no vdata that have enough connection. It means this graph  doesn't match with vdata.");
+					return false;
+				}
+				// Combine.
 				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
 					_usedNode.Add(child);
-					if (! GenerateRecursion(child, volume)) {
+					if (!GenerateRecursion(child, volume)) {
 						return false;
 					}
-				}else {
+				} else {
 					MonoBehaviour.DestroyImmediate(volume.gameObject);
-					Debug.Log("Error");
 					return false;
 				}
 			}
