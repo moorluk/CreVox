@@ -41,11 +41,11 @@ namespace CrevoxExtend {
 			_usedNode.Add(root);
 			if (GenerateRecursion(root, volume)) {
 				Debug.Log("Successful.");
+				// Update volume manager and scene.
+				CrevoxOperation.RefreshVolume();
 			} else {
 				Debug.Log("Error");
 			}
-			// Update volume manager and scene.
-			CrevoxOperation.RefreshVolume();
 		}
 		// Dfs generate.
 		private static bool GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
@@ -53,28 +53,32 @@ namespace CrevoxExtend {
 				if (_usedNode.Exists(n => n.SymbolID == child.SymbolID)) {
 					continue;
 				}
-				bool canConnect = false;
-				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
-					Volume volume = CrevoxOperation.CreateVolumeObject(vdata);
-					if (volume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 < child.Children.Count) {
-						Debug.Log("Connection count is not match.");
-						continue;
-					}
-					if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
-						_usedNode.Add(child);
-						if (GenerateRecursion(child, volume)) {
-							canConnect = true;
-							break;
-						} else {
-							Debug.Log("cannot.");
-							MonoBehaviour.DestroyImmediate(volume.gameObject);
-						}
+				Volume volume = null;
+				// Find the suitable vdata by random ordering.
+				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy( x=> UnityEngine.Random.value)) {
+					volume = CrevoxOperation.CreateVolumeObject(vdata);
+					if(volume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
+						Debug.Log("Find the count is " + volume.GetComponent<VolumeExtend>().ConnectionInfos.Count);
+						break;
 					} else {
+						// Cannot connect, so delete it.
 						MonoBehaviour.DestroyImmediate(volume.gameObject);
-						return false;
+						volume = null;
 					}
 				}
-				if (canConnect) {
+				// No vdata have enough connection.
+				if(volume == null) {
+					Debug.Log("There is no vdata that have enough connection. It means this graph  doesn't match with vdata.");
+					return false;
+				}
+				// Combine.
+				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
+					_usedNode.Add(child);
+					if (!GenerateRecursion(child, volume)) {
+						return false;
+					}
+				} else {
+					MonoBehaviour.DestroyImmediate(volume.gameObject);
 					return false;
 				}
 			}
