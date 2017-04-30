@@ -11,6 +11,7 @@ using System;
 
 namespace CrevoxExtend {
 	public class SpaceAlphabet {
+		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>();
 		private static string _path = Environment.CurrentDirectory + @"\Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/";
 		private static string prefabRegex = @".*[\\\/](\w+)_(\w+)\.prefab$";
 		private static List<string> alphabets = new List<string>() { "Connection" };
