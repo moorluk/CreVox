@@ -52,7 +52,7 @@ namespace CrevoxExtend {
 		// Initial the resultVolumeData and create the VolumeManager.
 		public static Volume InitialVolume(VolumeData vdata) {
 			doorInfoVdataTable = new Dictionary<VolumeData, List<ConnectionInfo>>();
-			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger" };
+			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			Volume NowNode = CreateVolumeObject(vdata);
 			return NowNode;
@@ -141,10 +141,23 @@ namespace CrevoxExtend {
 			Debug.Log("No door can combine.");
 			return false;
 		}
-		private static bool ReplaceConnection() {
-			foreach (var volumeExtend in resultVolumeManager.GetComponentsInChildren<VolumeExtend>()) {
-				foreach (var connection in volumeExtend.ConnectionInfos.Select( c => !c.used)) {
-					;
+		public static void ReplaceConnection() {
+			foreach (var volume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
+				VolumeExtend volumeExtend = volume.GetComponent<VolumeExtend>();
+				foreach (var connection in volumeExtend.ConnectionInfos.FindAll( c => !c.used && c.type == ConnectionInfoType.Connection )) {
+					bool success = false;
+					foreach (var vdata in SpaceAlphabet.replaceDictionary[connection.connectionName].OrderBy(x=>Random.value)) {
+						Volume replaceVol = CreateVolumeObject(vdata);
+						ConnectionInfo replaceStartingNode = replaceVol.GetComponent<VolumeExtend>().ConnectionInfos.Find(x=>x.type==ConnectionInfoType.StartingNode);
+						if (CombineVolumeObject(volume, replaceVol, connection, replaceStartingNode)) {
+							connection.used = true;
+							success = true;
+							break;
+						}
+					}
+					if (!success) {
+						Debug.Log(volume.name + ":" + connection.connectionName + " replace failed.");
+					}
 				}
 			}
 		}

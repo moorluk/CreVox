@@ -68,7 +68,7 @@ namespace CrevoxExtend {
 				}
 				// No vdata have enough connection.
 				if (newVolume == null) {
-					Debug.Log("There is no vdata that have enough connection. It means this graph  doesn't match with vdata.");
+					Debug.Log("There is no vdata that have enough connection in " + _refrenceTable[child.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
 					return false;
 				}
 				// Combine.
