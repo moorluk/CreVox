@@ -47,11 +47,11 @@ namespace CrevoxExtend {
 						EditorGUILayout.BeginVertical();
 						// [open window]
 						if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
-							// First clear all origin volumeDatas.
-							SpaceAlphabet.replaceDictionary[alphabets[i]].Clear();
 							// Open folder.
 							string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
 							if (path != "") {
+								// First clear all origin volumeDatas.
+								SpaceAlphabet.replaceDictionary[alphabets[i]].Clear();
 								// Get the files.
 								string[] files = Directory.GetFiles(path);
 								for (int j = 0; i < files.Length; j++) {
