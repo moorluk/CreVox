@@ -35,7 +35,7 @@ namespace CrevoxExtend {
 
 		// Create Volume object and return it.
 		public static Volume CreateVolumeObject(VolumeData vdata) {
-			GameObject volumeObject = new GameObject() { name = vdata.name };
+			GameObject volumeObject = new GameObject() { name = "Volume" };
 			Volume volume = volumeObject.AddComponent<Volume>();
 			volume.vd = vdata;
 			VolumeExtend volumeExtend = volumeObject.AddComponent<VolumeExtend>();
@@ -44,7 +44,9 @@ namespace CrevoxExtend {
 			}
 			volumeExtend.ConnectionInfos = new List<ConnectionInfo>(doorInfoVdataTable[vdata].Select(x => x.Clone()).ToArray());
 
-			volumeObject.transform.parent = resultVolumeManager.transform;
+			GameObject parentObject = new GameObject() { name = vdata.name };
+			parentObject.transform.parent = resultVolumeManager.transform;
+			volumeObject.transform.parent = parentObject.transform;
 			volume.Init(volume.chunkX, volume.chunkY, volume.chunkZ);
 			return volume;
 		}
@@ -80,8 +82,6 @@ namespace CrevoxExtend {
 		public static bool CombineVolumeObject(Volume volume1, Volume volume2) {
 			VolumeExtend volumeExtend1 = volume1.GetComponent<VolumeExtend>();
 			VolumeExtend volumeExtend2 = volume2.GetComponent<VolumeExtend>();
-
-			WorldPos relativePosition = new WorldPos();
 			Quaternion rotationOfVolume1 = volume1.transform.rotation;
 			Quaternion rotationOfVolume2 = volume2.transform.rotation;
 			// Compare door connection.
@@ -104,7 +104,7 @@ namespace CrevoxExtend {
 						rotateAngle += 360;
 					}
 					// Relative position between connections.
-					relativePosition = AbsolutePosition(connection1.position, rotationOfVolume1.eulerAngles.y) - AbsolutePosition(connection2.position, rotateAngle);
+					WorldPos relativePosition = AbsolutePosition(connection1.position, rotationOfVolume1.eulerAngles.y) - AbsolutePosition(connection2.position, rotateAngle);
 					relativePosition += connection1.RelativePosition((rotationOfVolume1.eulerAngles.y));
 					
 					// Rotation
@@ -140,6 +140,7 @@ namespace CrevoxExtend {
 			// Absolute position.
 			newVolume.transform.localPosition = originVolume.transform.position + relativePosition.ToRealPosition();
 			if (!IsCollider(newVolume)) {
+				newVolume.transform.parent.parent = originVolume.transform.parent;
 				Debug.Log("Combine finish.");
 				return true;
 			}

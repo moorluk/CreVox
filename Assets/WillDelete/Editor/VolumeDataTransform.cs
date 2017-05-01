@@ -60,11 +60,10 @@ namespace CrevoxExtend {
 				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
 					newVolume = CrevoxOperation.CreateVolumeObject(vdata);
 					if (newVolume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
-						//Debug.Log("Find the count is " + newVolume.GetComponent<VolumeExtend>().ConnectionInfos.Count);
 						break;
 					} else {
 						// Cannot connect, so delete it.
-						MonoBehaviour.DestroyImmediate(newVolume.gameObject);
+						MonoBehaviour.DestroyImmediate(newVolume.transform.parent.gameObject);
 						newVolume = null;
 					}
 				}
@@ -107,7 +106,7 @@ namespace CrevoxExtend {
 				if (!success) {
 					// Destory failed object.
 					Debug.Log("Destroy " + newVolume.name);
-					MonoBehaviour.DestroyImmediate(newVolume.gameObject);
+					MonoBehaviour.DestroyImmediate(newVolume.transform.parent.gameObject);
 					return false;
 				}
 			}
