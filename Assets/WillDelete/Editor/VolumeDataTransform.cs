@@ -44,6 +44,8 @@ namespace CrevoxExtend {
 				// Update volume manager and scene.
 				CrevoxOperation.RefreshVolume();
 			} else {
+				// Faild then destroy.
+				CrevoxOperation.DestroyVolume();
 				Debug.Log("Error");
 			}
 		}
@@ -77,34 +79,33 @@ namespace CrevoxExtend {
 				ConnectionInfo[] originalConnectionList = originalVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
 				ConnectionInfo[] newConnectionList = newVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
 				bool success = false;
-				foreach (var newConnection in newConnectionList) {
-					if (newConnection.used || newConnection.type != ConnectionInfoType.StartingNode) {
-						continue;
-					}
+				// Get starting node.
+				ConnectionInfo newStartingNode = newConnectionList.FirstOrDefault(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+				if(newStartingNode != null) {
+					// Get connection.
 					foreach (var originalConnection in originalConnectionList) {
 						if (originalConnection.used || originalConnection.type == ConnectionInfoType.StartingNode) {
 							continue;
 						}
 						Debug.Log(originalVolume.name + " + " + newVolume.name);
-						if (CrevoxOperation.CombineVolumeObject(originalVolume, newVolume, originalConnection, newConnection)) {
+						// Combine.
+						if (CrevoxOperation.CombineVolumeObject(originalVolume, newVolume, originalConnection, newStartingNode)) {
 							_usedNode.Add(child);
 							originalConnection.used = true;
-							newConnection.used = true;
+							newStartingNode.used = true;
 							if (GenerateRecursion(child, newVolume)) {
 								success = true;
 								break;
 							} else {
 								_usedNode.Remove(child);
 								originalConnection.used = false;
-								newConnection.used = false;
+								newStartingNode.used = false;
 							}
 						}
 					}
-					if (success) {
-						break;
-					}
 				}
 				if (!success) {
+					// Destory failed object.
 					Debug.Log("Destroy " + newVolume.name);
 					MonoBehaviour.DestroyImmediate(newVolume.gameObject);
 					return false;

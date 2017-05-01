@@ -62,6 +62,11 @@ namespace CrevoxExtend {
 			resultVolumeManager.UpdateDungeon();
 			SceneView.RepaintAll();
 		}
+		// Destroy all volume.
+		public static void DestroyVolume() {
+			MonoBehaviour.DestroyImmediate(resultVolumeManager.gameObject);
+			SceneView.RepaintAll();
+		}
 		// Add volume data.
 		public static Volume AddAndCombineVolume(Volume nowNode, VolumeData vdata) {
 			Volume volume = CreateVolumeObject(vdata);
