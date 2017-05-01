@@ -15,9 +15,11 @@ namespace CrevoxExtend {
 		private static string _path = Environment.CurrentDirectory + @"\Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/";
 		private static string prefabRegex = @".*[\\\/](\w+)_(\w+)\.prefab$";
 		private static List<string> alphabets = new List<string>() { "Connection" };
+		public static List<bool> isSelected = new List<bool>() { false };
 		private static bool changed = true;
 
 		public static void Load() {
+			isSelected = new List<bool>() { false };
 			alphabets = new List<string>() { "Connection" };
 			string[] files = Directory.GetFiles(_path);
 			string matchFile;
@@ -26,6 +28,7 @@ namespace CrevoxExtend {
 					matchFile = Regex.Match(files[i], prefabRegex).Groups[2].Value;
 					if (!alphabets.Exists(a => (a == matchFile))) {
 						alphabets.Add(matchFile);
+						isSelected.Add(false);
 					}
 				}
 			}
@@ -42,6 +45,7 @@ namespace CrevoxExtend {
 				if (!newAlphabet.Exists(e => (e == alphabets[i]))) {
 					DeletePrefab("Connection_"+alphabets[i]);
 					alphabets.RemoveAt(i);
+					isSelected.RemoveAt(i);
 				}
 			}
 			PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
