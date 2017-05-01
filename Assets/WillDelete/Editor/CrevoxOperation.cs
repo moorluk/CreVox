@@ -117,6 +117,30 @@ namespace CrevoxExtend {
 			Debug.Log("No door can combine.");
 			return false;
 		}
+		// Combine both volumeData.
+		public static bool CombineVolumeObject(Volume originVolume, Volume newVolume, ConnectionInfo originConnection, ConnectionInfo newConnection) {
+			Quaternion rotationOfVolume1 = originVolume.transform.rotation;
+			Quaternion rotationOfVolume2 = newVolume.transform.rotation;
+			// Added vdata need to rotate for matching  origin vdata.
+			int rotateAngle = ( ( (int) ( originConnection.rotation.eulerAngles + rotationOfVolume1.eulerAngles ).y % 360 ) - (int) newConnection.rotation.eulerAngles.y );
+			if (rotateAngle < 0) {
+				rotateAngle += 360;
+			}
+			// Relative position between connections.
+			WorldPos relativePosition = AbsolutePosition(originConnection.position, rotationOfVolume1.eulerAngles.y) - AbsolutePosition(newConnection.position, rotateAngle);
+			relativePosition += originConnection.RelativePosition(( rotationOfVolume1.eulerAngles.y ));
+
+			// Rotation
+			newVolume.transform.eulerAngles = new Vector3(0, rotateAngle, 0);
+			// Absolute position.
+			newVolume.transform.localPosition = originVolume.transform.position + relativePosition.ToRealPosition();
+			if (!IsCollider(newVolume)) {
+				Debug.Log("Combine finish.");
+				return true;
+			}
+			Debug.Log("No door can combine.");
+			return false;
+		}
 		private static bool ReplaceConnection() {
 			foreach (var volumeExtend in resultVolumeManager.GetComponentsInChildren<VolumeExtend>()) {
 				foreach (var connection in volumeExtend.ConnectionInfos.Select( c => !c.used)) {
