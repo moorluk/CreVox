@@ -13,17 +13,17 @@ namespace CrevoxExtend {
 	public class SpaceAlphabet {
 		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>();
 		private static string _path = Environment.CurrentDirectory + @"\Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/";
-		private static string prefabRegex = @".*[\\\/](\w+)_(\w+)\.prefab$";
-		private static List<string> alphabets = new List<string>() { "Connection" };
+		private static string prefabRegex = @".*[\\\/]Connection_(\w+)\.prefab$";
+		private static List<string> alphabets = new List<string>();
 		private static bool changed = true;
 
 		public static void Load() {
-			alphabets = new List<string>() { "Connection" };
+			alphabets = new List<string>();
 			string[] files = Directory.GetFiles(_path);
 			string matchFile;
 			for (int i = 0; i < files.Length; i++) {
 				if (Regex.IsMatch(files[i], prefabRegex)) {
-					matchFile = Regex.Match(files[i], prefabRegex).Groups[2].Value;
+					matchFile = Regex.Match(files[i], prefabRegex).Groups[1].Value;
 					if (!alphabets.Exists(a => (a == matchFile))) {
 						alphabets.Add(matchFile);
 					}
@@ -50,7 +50,7 @@ namespace CrevoxExtend {
 		// File IO
 		public static void NewPrefab(string fileName) {
 			if(!File.Exists(_path + fileName + ".prefab")) {
-				File.Copy(_path + "Connection.prefab", _path + fileName + ".prefab");
+				File.Copy(_path + "Connection_Default.prefab", _path + fileName + ".prefab");
 				AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/" + fileName + ".prefab");
 				GetPrefab(fileName).GetComponent<PaletteItem>().itemName = fileName;
 			}

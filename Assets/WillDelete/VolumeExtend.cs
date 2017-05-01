@@ -12,10 +12,13 @@ namespace CrevoxExtend {
 		public Quaternion rotation;
 		public ConnectionInfoType type;
 		public bool used;
-		public ConnectionInfo(WorldPos position, Quaternion rotation, ConnectionInfoType type) {
+		// Just for connection.
+		public string name;
+		public ConnectionInfo(WorldPos position, Quaternion rotation, ConnectionInfoType type, string name = "") {
 			this.position = position;
 			this.rotation = rotation;
 			this.type = type;
+			this.name = name;
 			used = false;
 		}
 		public ConnectionInfo(ConnectionInfo clone) {

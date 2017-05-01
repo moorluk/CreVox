@@ -3,6 +3,7 @@ using UnityEngine;
 using CreVox;
 using UnityEditor;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CrevoxExtend {
 
@@ -116,20 +117,36 @@ namespace CrevoxExtend {
 			Debug.Log("No door can combine.");
 			return false;
 		}
+		private static bool ReplaceConnection() {
+			foreach (var volumeExtend in resultVolumeManager.GetComponentsInChildren<VolumeExtend>()) {
+				foreach (var connection in volumeExtend.ConnectionInfos.Select( c => !c.used)) {
+					;
+				}
+			}
+		}
+
+
+
+
+
 		// Get volumedata via path as string.
 		public static VolumeData GetVolumeData(string path) {
 			VolumeData vdata = (VolumeData) AssetDatabase.LoadAssetAtPath(path, typeof(VolumeData));
 			return vdata;
 		}
+		private static string regex = @"Connection_(\w+)$";
 		// Get the list that contains postisions and directions of door(conntection) via volumedata.
 		private static List<ConnectionInfo> GetDoorPosition(VolumeData vdata) {
 			List<ConnectionInfo> connections = new List<ConnectionInfo>();
 			// All chunk.
 			foreach (var blockItem in vdata.blockItems) {
-				if(blockItem.pieceName == "Connection") {
-					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.Connection));
-				}else if(blockItem.pieceName == "Starting Node") {
+				if (blockItem.pieceName == "") { continue; }
+				if (blockItem.pieceName == "Starting Node") {
 					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.StartingNode));
+				}
+				else if (Regex.IsMatch(blockItem.pieceName, regex)) { 
+					string connectionName = Regex.Match(blockItem.pieceName, regex).Groups[1].Value;
+					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.Connection, connectionName));
 				}
 			}
 			return connections;
