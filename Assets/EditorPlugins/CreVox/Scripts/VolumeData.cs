@@ -12,6 +12,7 @@ namespace CreVox
 		public int chunkZ = 1;
 		public List <ChunkData> chunkDatas = new List<ChunkData> ();
 		public List<BlockItem> blockItems = new List<BlockItem> ();
+		public string subArtPack = "";
 
 		public void Awake()
 		{

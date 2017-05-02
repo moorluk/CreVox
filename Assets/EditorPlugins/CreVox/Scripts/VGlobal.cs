@@ -14,6 +14,15 @@ namespace CreVox
 			public string pack;
 			public string parentPack;
 		}
+		public List<ArtPackParent> artPackParentList;
+
+		[System.Serializable]
+		public struct APItemPath
+		{
+			public string name;
+			public List<string> itemPath;
+		}
+		public List<APItemPath> APItemPathList;
 
 		public bool saveBackup;
 		public bool volumeShowArtPack;
@@ -30,8 +39,6 @@ namespace CreVox
 		public float hw = 1.5f;
 		public float hh = 1f;
 		public float hd = 1.5f;
-
-		public List<ArtPackParent> artpackParentList;
 
 		public static VGlobal GetSetting(string _settingPath = null)
 		{

@@ -124,8 +124,6 @@ namespace CreVox
 			}
 		}
 
-		Editor vdEditor = null;
-
 		public static void DrawVGlobal ()
 		{
 			VGlobal vg = VGlobal.GetSetting ();
