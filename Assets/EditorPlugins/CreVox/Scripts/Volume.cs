@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using BehaviorDesigner.Runtime;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -535,6 +536,23 @@ namespace CreVox
 									itemArray [k].gameObject.GetComponent<LevelPiece> ());
 							}
 						}
+					}
+				}
+			}
+			BehaviorManager _bm = this.gameObject.GetComponentInParent<BehaviorManager> ();
+			if (_bm) {
+				BehaviorTree[] _tree = this.gameObject.GetComponentsInChildren<BehaviorTree>();
+				if (_tree.Length > 0) {
+					for (int i = 0; i < _tree.Length; i++) {
+						_tree [i].EnableBehavior ();
+						_bm.EnableBehavior (_tree [i] as Behavior);
+						if (_tree [i].ExternalBehavior != null) {
+							List<SharedVariable> n = _tree [i].GetAllVariables ();
+							for (int j = 0; j < n.Count; j++) {
+								_tree [i].ExternalBehavior.SetVariable (n[j].Name,n[j]);
+							}
+						}
+						_bm.Tick (_tree [i]);
 					}
 				}
 			}
