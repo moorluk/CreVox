@@ -30,7 +30,7 @@ namespace CrevoxExtend {
 				Mathf.Round(aPoint.y * cos - aPoint.x * sin));
 		}
 		// Volume Manager object.
-		private static VolumeManager resultVolumeManager;
+		public static VolumeManager resultVolumeManager;
 		private static Dictionary<VolumeData, List<ConnectionInfo>> doorInfoVdataTable;
 
 		// Create Volume object and return it.
@@ -53,6 +53,7 @@ namespace CrevoxExtend {
 
 		// Initial the resultVolumeData and create the VolumeManager.
 		public static Volume InitialVolume(VolumeData vdata) {
+			if (resultVolumeManager != null) { DestroyVolume(); }
 			doorInfoVdataTable = new Dictionary<VolumeData, List<ConnectionInfo>>();
 			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
@@ -67,7 +68,7 @@ namespace CrevoxExtend {
 		// Destroy all volume.
 		public static void DestroyVolume() {
 			MonoBehaviour.DestroyImmediate(resultVolumeManager.gameObject);
-			SceneView.RepaintAll();
+			resultVolumeManager = null;
 		}
 		// Add volume data.
 		public static Volume AddAndCombineVolume(Volume nowNode, VolumeData vdata) {
@@ -140,6 +141,7 @@ namespace CrevoxExtend {
 			// Absolute position.
 			newVolume.transform.localPosition = originVolume.transform.position + relativePosition.ToRealPosition();
 			if (!IsCollider(newVolume)) {
+				// Be child.
 				newVolume.transform.parent.parent = originVolume.transform.parent;
 				Debug.Log("Combine finish.");
 				return true;
@@ -147,29 +149,6 @@ namespace CrevoxExtend {
 			Debug.Log("No door can combine.");
 			return false;
 		}
-		public static void ReplaceConnection() {
-			foreach (var volume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
-				VolumeExtend volumeExtend = volume.GetComponent<VolumeExtend>();
-				foreach (var connection in volumeExtend.ConnectionInfos.FindAll( c => !c.used && c.type == ConnectionInfoType.Connection )) {
-					bool success = false;
-					foreach (var vdata in SpaceAlphabet.replaceDictionary[connection.connectionName].OrderBy(x=>Random.value)) {
-						Volume replaceVol = CreateVolumeObject(vdata);
-						ConnectionInfo replaceStartingNode = replaceVol.GetComponent<VolumeExtend>().ConnectionInfos.Find(x=>x.type==ConnectionInfoType.StartingNode);
-						if (CombineVolumeObject(volume, replaceVol, connection, replaceStartingNode)) {
-							connection.used = true;
-							success = true;
-							break;
-						}
-					}
-					if (!success) {
-						Debug.Log(volume.name + ":" + connection.connectionName + " replace failed.");
-					}
-				}
-			}
-		}
-
-
-
 
 
 		// Get volumedata via path as string.

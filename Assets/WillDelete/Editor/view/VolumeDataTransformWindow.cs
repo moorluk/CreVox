@@ -107,12 +107,10 @@ namespace CrevoxExtend {
 				VolumeDataTransform.Generate();
 			}
 			if (GUILayout.Button("ReplaceConnection")) {
-				CrevoxOperation.ReplaceConnection();
-				CrevoxOperation.RefreshVolume();
+				VolumeDataTransform.ReplaceConnection();
 			}
 			// [TEST] Will delete.
 			// Random generate button.
-			
 			if (GUILayout.Button("Random Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				VolumeDataTransform.SameVolumeDatas = volumeDatas;
