@@ -44,41 +44,70 @@ namespace CrevoxExtend {
 				// Update volume manager and scene.
 				CrevoxOperation.RefreshVolume();
 			} else {
+				// Faild then destroy.
+				CrevoxOperation.DestroyVolume();
 				Debug.Log("Error");
 			}
 		}
 		// Dfs generate.
-		private static bool GenerateRecursion(CreVoxNode node, Volume volumeOrigin) {
+		private static bool GenerateRecursion(CreVoxNode node, Volume originalVolume) {
 			foreach (var child in node.Children) {
 				if (_usedNode.Exists(n => n.SymbolID == child.SymbolID)) {
 					continue;
 				}
-				Volume volume = null;
+				Volume newVolume = null;
 				// Find the suitable vdata by random ordering.
-				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy( x=> UnityEngine.Random.value)) {
-					volume = CrevoxOperation.CreateVolumeObject(vdata);
-					if(volume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
-						Debug.Log("Find the count is " + volume.GetComponent<VolumeExtend>().ConnectionInfos.Count);
+				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
+					newVolume = CrevoxOperation.CreateVolumeObject(vdata);
+					if (newVolume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
+						//Debug.Log("Find the count is " + newVolume.GetComponent<VolumeExtend>().ConnectionInfos.Count);
 						break;
 					} else {
 						// Cannot connect, so delete it.
-						MonoBehaviour.DestroyImmediate(volume.gameObject);
-						volume = null;
+						MonoBehaviour.DestroyImmediate(newVolume.gameObject);
+						newVolume = null;
 					}
 				}
 				// No vdata have enough connection.
-				if(volume == null) {
-					Debug.Log("There is no vdata that have enough connection. It means this graph  doesn't match with vdata.");
+				if (newVolume == null) {
+					Debug.Log("There is no vdata that have enough connection in " + _refrenceTable[child.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
 					return false;
 				}
 				// Combine.
-				if (CrevoxOperation.CombineVolumeObject(volumeOrigin, volume)) {
-					_usedNode.Add(child);
-					if (!GenerateRecursion(child, volume)) {
-						return false;
+				VolumeExtend originalVolumeExtend = originalVolume.GetComponent<VolumeExtend>();
+				VolumeExtend newVolumeExtend = newVolume.GetComponent<VolumeExtend>();
+				ConnectionInfo[] originalConnectionList = originalVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
+				ConnectionInfo[] newConnectionList = newVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
+				bool success = false;
+				// Get starting node.
+				ConnectionInfo newStartingNode = newConnectionList.FirstOrDefault(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+				if(newStartingNode != null) {
+					// Get connection.
+					foreach (var originalConnection in originalConnectionList) {
+						if (originalConnection.used || originalConnection.type == ConnectionInfoType.StartingNode) {
+							continue;
+						}
+						Debug.Log(originalVolume.name + " + " + newVolume.name);
+						// Combine.
+						if (CrevoxOperation.CombineVolumeObject(originalVolume, newVolume, originalConnection, newStartingNode)) {
+							_usedNode.Add(child);
+							originalConnection.used = true;
+							newStartingNode.used = true;
+							if (GenerateRecursion(child, newVolume)) {
+								success = true;
+								break;
+							} else {
+								_usedNode.Remove(child);
+								originalConnection.used = false;
+								newStartingNode.used = false;
+							}
+						}
 					}
-				} else {
-					MonoBehaviour.DestroyImmediate(volume.gameObject);
+				}
+				if (!success) {
+					// Destory failed object.
+					Debug.Log("Destroy " + newVolume.name);
+					MonoBehaviour.DestroyImmediate(newVolume.gameObject);
 					return false;
 				}
 			}

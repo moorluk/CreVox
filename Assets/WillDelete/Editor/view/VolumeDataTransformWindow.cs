@@ -106,6 +106,10 @@ namespace CrevoxExtend {
 				VolumeDataTransform.InitialTable();
 				VolumeDataTransform.Generate();
 			}
+			if (GUILayout.Button("ReplaceConnection")) {
+				CrevoxOperation.ReplaceConnection();
+				CrevoxOperation.RefreshVolume();
+			}
 			// [TEST] Will delete.
 			// Random generate button.
 			

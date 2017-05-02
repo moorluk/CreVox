@@ -3,6 +3,7 @@ using UnityEngine;
 using CreVox;
 using UnityEditor;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace CrevoxExtend {
 
@@ -51,7 +52,7 @@ namespace CrevoxExtend {
 		// Initial the resultVolumeData and create the VolumeManager.
 		public static Volume InitialVolume(VolumeData vdata) {
 			doorInfoVdataTable = new Dictionary<VolumeData, List<ConnectionInfo>>();
-			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger" };
+			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			Volume NowNode = CreateVolumeObject(vdata);
 			return NowNode;
@@ -59,6 +60,11 @@ namespace CrevoxExtend {
 		// Update and repaint.
 		public static void RefreshVolume() {
 			resultVolumeManager.UpdateDungeon();
+			SceneView.RepaintAll();
+		}
+		// Destroy all volume.
+		public static void DestroyVolume() {
+			MonoBehaviour.DestroyImmediate(resultVolumeManager.gameObject);
 			SceneView.RepaintAll();
 		}
 		// Add volume data.
@@ -116,20 +122,73 @@ namespace CrevoxExtend {
 			Debug.Log("No door can combine.");
 			return false;
 		}
+		// Combine both volumeData.
+		public static bool CombineVolumeObject(Volume originVolume, Volume newVolume, ConnectionInfo originConnection, ConnectionInfo newConnection) {
+			Quaternion rotationOfVolume1 = originVolume.transform.rotation;
+			Quaternion rotationOfVolume2 = newVolume.transform.rotation;
+			// Added vdata need to rotate for matching  origin vdata.
+			int rotateAngle = ( ( (int) ( originConnection.rotation.eulerAngles + rotationOfVolume1.eulerAngles ).y % 360 ) - (int) newConnection.rotation.eulerAngles.y );
+			if (rotateAngle < 0) {
+				rotateAngle += 360;
+			}
+			// Relative position between connections.
+			WorldPos relativePosition = AbsolutePosition(originConnection.position, rotationOfVolume1.eulerAngles.y) - AbsolutePosition(newConnection.position, rotateAngle);
+			relativePosition += originConnection.RelativePosition(( rotationOfVolume1.eulerAngles.y ));
+
+			// Rotation
+			newVolume.transform.eulerAngles = new Vector3(0, rotateAngle, 0);
+			// Absolute position.
+			newVolume.transform.localPosition = originVolume.transform.position + relativePosition.ToRealPosition();
+			if (!IsCollider(newVolume)) {
+				Debug.Log("Combine finish.");
+				return true;
+			}
+			Debug.Log("No door can combine.");
+			return false;
+		}
+		public static void ReplaceConnection() {
+			foreach (var volume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
+				VolumeExtend volumeExtend = volume.GetComponent<VolumeExtend>();
+				foreach (var connection in volumeExtend.ConnectionInfos.FindAll( c => !c.used && c.type == ConnectionInfoType.Connection )) {
+					bool success = false;
+					foreach (var vdata in SpaceAlphabet.replaceDictionary[connection.connectionName].OrderBy(x=>Random.value)) {
+						Volume replaceVol = CreateVolumeObject(vdata);
+						ConnectionInfo replaceStartingNode = replaceVol.GetComponent<VolumeExtend>().ConnectionInfos.Find(x=>x.type==ConnectionInfoType.StartingNode);
+						if (CombineVolumeObject(volume, replaceVol, connection, replaceStartingNode)) {
+							connection.used = true;
+							success = true;
+							break;
+						}
+					}
+					if (!success) {
+						Debug.Log(volume.name + ":" + connection.connectionName + " replace failed.");
+					}
+				}
+			}
+		}
+
+
+
+
+
 		// Get volumedata via path as string.
 		public static VolumeData GetVolumeData(string path) {
 			VolumeData vdata = (VolumeData) AssetDatabase.LoadAssetAtPath(path, typeof(VolumeData));
 			return vdata;
 		}
+		private static string regex = @"Connection_(\w+)$";
 		// Get the list that contains postisions and directions of door(conntection) via volumedata.
 		private static List<ConnectionInfo> GetDoorPosition(VolumeData vdata) {
 			List<ConnectionInfo> connections = new List<ConnectionInfo>();
 			// All chunk.
 			foreach (var blockItem in vdata.blockItems) {
-				if(blockItem.pieceName == "Connection") {
-					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.Connection));
-				}else if(blockItem.pieceName == "Starting Node") {
+				if (blockItem.pieceName == "") { continue; }
+				if (blockItem.pieceName == "Starting Node") {
 					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.StartingNode));
+				}
+				else if (Regex.IsMatch(blockItem.pieceName, regex)) { 
+					string connectionName = Regex.Match(blockItem.pieceName, regex).Groups[1].Value;
+					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.Connection, connectionName));
 				}
 			}
 			return connections;
