@@ -46,5 +46,66 @@ namespace CreVox
 			vg = (VGlobal)Resources.Load ((_settingPath != null) ? _settingPath : PathCollect.setting, typeof(VGlobal));
 			return vg;
 		}
+
+		public static PaletteItem[] UpdateItemArray(string _artPackPath,string _settingPath = null)
+		{
+			VGlobal _vg = VGlobal.GetSetting (_settingPath);
+			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+
+			if (_vg.volumeShowArtPack || Application.isPlaying) {
+				string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
+				string pName = _vg.GetParentArtPack (cName);
+				Debug.LogWarning (cName + " >>> " + pName);
+				string pPath = PathCollect.artPack + "/" + pName;
+				PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
+				while (pPath != PathCollect.pieces) {
+					PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
+					for (int i = 0; i < _parent.Length; i++) {
+						bool _finded = false;
+						for (int j = 0; j < _child.Length; j++) {
+							if (_child [j].name == _parent [i].name) {
+								_parent.SetValue (_child [j], i);
+								_finded = true;
+							}
+							if (_finded)
+								break;
+						}
+					}
+					_child = _parent;
+					cName = pName;
+					pName = _vg.GetParentArtPack (cName);
+					Debug.LogWarning (cName + " >>> " + pName);
+					pPath = PathCollect.artPack + "/" + pName;
+				}
+
+				for (int i = 0; i < _final.Length; i++) {
+					bool _finded = false;
+					for (int j = 0; j < _child.Length; j++) {
+						if (_child [j].name == _final [i].name) {
+							_final.SetValue(_child [j], i);
+							_finded = true;
+						}
+						if (_finded)
+							break;
+					}
+				}
+			}
+
+			return _final;
+		}
+
+		public string GetParentArtPack (string _child,string _settingPath = null)
+		{
+			VGlobal _vg = VGlobal.GetSetting (_settingPath);
+			List<ArtPackParent> apList = _vg.artPackParentList;
+			string parent = _child;
+			for (int i = 0; i < apList.Count; i++) {
+				if (apList [i].pack == _child) {
+					parent = apList [i].parentPack;
+					break;
+				}
+			}
+			return parent;
+		}
 	}
 }

@@ -62,8 +62,8 @@ namespace CreVox
 			foreach (Chunk c in chunks.Values) {
 				c.cData = vd.GetChunk (c.cData.ChunkPos);
 			}
+			itemArray = VGlobal.UpdateItemArray (ArtPack + vd.subArtPack);
 			PlacePieces ();
-//			blockItems = vd.blockItems;
 			PlaceItems ();
 
 			UpdateChunks ();
@@ -274,8 +274,8 @@ namespace CreVox
 			return isEmpty;
 		}
 
+		PaletteItem[] itemArray = new PaletteItem[0];
 		public GameObject itemRoot;
-//		public List<BlockItem> blockItems = new List<BlockItem>();
 		Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject>();
 
 		public GameObject GetItemNode (BlockItem blockItem)
@@ -430,16 +430,13 @@ namespace CreVox
 
 		public void PlaceItems()
 		{
-			PaletteItem[] itemArray;
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
-
 			for (int i = 0; i < vd.blockItems.Count; i++) {
 				BlockItem bItem = vd.blockItems [i];
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
-                        LevelPiece p = itemArray[k].gameObject.GetComponent<LevelPiece>();
-                        PlaceItem (i, p);
-                    }
+						LevelPiece p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+						PlaceItem (i, p);
+					}
 				}
 			}
 		}
@@ -518,9 +515,6 @@ namespace CreVox
 
 		private void PlacePieces ()
 		{
-			PaletteItem[] itemArray;
-			itemArray = Resources.LoadAll<PaletteItem> (VGlobal.GetSetting ().volumeShowArtPack ? ArtPack : PathCollect.pieces);
-
 			foreach (Chunk c in chunks.Values) {
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
