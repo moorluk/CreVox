@@ -28,6 +28,8 @@ namespace CreVox
 
 		private static string _path = PathCollect.resourcesPath + PathCollect.artPack;
 		private Vector2 _scrollPosition;
+		private Vector2 _scrollPositionX;
+		private Vector2 _scrollPositionY;
 		private float ButtonWidth = 140;
 
 		public static void ShowPalette ()
@@ -48,9 +50,10 @@ namespace CreVox
 			DrawFunction ();
 		}
 
-		private Texture2D GetPreview(GameObject obj)
+		private Texture2D GetPreview(GameObject obj = null)
 		{
 			Texture2D thumbnail = null;
+			if (obj != null)
 			thumbnail = AssetPreview.GetAssetPreview (obj);
 			if (thumbnail == null)
 				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
@@ -62,7 +65,7 @@ namespace CreVox
 			//GetItems
 			_items = new List<Item> ();
 			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
-			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count + 1);
+			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count *2);
 			foreach (PaletteItem p in itemsP) {
 				Item newItem = new Item();
 				newItem.paletteitem = p;
@@ -130,27 +133,71 @@ namespace CreVox
 			listLabel.alignment = TextAnchor.MiddleLeft;
 			listLabel.fontSize = 14;
 			listLabel.fontStyle = FontStyle.Bold;
-
-			using (var h = new EditorGUILayout.HorizontalScope ()) {
-				for (int i = 0; i < _artPacks.Count; i++) {
+			using (var h = new EditorGUILayout.HorizontalScope (GUILayout.Height(30))) {
+				GUILayout.BeginScrollView (Vector2.zero, GUIStyle.none, GUIStyle.none, GUILayout.Width (ButtonWidth + 5));
+				GUILayout.Label (_artPacks [0], listLabel, GUILayout.Width (ButtonWidth));
+				GUILayout.EndScrollView ();
+				GUILayout.BeginScrollView (_scrollPositionX, false, true, GUIStyle.none, GUIStyle.none);
+				using (var h1 = new EditorGUILayout.HorizontalScope ()) {
+					for (int i = 1; i < _artPacks.Count; i++) {
 						GUILayout.Label (_artPacks [i], listLabel, GUILayout.Width (ButtonWidth));
 				}
+					GUILayout.Label ("", GUILayout.Width (15));
+				}
+				GUILayout.EndScrollView ();
 			}
 		}
 
+		bool showScroll = true;
 		private void DrawScroll ()
 		{
 			Color def = GUI.color;
-			_scrollPosition = GUILayout.BeginScrollView (_scrollPosition);
+			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField)) {
+				showScroll = EditorGUILayout.Toggle (showScroll, "foldout", GUILayout.Width (15));
+				EditorGUILayout.LabelField ("Item List", EditorStyles.boldLabel);
+			}
+			if (showScroll) {
+				using (var h0 = new EditorGUILayout.HorizontalScope ()) {
+					GUILayout.BeginScrollView (_scrollPositionY, GUIStyle.none, GUIStyle.none, GUILayout.Width (ButtonWidth + 5));
+					using (var v = new EditorGUILayout.VerticalScope (GUILayout.Width (ButtonWidth))) {
+						GUILayout.Space(2);
+						foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
+							GUILayout.Label (k.Key.ToString (), "In Title");
+							foreach (string n in k.Value) {
+								Predicate<Item> findItem = delegate(Item obj) {
+									return obj.itemName == n;
+								};
+								using (var h = new EditorGUILayout.HorizontalScope ()) {
+									Item _item = _itemCells [_artPacks [0]] [k.Key].Find (findItem);
+									if (_item != null) {
+										GUILayout.Label (_item.preview, GetPreviewStyle ());
+										string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
+										if (GUILayout.Button (itemLebel, GetLabelStyle ()))
+											Selection.activeGameObject = _item.itemObject;
+									} else {
+										GUI.color = Color.red;
+										GUILayout.Box ("", "button", GUILayout.Width (ButtonWidth), GUILayout.ExpandHeight (true));
+										GUI.color = def;
+									}
+								}
+							}
+						}
+						GUILayout.Space(15);
+					}
+					GUILayout.EndScrollView ();
 
+			_scrollPosition = GUILayout.BeginScrollView (_scrollPosition);
+					_scrollPositionX.x = _scrollPosition.x;
+					_scrollPositionY.y = _scrollPosition.y;
+					using (var v = new EditorGUILayout.VerticalScope ()) {
 			foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
-				GUILayout.Label (k.Key.ToString (), "In Title");
+							GUILayout.Label ("", "In Title");
 				foreach (string n in k.Value) {
 					Predicate<Item> findItem = delegate(Item obj) {
 						return obj.itemName == n;
 					};
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						for (int i = 0; i < _artPacks.Count; i++) {
+									for (int i = 1; i < _artPacks.Count; i++) {
 							Item _item = _itemCells [_artPacks [i]] [k.Key].Find (findItem);
 							if (_item != null) {
 								GUILayout.Label (_item.preview, GetPreviewStyle());
@@ -159,14 +206,18 @@ namespace CreVox
 									Selection.activeGameObject = _item.itemObject;
 							} else {
 								GUI.color = Color.red;
-								GUILayout.Box ("","button", GUILayout.Width (ButtonWidth),GUILayout.ExpandHeight(true));
+											GUILayout.Label (GetPreview (), GetPreviewStyle ());
+											GUILayout.Box ("", GetLabelStyle (), GUILayout.ExpandHeight (true));
 								GUI.color = def;
 							}
 						}
 					}
 				}
 			}
+					}
 			GUILayout.EndScrollView ();
+		}
+			}
 		}
 
 		private void DrawFunction ()
@@ -276,6 +327,14 @@ namespace CreVox
 			guiStyle.imagePosition = ImagePosition.ImageLeft;
 			guiStyle.fixedHeight = Mathf.Clamp (ButtonWidth / 3 , guiStyle.fontSize * 2, ButtonWidth);
 			guiStyle.fixedWidth = ButtonWidth - guiStyle.fixedHeight - 4f;
+			return guiStyle;
+		}
+
+		private GUIStyle GetScrollStyle ()
+		{
+			GUIStyle guiStyle = new GUIStyle (GUI.skin.horizontalScrollbar);
+			guiStyle.fixedHeight = 0;
+			guiStyle.clipping = TextClipping.Clip;
 			return guiStyle;
 		}
 
