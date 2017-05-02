@@ -47,14 +47,13 @@ namespace CreVox
 			return vg;
 		}
 
-		public static PaletteItem[] UpdateItemArray(string _artPackPath,string _settingPath = null)
+		public PaletteItem[] UpdateItemArray(string _artPackPath)
 		{
-			VGlobal _vg = VGlobal.GetSetting (_settingPath);
 			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 
-			if (_vg.volumeShowArtPack || Application.isPlaying) {
+			if (volumeShowArtPack || Application.isPlaying) {
 				string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
-				string pName = _vg.GetParentArtPack (cName);
+				string pName = GetParentArtPack (cName);
 				Debug.LogWarning (cName + " >>> " + pName);
 				string pPath = PathCollect.artPack + "/" + pName;
 				PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
@@ -73,7 +72,7 @@ namespace CreVox
 					}
 					_child = _parent;
 					cName = pName;
-					pName = _vg.GetParentArtPack (cName);
+					pName = GetParentArtPack (cName);
 					Debug.LogWarning (cName + " >>> " + pName);
 					pPath = PathCollect.artPack + "/" + pName;
 				}
@@ -94,14 +93,12 @@ namespace CreVox
 			return _final;
 		}
 
-		public string GetParentArtPack (string _child,string _settingPath = null)
+		public string GetParentArtPack (string _child)
 		{
-			VGlobal _vg = VGlobal.GetSetting (_settingPath);
-			List<ArtPackParent> apList = _vg.artPackParentList;
 			string parent = _child;
-			for (int i = 0; i < apList.Count; i++) {
-				if (apList [i].pack == _child) {
-					parent = apList [i].parentPack;
+			for (int i = 0; i < artPackParentList.Count; i++) {
+				if (artPackParentList [i].pack == _child) {
+					parent = artPackParentList [i].parentPack;
 					break;
 				}
 			}

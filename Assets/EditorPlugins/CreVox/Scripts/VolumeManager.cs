@@ -64,7 +64,7 @@ namespace CreVox
 
 				itemArray = new PaletteItem[0];
 				if (dungeons [vi].ArtPack.Length > 0)
-					itemArray = VGlobal.UpdateItemArray (dungeons [vi].ArtPack + dungeons [vi].volumeData.subArtPack);
+					itemArray = VGlobal.GetSetting().UpdateItemArray (dungeons [vi].ArtPack + dungeons [vi].volumeData.subArtPack);
 				if (itemArray.Length < 1) {
 					itemArray = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 				}
