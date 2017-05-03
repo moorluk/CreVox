@@ -143,10 +143,10 @@ namespace CrevoxExtend {
 			if (!IsCollider(newVolume)) {
 				// Be child.
 				newVolume.transform.parent.parent = originVolume.transform.parent;
-				Debug.Log("Combine finish.");
+				//Debug.Log("Combine finish.");
 				return true;
 			}
-			Debug.Log("No door can combine.");
+			//Debug.Log("No door can combine.");
 			return false;
 		}
 

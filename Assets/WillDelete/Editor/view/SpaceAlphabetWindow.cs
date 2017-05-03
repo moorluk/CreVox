@@ -54,7 +54,7 @@ namespace CrevoxExtend {
 								SpaceAlphabet.replaceDictionary[alphabets[i]].Clear();
 								// Get the files.
 								string[] files = Directory.GetFiles(path);
-								for (int j = 0; i < files.Length; j++) {
+								for (int j = 0; j < files.Length; j++) {
 									if (Regex.IsMatch(files[j], regex)) {
 										SpaceAlphabet.replaceDictionary[alphabets[i]].Add(CrevoxOperation.GetVolumeData(files[j].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
 									}
