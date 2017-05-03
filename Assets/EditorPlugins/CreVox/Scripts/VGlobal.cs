@@ -40,10 +40,10 @@ namespace CreVox
 		public float hh = 1f;
 		public float hd = 1.5f;
 
-		public static VGlobal GetSetting(string _settingPath = null)
+		public static VGlobal GetSetting(string _settingPath = "")
 		{
 			VGlobal vg;
-			vg = (VGlobal)Resources.Load ((_settingPath != null) ? _settingPath : PathCollect.setting, typeof(VGlobal));
+			vg = (VGlobal)Resources.Load ((_settingPath != "") ? _settingPath : PathCollect.setting, typeof(VGlobal));
 			return vg;
 		}
 

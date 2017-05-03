@@ -24,17 +24,13 @@ namespace CreVox
         void Start()
         {
             int style = (int)m_style;
-            GameObject volume = new GameObject("Volume" + m_vd.ToString());
-            volume.transform.parent = transform;
-            volume.transform.localPosition = Vector3.zero;
-            volume.transform.localRotation = Quaternion.identity;
 
             for (int ci = 0; ci < m_vd.chunkDatas.Count; ci++)
             {
                 ChunkData cData = m_vd.chunkDatas[ci];
                 GameObject chunk = Instantiate(Resources.Load(PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler(Vector3.zero)) as GameObject;
                 chunk.name = "Chunk" + cData.ChunkPos.ToString();
-                chunk.transform.parent = volume.transform;
+                chunk.transform.parent = this.transform;
                 VGlobal vg = VGlobal.GetSetting();
                 chunk.transform.localPosition = new Vector3(cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
                 chunk.transform.localRotation = Quaternion.Euler(Vector3.zero);
@@ -57,12 +53,7 @@ namespace CreVox
             if (style > 1)
             {
                 PaletteItem[] itemArray = new PaletteItem[0];
-                if (ArtPack.Length > 0)
-                    itemArray = Resources.LoadAll<PaletteItem>(ArtPack);
-                if (itemArray.Length < 1)
-                {
-                    itemArray = Resources.LoadAll<PaletteItem>(PathCollect.pieces);
-                }
+				itemArray = VGlobal.GetSetting().UpdateItemArray(ArtPack);
 
                 if ((style & 2) > 0)
                 {
@@ -74,7 +65,7 @@ namespace CreVox
 
                 if ((style & 4) > 0)
                 {
-                    PlaceItems(m_vd, volume.transform, itemArray);
+                    CreateItems(m_vd, this.transform, itemArray);
                 }
             }
         }
@@ -90,76 +81,70 @@ namespace CreVox
                 }
             }
             return result;
-        }
+		}
 
-        void PlacePieces(Chunk _chunk, PaletteItem[] itemArray)
-        {
-            ChunkData cData = _chunk.cData;
-            foreach (BlockAir bAir in cData.blockAirs)
-            {
-                for (int i = 0; i < bAir.pieceNames.Length; i++)
-                {
-                    for (int k = 0; k < itemArray.Length; k++)
-                    {
-                        if (bAir.pieceNames[i] == itemArray[k].name)
-                        {
-                            PlacePiece(
-                                bAir.BlockPos,
-                                new WorldPos(i % 3, 0, (int)(i / 3)),
-                                itemArray[k].gameObject.GetComponent<LevelPiece>(),
-                                _chunk.transform
-                            );
-                        }
-                    }
-                }
-            }
-        }
+		void PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
+		{
+			ChunkData cData = _chunk.cData;
+			foreach (BlockAir bAir in cData.blockAirs) {
+				for (int i = 0; i < bAir.pieceNames.Length; i++) {
+					for (int k = 0; k < itemArray.Length; k++) {
+						if (bAir.pieceNames [i] == itemArray [k].name) {
+							PlacePiece (
+								bAir.BlockPos,
+								new WorldPos (i % 3, 0, (int)(i / 3)), 
+								itemArray [k].gameObject.GetComponent<LevelPiece> (),
+								_chunk.transform
+							);
+						}
+					}
+				}
+			}
+		}
 
-        void PlacePiece(WorldPos bPos, WorldPos gPos, LevelPiece _piece, Transform _parent)
-        {
-            Vector3 pos = Volume.GetPieceOffset(gPos.x, gPos.z);
-            VGlobal vg = VGlobal.GetSetting();
-            GameObject pObj = null;
-            float x = bPos.x * vg.w + pos.x;
-            float y = bPos.y * vg.h + pos.y;
-            float z = bPos.z * vg.d + pos.z;
-            if (_piece != null)
-            {
-                pObj = GameObject.Instantiate(_piece.gameObject);
-                pObj.transform.parent = _parent;
-                pObj.transform.localPosition = new Vector3(x, y, z);
-                pObj.transform.localRotation = Quaternion.Euler(0, Volume.GetPieceAngle(gPos.x, gPos.z), 0);
+		void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, Transform _parent)
+		{
+			Vector3 pos = Volume.GetPieceOffset (gPos.x, gPos.z);
+			VGlobal vg = VGlobal.GetSetting ();
+			GameObject pObj = null;
+			float x = bPos.x * vg.w + pos.x;
+			float y = bPos.y * vg.h + pos.y;
+			float z = bPos.z * vg.d + pos.z;
+			if (_piece != null) {
+				pObj = GameObject.Instantiate (_piece.gameObject);
+				pObj.transform.parent = _parent;
+				pObj.transform.localPosition = new Vector3 (x, y, z);
+				pObj.transform.localRotation = Quaternion.Euler (0, Volume.GetPieceAngle (gPos.x, gPos.z), 0);
+				BehaviorTree bt = pObj.GetComponent<BehaviorTree> ();
+				if (bt != null) {
+					m_bts.Add (bt);
+				}
+			}
+		}
 
-                BehaviorTree bt = pObj.GetComponent<BehaviorTree>();
-                if (bt != null)
-                {
-                    m_bts.Add(bt);
-                }
-            }
-        }
+		void CreateItems (VolumeData _vData, Transform _parent, PaletteItem[] itemArray)
+		{
+			for (int i = 0; i < _vData.blockItems.Count; i++) {
+				for (int k = 0; k < itemArray.Length; k++) {
+					BlockItem blockItem = _vData.blockItems [i];
+					if (blockItem.pieceName == itemArray [k].name) {
+						CreateItem (blockItem, i, itemArray [k], _parent);
+					}
+				}
+			}
+		}
 
-        void PlaceItems(VolumeData _vData, Transform _parent, PaletteItem[] itemArray)
-        {
-            for (int i = 0; i < _vData.blockItems.Count; i++)
-            {
-                for (int k = 0; k < itemArray.Length; k++)
-                {
-                    BlockItem blockItem = _vData.blockItems[i];
-                    if (blockItem.pieceName == itemArray[k].name)
-                    {
-                        PlaceItem(blockItem, i, itemArray[k].gameObject.GetComponent<LevelPiece>(), _parent);
-                    }
-                }
-            }
-        }
+		void CreateItem (BlockItem blockItem, int _id, PaletteItem _piece, Transform _parent)
+		{
+			GameObject pObj = GameObject.Instantiate (_piece.gameObject);
+			pObj.transform.parent = _parent;
+			pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
+			pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 
-        public void PlaceItem(BlockItem blockItem, int _id, LevelPiece _piece, Transform _parent)
-        {
-            GameObject pObj;
-            pObj = GameObject.Instantiate(_piece.gameObject);
-            pObj.transform.parent = _parent;
-            pObj.transform.localPosition = new Vector3(blockItem.posX, blockItem.posY, blockItem.posZ);
-            pObj.transform.localRotation = new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
-        }
-    }
+			LevelPiece p = (LevelPiece)pObj.GetComponent<LevelPiece> ();
+			if (p != null) {
+				p.SetupPiece (blockItem);
+			}
+		}
+	}
 }
