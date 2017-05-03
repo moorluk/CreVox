@@ -8,6 +8,8 @@ using System.Linq;
 
 namespace CrevoxExtend {
 	public class VolumeDataTransform {
+		private const int TIMEOUT_MILLISECOND = 5000;
+
 		private static List<Guid> _alphabetIDs = new List<Guid>();
 		private static Dictionary<Guid, List<VolumeData>> _refrenceTable = new Dictionary<Guid, List<VolumeData>>();
 
@@ -36,7 +38,7 @@ namespace CrevoxExtend {
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
 			int counter = 1;
 			// Wait 5 sec.
-			while(stopWatch.ElapsedMilliseconds <= 5000) {
+			while(stopWatch.ElapsedMilliseconds <= TIMEOUT_MILLISECOND) {
 				_usedNode = new List<CreVoxNode>();
 				// Get root.
 				CreVoxNode root = CreVoxAttach.RootNode;
@@ -128,9 +130,12 @@ namespace CrevoxExtend {
 		}
 		// Replace remaining connection.
 		public static void ReplaceConnection() {
+			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
+			int counter = 1;
+			List<Volume> volumeList = CrevoxOperation.resultVolumeManager.GetComponentsInChildren<Volume>().ToList();
 			// Find all volume.
-			foreach (var volume in CrevoxOperation.resultVolumeManager.GetComponentsInChildren<Volume>()) {
-				VolumeExtend volumeExtend = volume.GetComponent<VolumeExtend>();
+			for (int i = 0; i < volumeList.Count && stopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND; i++) {
+				VolumeExtend volumeExtend = volumeList[i].GetComponent<VolumeExtend>();
 				// Find all connections that haven't used.
 				foreach (var connection in volumeExtend.ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
 					bool success = false;
@@ -139,18 +144,28 @@ namespace CrevoxExtend {
 						Volume replaceVol = CrevoxOperation.CreateVolumeObject(vdata);
 						ConnectionInfo replaceStartingNode = replaceVol.GetComponent<VolumeExtend>().ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
 						// Combine.
-						if (CrevoxOperation.CombineVolumeObject(volume, replaceVol, connection, replaceStartingNode)) {
+						if (CrevoxOperation.CombineVolumeObject(volumeList[i], replaceVol, connection, replaceStartingNode)) {
+							Debug.Log(connection.connectionName + " is replaced by " + vdata.name);
 							connection.used = true;
+							replaceStartingNode.used = true;
+							volumeList.Add(replaceVol);
 							success = true;
+							counter++;
 							break;
+						} else {
+							MonoBehaviour.DestroyImmediate(replaceVol.transform.parent.gameObject);
 						}
 					}
 					// No one can combine then alert.
 					if (!success) {
-						Debug.Log(volume.name + ":" + connection.connectionName + " replace failed.");
+						Debug.Log(volumeList[i].name + ":" + connection.connectionName + " replace failed.");
 					}
 				}
 			}
+			// Record.
+			Debug.Log("Replace " + counter + " connections.");
+			Debug.Log(stopWatch.ElapsedMilliseconds + " ms");
+			stopWatch.Stop();
 			CrevoxOperation.RefreshVolume();
 		}
 		// [TEST] Will delete.
