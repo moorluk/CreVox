@@ -11,15 +11,15 @@ using System;
 
 namespace CrevoxExtend {
 	public class SpaceAlphabet {
-		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>();
+		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>() { { "Default", new List<VolumeData>() } };
 		private static string _path = Environment.CurrentDirectory + @"\Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/";
 		private static string prefabRegex = @".*[\\\/]Connection_(\w+)\.prefab$";
 		private static List<string> alphabets = new List<string>();
 		public static List<bool> isSelected = new List<bool>() { false };
-		private static bool changed = true;
 
 		public static void Load() {
-			alphabets = new List<string>();
+			isSelected = new List<bool>() { false };
+			alphabets = new List<string>() { "Default" };
 			string[] files = Directory.GetFiles(_path);
 			string matchFile;
 			for (int i = 0; i < files.Length; i++) {
@@ -31,9 +31,10 @@ namespace CrevoxExtend {
 					}
 				}
 			}
+			dictionaryUpdate();
 		}
 		public static void alphabetUpdate(List<string> newAlphabet) {
-			Load();
+			//Load();
 			foreach (string s in newAlphabet) {
 				if (!alphabets.Exists(e => (e == s))) {
 					NewPrefab("Connection_" + s);
@@ -42,13 +43,25 @@ namespace CrevoxExtend {
 
 			for(int i = alphabets.Count-1;i >= 0; i--) {
 				if (!newAlphabet.Exists(e => (e == alphabets[i]))) {
-					DeletePrefab("Connection_"+alphabets[i]);
-					alphabets.RemoveAt(i);
-					isSelected.RemoveAt(i);
+					DeletePrefab("Connection_" + alphabets[i]);
 				}
 			}
 			PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
 			window.InitialPaletteWindow();
+			Load();
+		}
+		// Update dictionary.
+		public static void dictionaryUpdate() {
+			foreach (var connectionType in alphabets) {
+				if (!replaceDictionary.ContainsKey(connectionType)) {
+					replaceDictionary.Add(connectionType, new List<VolumeData>());
+				}
+			}
+			for (int i = replaceDictionary.Keys.Count - 1; i >= 0 ; i--) {
+				if (!alphabets.Exists(s => (s == replaceDictionary.Keys.ToArray()[i]))) {
+					replaceDictionary.Remove(replaceDictionary.Keys.ToArray()[i]);
+				}
+			}
 		}
 		// File IO
 		public static void NewPrefab(string fileName) {
@@ -66,10 +79,6 @@ namespace CrevoxExtend {
 		}
 		private static GameObject GetPrefab(string name) {
 			return (Resources.Load(@"CreVox/VolumeArtPack/LevelPieces/4_Sign/ConnectionTypes/"+name) as GameObject);
-		}
-		public static bool Changed {
-			get { return changed; }
-			set { changed = value; }
 		}
 	}
 }
