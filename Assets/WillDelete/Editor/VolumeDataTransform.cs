@@ -32,6 +32,24 @@ namespace CrevoxExtend {
 				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
 			}
 		}
+		// Test
+		public static void GenerateTest() {
+			_usedNode = new List<CreVoxNode>();
+			// Get root.
+			CreVoxNode root = CreVoxAttach.RootNode;
+			// Initial root.
+			Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
+			_usedNode.Add(root);
+			if (GenerateRecursion(root, volume)) {
+				Debug.Log("Completed.");
+				// Update volume manager and scene.
+				CrevoxOperation.RefreshVolume();
+			} else {
+				// Faild then destroy.
+				CrevoxOperation.DestroyVolume();
+				Debug.Log("Failed.");
+			}
+		}
 		private static List<CreVoxNode> _usedNode;
 		// Generate the volume data that refer graph grammar.
 		public static void Generate() {
