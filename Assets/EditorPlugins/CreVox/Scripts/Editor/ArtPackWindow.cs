@@ -183,7 +183,8 @@ namespace CreVox
 											Selection.activeGameObject = _item.itemObject;
 									} else {
 										GUI.color = Color.red;
-										GUILayout.Box ("", "button", GUILayout.Width (ButtonWidth), GUILayout.ExpandHeight (true));
+										GUILayout.Label (GetPreview (), GetPreviewStyle ());
+										GUILayout.Box ("", GetLabelStyle (), GUILayout.ExpandHeight (true));
 										GUI.color = def;
 									}
 								}
