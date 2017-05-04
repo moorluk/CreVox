@@ -20,10 +20,9 @@ namespace CreVox
 		public static ArtPackWindow instance;
 
 		private Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
+		private string vg = "";
 
 		private List<string> _artPacks= new List<string> ();
-		private List<VGlobal.ArtPackParent> _pList;
-		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
 
 		private List<Item> _items;
 		private Dictionary<PaletteItem.Category, List<string>> itemNames;
@@ -53,16 +52,6 @@ namespace CreVox
 			DrawFunction ();
 		}
 
-		private Texture2D GetPreview(GameObject obj = null)
-		{
-			Texture2D thumbnail = null;
-			if (obj != null)
-				thumbnail = AssetPreview.GetAssetPreview (obj);
-			if (thumbnail == null)
-				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
-			return thumbnail;
-		}
-
 		private void InitContent ()
 		{
 			//GetItems
@@ -90,7 +79,8 @@ namespace CreVox
 			List<PaletteItem.Category> _categories;
 			_categories = EditorUtils.GetListFromEnum<PaletteItem.Category> ();
 
-			GetArtPacks ();
+			_artPacks = GetArtPacks ();
+			GetArtPackParent ();
 
 			//GetItemCells
 			_itemCells = new Dictionary<string, Dictionary<PaletteItem.Category, List<Item>>> ();
@@ -143,7 +133,7 @@ namespace CreVox
 				GUILayout.BeginScrollView (Vector2.zero, GUIStyle.none, GUIStyle.none, GUILayout.Width (ButtonWidth + 5));
 				using (var v = new EditorGUILayout.VerticalScope (GUILayout.Width (ButtonWidth))) {
 					GUILayout.Label (_artPacks [0], listLabel, GUILayout.Width (ButtonWidth));
-					GUILayout.Label ("Set ArtPack Parent", GUILayout.Width (ButtonWidth));
+					GUILayout.Label ("Set Parent ArtPack", GUILayout.Width (ButtonWidth));
 				}
 				GUILayout.EndScrollView ();
 				GUILayout.BeginScrollView (_scrollPositionX, GUIStyle.none, GUIStyle.none);
@@ -159,15 +149,7 @@ namespace CreVox
 					GUILayout.Label ("", GUILayout.Width (15));
 				}
 				if (EditorGUI.EndChangeCheck ()) {
-					_pList.Clear ();
-					foreach (KeyValuePair<string,string> k in _pDict) {
-						VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
-						_a.pack = k.Key;
-						_a.parentPack = k.Value;
-						_pList.Add(_a);
-					}
-					VGlobal.GetSetting ().artPackParentList = _pList;
-					EditorUtility.SetDirty (VGlobal.GetSetting ());
+					UpdateArtPackParent ();
 				}
 				GUILayout.EndScrollView ();
 			}
@@ -247,16 +229,20 @@ namespace CreVox
 
 		private void DrawFunction ()
 		{
-			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField)) {
-				GUILayout.Label ("", GUILayout.Width (Mathf.Clamp (Screen.width - 290, 0, Screen.width)));
+			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField, GUILayout.Width (Screen.width))) {
+				GUILayout.Label ("");
+				vg = AssetDatabase.GetAssetPath (EditorGUILayout.ObjectField (VGlobal.GetSetting(vg), typeof(VGlobal), false, GUILayout.Width (170)));
+				if (vg.Length > 0)
+					vg = vg.Substring (vg.LastIndexOf (PathCollect.resourceSubPath)).Replace (".asset", "");
 				GUILayout.Label ("Button Size", GUILayout.Width (70));
-				ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 100f, 300f, GUILayout.Width (100));
+				ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 100f, 300f, GUILayout.Width (90));
 				if (GUILayout.Button ("Refresh Preview", EditorStyles.miniButton, GUILayout.Width (90))) {
 					InitContent ();
 				}
 			}
 		}
 
+		#region rename tool
 		bool showRenameTool = false;
 		VolumeManager vm = null;
 		bool usePrefab = true;
@@ -330,19 +316,13 @@ namespace CreVox
 			}
 			EditorGUIUtility.labelWidth = lw;
 		}
-
-		private void GetArtPacks ()
+		#endregion
+		#region ArtPackParent
+		private List<VGlobal.ArtPackParent> _pList;
+		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
+		private void GetArtPackParent ()
 		{
-			_artPacks.Clear() ;
-			_artPacks.Add (Path.GetFileName (PathCollect.pieces));
-			string[] _artPacksTemp = Directory.GetDirectories (_path, "*", SearchOption.TopDirectoryOnly);
-			for (int a = 0; a < _artPacksTemp.Length; a++) {
-				_artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
-				if (_artPacksTemp [a] != _artPacks [0])
-					_artPacks.Add (_artPacksTemp [a]);
-			}
-
-			_pList = VGlobal.GetSetting ().artPackParentList;
+			_pList = VGlobal.GetSetting (vg).artPackParentList;
 			_pDict.Clear();
 			for (int i = 1; i < _artPacks.Count; i++) {
 				for (int j = 0; j < _pList.Count; j++) {
@@ -356,6 +336,43 @@ namespace CreVox
 			}
 		}
 
+		private void UpdateArtPackParent ()
+		{
+			_pList.Clear ();
+			foreach (KeyValuePair<string,string> k in _pDict) {
+				VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
+				_a.pack = k.Key;
+				_a.parentPack = k.Value;
+				_pList.Add(_a);
+			}
+			VGlobal.GetSetting (vg).artPackParentList = _pList;
+			EditorUtility.SetDirty (VGlobal.GetSetting (vg));
+		}
+		#endregion
+		#region Get
+		public static List<string> GetArtPacks ()
+		{
+			List<string> _result = new List<string>(0);
+			_result.Add (Path.GetFileName (PathCollect.pieces));
+			string[] _artPacksTemp = Directory.GetDirectories (_path, "*", SearchOption.TopDirectoryOnly);
+			for (int a = 0; a < _artPacksTemp.Length; a++) {
+				_artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
+				if (_artPacksTemp [a] != _result [0])
+					_result.Add (_artPacksTemp [a]);
+			}
+			return _result;
+		}
+
+		private Texture2D GetPreview(GameObject obj = null)
+		{
+			Texture2D thumbnail = null;
+			if (obj != null)
+				thumbnail = AssetPreview.GetAssetPreview (obj);
+			if (thumbnail == null)
+				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
+			return thumbnail;
+		}
+
 		private GUIStyle GetLabelStyle ()
 		{
 			GUIStyle guiStyle = new GUIStyle (GUI.skin.button);
@@ -364,14 +381,6 @@ namespace CreVox
 			guiStyle.imagePosition = ImagePosition.ImageLeft;
 			guiStyle.fixedHeight = Mathf.Clamp (ButtonWidth / 3 , guiStyle.fontSize * 2, ButtonWidth);
 			guiStyle.fixedWidth = ButtonWidth - guiStyle.fixedHeight - 4f;
-			return guiStyle;
-		}
-
-		private GUIStyle GetScrollStyle ()
-		{
-			GUIStyle guiStyle = new GUIStyle (GUI.skin.horizontalScrollbar);
-			guiStyle.fixedHeight = 0;
-			guiStyle.clipping = TextClipping.Clip;
 			return guiStyle;
 		}
 
@@ -385,5 +394,6 @@ namespace CreVox
 			guiStyle.fixedWidth = size;
 			return guiStyle;
 		}
+		#endregion
 	}
 }
