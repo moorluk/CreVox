@@ -10,7 +10,7 @@ using System.IO;
 using System;
 
 namespace CrevoxExtend {
-	class VolumeDataTransformWindow : EditorWindow {
+	class CrevoxGenerationWindow : EditorWindow {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 
@@ -100,22 +100,15 @@ namespace CrevoxExtend {
 			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Count == 0||vs.Exists(v => v == null)));
 			// Generate button.
 			if (GUILayout.Button("Generate")) {
-				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.SameVolumeDatas = volumeDatas;
-				VolumeDataTransform.InitialTable();
-				VolumeDataTransform.Generate();
+				CrevoxGeneration.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
+				CrevoxGeneration.SameVolumeDatas = volumeDatas;
+				CrevoxGeneration.InitialTable();
+				CrevoxGeneration.Generate();
 			}
 			if (GUILayout.Button("ReplaceConnection")) {
-				VolumeDataTransform.ReplaceConnection();
+				CrevoxGeneration.ReplaceConnection();
 			}
 			// [TEST] Will delete.
-			// Random generate button.
-			if (GUILayout.Button("[Test backtracking] Generate")) {
-				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				VolumeDataTransform.SameVolumeDatas = volumeDatas;
-				VolumeDataTransform.InitialTable();
-				VolumeDataTransform.GenerateTest();
-			}
 			EditorGUI.EndDisabledGroup();
 		}
 	}
