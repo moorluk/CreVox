@@ -32,45 +32,125 @@ namespace CrevoxExtend {
 				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
 			}
 		}
-		// Test
+		// [TEST BackTracking]
+		struct Edge {
+			public CreVoxNode start;
+			public CreVoxNode end;
+			public Edge(CreVoxNode s, CreVoxNode e) {
+				this.start = s;
+				this.end = e;
+			}
+		}
+		private static List<Edge> edgeList;
+		private static System.Diagnostics.Stopwatch testStopWatch;
 		public static void GenerateTest() {
-			_usedNode = new List<CreVoxNode>();
+			CrevoxState.ConnectionInfoVdataTable = new Dictionary<VolumeData, List<ConnectionInfo>>();
+			testStopWatch = System.Diagnostics.Stopwatch.StartNew();
 			// Get root.
-			CreVoxNode root = CreVoxAttach.RootNode;
-			// Initial root.
-			Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
-			_usedNode.Add(root);
-			if (GenerateRecursion(root, volume)) {
+			CreVoxNode rootNode = CreVoxAttach.RootNode;
+			edgeList = new List<Edge>();
+			RecursionGetSeriesTest(rootNode);
+			nowState = null;
+			// Get mapping vdata.
+			foreach (var rootVdata in _refrenceTable[rootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
+				CrevoxState state = new CrevoxState(rootVdata);
+				state.VolumeDatasByID[rootNode.SymbolID] = state.ResultVolumeDatas[0];
+				if(RecursionTest(state, 0)) {
+					if (testStopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND) {
+						nowState = state;
+					}
+					break;
+				}
+			}
+			if (nowState != null) {
 				Debug.Log("Completed.");
 				// Update volume manager and scene.
-				CrevoxOperation.RefreshVolume();
-			} else {
-				// Faild then destroy.
-				CrevoxOperation.DestroyVolume();
+				CrevoxOperation.InitialVolume(nowState.ResultVolumeDatas);
+			}else {
 				Debug.Log("Failed.");
+			}
+			Debug.Log(testStopWatch.ElapsedMilliseconds + " ms");
+			testStopWatch.Stop();
+		}
+		private static bool RecursionTest(CrevoxState state, int edgeIndex) {
+			if (testStopWatch.ElapsedMilliseconds > TIMEOUT_MILLISECOND) { return true; }
+			if (edgeIndex >= edgeList.Count) { return true; }
+			Edge edge = edgeList[edgeIndex];
+			// If end node is used.
+			if (state.VolumeDatasByID.ContainsKey(edge.end.SymbolID)) {
+				// Ignore.
+				if (RecursionTest(state, edgeIndex + 1)) {
+					return true;
+				}
+			}
+			List<VolumeData> suitableVdata = new List<VolumeData>();
+			// Find the suitable vdata by random ordering.
+			foreach (var vdata in _refrenceTable[edge.end.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
+				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdata);
+				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
+					suitableVdata.Add(vdata);
+				}
+			}
+			// No vdata have enough connection.
+			if (suitableVdata.Count == 0) {
+				Debug.Log("There is no vdata that have enough connection in " + _refrenceTable[edge.end.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
+				return false;
+			}
+			// Find mapping vdata in table.
+			foreach (var mappingVdata in suitableVdata) {
+				state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingVdata);
+				// Get startingNode from end node.
+				ConnectionInfo startingNode = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+				// Get connection from start node.
+				foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
+					if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
+					if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, startingNode)) {
+						state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
+						if(RecursionTest(state, edgeIndex + 1)) {
+							return true;
+						}else {
+							state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
+						}
+					}
+				}
+			}
+			state.VolumeDatasByID.Remove(edge.end.SymbolID);
+			return false;
+		}
+		// Dfs generate.
+		private static void RecursionGetSeriesTest(CreVoxNode node) {
+			foreach (var child in node.Children.OrderBy(x=> UnityEngine.Random.value)) {
+				if(edgeList.Exists(x=>x.start == node && x.end == child)) {
+					continue;
+				}
+				//Debug.Log(node.SymbolID + " + " + child.SymbolID);
+				edgeList.Add(new Edge(node, child));
+				RecursionGetSeriesTest(child);
 			}
 		}
 		private static List<CreVoxNode> _usedNode;
+		private static CrevoxState nowState;
 		// Generate the volume data that refer graph grammar.
 		public static void Generate() {
+			CrevoxState.ConnectionInfoVdataTable = new Dictionary<VolumeData, List<ConnectionInfo>>();
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
 			int counter = 1;
 			// Wait 5 sec.
-			while(stopWatch.ElapsedMilliseconds <= TIMEOUT_MILLISECOND) {
+			while (stopWatch.ElapsedMilliseconds <= TIMEOUT_MILLISECOND) {
 				_usedNode = new List<CreVoxNode>();
 				// Get root.
 				CreVoxNode root = CreVoxAttach.RootNode;
 				// Initial root.
-				Volume volume = CrevoxOperation.InitialVolume(SelectData(_refrenceTable[root.AlphabetID]));
+				nowState = new CrevoxState(SelectData(_refrenceTable[root.AlphabetID]));
 				_usedNode.Add(root);
-				if (GenerateRecursion(root, volume)) {
+				if (GenerateRecursion(root, nowState.ResultVolumeDatas[0])) {
 					Debug.Log("Completed.");
 					// Update volume manager and scene.
+					CrevoxOperation.InitialVolume(nowState.ResultVolumeDatas);
 					CrevoxOperation.RefreshVolume();
 					break;
 				} else {
 					// Faild then destroy.
-					CrevoxOperation.DestroyVolume();
 					Debug.Log("Failed.");
 				}
 				counter++;
@@ -80,20 +160,19 @@ namespace CrevoxExtend {
 			stopWatch.Stop();
 		}
 		// Dfs generate.
-		private static bool GenerateRecursion(CreVoxNode node, Volume originalVolume) {
+		private static bool GenerateRecursion(CreVoxNode node, CrevoxState.VolumeDataEx originalVolumeEx) {
 			foreach (var child in node.Children) {
 				if (_usedNode.Exists(n => n.SymbolID == child.SymbolID)) {
 					continue;
 				}
 				List<VolumeData> suitableVdata = new List<VolumeData>();
-				Volume newVolume = null;
+				CrevoxState.VolumeDataEx newVolumeEx = null;
 				// Find the suitable vdata by random ordering.
 				foreach (var vdata in _refrenceTable[child.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
-					newVolume = CrevoxOperation.CreateVolumeObject(vdata);
-					if (newVolume.GetComponent<VolumeExtend>().ConnectionInfos.Count - 1 >= child.Children.Count) {
+					newVolumeEx = new CrevoxState.VolumeDataEx(vdata);
+					if (newVolumeEx.ConnectionInfos.Count - 1 >= child.Children.Count) {
 						suitableVdata.Add(vdata);
 					}
-					MonoBehaviour.DestroyImmediate(newVolume.transform.parent.gameObject);
 				}
 				// No vdata have enough connection.
 				if (suitableVdata.Count == 0) {
@@ -102,30 +181,30 @@ namespace CrevoxExtend {
 				}
 				bool canCombine = false;
 				foreach (var vdata in suitableVdata) {
-					newVolume = CrevoxOperation.CreateVolumeObject(vdata);
+					newVolumeEx = new CrevoxState.VolumeDataEx(vdata);
 					// Combine.
-					VolumeExtend originalVolumeExtend = originalVolume.GetComponent<VolumeExtend>();
-					VolumeExtend newVolumeExtend = newVolume.GetComponent<VolumeExtend>();
-					ConnectionInfo[] originalConnectionList = originalVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
-					ConnectionInfo[] newConnectionList = newVolumeExtend.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
+					ConnectionInfo[] originalConnectionList = originalVolumeEx.ConnectionInfos.OrderBy(x => UnityEngine.Random.value).ToArray();
+					ConnectionInfo[] newConnectionList = newVolumeEx.ConnectionInfos.ToArray();
 					// Get starting node.
 					ConnectionInfo newStartingNode = newConnectionList.FirstOrDefault(x => !x.used && x.type == ConnectionInfoType.StartingNode);
-					if(newStartingNode != null) {
+					if (newStartingNode != null) {
 						// Get connection.
 						foreach (var originalConnection in originalConnectionList) {
 							if (originalConnection.used || originalConnection.type == ConnectionInfoType.StartingNode) {
 								continue;
 							}
-							Debug.Log(originalVolume.transform.parent.name + " + " + newVolume.transform.parent.name);
+							//Debug.Log(originalVolumeEx.volumeData.name + " + " + newVolumeEx.volumeData.name);
 							// Combine.
-							if (CrevoxOperation.CombineVolumeObject(originalVolume, newVolume, originalConnection, newStartingNode)) {
+							if (nowState.CombineVolumeObject(originalVolumeEx, newVolumeEx, originalConnection, newStartingNode)) {
+								nowState.ResultVolumeDatas.Add(newVolumeEx);
 								_usedNode.Add(child);
 								originalConnection.used = true;
 								newStartingNode.used = true;
-								if (GenerateRecursion(child, newVolume)) {
+								if (GenerateRecursion(child, newVolumeEx)) {
 									canCombine = true;
 									break;
 								} else {
+									nowState.ResultVolumeDatas.Remove(newVolumeEx);
 									_usedNode.Remove(child);
 									originalConnection.used = false;
 									newStartingNode.used = false;
@@ -136,9 +215,6 @@ namespace CrevoxExtend {
 					if (canCombine) {
 						break;
 					}
-					// Destory failed object and its children.
-					Debug.Log("Destroy " + newVolume.transform.parent.name);
-					MonoBehaviour.DestroyImmediate(newVolume.transform.parent.gameObject);
 				}
 				if (!canCombine) {
 					return false;
@@ -150,33 +226,31 @@ namespace CrevoxExtend {
 		public static void ReplaceConnection() {
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
 			int counter = 1;
-			List<Volume> volumeList = CrevoxOperation.resultVolumeManager.GetComponentsInChildren<Volume>().ToList();
+			List<CrevoxState.VolumeDataEx> volumeList = nowState.ResultVolumeDatas;
 			// Find all volume.
 			for (int i = 0; i < volumeList.Count && stopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND; i++) {
-				VolumeExtend volumeExtend = volumeList[i].GetComponent<VolumeExtend>();
 				// Find all connections that haven't used.
-				foreach (var connection in volumeExtend.ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
+				foreach (var connection in volumeList[i].ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
 					bool success = false;
 					// Find all vdata replaced order by random.
 					foreach (var vdata in SpaceAlphabet.replaceDictionary[connection.connectionName].OrderBy(x => UnityEngine.Random.value)) {
-						Volume replaceVol = CrevoxOperation.CreateVolumeObject(vdata);
-						ConnectionInfo replaceStartingNode = replaceVol.GetComponent<VolumeExtend>().ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
+						CrevoxState.VolumeDataEx replaceVol = new CrevoxState.VolumeDataEx(vdata);
+						ConnectionInfo replaceStartingNode = replaceVol.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
 						// Combine.
-						if (CrevoxOperation.CombineVolumeObject(volumeList[i], replaceVol, connection, replaceStartingNode)) {
+						if (nowState.CombineVolumeObject(volumeList[i], replaceVol, connection, replaceStartingNode)) {
 							Debug.Log(connection.connectionName + " is replaced by " + vdata.name);
+							nowState.ResultVolumeDatas.Add(replaceVol);
 							connection.used = true;
 							replaceStartingNode.used = true;
 							volumeList.Add(replaceVol);
 							success = true;
 							counter++;
 							break;
-						} else {
-							MonoBehaviour.DestroyImmediate(replaceVol.transform.parent.gameObject);
 						}
 					}
 					// No one can combine then alert.
 					if (!success) {
-						Debug.Log(volumeList[i].name + ":" + connection.connectionName + " replace failed.");
+						Debug.Log(volumeList[i].volumeData.name + ":" + connection.connectionName + " replace failed.");
 					}
 				}
 			}
@@ -184,11 +258,11 @@ namespace CrevoxExtend {
 			Debug.Log("Replace " + counter + " connections.");
 			Debug.Log(stopWatch.ElapsedMilliseconds + " ms");
 			stopWatch.Stop();
-			CrevoxOperation.RefreshVolume();
+			CrevoxOperation.InitialVolume(nowState.ResultVolumeDatas);
 		}
 		// [TEST] Will delete.
 		public static void RandomGenerate(int count) {
-			List<Volume> vols = new List<Volume>();
+			/*List<Volume> vols = new List<Volume>();
 			Volume volume = CrevoxOperation.InitialVolume(SelectData(sameVolumeDatas[UnityEngine.Random.Range(0, sameVolumeDatas.Count)]));
 			vols.Add(volume);
 			while (--count > 0) {
@@ -199,11 +273,11 @@ namespace CrevoxExtend {
 					volume = vols[UnityEngine.Random.Range(0, vols.Count)];
 				}
 			}
-			CrevoxOperation.RefreshVolume();
+			CrevoxOperation.RefreshVolume();*/
 		}
 		// Random select from multi vDatas.
 		private static VolumeData SelectData(List<VolumeData> sameRoomData) {
-				return sameRoomData[(int)UnityEngine.Random.Range(0, sameRoomData.Count)];
+			return sameRoomData[(int) UnityEngine.Random.Range(0, sameRoomData.Count)];
 		}
 
 	}

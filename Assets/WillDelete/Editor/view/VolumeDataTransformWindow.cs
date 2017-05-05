@@ -13,7 +13,6 @@ namespace CrevoxExtend {
 	class VolumeDataTransformWindow : EditorWindow {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
-		private static int _randomCount;
 
 		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 		private static string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
@@ -111,13 +110,12 @@ namespace CrevoxExtend {
 			}
 			// [TEST] Will delete.
 			// Random generate button.
-			if (GUILayout.Button("Random Generate")) {
+			if (GUILayout.Button("[Test backtracking] Generate")) {
 				VolumeDataTransform.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				VolumeDataTransform.SameVolumeDatas = volumeDatas;
 				VolumeDataTransform.InitialTable();
-				VolumeDataTransform.RandomGenerate(_randomCount);
+				VolumeDataTransform.GenerateTest();
 			}
-			_randomCount = EditorGUILayout.IntField("Random generate count", _randomCount);
 			EditorGUI.EndDisabledGroup();
 		}
 	}
