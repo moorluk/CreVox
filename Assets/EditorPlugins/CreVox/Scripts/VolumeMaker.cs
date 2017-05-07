@@ -17,16 +17,24 @@ namespace CreVox
 		public string vMaterial = PathCollect.defaultVoxelMaterial;
         private List<Chunk> m_cs = new List<Chunk>();
         private List<BehaviorTree> m_bts = new List<BehaviorTree>(1024);
+
+		#region delgate
+		private delegate void volumeAdd(GameObject volume);
+		private void AddComponent()
+		{
+			volumeAdd AfterVolumeInit = new volumeAdd(VolumeAdapter.AfterVolumeInit);
+			if (AfterVolumeInit != null)
+				AfterVolumeInit(this.gameObject);
+		}
+		#endregion
+
         public void Build()
         {
-            Start();
-        }
-        void Start()
-        {
-            int style = (int)m_style;
+			int style = (int)m_style;
+			AddComponent ();
 
             for (int ci = 0; ci < m_vd.chunkDatas.Count; ci++)
-            {
+			{
                 ChunkData cData = m_vd.chunkDatas[ci];
                 GameObject chunk = Instantiate(Resources.Load(PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler(Vector3.zero)) as GameObject;
                 chunk.name = "Chunk" + cData.ChunkPos.ToString();

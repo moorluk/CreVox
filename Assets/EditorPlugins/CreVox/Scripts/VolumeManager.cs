@@ -24,12 +24,11 @@ namespace CreVox
 			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 			if (v.Length > 0) {
 				UpdateDungeon ();
-			}
 
-			if (VGlobal.GetSetting ().FakeDeco) {
-				for (int i = 0; i < v.Length; i++) {
-					v [i].enabled = false;
-					GameObject.Destroy (v [i].gameObject);
+				if (VGlobal.GetSetting ().FakeDeco) {
+					for (int i = 0; i < v.Length; i++) {
+						GameObject.Destroy (v [i].gameObject);
+					}
 				}
 			}
 		}
