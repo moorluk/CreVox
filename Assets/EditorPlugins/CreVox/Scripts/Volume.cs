@@ -826,7 +826,7 @@ namespace CreVox
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
 				DrawBlockHold ();
-//				DrawBlockItem ();
+				DrawBlockItem ();
 			}
 			Gizmos.matrix = oldMatrix;
 		}
@@ -856,18 +856,21 @@ namespace CreVox
 		void DrawBlockItem ()
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			foreach (Chunk chunk in chunks.Values) {
-				for (int i = 0; i < vd.blockItems.Count; i++) {
-					WorldPos blockItemPos = vd.blockItems [i].BlockPos;
-					WorldPos chunkPos = chunk.cData.ChunkPos;
-					Vector3 localPos = new Vector3 (
-						(blockItemPos.x + chunkPos.x) * vg.w, 
-						(blockItemPos.y + chunkPos.y) * vg.h, 
-						(blockItemPos.z + chunkPos.z) * vg.d
-					);
-					Gizmos.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
-					Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
-				}
+			for (int i = 0; i < vd.blockItems.Count; i++) {
+				BlockItem item = vd.blockItems [i];
+				Vector3 localPos = new Vector3 (
+					Mathf.Round(item.posX/vg.w)*vg.w,
+					Mathf.Round(item.posY/vg.h)*vg.h,
+					Mathf.Round(item.posZ/vg.d)*vg.d
+				);
+				Gizmos.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
+				Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
+				Vector3 localPos2 = new Vector3 (
+					item.BlockPos.x*vg.w,
+					item.BlockPos.y*vg.h,
+					item.BlockPos.z*vg.d
+				);
+				Gizmos.DrawWireCube (localPos2, new Vector3 (vg.w, vg.h, vg.d));
 			}
 		}
 

@@ -9,7 +9,6 @@ namespace CreVox
 	[CustomEditor (typeof(Volume))]
 	public class VolumeEditor : Editor
 	{
-        private int selectedItemID = 0;
 		Volume volume;
 		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
 		int cx = 1;
@@ -145,7 +144,7 @@ namespace CreVox
 			Voxel,
 			ObjectLayer,
 			Object,
-			Edit
+			Item
 		}
 
 		private EditMode selectedEditMode;
@@ -181,6 +180,8 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (vg);
 			EditorGUILayout.LabelField (((int)vg.editDis).ToString (), GUILayout.Width (25));
+			if (selectedEditMode == EditMode.Item)
+				isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
 			GUILayout.EndHorizontal ();
 			GUILayout.EndArea ();
 			
@@ -195,7 +196,7 @@ namespace CreVox
 			case EditMode.VoxelLayer:
 			case EditMode.Object:
 			case EditMode.ObjectLayer:
-			case EditMode.Edit:
+			case EditMode.Item:
 				Tools.current = Tool.None;
 				break;
 
@@ -310,8 +311,11 @@ namespace CreVox
 
 		private bool isSelectItem;
 		private int workItemId; 
+		private int selectedItemID = -1;
+		private bool isItemSnap = true;
 		private void DrawEditMarker ()
 		{
+			VGlobal vg = VGlobal.GetSetting ();
 			Matrix4x4 defMatrix = Handles.matrix;
 			Color defColor = Handles.color;
 			Quaternion facingCamera;
@@ -332,25 +336,37 @@ namespace CreVox
 				Transform ItemNode = volume.GetItemNode (blockItem).transform;
 
 				Vector3 pos = ItemNode.position;
-				pos = Handles.DoPositionHandle (pos, ItemNode.rotation);
-				ItemNode.position = pos;
-				blockItem.posX = ItemNode.localPosition.x;
-				blockItem.posY = ItemNode.localPosition.y;
-				blockItem.posZ = ItemNode.localPosition.z;
-				blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+				Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.hh, 0) : pos;
+				if (selectedItemID == i) {
+					handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
 
-				ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
-				Quaternion tmp = ItemNode.localRotation;
-				Vector3 rot = tmp.eulerAngles;
-				rot.x = Mathf.Round(rot.x /15f) * 15f;
-				rot.y = Mathf.Round(rot.y /15f) * 15f;
-				rot.z = Mathf.Round(rot.z /15f) * 15f;
-				tmp.eulerAngles = rot;
-				ItemNode.localRotation = tmp;
-				blockItem.rotX = ItemNode.localRotation.x;
-				blockItem.rotY = ItemNode.localRotation.y;
-				blockItem.rotZ = ItemNode.localRotation.z;
-				blockItem.rotW = ItemNode.localRotation.w;
+					if (isItemSnap) {
+						float fixedX = Mathf.Round (handlePos.x/* / vg.w*/)/* * vg.w*/;
+						float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
+						float fixedZ = Mathf.Round (handlePos.z/* / vg.d*/)/* * vg.d*/;
+						pos = new Vector3 (fixedX, fixedY, fixedZ);
+					} else {
+						pos = handlePos;
+					}
+					ItemNode.position = pos;
+					blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+					blockItem.posX = ItemNode.localPosition.x;
+					blockItem.posY = ItemNode.localPosition.y;
+					blockItem.posZ = ItemNode.localPosition.z;
+
+					ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+					Quaternion tmp = ItemNode.localRotation;
+					Vector3 rot = tmp.eulerAngles;
+					rot.x = Mathf.Round (rot.x / 15f) * 15f;
+					rot.y = Mathf.Round (rot.y / 15f) * 15f;
+					rot.z = Mathf.Round (rot.z / 15f) * 15f;
+					tmp.eulerAngles = rot;
+					ItemNode.localRotation = tmp;
+					blockItem.rotX = ItemNode.localRotation.x;
+					blockItem.rotY = ItemNode.localRotation.y;
+					blockItem.rotZ = ItemNode.localRotation.z;
+					blockItem.rotW = ItemNode.localRotation.w;
+				}
 
 				float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
 				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
@@ -436,7 +452,7 @@ namespace CreVox
 				case EditMode.ObjectLayer:
 					DrawGridMarker ();
 
-					if (Event.current.type == EventType.MouseDown) {
+					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
 						if (button == 0)
 							PaintPiece (false);
 						else if (button == 1) {
@@ -447,7 +463,7 @@ namespace CreVox
 					}
 					break;
 
-				case EditMode.Edit:
+				case EditMode.Item:
 					DrawEditMarker ();
 
 					if (Event.current.type == EventType.MouseDown) {
@@ -461,10 +477,10 @@ namespace CreVox
 							else {
 								GameObject ItemNode = volume.GetItemNode (volume.vd.blockItems [workItemId]);
                                 _itemInspected = ItemNode.GetComponent<PaletteItem>();
-                                PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
+
 								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
 								Debug.Log (PrefabUtility.GetPrefabParent (ItemNode));
-								UpdateCurrentPieceInstance (item, preview);
+								UpdateCurrentPieceInstance (_itemInspected, preview);
 							}
 							isSelectItem = false;
 							workItemId = -1;
@@ -783,7 +799,7 @@ namespace CreVox
 
 		private void DrawPieceInspectedGUI()
 		{
-			if (currentEditMode != EditMode.Edit)
+			if (currentEditMode != EditMode.Item)
 				return;
 
 			EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
@@ -798,7 +814,6 @@ namespace CreVox
 
                     if (e != null)
                         e.OnEditorGUI(ref item);
-                        //VolumeEditorAdapter.DrawInspector(e, ref item);
                 }
 				EditorGUILayout.EndVertical ();
 			} else {
