@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
-
-//using System.Collections;
+using System.IO;
 
 namespace CreVox
 {
@@ -47,50 +47,28 @@ namespace CreVox
 			return vg;
 		}
 
-		public PaletteItem[] UpdateItemArray(string _artPackPath)
+		public PaletteItem[] GetItemArray(string _artPackPath)
 		{
-			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
-
-			if (volumeShowArtPack || Application.isPlaying) {
-				string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
-				string pName = GetParentArtPack (cName);
-				Debug.LogWarning (cName + " >>> " + pName);
-				string pPath = PathCollect.artPack + "/" + pName;
-				PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
-				while (pPath != PathCollect.pieces) {
-					PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
-					for (int i = 0; i < _parent.Length; i++) {
-						bool _finded = false;
-						for (int j = 0; j < _child.Length; j++) {
-							if (_child [j].name == _parent [i].name) {
-								_parent.SetValue (_child [j], i);
-								_finded = true;
-							}
-							if (_finded)
-								break;
-						}
-					}
-					_child = _parent;
-					cName = pName;
-					pName = GetParentArtPack (cName);
-					Debug.LogWarning (cName + " >>> " + pName);
-					pPath = PathCollect.artPack + "/" + pName;
-				}
-
-				for (int i = 0; i < _final.Length; i++) {
-					bool _finded = false;
-					for (int j = 0; j < _child.Length; j++) {
-						if (_child [j].name == _final [i].name) {
-							_final.SetValue(_child [j], i);
-							_finded = true;
-						}
-						if (_finded)
-							break;
-					}
+			String _artPackName = Path.GetFileName (_artPackPath);
+			string[] _itemPaths = new string[APItemPathList[0].itemPath.Count];
+			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
+			for (int i = 0; i < APItemPathList.Count; i++) {
+				if (APItemPathList [i].name == _artPackName) {
+					_itemPaths = APItemPathList [i].itemPath.ToArray();
+					break;
 				}
 			}
 
-			return _final;
+			if (volumeShowArtPack || Application.isPlaying) {
+				result = new PaletteItem[_itemPaths.Length];
+				for (int i = 0; i < _itemPaths.Length; i++) {
+					PaletteItem _item = (Resources.Load(_itemPaths [i])as GameObject).GetComponent<PaletteItem>();
+					result.SetValue (_item, i);
+				}
+			} else {
+				result = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+			}
+			return result;
 		}
 
 		public string GetParentArtPack (string _child)

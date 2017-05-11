@@ -73,8 +73,8 @@ namespace CreVox
 
 			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				GUILayout.BeginHorizontal ();
 				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
+				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
 					string ppath = EditorUtility.OpenFolderPanel (
 						"選擇場景風格元件包的目錄位置",
@@ -85,6 +85,13 @@ namespace CreVox
 						volume.SaveTempWorld ();
 					
 					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourcesPath));
+					string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
+					if (artPackName.Length == 4) {
+						volume.vd.subArtPack = ppath.Substring (ppath.Length - 1);
+						ppath = ppath.Remove (ppath.Length - 1);
+					} else {
+						volume.vd.subArtPack = "";
+					}
 					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
 					string matPath = (mats.Length == 1) ? AssetDatabase.GUIDToAssetPath (mats [0]) : PathCollect.defaultVoxelMaterial;
 						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
@@ -95,10 +102,11 @@ namespace CreVox
 
 					volume.LoadTempWorld ();
 				}
+				EditorGUILayout.LabelField ((volume.ArtPack != null)?(volume.ArtPack + volume.vd.subArtPack):"(none.)", EditorStyles.miniLabel);
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.labelWidth = 120f;
-				EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"(none.)", EditorStyles.miniLabel);
+				volume.vd.subArtPack = EditorGUILayout.TextField("subArtPack:",volume.vd.subArtPack);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
 					, volume.vertexMaterial

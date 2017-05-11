@@ -20,7 +20,8 @@ namespace CreVox
 		public static ArtPackWindow instance;
 
 		private Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
-		private string vg = "";
+		private string vgName = "";
+		private VGlobal vg;
 
 		private List<string> _artPacks= new List<string> ();
 
@@ -54,6 +55,10 @@ namespace CreVox
 
 		private void InitContent ()
 		{
+			if (vg == null)
+				vg = VGlobal.GetSetting ();
+			UpdateItemArrays ();
+
 			//GetItems
 			_items = new List<Item> ();
 			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
@@ -149,7 +154,7 @@ namespace CreVox
 					GUILayout.Label ("", GUILayout.Width (15));
 				}
 				if (EditorGUI.EndChangeCheck ()) {
-					UpdateArtPackParent ();
+					SetArtPackParent ();
 				}
 				GUILayout.EndScrollView ();
 			}
@@ -232,9 +237,12 @@ namespace CreVox
 		{
 			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField, GUILayout.Width (Screen.width))) {
 				GUILayout.Label ("");
-				vg = AssetDatabase.GetAssetPath (EditorGUILayout.ObjectField (VGlobal.GetSetting(vg), typeof(VGlobal), false, GUILayout.Width (170)));
-				if (vg.Length > 0)
-					vg = vg.Substring (vg.LastIndexOf (PathCollect.resourceSubPath)).Replace (".asset", "");
+				EditorGUI.BeginChangeCheck ();
+				vg = (VGlobal)EditorGUILayout.ObjectField (vg, typeof(VGlobal), false, GUILayout.Width (170));
+				if (EditorGUI.EndChangeCheck () && vgName.Length > 0) {
+					vgName = AssetDatabase.GetAssetPath (vg);
+					vgName = vgName.Substring (vgName.LastIndexOf (PathCollect.resourceSubPath)).Replace (".asset", "");
+				}
 				GUILayout.Label ("Button Size", GUILayout.Width (70));
 				ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 100f, 300f, GUILayout.Width (90));
 				if (GUILayout.Button ("Refresh Preview", EditorStyles.miniButton, GUILayout.Width (90))) {
@@ -323,7 +331,7 @@ namespace CreVox
 		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
 		private void GetArtPackParent ()
 		{
-			_pList = VGlobal.GetSetting (vg).artPackParentList;
+			_pList = vg.artPackParentList;
 			_pDict.Clear();
 			for (int i = 1; i < _artPacks.Count; i++) {
 				for (int j = 0; j < _pList.Count; j++) {
@@ -337,7 +345,7 @@ namespace CreVox
 			}
 		}
 
-		private void UpdateArtPackParent ()
+		private void SetArtPackParent ()
 		{
 			_pList.Clear ();
 			foreach (KeyValuePair<string,string> k in _pDict) {
@@ -346,14 +354,76 @@ namespace CreVox
 				_a.parentPack = k.Value;
 				_pList.Add(_a);
 			}
-			VGlobal.GetSetting (vg).artPackParentList = _pList;
-			EditorUtility.SetDirty (VGlobal.GetSetting (vg));
+			vg.artPackParentList = _pList;
+			EditorUtility.SetDirty (vg);
+		}
+
+		public void UpdateItemArrays()
+		{
+			List<string> artPacks = GetArtPacks ();
+			vg.APItemPathList.Clear ();
+			for (int i = 0; i < artPacks.Count; i++) {
+				VGlobal.APItemPath _n = new VGlobal.APItemPath ();
+				_n.name = artPacks [i];
+				_n.itemPath = new List<string> ();
+				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + "/" + _n.name);
+				for (int j = 0; j < _p.Length; j++) {
+					string _itemPath = AssetDatabase.GetAssetPath (_p [j]);
+					_itemPath = _itemPath.Substring (_itemPath.IndexOf (PathCollect.resourceSubPath)).Replace(".prefab","");
+					_n.itemPath.Add (_itemPath);
+				}
+				vg.APItemPathList.Add (_n);
+			}
+		}
+
+		PaletteItem[] UpdateItemArray(string _artPackPath)
+		{
+			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+
+			string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
+			string pName = vg.GetParentArtPack (cName);
+			Debug.LogWarning (cName + " >>> " + pName);
+			string pPath = PathCollect.artPack + "/" + pName;
+			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
+			while (pPath != PathCollect.pieces) {
+				PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
+				for (int i = 0; i < _parent.Length; i++) {
+					bool _finded = false;
+					for (int j = 0; j < _child.Length; j++) {
+						if (_child [j].name == _parent [i].name) {
+							_parent.SetValue (_child [j], i);
+							_finded = true;
+						}
+						if (_finded)
+							break;
+					}
+				}
+				_child = _parent;
+				cName = pName;
+				pName = vg.GetParentArtPack (cName);
+				Debug.LogWarning (cName + " >>> " + pName);
+				pPath = PathCollect.artPack + "/" + pName;
+			}
+
+			for (int i = 0; i < _final.Length; i++) {
+				bool _finded = false;
+				for (int j = 0; j < _child.Length; j++) {
+					if (_child [j].name == _final [i].name) {
+						_final.SetValue(_child [j], i);
+						_finded = true;
+					}
+					if (_finded)
+						break;
+				}
+			}
+
+			return _final;
 		}
 		#endregion
 		#region Get
 		public static List<string> GetArtPacks ()
 		{
-			List<string> _result = new List<string>(0);
+			List<string> _result = new List<string> (0);
 			_result.Add (Path.GetFileName (PathCollect.pieces));
 			string[] _artPacksTemp = Directory.GetDirectories (_path, "*", SearchOption.TopDirectoryOnly);
 			for (int a = 0; a < _artPacksTemp.Length; a++) {

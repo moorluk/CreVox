@@ -62,7 +62,7 @@ namespace CreVox
 			foreach (Chunk c in chunks.Values) {
 				c.cData = vd.GetChunk (c.cData.ChunkPos);
 			}
-			itemArray = VGlobal.GetSetting().UpdateItemArray (ArtPack + vd.subArtPack);
+			itemArray = VGlobal.GetSetting().GetItemArray (ArtPack + vd.subArtPack);
 			PlacePieces ();
 			PlaceItems ();
 
