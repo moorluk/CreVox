@@ -23,12 +23,12 @@ namespace CrevoxExtend {
         private const float _trapMutationRate = 2.0f;
         private const float _emptyMutationRate = 10.0f;
         private const float _crossOverRate = 5.0f;
-        private static double[] fitnessWeight = { 1, 0.2, 0.4, 0.6, 0.8 };
-        private static int crossOverIndex1;
-        private static int crossOverIndex2;
+        private const string _picecName = "Gnd.in.one";
+        private const int _volumeTraget = 5;
+        private static int _crossOverIndex1;
+        private static int _crossOverIndex2;
         private static List<Volume> volumes;
-        private static int volumeTraget = 8;
-        static GameObject mother = new GameObject("mother");
+        private static GameObject genePos = new GameObject("genePos");
 
         public enum GeneType {
             Forbidden = -1,
@@ -46,12 +46,10 @@ namespace CrevoxExtend {
 
         public static void Segmentism() {
             volumes = getVolumeByVolumeManager();
-            generateRandomCrossOverIndex(volumes[volumeTraget]);
+            generateRandomCrossOverIndex(volumes[_volumeTraget]);
 
             var selection = new EliteSelection();
-            //CORSSOVER會有每次的index都是相同的問題
-            //設定index有時會超出範圍的例外(?)
-            var crossover = new TwoPointCrossover(crossOverIndex1, crossOverIndex2);
+            var crossover = new TwoPointCrossover(_crossOverIndex1, _crossOverIndex2);
             var mutation = new MyMutation();
             var fitness = new MyProblemFitness();
             var chromosome = new MyProblemChromosome();
@@ -64,15 +62,25 @@ namespace CrevoxExtend {
             Debug.Log("GA running...");
             ga.Start();
             Debug.Log("Best solution found has " + ga.BestChromosome.Fitness + " fitness.");
-            volumes[volumeTraget].name = "6666666";
-            Debug.Log(volumes[volumeTraget].name+"  "+ volumes[volumeTraget].transform.position);
-            BestGeneToWorldPos(ga.BestChromosome, volumes[volumeTraget]);
-            //foreach (var gene in ga.BestChromosome.GetGenes()) {
-            //    Debug.Log((gene.Value as CreVoxGene).Type);
-            //}
+            //volumes[volumeTraget].name = "6666666";
+            BestGeneToWorldPos(ga.BestChromosome, volumes[_volumeTraget]);
         }
 
-        // use volumeManger to all of volumes.
+        //generate crossOverIndex1 and crossOverIndex2.
+        public static void generateRandomCrossOverIndex(Volume volume) {
+            var randomUpperBound = GetPositionsByPicecName(_picecName, volume).Count - 1;
+            _crossOverIndex1 = Random.Range(0, randomUpperBound);
+            if (_crossOverIndex1 == 0)
+                _crossOverIndex2 = Random.Range(1, randomUpperBound);
+            else if (_crossOverIndex1 == randomUpperBound - 1) {
+                _crossOverIndex2 = _crossOverIndex1;
+                _crossOverIndex1 = Random.Range(0, _crossOverIndex2);
+            }
+            else
+                _crossOverIndex2 = Random.Range(_crossOverIndex1 + 1, randomUpperBound);
+        }
+
+        // use volumeManger to find all of volumes.
         public static List<Volume> getVolumeByVolumeManager() {
             List<Volume> volumes = new List<Volume>();
             var volumeManger = GameObject.Find("VolumeManger(Generated)");
@@ -83,47 +91,26 @@ namespace CrevoxExtend {
         }
 
         // use volume to get each block.
-        public static List<WorldPos> GetPositionsByPicecName(string blockAirPieceName, Volume volume) {
-            List<WorldPos> positions = new List<WorldPos>();
-            //each volume
-            //use volumeData to get chunkDatas.
-            foreach (var chunk in volume.vd.chunkDatas) {
-                var floorBlockAirs = chunk.blockAirs.Where(b => b.pieceNames.Any(name => name == blockAirPieceName));
-                foreach (var floorBlockAir in floorBlockAirs) {
-                    positions.Add(floorBlockAir.BlockPos);
-                }
+        public static List<Vector3> GetPositionsByPicecName(string blockAirPieceName, Volume volume) {
+            List<Vector3> positions = new List<Vector3>();
+            //use volume to find DecorationRoot and find the DecorationRoot's child.
+            var decorationRoots = volume.gameObject.transform.FindChild("DecorationRoot");
+            for (int i = 0; i < decorationRoots.childCount; ++i) {
+                if (decorationRoots.GetChild(i).FindChild(_picecName) == null)
+                    continue;
+                positions.Add(decorationRoots.GetChild(i).FindChild(_picecName).position);
             }
             return positions;
         }
 
-        public static void generateRandomCrossOverIndex(Volume volume) {
-            //generate crossOverIndex1 and crossOverIndex2.
-            crossOverIndex1 = Random.Range(0, Random.Range(0, GetPositionsByPicecName("Gnd.in.one", volume).Count));
-            if (crossOverIndex1 == 0)
-                crossOverIndex2 = Random.Range(1, Random.Range(0, GetPositionsByPicecName("Gnd.in.one", volume).Count));
-            else if (crossOverIndex1 == GetPositionsByPicecName("Gnd.in.one", volume).Count) {
-                crossOverIndex2 = crossOverIndex1;
-                crossOverIndex1 = Random.Range(0, Random.Range(0, GetPositionsByPicecName("Gnd.in.one", volume).Count) - 1);
-            }
-            else
-                crossOverIndex2 = Random.Range(crossOverIndex1, Random.Range(0, GetPositionsByPicecName("Gnd.in.one", volume).Count));
-        }
-
         public static void BestGeneToWorldPos(IChromosome bestGene, Volume volume) {
-            var volumedata = CrevoxOperation.GetVolumeData(@"Assets/Resources/CreVox/VolumeData/Isaac/Normal_07_vData2.asset");
-            
             foreach (var gene in bestGene.GetGenes()) {
-                foreach (var chunk in volume.vd.chunkDatas) {
-                    var floorBlockAirs = chunk.blockAirs.Where(b => b.pieceNames.Any(name => name == "Gnd.in.one"));
-                    foreach (var floorBlockAir in floorBlockAirs) {
-
-                        GameObject test = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        test.transform.SetParent(mother.transform);
-                        test.transform.position = volumes[volumeTraget].transform.position+floorBlockAir.BlockPos.ToVector3();
-                        MonoBehaviour.Instantiate(test);
-                        
-                    }
-                }
+                genePos = GameObject.Find("genePos");
+                if (genePos == null)
+                    genePos = new GameObject("genePos");
+                GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                geneWorldPosition.transform.SetParent(genePos.transform);
+                geneWorldPosition.transform.position = (gene.Value as CreVoxGene).Position;
             }
         }
 
@@ -135,7 +122,6 @@ namespace CrevoxExtend {
                              + FitnessTreasure(chromosome)
                              + FitnessDominator(chromosome);
 
-                //Debug.Log(fitnessValue);
                 return fitnessValue;
             }
 
@@ -152,7 +138,6 @@ namespace CrevoxExtend {
                         fitnessScore += (distance == 0) ? 0 : 1 / distance;
                     }
                 }
-
                 return fitnessScore;
             }
 
@@ -185,8 +170,7 @@ namespace CrevoxExtend {
         }
 
         public class MyProblemChromosome : ChromosomeBase {
-            public MyProblemChromosome() : base(GetPositionsByPicecName("Gnd.in.one", volumes[volumeTraget]).Count) {
-                //Debug.Log(GetPositionsByPicecName("Gnd.in.one").Count);
+            public MyProblemChromosome() : base(GetPositionsByPicecName(_picecName, volumes[_volumeTraget]).Count) {
                 CreateGenes();
             }
 
@@ -195,11 +179,10 @@ namespace CrevoxExtend {
             }
 
             protected override void CreateGenes() {
-                var genes = GetPositionsByPicecName("Gnd.in.one", volumes[volumeTraget]);
+                var genes = GetPositionsByPicecName(_picecName, volumes[_volumeTraget]);
                 int index = 0;
                 foreach (var gene in genes) {
-                    //this.ReplaceGene(index, new Gene(new CreVoxGene((GeneType) Random.Range(-1,4), gene.x, gene.y, gene.z)));
-                    this.ReplaceGene(index, new Gene(new CreVoxGene(GeneType.Empty, gene.x, gene.y, gene.z)));
+                    this.ReplaceGene(index, new Gene(new CreVoxGene(GeneType.Empty, gene)));
                     index++;
                 }
             }
@@ -243,9 +226,9 @@ namespace CrevoxExtend {
             public GeneType Type { get; set; }
             public Vector3 Position { get; private set; }
             // Constructor.
-            public CreVoxGene(GeneType type, int x, int y, int z) {
+            public CreVoxGene(GeneType type, Vector3 position) {
                 this.Type = type;
-                this.Position = new Vector3(x, y, z);
+                this.Position = position;
             }
         }
     }
