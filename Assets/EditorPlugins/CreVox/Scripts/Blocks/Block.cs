@@ -29,6 +29,10 @@ namespace CreVox
 		public Block ()
 		{
 		}
+		// [XAOCX add]
+		public Block(Block clone) {
+			this.BlockPos = clone.BlockPos;
+		}
 
 		public virtual void Destroy ()
 		{

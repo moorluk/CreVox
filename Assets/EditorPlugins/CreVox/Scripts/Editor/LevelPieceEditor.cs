@@ -19,9 +19,18 @@ namespace CreVox
 			}
 		}
 
+		private int maxX, minX, maxY, minY, maxZ, minZ;
+
 		public override void OnInspectorGUI ()
 		{
             lp = (LevelPiece)target;
+            maxX = lp.maxX;
+            minX = lp.minX;
+            maxY = lp.maxY;
+            minY = lp.minY;
+            maxZ = lp.maxZ;
+            minZ = lp.minZ;
+
 
             EditorGUI.BeginChangeCheck ();
 			lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);

@@ -26,6 +26,19 @@ namespace CreVox
                 attributes[i] = "";
         }
 
+		// [XAOCX add]
+		public BlockItem(BlockItem clone) : base(clone) {
+			this.pieceName = clone.pieceName;
+			this.posX = clone.posX;
+			this.posY = clone.posY;
+			this.posZ = clone.posZ;
+			this.rotX = clone.rotX;
+			this.rotY = clone.rotY;
+			this.rotZ = clone.rotZ;
+			this.rotW = clone.rotW;
+			this.attributes = (string[])clone.attributes.Clone();
+		}
+
 		public override void Destroy ()
 		{
 			base.Destroy ();

@@ -62,6 +62,11 @@ namespace CreVox
 			DrawFunction();
 		}
 
+		// ADDITION to reload object
+		public void InitialPaletteWindow() {
+			InitCategories();
+			InitContent();
+		}
 		private void InitCategories()
 		{
 			Debug.Log("InitCategories called...");

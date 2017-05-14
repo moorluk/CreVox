@@ -14,6 +14,22 @@ namespace CreVox
 		public List<BlockItem> blockItems = new List<BlockItem> ();
 		public string subArtPack = "";
 
+		// [XAOCX add]
+		public VolumeData() : base() { }
+		public VolumeData(VolumeData clone) : base() {
+			this.chunkX = clone.chunkX;
+			this.chunkY = clone.chunkY;
+			this.chunkZ = clone.chunkZ;
+			this.chunkDatas = new List<ChunkData>();
+			foreach (var chunkData in clone.chunkDatas) {
+				this.chunkDatas.Add(new ChunkData(chunkData));
+			}
+			this.blockItems = new List<BlockItem>();
+			foreach (var blockItem in clone.blockItems) {
+				this.blockItems.Add(new BlockItem(blockItem));
+			}
+		}
+
 		public void Awake()
 		{
 			if (chunkDatas.Count < 1)

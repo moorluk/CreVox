@@ -13,6 +13,24 @@ namespace CreVox
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
 		public List<BlockHold> blockHolds = new List<BlockHold> ();
+		// [XAOCX add]
+		public ChunkData() { }
+		public ChunkData(ChunkData clone){
+			this.ChunkPos = clone.ChunkPos;
+			this.blocks = new List<Block>();
+			foreach (var block in clone.blocks) {
+				this.blocks.Add(new Block(block));
+			}
+			this.blockAirs = new List<BlockAir>();
+			foreach (var blockAir in clone.blockAirs) {
+				this.blockAirs.Add(new BlockAir(blockAir));
+			}
+			this.blockHolds = new List<BlockHold>();
+			foreach (var blockHold in clone.blockHolds) {
+				this.blockHolds.Add(new BlockHold(blockHold));
+			}
+		}
+		// ==============
 	}
 
 	[RequireComponent (typeof(MeshFilter))]
