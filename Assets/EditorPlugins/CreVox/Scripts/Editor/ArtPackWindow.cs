@@ -57,6 +57,7 @@ namespace CreVox
 		{
 			if (vg == null)
 				vg = VGlobal.GetSetting ();
+			SetArtPackParent ();
 			UpdateItemArrays ();
 
 			//GetItems
@@ -357,8 +358,12 @@ namespace CreVox
 		private void SetArtPackParent ()
 		{
 			_pList.Clear ();
+			VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
+			_a.pack = "LevelPieces";
+			_a.parentPack = "LevelPieces";
+			_pList.Add (_a);
 			foreach (KeyValuePair<string,string> k in _pDict) {
-				VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
+				_a = new VGlobal.ArtPackParent ();
 				_a.pack = k.Key;
 				_a.parentPack = k.Value;
 				_pList.Add(_a);
@@ -367,7 +372,7 @@ namespace CreVox
 			EditorUtility.SetDirty (vg);
 		}
 
-		public void UpdateItemArrays()
+		private void UpdateItemArrays()
 		{
 			List<string> artPacks = GetArtPacks ();
 			vg.APItemPathList.Clear ();

@@ -56,9 +56,10 @@ namespace CreVox
 			};
 			if (!artPackParentList.Exists (apNamecheck))
 				_artPackName = _artPackName.Remove (_artPackName.Length - 1);
+			if (!artPackParentList.Exists (apNamecheck))
+				_artPackName = Path.GetFileName(PathCollect.pieces);
 			//
 			string[] _itemPaths = new string[APItemPathList[0].itemPath.Count];
-			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
 			for (int i = 0; i < APItemPathList.Count; i++) {
 				if (APItemPathList [i].name == _artPackName) {
 					_itemPaths = APItemPathList [i].itemPath.ToArray();
@@ -66,10 +67,12 @@ namespace CreVox
 				}
 			}
 
+			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
 			if (volumeShowArtPack || Application.isPlaying) {
 				result = new PaletteItem[_itemPaths.Length];
 				for (int i = 0; i < _itemPaths.Length; i++) {
-					PaletteItem _item = (Resources.Load(_itemPaths [i])as GameObject).GetComponent<PaletteItem>();
+					GameObject _obj = Resources.Load (_itemPaths [i])as GameObject;
+					PaletteItem _item = _obj.GetComponent<PaletteItem>();
 					result.SetValue (_item, i);
 				}
 			} else {
