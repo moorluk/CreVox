@@ -50,6 +50,13 @@ namespace CreVox
 		public PaletteItem[] GetItemArray(string _artPackPath)
 		{
 			String _artPackName = Path.GetFileName (_artPackPath);
+			//Check SubArtPack Exist or use parent ArtPack.
+			Predicate<ArtPackParent> apNamecheck = delegate(ArtPackParent a) {
+				return a.pack == _artPackName;
+			};
+			if (!artPackParentList.Exists (apNamecheck))
+				_artPackName = _artPackName.Remove (_artPackName.Length - 1);
+			//
 			string[] _itemPaths = new string[APItemPathList[0].itemPath.Count];
 			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
 			for (int i = 0; i < APItemPathList.Count; i++) {
