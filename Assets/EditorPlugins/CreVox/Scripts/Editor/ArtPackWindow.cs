@@ -301,6 +301,15 @@ namespace CreVox
 					if (GUILayout.Button ("Replace")) {
 						Debug.Log (oldName + " -> " + newName);
 						foreach (Dungeon d in vm.dungeons) {
+							foreach (BlockItem b in d.volumeData.blockItems) {
+								if (b.pieceName == oldName) {
+										Debug.Log (d.volumeData.name + "(" + b.BlockPos.ToString () + "): " + b.pieceName);
+										if (newName != "")
+											b.pieceName = newName;
+										else
+											b.pieceName = null;
+									}
+							}
 							foreach (ChunkData c in d.volumeData.chunkDatas) {
 								foreach (BlockAir b in c.blockAirs) {
 									for (int i = 0; i < b.pieceNames.Length; i++) {
@@ -313,8 +322,8 @@ namespace CreVox
 										}
 									}
 								}
-								EditorUtility.SetDirty (d.volumeData);
 							}
+							EditorUtility.SetDirty (d.volumeData);
 						}
 						Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
 						foreach (Volume vol in vols) {
@@ -401,7 +410,7 @@ namespace CreVox
 				_child = _parent;
 				cName = pName;
 				pName = vg.GetParentArtPack (cName);
-				Debug.LogWarning (cName + " >>> " + pName);
+				Debug.Log (cName + " >>> " + pName);
 				pPath = PathCollect.artPack + "/" + pName;
 			}
 

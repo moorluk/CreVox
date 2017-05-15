@@ -232,7 +232,7 @@ namespace CreVox
 			if (nodes.ContainsKey (_volumePos))
 				return nodes [_volumePos].pieceRoot;
 			else {
-				Debug.LogWarning ("(" + _volumePos + ") has no Node; try another artpack !!!");
+				Debug.Log ("(" + _volumePos + ") has no Node; try another artpack !!!");
 				return null;
 			}
 		}
@@ -844,7 +844,7 @@ namespace CreVox
 							                  (blockHoldPos.y + chunkPos.y) * vg.h, 
 							                  (blockHoldPos.z + chunkPos.z) * vg.d
 						                  );
-						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.15f);
+						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f);
 						Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
 						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 1.0f);
 						Gizmos.DrawSphere (localPos, 0.1f);

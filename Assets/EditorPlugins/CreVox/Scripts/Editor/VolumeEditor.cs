@@ -341,54 +341,59 @@ namespace CreVox
 
 			for (int i = 0; i < volume.vd.blockItems.Count; i++) {
 				BlockItem blockItem = volume.vd.blockItems [i];
-				Transform ItemNode = volume.GetItemNode (blockItem).transform;
+				GameObject itemObj = volume.GetItemNode (blockItem);
+				if (itemObj != null) {
+					Transform ItemNode = itemObj.transform;
 
-				Vector3 pos = ItemNode.position;
-				Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.hh, 0) : pos;
-				if (selectedItemID == i) {
-					handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
+					Vector3 pos = ItemNode.position;
+					Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.hh, 0) : pos;
+					if (selectedItemID == i) {
+						handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
 
-					if (isItemSnap) {
-						float fixedX = Mathf.Round (handlePos.x/* / vg.w*/)/* * vg.w*/;
-						float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
-						float fixedZ = Mathf.Round (handlePos.z/* / vg.d*/)/* * vg.d*/;
-						pos = new Vector3 (fixedX, fixedY, fixedZ);
-					} else {
-						pos = handlePos;
+						if (isItemSnap) {
+							float fixedX = Mathf.Round (handlePos.x/* / vg.w*/)/* * vg.w*/;
+							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
+							float fixedZ = Mathf.Round (handlePos.z/* / vg.d*/)/* * vg.d*/;
+							pos = new Vector3 (fixedX, fixedY, fixedZ);
+						} else {
+							pos = handlePos;
+						}
+						ItemNode.position = pos;
+						blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+						blockItem.posX = ItemNode.localPosition.x;
+						blockItem.posY = ItemNode.localPosition.y;
+						blockItem.posZ = ItemNode.localPosition.z;
+
+						ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+						Quaternion tmp = ItemNode.localRotation;
+						Vector3 rot = tmp.eulerAngles;
+						rot.x = Mathf.Round (rot.x / 15f) * 15f;
+						rot.y = Mathf.Round (rot.y / 15f) * 15f;
+						rot.z = Mathf.Round (rot.z / 15f) * 15f;
+						tmp.eulerAngles = rot;
+						ItemNode.localRotation = tmp;
+						blockItem.rotX = ItemNode.localRotation.x;
+						blockItem.rotY = ItemNode.localRotation.y;
+						blockItem.rotZ = ItemNode.localRotation.z;
+						blockItem.rotW = ItemNode.localRotation.w;
 					}
-					ItemNode.position = pos;
-					blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
-					blockItem.posX = ItemNode.localPosition.x;
-					blockItem.posY = ItemNode.localPosition.y;
-					blockItem.posZ = ItemNode.localPosition.z;
 
-					ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
-					Quaternion tmp = ItemNode.localRotation;
-					Vector3 rot = tmp.eulerAngles;
-					rot.x = Mathf.Round (rot.x / 15f) * 15f;
-					rot.y = Mathf.Round (rot.y / 15f) * 15f;
-					rot.z = Mathf.Round (rot.z / 15f) * 15f;
-					tmp.eulerAngles = rot;
-					ItemNode.localRotation = tmp;
-					blockItem.rotX = ItemNode.localRotation.x;
-					blockItem.rotY = ItemNode.localRotation.y;
-					blockItem.rotZ = ItemNode.localRotation.z;
-					blockItem.rotW = ItemNode.localRotation.w;
-				}
-
-				float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
-				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
-				facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
-				bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize,Handles.SphereCap);
+					float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
+					Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
+					facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
+					bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize, Handles.SphereCap);
                 
-				if (selected) {
-					Debug.Log ("fire!!!");
-					isSelectItem = true;
-					workItemId = i;
-                    selectedItemID = i;
-                    Debug.Log("DrawEditMarker ID: " + workItemId.ToString());
-                    Event.current.type = EventType.mouseDown;
-					Event.current.button = 0;
+					if (selected) {
+						Debug.Log ("fire!!!");
+						isSelectItem = true;
+						workItemId = i;
+						selectedItemID = i;
+						Debug.Log ("DrawEditMarker ID: " + workItemId.ToString ());
+						Event.current.type = EventType.mouseDown;
+						Event.current.button = 0;
+					}
+				} else {
+					Debug.LogWarning ("Cannot find item node[" + blockItem.pieceName + "](" + blockItem.BlockPos + ")");
 				}
 				Handles.color = defColor;
 			}
