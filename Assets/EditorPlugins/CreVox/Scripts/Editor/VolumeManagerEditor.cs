@@ -17,9 +17,10 @@ namespace CreVox
 		{
 			vm = (VolumeManager)target;
 			vg = VGlobal.GetSetting ();
-			artPacksList = ArtPackWindow.GetArtPacks ();
+			artPacksList = VGlobal.GetArtPacks ();
 			artPacks = artPacksList.ToArray ();
 			UpdateStatus ();
+			ArtPackWindow.UpdateItemArrays (vg);
 		}
 
 		void OnEnable ()

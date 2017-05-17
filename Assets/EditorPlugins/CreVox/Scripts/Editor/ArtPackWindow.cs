@@ -57,8 +57,6 @@ namespace CreVox
 		{
 			if (vg == null)
 				vg = VGlobal.GetSetting ();
-			SetArtPackParent ();
-			UpdateItemArrays ();
 
 			//GetItems
 			_items = new List<Item> ();
@@ -85,7 +83,7 @@ namespace CreVox
 			List<PaletteItem.Category> _categories;
 			_categories = EditorUtils.GetListFromEnum<PaletteItem.Category> ();
 
-			_artPacks = GetArtPacks ();
+			_artPacks = VGlobal.GetArtPacks ();
 			GetArtPackParent ();
 
 			//GetItemCells
@@ -124,6 +122,10 @@ namespace CreVox
 				logCell = logCell + " -------------\n";
 			}
 			Debug.Log (logCell);
+
+			GetArtPackParent ();
+			SetArtPackParent ();
+			UpdateItemArrays (vg);
 		}
 
 		private void DrawList ()
@@ -337,7 +339,7 @@ namespace CreVox
 		}
 		#endregion
 		#region ArtPackParent
-		private List<VGlobal.ArtPackParent> _pList;
+		private List<VGlobal.ArtPackParent> _pList = new List<VGlobal.ArtPackParent> ();
 		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
 		private void GetArtPackParent ()
 		{
@@ -359,9 +361,6 @@ namespace CreVox
 		{
 			_pList.Clear ();
 			VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
-			_a.pack = "LevelPieces";
-			_a.parentPack = "LevelPieces";
-			_pList.Add (_a);
 			foreach (KeyValuePair<string,string> k in _pDict) {
 				_a = new VGlobal.ArtPackParent ();
 				_a.pack = k.Key;
@@ -372,30 +371,32 @@ namespace CreVox
 			EditorUtility.SetDirty (vg);
 		}
 
-		private void UpdateItemArrays()
+		public static void UpdateItemArrays(VGlobal _vg = null)
 		{
-			List<string> artPacks = GetArtPacks ();
-			vg.APItemPathList.Clear ();
+			if (_vg == null)
+				_vg = VGlobal.GetSetting ();
+			List<string> artPacks = VGlobal.GetArtPacks ();
+			_vg.APItemPathList.Clear ();
 			for (int i = 0; i < artPacks.Count; i++) {
 				VGlobal.APItemPath _n = new VGlobal.APItemPath ();
 				_n.name = artPacks [i];
 				_n.itemPath = new List<string> ();
-				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + "/" + _n.name);
+				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + "/" + _n.name, _vg);
 				for (int j = 0; j < _p.Length; j++) {
 					string _itemPath = AssetDatabase.GetAssetPath (_p [j]);
 					_itemPath = _itemPath.Substring (_itemPath.IndexOf (PathCollect.resourceSubPath)).Replace(".prefab","");
 					_n.itemPath.Add (_itemPath);
 				}
-				vg.APItemPathList.Add (_n);
+				_vg.APItemPathList.Add (_n);
 			}
 		}
 
-		PaletteItem[] UpdateItemArray(string _artPackPath)
+		private static PaletteItem[] UpdateItemArray(string _artPackPath, VGlobal _vg = null)
 		{
 			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 
 			string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
-			string pName = vg.GetParentArtPack (cName);
+			string pName = _vg.GetParentArtPack (cName);
 			Debug.LogWarning (cName + " >>> " + pName);
 			string pPath = PathCollect.artPack + "/" + pName;
 			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
@@ -414,7 +415,7 @@ namespace CreVox
 				}
 				_child = _parent;
 				cName = pName;
-				pName = vg.GetParentArtPack (cName);
+				pName = _vg.GetParentArtPack (cName);
 				Debug.Log (cName + " >>> " + pName);
 				pPath = PathCollect.artPack + "/" + pName;
 			}
@@ -433,21 +434,9 @@ namespace CreVox
 
 			return _final;
 		}
+
 		#endregion
 		#region Get
-		public static List<string> GetArtPacks ()
-		{
-			List<string> _result = new List<string> (0);
-			_result.Add (Path.GetFileName (PathCollect.pieces));
-			string[] _artPacksTemp = Directory.GetDirectories (_path, "*", SearchOption.TopDirectoryOnly);
-			for (int a = 0; a < _artPacksTemp.Length; a++) {
-				_artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
-				if (_artPacksTemp [a] != _result [0])
-					_result.Add (_artPacksTemp [a]);
-			}
-			return _result;
-		}
-
 		private Texture2D GetPreview(GameObject obj = null)
 		{
 			Texture2D thumbnail = null;

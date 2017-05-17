@@ -72,8 +72,12 @@ namespace CreVox
 				result = new PaletteItem[_itemPaths.Length];
 				for (int i = 0; i < _itemPaths.Length; i++) {
 					GameObject _obj = Resources.Load (_itemPaths [i])as GameObject;
-					PaletteItem _item = _obj.GetComponent<PaletteItem>();
-					result.SetValue (_item, i);
+					if (_obj == null) {
+						Debug.LogWarning ("cannot find " + _itemPaths [i]);
+					} else {
+						PaletteItem _item = _obj.GetComponent<PaletteItem> ();
+						result.SetValue (_item, i);
+					}
 				}
 			} else {
 				result = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
@@ -91,6 +95,23 @@ namespace CreVox
 				}
 			}
 			return parent;
+		}
+
+		public static List<string> GetArtPacks ()
+		{
+			List<string> _result = new List<string> (0);
+			_result.Add (Path.GetFileName (PathCollect.pieces));
+			string[] _artPacksTemp = Directory.GetDirectories (
+				PathCollect.resourcesPath + PathCollect.artPack,
+				"*",
+				SearchOption.TopDirectoryOnly
+			);
+			for (int a = 0; a < _artPacksTemp.Length; a++) {
+				_artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
+				if (_artPacksTemp [a] != _result [0])
+					_result.Add (_artPacksTemp [a]);
+			}
+			return _result;
 		}
 	}
 }
