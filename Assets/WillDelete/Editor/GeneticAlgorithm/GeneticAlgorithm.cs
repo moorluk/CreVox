@@ -17,7 +17,7 @@ using CreVox;
 
 namespace CrevoxExtend {
 	public class CreVoxGA {
-		private const int _generationNumber = 20;
+		private const int _generationNumber = 5;
 		private const float _enemyMutationRate = 5.0f;
 		private const float _treasureMutationRate = 2.0f;
 		private const float _trapMutationRate = 2.0f;
@@ -28,6 +28,7 @@ namespace CrevoxExtend {
 		private static List<Volume> volumes;
 		private static GameObject genePos = new GameObject("genePos");
 		private static List<CreVoxGene> path = new List<CreVoxGene>();
+		public static string GenesScore;
 
 		public enum GeneType {
 			Forbidden = -1,
@@ -47,16 +48,17 @@ namespace CrevoxExtend {
 		//test the A* for volume.
 		[MenuItem("Dungeon/test", false, 99)]
 		public static void test() {
-            getPathCount();
-            foreach(var i in path) {
-                Debug.Log(i);
-            }
+			getPathCount();
+			foreach (var i in path) {
+				Debug.Log(i);
+			}
 		}
 
 		public static void Segmentism() {
 			Stopwatch sw = new Stopwatch();
 			volumes = getVolumeByVolumeManager();
 			foreach (var volume in volumes) {
+				GenesScore = default(string);
 				int crossOverIndex1 = default(int);
 				int crossOverIndex2 = default(int);
 				var genePositions = GetPositionsByPicecName(_picecName, volume);
@@ -67,7 +69,7 @@ namespace CrevoxExtend {
 				var mutation = new MyMutation();
 				var fitness = new MyProblemFitness();
 				var chromosome = new MyProblemChromosome();
-				var population = new Population(50, 70, chromosome);
+				var population = new Population(5, 5, chromosome);
 				//execute GA.
 				var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
 				ga.Termination = new GenerationNumberTermination(_generationNumber);
@@ -133,21 +135,21 @@ namespace CrevoxExtend {
 				// Set the color.
 				switch ((gene.Value as CreVoxGene).Type) {
 #if UNITY_EDITOR
-				case GeneType.Forbidden:
-					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
-					break;
-				case GeneType.Empty:
-					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
-					break;
-				case GeneType.Enemy:
-					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-					break;
-				case GeneType.Treasure:
-					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
-					break;
-				default:
-					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.magenta);
-					break;
+					case GeneType.Forbidden:
+						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+						break;
+					case GeneType.Empty:
+						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+						break;
+					case GeneType.Enemy:
+						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+						break;
+					case GeneType.Treasure:
+						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+						break;
+					default:
+						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.magenta);
+						break;
 				}
 #endif
 				geneWorldPosition.transform.SetParent(genePos.transform);
@@ -168,23 +170,23 @@ namespace CrevoxExtend {
 			return temps;
 		}
 
-        public static void getPathCount() {
-        	path.Clear();
-            var item = GameObject.Find("VolumeManger(Generated)").transform.FindChild("Entrance_01_vData");
-            var starpos = item.FindChild("ItemRoot").transform.FindChild("Starting Node").transform.position;
-            var endpos = item.FindChild("ItemRoot").transform.FindChild("Connection_Default").transform.position;
-            var map = makeAMap(item.gameObject);
+		public static void getPathCount() {
+			path.Clear();
+			var item = GameObject.Find("VolumeManger(Generated)").transform.FindChild("Entrance_01_vData");
+			var starpos = item.FindChild("ItemRoot").transform.FindChild("Starting Node").transform.position;
+			var endpos = item.FindChild("ItemRoot").transform.FindChild("Connection_Default").transform.position;
+			var map = makeAMap(item.gameObject);
 
-            AStar tt = new AStar(map, starpos, endpos);
-            foreach (var i in tt.theShortestPath) {
-                if (path.Any(x => x.Position.Equals(i.position3))) {
-                    path.First(x => x.Position == (i.position3)).Count++;
-                }
-                else {
-                    path.Add(new CreVoxGene(GeneType.Empty, i.position3, 1));
-                }
-            }
-        }
+			AStar tt = new AStar(map, starpos, endpos);
+			foreach (var i in tt.theShortestPath) {
+				if (path.Any(x => x.Position.Equals(i.position3))) {
+					path.First(x => x.Position == (i.position3)).Count++;
+				}
+				else {
+					path.Add(new CreVoxGene(GeneType.Empty, i.position3, 1));
+				}
+			}
+		}
 
 		//implement necessary class for GA.
 		//implement MyProblemFitness for IFitness.
@@ -195,7 +197,7 @@ namespace CrevoxExtend {
 				fitnessValue += FitnessTrap(chromosome)
 							 + FitnessTreasure(chromosome)
 							 + FitnessDominator(chromosome);
-
+				GenesScore += fitnessValue + "\n";
 				return fitnessValue;
 			}
 
@@ -212,6 +214,7 @@ namespace CrevoxExtend {
 						fitnessScore += (distance == 0) ? 0 : 1 / distance;
 					}
 				}
+				GenesScore += fitnessScore + ",";
 				return fitnessScore;
 			}
 
@@ -228,6 +231,7 @@ namespace CrevoxExtend {
 						fitnessScore += (distance == 0) ? 0 : 1 / distance;
 					}
 				}
+				GenesScore += fitnessScore + ",";
 				return fitnessScore;
 			}
 
@@ -239,6 +243,7 @@ namespace CrevoxExtend {
 					var enemyGene = enemy.Value as CreVoxGene;
 					fitnessScore += enemyGene.Position.y / 8.0f;
 				}
+				GenesScore += fitnessScore + ",";
 				return fitnessScore;
 			}
 		}
@@ -309,15 +314,15 @@ namespace CrevoxExtend {
 				this.Position = position;
 			}
 
-			public CreVoxGene(GeneType type, Vector3 position,int count) {
+			public CreVoxGene(GeneType type, Vector3 position, int count) {
 				this.Type = type;
 				this.Position = position;
 				this.Count = count;
 			}
 
-            public override string ToString() {
-                return Position.ToString() + " count: " + Count;
-            }
-        }
+			public override string ToString() {
+				return Position.ToString() + " count: " + Count;
+			}
+		}
 	}
 }
