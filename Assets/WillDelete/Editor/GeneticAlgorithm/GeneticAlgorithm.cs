@@ -83,6 +83,8 @@ namespace CrevoxExtend {
 			sw.Stop();
 			Debug.Log(sw.ElapsedMilliseconds + " ms");
 			GC.Collect();
+			// Calculate the count of tiles in path.
+			getPathCount();
 		}
 
 		//generate crossOverIndex1 and crossOverIndex2.
@@ -167,6 +169,7 @@ namespace CrevoxExtend {
 		}
 
         public static void getPathCount() {
+        	path.Clear();
             var item = GameObject.Find("VolumeManger(Generated)").transform.FindChild("Entrance_01_vData");
             var starpos = item.FindChild("ItemRoot").transform.FindChild("Starting Node").transform.position;
             var endpos = item.FindChild("ItemRoot").transform.FindChild("Connection_Default").transform.position;
