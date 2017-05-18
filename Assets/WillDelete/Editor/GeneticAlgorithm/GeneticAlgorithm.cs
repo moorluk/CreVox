@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Collections.Generic;
 using Stopwatch = System.Diagnostics.Stopwatch;
 using GC = System.GC;
@@ -27,7 +27,7 @@ namespace CrevoxExtend {
 		private const int _volumeTraget = 0;
 		private static List<Volume> volumes;
 		private static GameObject genePos = new GameObject("genePos");
-		private static HashSet<Vector3> canWalk = new HashSet<Vector3>();
+		private static List<CreVoxGene> path = new List<CreVoxGene>();
 
 		public enum GeneType {
 			Forbidden = -1,
@@ -47,29 +47,10 @@ namespace CrevoxExtend {
 		//test the A* for volume.
 		[MenuItem("Dungeon/test", false, 99)]
 		public static void test() {
-			var item = GameObject.Find("VolumeManger(Generated)").transform.FindChild("Entrance_01_vData");
-			var starpos = item.FindChild("ItemRoot").transform.FindChild("Starting Node").transform.position;
-			var endpos = item.FindChild("ItemRoot").transform.FindChild("Connection_Default").transform.position;
-			//Debug.Log(starpos);
-			//Debug.Log(endpos);
-			var map = makeAMap(item.gameObject);
-
-			//for (var y = 0; y < 9; ++y) {
-			//    string pp = "";
-			//    for (var x = 0; x < 9; ++x) {
-			//        for (var z = 0; z < 9; ++z) {
-			//            pp += map[x, y, z];
-			//        }
-			//        pp += "\n";
-			//    }
-			//    Debug.Log(pp);
-			//}
-
-			AStar tt = new AStar(map, starpos, endpos);
-			foreach (var i in tt.theShortestPath) {
-				Vector3 normalized = new Vector3(i.X / 3, i.Y / 2, i.Z / 3);
-				Debug.Log(i.ToString());
-			}
+            getPathCount();
+            foreach(var i in path) {
+                Debug.Log(i);
+            }
 		}
 
 		public static void Segmentism() {
@@ -138,7 +119,6 @@ namespace CrevoxExtend {
 				if (temp == null)
 					continue;
 				positions.Add(temp.position);
-				canWalk.Add(temp.position);
 			}
 			return positions;
 		}
@@ -185,6 +165,23 @@ namespace CrevoxExtend {
 			}
 			return temps;
 		}
+
+        public static void getPathCount() {
+            var item = GameObject.Find("VolumeManger(Generated)").transform.FindChild("Entrance_01_vData");
+            var starpos = item.FindChild("ItemRoot").transform.FindChild("Starting Node").transform.position;
+            var endpos = item.FindChild("ItemRoot").transform.FindChild("Connection_Default").transform.position;
+            var map = makeAMap(item.gameObject);
+
+            AStar tt = new AStar(map, starpos, endpos);
+            foreach (var i in tt.theShortestPath) {
+                if (path.Any(x => x.Position.Equals(i.position3))) {
+                    path.First(x => x.Position == (i.position3)).Count++;
+                }
+                else {
+                    path.Add(new CreVoxGene(GeneType.Empty, i.position3, 1));
+                }
+            }
+        }
 
 		//implement necessary class for GA.
 		//implement MyProblemFitness for IFitness.
@@ -302,11 +299,22 @@ namespace CrevoxExtend {
 		public class CreVoxGene {
 			public GeneType Type { get; set; }
 			public Vector3 Position { get; private set; }
+			public int Count { get; set; }
 			// Constructor.
 			public CreVoxGene(GeneType type, Vector3 position) {
 				this.Type = type;
 				this.Position = position;
 			}
-		}
+
+			public CreVoxGene(GeneType type, Vector3 position,int count) {
+				this.Type = type;
+				this.Position = position;
+				this.Count = count;
+			}
+
+            public override string ToString() {
+                return Position.ToString() + " count: " + Count;
+            }
+        }
 	}
 }
