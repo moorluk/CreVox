@@ -75,9 +75,7 @@ namespace CreVox
 			if (b == null)
 				return true;
 			else {
-				if (b is BlockAir)
-					return true;
-				else if (b is BlockHold)
+				if (b is BlockAir || b is BlockHold)
 					return true;
 				else
 					return false;

@@ -110,10 +110,6 @@ namespace CreVox
 				if (cData.blocks [i].BlockPos.Compare (pos))
 					return cData.blocks [i];
 			}
-			for (int i = 0; i < cData.blockHolds.Count; i++) {
-				if (cData.blockHolds [i].BlockPos.Compare (pos))
-					return cData.blockHolds [i];
-			}
 			for (int i = 0; i < cData.blockAirs.Count; i++) {
 				if (cData.blockAirs [i].BlockPos.Compare (pos))
 					return cData.blockAirs [i];
