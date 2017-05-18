@@ -148,6 +148,26 @@ namespace CrevoxExtend {
 			foreach (var gene in bestGene.GetGenes()) {
 				genePos = GameObject.Find("genePos") ?? new GameObject("genePos");
 				GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				// Set the color.
+				switch ((gene.Value as CreVoxGene).Type) {
+#if UNITY_EDITOR
+				case GeneType.Forbidden:
+					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+					break;
+				case GeneType.Empty:
+					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.white);
+					break;
+				case GeneType.Enemy:
+					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+					break;
+				case GeneType.Treasure:
+					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+					break;
+				default:
+					geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.magenta);
+					break;
+				}
+#endif
 				geneWorldPosition.transform.SetParent(genePos.transform);
 				geneWorldPosition.transform.position = (gene.Value as CreVoxGene).Position;
 			}
