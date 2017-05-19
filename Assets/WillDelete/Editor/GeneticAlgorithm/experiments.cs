@@ -18,11 +18,14 @@ namespace CrevoxExtend {
 		}
 
 		public static void getGAExpriments() {
-			StreamWriter sw = new StreamWriter("expriment.csv");
-			sw.WriteLine("FitnessSupport,all");
-			CreVoxGA.Segmentism();
-			sw.Write(CreVoxGA.GenesScore);
-			sw.Close();
+			int times = 1;
+			for (int i = 0; i < times; i++) {
+				StreamWriter sw = new StreamWriter("Export/expriment_" + (i + 1) + ".csv");
+				sw.WriteLine("FitnessSupport,all");
+				CreVoxGA.Segmentism();
+				sw.Write(CreVoxGA.GenesScore);
+				sw.Close();
+			}
 		}
 	}
 }

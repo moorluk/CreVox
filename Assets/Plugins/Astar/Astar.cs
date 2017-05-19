@@ -56,7 +56,7 @@ namespace CrevoxExtend {
 
 			//constructor.
 			public Node(int X, int Y, int Z, nodeType type) {
-				this.position3 = new Vector3(X * 3, Y * 2, Z * 3);
+				this.position3 = new Vector3(X * 3, Y * 2-1, Z * 3);
 				this.type = type;
 				this.hScore = float.MaxValue;
 				this.gScore = int.MaxValue;
