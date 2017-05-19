@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using Guid = System.Guid;
 using Stopwatch = System.Diagnostics.Stopwatch;
 using GC = System.GC;
 using UnityEngine;
@@ -17,12 +18,12 @@ using CreVox;
 
 namespace CrevoxExtend {
 	public class CreVoxGA {
-		private const int _generationNumber = 5;
+		private const int _generationNumber = 10;
 		private const float _enemyMutationRate = 5.0f;
 		private const float _treasureMutationRate = 2.0f;
 		private const float _trapMutationRate = 2.0f;
 		private const float _emptyMutationRate = 10.0f;
-		private const float _crossOverRate = 5.0f;
+		private const float _crossOverRate = 100.0f;
 		private const string _picecName = "Gnd.in.one";
 		private const int _volumeTraget = 0;
 		private static List<Volume> volumes;
@@ -59,17 +60,14 @@ namespace CrevoxExtend {
 			volumes = getVolumeByVolumeManager();
 			foreach (var volume in volumes) {
 				GenesScore = default(string);
-				int crossOverIndex1 = default(int);
-				int crossOverIndex2 = default(int);
 				var genePositions = GetPositionsByPicecName(_picecName, volume);
-				generateRandomCrossOverIndex(genePositions.Count, ref crossOverIndex1, ref crossOverIndex2);
 				//instance necessary class for GA.
-				var selection = new EliteSelection();
-				var crossover = new TwoPointCrossover(crossOverIndex1, crossOverIndex2);
-				var mutation = new MyMutation();
-				var fitness = new MyProblemFitness();
-				var chromosome = new MyProblemChromosome();
-				var population = new Population(5, 5, chromosome);
+				var selection  = new EliteSelection();
+				var crossover  = new MyCrossover();
+				var mutation   = new MyMutation();
+				var fitness    = new MyProblemFitness();
+				var chromosome = new MyProblemChromosome(genePositions);
+				var population = new Population(10, 10, chromosome);
 				//execute GA.
 				var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
 				ga.Termination = new GenerationNumberTermination(_generationNumber);
@@ -78,29 +76,12 @@ namespace CrevoxExtend {
 				ga.Start();
 				Debug.Log("Best solution found has " + ga.BestChromosome.Fitness + " fitness.");
 				BestGeneToWorldPos(ga.BestChromosome);
-				//volumes[volumeTraget].name = "6666666";
-				//findTheShortestPath();
-				//Debug.Log(GameObject.Find("connection").transform.position);
 			}
 			sw.Stop();
 			Debug.Log(sw.ElapsedMilliseconds + " ms");
 			GC.Collect();
 			// Calculate the count of tiles in path.
 			getPathCount();
-		}
-
-		//generate crossOverIndex1 and crossOverIndex2.
-		public static void generateRandomCrossOverIndex(int volumeLength, ref int crossOverIndex1, ref int crossOverIndex2) {
-			var randomUpperBound = volumeLength - 1;
-			crossOverIndex1 = Random.Range(0, randomUpperBound);
-			if (crossOverIndex1 == 0)
-				crossOverIndex2 = Random.Range(1, randomUpperBound);
-			else if (crossOverIndex1 == randomUpperBound - 1) {
-				crossOverIndex2 = crossOverIndex1;
-				crossOverIndex1 = Random.Range(0, crossOverIndex2);
-			}
-			else
-				crossOverIndex2 = Random.Range(crossOverIndex1 + 1, randomUpperBound);
 		}
 
 		// use volumeManger to find all of volumes.
@@ -114,15 +95,18 @@ namespace CrevoxExtend {
 		}
 
 		// use volume to get each block position.
-		public static List<Vector3> GetPositionsByPicecName(string blockAirPieceName, Volume volume) {
-			List<Vector3> positions = new List<Vector3>();
+		public static Dictionary<Guid, Vector3> GetPositionsByPicecName(string blockAirPieceName, Volume volume) {
+			Dictionary<Guid, Vector3> positions = new Dictionary<Guid, Vector3>();
 			//use volume to find DecorationRoot and find the DecorationRoot's child.
 			var decorationRoots = volume.gameObject.transform.FindChild("DecorationRoot");
 			for (int i = 0; i < decorationRoots.childCount; ++i) {
-				var temp = decorationRoots.GetChild(i).FindChild(blockAirPieceName);
-				if (temp == null)
+				// Select the piece from block air, then add it.
+				var tile = decorationRoots.GetChild(i).FindChild(blockAirPieceName);
+				if (tile == null) {
 					continue;
-				positions.Add(temp.position);
+				} else {
+					positions.Add(Guid.NewGuid(), tile.position);
+				}
 			}
 			return positions;
 		}
@@ -183,7 +167,7 @@ namespace CrevoxExtend {
 					path.First(x => x.Position == (i.position3)).Count++;
 				}
 				else {
-					path.Add(new CreVoxGene(GeneType.Empty, i.position3, 1));
+					path.Add(new CreVoxGene(GeneType.Empty, i.position3, 1, Guid.NewGuid()));
 				}
 			}
 		}
@@ -194,75 +178,94 @@ namespace CrevoxExtend {
 			public double Evaluate(IChromosome chromosome) {
 				double fitnessValue = default(double);
 
-				fitnessValue += FitnessTrap(chromosome)
-							 + FitnessTreasure(chromosome)
-							 + FitnessDominator(chromosome);
+				fitnessValue += FitnessSupport(chromosome);
 				GenesScore += fitnessValue + "\n";
 				return fitnessValue;
 			}
 
-			public double FitnessTrap(IChromosome chromosome) {
-				double fitnessScore = 0;
+			public double FitnessSupport(IChromosome chromosome) {
 				var enemies = chromosome.GetGenes().Where(g => (g.Value as CreVoxGene).Type == GeneType.Enemy).ToList();
-				var traps = chromosome.GetGenes().Where(g => (g.Value as CreVoxGene).Type == GeneType.Trap).ToList();
-
-				foreach (var enemy in enemies) {
-					var enemyGene = enemy.Value as CreVoxGene;
-					foreach (var trap in traps) {
-						var trapGene = trap.Value as CreVoxGene;
-						var distance = (enemyGene.Position - trapGene.Position).magnitude;
-						fitnessScore += (distance == 0) ? 0 : 1 / distance;
+				float fitnessScore = 0.0f;
+				foreach (var enemy1 in enemies) {
+					float enemyDisSum = 0.0f;
+					foreach (var enemy2 in enemies) {
+						if (enemy1 != enemy2) {
+							enemyDisSum += 1.0f / ((enemy1.Value as CreVoxGene).Position - (enemy2.Value as CreVoxGene).Position).magnitude;
+						}
 					}
-				}
-				GenesScore += fitnessScore + ",";
-				return fitnessScore;
-			}
-
-			public double FitnessTreasure(IChromosome chromosome) {
-				double fitnessScore = 0;
-				var enemies = chromosome.GetGenes().Where(g => (g.Value as CreVoxGene).Type == GeneType.Enemy).ToList();
-				var treasures = chromosome.GetGenes().Where(g => (g.Value as CreVoxGene).Type == GeneType.Treasure).ToList();
-
-				foreach (var enemy in enemies) {
-					var enemyGene = enemy.Value as CreVoxGene;
-					foreach (var treasure in treasures) {
-						var treasureGene = treasure.Value as CreVoxGene;
-						var distance = (enemyGene.Position - treasureGene.Position).magnitude; fitnessScore += (distance == 0) ? 0 : 1 / distance;
-						fitnessScore += (distance == 0) ? 0 : 1 / distance;
+					float mpDisSum = 0.0f;
+					foreach (var tile in path) {
+						mpDisSum += (((enemy1.Value as CreVoxGene).Position - tile.Position).magnitude) / 15.588f;
 					}
+					fitnessScore += (enemyDisSum / enemies.Count + mpDisSum / path.Count) / 2.0f;
 				}
-				GenesScore += fitnessScore + ",";
-				return fitnessScore;
-			}
-
-			public double FitnessDominator(IChromosome chromosome) {
-				double fitnessScore = 0;
-				var enemies = chromosome.GetGenes().Where(g => (g.Value as CreVoxGene).Type == GeneType.Enemy).ToList();
-
-				foreach (var enemy in enemies) {
-					var enemyGene = enemy.Value as CreVoxGene;
-					fitnessScore += enemyGene.Position.y / 8.0f;
-				}
+				fitnessScore /= enemies.Count;
 				GenesScore += fitnessScore + ",";
 				return fitnessScore;
 			}
 		}
 
+		public class MyCrossover : CrossoverBase {
+			public MyCrossover() : base(2, 2) {
+			}
+
+			protected override IList<IChromosome> PerformCross(IList<IChromosome> parents) {
+				var firstParent = parents[0];
+				var secondParent = parents[1];
+				var parentLength = firstParent.Length;
+				var swapPointsLength = parentLength - 1;
+
+				return CreateChildren(firstParent, secondParent);
+			}
+
+			protected IList<IChromosome> CreateChildren(IChromosome leftParent, IChromosome rightParent) {
+				List<Gene> leftParentGenes = leftParent.GetGenes().ToList();
+				List<Gene> rightParentGenes = rightParent.GetGenes().ToList();
+
+				var firstCutGenesCount = Random.Range(0, leftParentGenes.Count);
+				var secondCutGenesCount = Random.Range(firstCutGenesCount, rightParentGenes.Count);
+
+				var leftParentRange = leftParentGenes.GetRange(firstCutGenesCount, secondCutGenesCount - firstCutGenesCount);
+				var rightParentRange = rightParentGenes.GetRange(firstCutGenesCount, secondCutGenesCount - firstCutGenesCount);
+
+				// Remove the range in right-hand side from left-hand side.
+				foreach (var gene in leftParentRange) {
+					rightParentGenes.RemoveAll(g => (gene.Value as CreVoxGene).Id == (g.Value as CreVoxGene).Id);
+				}
+				foreach (var gene in rightParentRange) {
+					leftParentGenes.RemoveAll(g => (gene.Value as CreVoxGene).Id == (g.Value as CreVoxGene).Id);
+				}
+
+				leftParentGenes.InsertRange(firstCutGenesCount, rightParentRange);
+				rightParentGenes.InsertRange(firstCutGenesCount, leftParentRange);
+
+				var firstChild = leftParent.CreateNew();
+				var secondChild = rightParent.CreateNew();
+
+				firstChild.ReplaceGenes(0, leftParentGenes.ToArray());
+				secondChild.ReplaceGenes(0, rightParentGenes.ToArray());
+
+				return new List<IChromosome>() { firstChild, secondChild };
+			}
+		}
+
 		//implement MyProblemChromosome for ChromosomeBase.
 		public class MyProblemChromosome : ChromosomeBase {
-			public MyProblemChromosome() : base(GetPositionsByPicecName(_picecName, volumes[_volumeTraget]).Count) {
+			private Dictionary<Guid, Vector3> GenePositions { get; set; }
+
+			public MyProblemChromosome(Dictionary<Guid, Vector3> genePositions) : base(genePositions.Count) {
+				this.GenePositions = genePositions;
 				CreateGenes();
 			}
 
 			public override IChromosome CreateNew() {
-				return new MyProblemChromosome();
+				return new MyProblemChromosome(GenePositions);
 			}
 
 			protected override void CreateGenes() {
-				var genes = GetPositionsByPicecName(_picecName, volumes[_volumeTraget]);
 				int index = 0;
-				foreach (var gene in genes) {
-					this.ReplaceGene(index, new Gene(new CreVoxGene(GeneType.Empty, gene)));
+				foreach (var pair in GenePositions) {
+					this.ReplaceGene(index, new Gene(new CreVoxGene(GeneType.Empty, pair.Value, pair.Key)));
 					index++;
 				}
 			}
@@ -275,10 +278,7 @@ namespace CrevoxExtend {
 
 		//implement MyMutation for IMutation.
 		public class MyMutation : IMutation {
-			public bool IsOrdered {
-				get;
-				private set;
-			}
+			public bool IsOrdered { get; private set; }
 
 			public void Mutate(IChromosome chromosome, float probability) {
 				var genes = chromosome.GetGenes();
@@ -289,32 +289,35 @@ namespace CrevoxExtend {
 						CVGene.Type = GeneType.Enemy;
 						continue;
 					}
-					seed -= _enemyMutationRate;
-					if (seed < _treasureMutationRate) {
-						CVGene.Type = GeneType.Treasure;
-						continue;
-					}
-					seed -= _treasureMutationRate;
-					if (seed < _trapMutationRate) {
-						CVGene.Type = GeneType.Trap;
-						continue;
-					}
+					// seed -= _enemyMutationRate;
+					// if (seed < _treasureMutationRate) {
+					// 	CVGene.Type = GeneType.Treasure;
+					// 	continue;
+					// }
+					// seed -= _treasureMutationRate;
+					// if (seed < _trapMutationRate) {
+					// 	CVGene.Type = GeneType.Trap;
+					// 	continue;
+					// }
 				}
 			}
 		}
 
 		//using CreVoxGene to be gene of GA.
 		public class CreVoxGene {
+			public Guid Id { get; private set; }
 			public GeneType Type { get; set; }
 			public Vector3 Position { get; private set; }
 			public int Count { get; set; }
 			// Constructor.
-			public CreVoxGene(GeneType type, Vector3 position) {
+			public CreVoxGene(GeneType type, Vector3 position, Guid guid) {
+				this.Id = guid;
 				this.Type = type;
 				this.Position = position;
 			}
 
-			public CreVoxGene(GeneType type, Vector3 position, int count) {
+			public CreVoxGene(GeneType type, Vector3 position, int count, Guid guid) {
+				this.Id = guid;
 				this.Type = type;
 				this.Position = position;
 				this.Count = count;

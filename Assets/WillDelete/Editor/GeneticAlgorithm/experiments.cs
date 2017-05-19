@@ -19,7 +19,7 @@ namespace CrevoxExtend {
 
 		public static void getGAExpriments() {
 			StreamWriter sw = new StreamWriter("expriment.csv");
-			sw.WriteLine("FitnessTrap,FitnessTreasure,FitnessDominator,all");
+			sw.WriteLine("FitnessSupport,all");
 			CreVoxGA.Segmentism();
 			sw.Write(CreVoxGA.GenesScore);
 			sw.Close();
