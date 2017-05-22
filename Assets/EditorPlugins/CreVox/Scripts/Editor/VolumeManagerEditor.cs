@@ -77,9 +77,14 @@ namespace CreVox
 					int _APNameIndex = artPacksList.IndexOf (_APName);
 					EditorGUI.BeginChangeCheck ();
 					_APNameIndex = EditorGUILayout.Popup("ArtPack",_APNameIndex,artPacks);
+					EditorGUILayout.LabelField (_d.vMaterial.Substring(_d.vMaterial.LastIndexOf("/")+1),EditorStyles.miniLabel);
 					if (EditorGUI.EndChangeCheck ()) {
-						_APName = PathCollect.artPack + "/" + artPacks[_APNameIndex];
-						_d.ArtPack = _APName;
+						_APName = artPacks [_APNameIndex];
+						string _APPath = PathCollect.artPack + "/" + _APName;
+						_d.ArtPack = _APPath;
+						if (_APName.Length == 4)
+							_APName =_APName.Remove (3);
+						_d.vMaterial = PathCollect.artPack + "/" + _APName + "/" + _APName + "_voxel";
 						vm.dungeons [i] = _d;
 					}
 				}

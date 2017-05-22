@@ -19,7 +19,7 @@ namespace CreVox
 		public static string save = resourceSubPath + "VolumeData";
 		public static string artPack = resourceSubPath + "VolumeArtPack";
 		public static string pieces = artPack + "/LevelPieces";
-		public static string defaultVoxelMaterial = pieces + "/Mat_Voxel";
+		public static string defaultVoxelMaterial = pieces + "/LevelPieces_Voxel";
 		public static string camSetting = resourceSubPath + "CamSetting";
 		public static string setting = resourceSubPath + "GlobalSetting";
 	}

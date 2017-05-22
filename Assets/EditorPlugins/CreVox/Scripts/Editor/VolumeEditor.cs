@@ -84,31 +84,27 @@ namespace CreVox
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					
-					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourcesPath));
 					string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
 					if (artPackName.Length == 4) {
 						volume.vd.subArtPack = ppath.Substring (ppath.Length - 1);
 						ppath = ppath.Remove (ppath.Length - 1);
+						artPackName = artPackName.Remove (3);
 					} else {
 						volume.vd.subArtPack = "";
 					}
-					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
-					string matPath = (mats.Length == 1) ? AssetDatabase.GUIDToAssetPath (mats [0]) : PathCollect.defaultVoxelMaterial;
-						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-						volume.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
-					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
-					volume.ArtPack = ppath;
+					
+					volume.ArtPack = PathCollect.artPack + "/" + artPackName;
+					volume.vMaterial = volume.ArtPack + "/" + artPackName + "_voxel";
+					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
+					volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
 					EditorUtility.SetDirty (volume.vd);
 
 					volume.LoadTempWorld ();
 				}
-				EditorGUILayout.LabelField ((volume.ArtPack != null)?(volume.ArtPack + volume.vd.subArtPack):"(none.)", EditorStyles.miniLabel);
-				GUILayout.EndHorizontal ();
-
 				EditorGUIUtility.labelWidth = 120f;
-				volume.vd.subArtPack = EditorGUILayout.TextField("subArtPack:",volume.vd.subArtPack);
+				volume.vd.subArtPack = EditorGUILayout.TextField("SubArtPack",volume.vd.subArtPack);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
-					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
+					new GUIContent ("Volume Material", "Auto Select if Material's name is ArtPack's name + \"_voxel\"")
 					, volume.vertexMaterial
 					, typeof(Material)
 					, false);
