@@ -426,16 +426,20 @@ namespace CreVox
             
         }
 
-		public void PlaceItems()
+		private void PlaceItems()
 		{
+			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
 			for (int i = 0; i < vd.blockItems.Count; i++) {
 				BlockItem bItem = vd.blockItems [i];
+				LevelPiece p = _missingP;
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
-						LevelPiece p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-						PlaceItem (i, p);
+						p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+						break;
 					}
 				}
+				PlaceItem (i, p);
 			}
 		}
 
@@ -513,21 +517,26 @@ namespace CreVox
 
 		private void PlacePieces ()
 		{
+			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
 			foreach (Chunk c in chunks.Values) {
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
+						LevelPiece p = _missingP;
 						for (int k = 0; k < itemArray.Length; k++) {
 							if (ba.pieceNames [i] == itemArray [k].name) {
+								p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+							}
+						}
 								PlacePiece (
 									new WorldPos (
 										c.cData.ChunkPos.x + ba.BlockPos.x,
 										c.cData.ChunkPos.y + ba.BlockPos.y,
 										c.cData.ChunkPos.z + ba.BlockPos.z),
 									new WorldPos (i % 3, 0, (int)(i / 3)),
-									itemArray [k].gameObject.GetComponent<LevelPiece> ());
-							}
-						}
+							p
+						);
 					}
 				}
 			}

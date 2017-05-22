@@ -68,12 +68,14 @@ namespace CreVox
 			}
 
 			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
+			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
 			if (volumeShowArtPack || Application.isPlaying) {
 				result = new PaletteItem[_itemPaths.Length];
 				for (int i = 0; i < _itemPaths.Length; i++) {
 					GameObject _obj = Resources.Load (_itemPaths [i])as GameObject;
 					if (_obj == null) {
 						Debug.LogWarning ("cannot find " + _itemPaths [i]);
+						result.SetValue (_missing.GetComponent<PaletteItem> (), i);
 					} else {
 						PaletteItem _item = _obj.GetComponent<PaletteItem> ();
 						result.SetValue (_item, i);
