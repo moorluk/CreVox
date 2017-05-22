@@ -63,14 +63,14 @@ namespace CreVox
 			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
 			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count *2);
 			foreach (PaletteItem p in itemsP) {
-				Item newItem = new Item();
+				Item newItem = new Item ();
 				newItem.paletteitem = p;
 				newItem.category = p.category;
 				newItem.itemObject = p.gameObject;
 				newItem.itemName = p.gameObject.name;
 				newItem.artPack = AssetDatabase.GetAssetPath (p.gameObject).Replace(_path + "/","");
 				newItem.artPack = newItem.artPack.Remove (newItem.artPack.IndexOf ("/"));
-				newItem.preview = GetPreview(p.gameObject);
+				newItem.preview = GetPreview (p.gameObject);
 
 				_items.Add (newItem);
 			}
@@ -84,7 +84,7 @@ namespace CreVox
 			_categories = EditorUtils.GetListFromEnum<PaletteItem.Category> ();
 
 			_artPacks = VGlobal.GetArtPacks ();
-			GetArtPackParent ();
+			UpdateAppDict ();
 
 			//GetItemCells
 			_itemCells = new Dictionary<string, Dictionary<PaletteItem.Category, List<Item>>> ();
@@ -123,8 +123,7 @@ namespace CreVox
 			}
 			Debug.Log (logCell);
 
-			GetArtPackParent ();
-			SetArtPackParent ();
+			UpdateAppList ();
 			UpdateItemArrays (vg);
 		}
 
@@ -157,7 +156,7 @@ namespace CreVox
 					GUILayout.Label ("", GUILayout.Width (15));
 				}
 				if (EditorGUI.EndChangeCheck ()) {
-					SetArtPackParent ();
+					UpdateAppList ();
 				}
 				GUILayout.EndScrollView ();
 			}
@@ -339,16 +338,14 @@ namespace CreVox
 		}
 		#endregion
 		#region ArtPackParent
-		private List<VGlobal.ArtPackParent> _pList = new List<VGlobal.ArtPackParent> ();
 		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
-		private void GetArtPackParent ()
+		private void UpdateAppDict ()
 		{
-			_pList = vg.artPackParentList;
 			_pDict.Clear();
 			for (int i = 1; i < _artPacks.Count; i++) {
-				for (int j = 0; j < _pList.Count; j++) {
-					if (_pList [j].pack == _artPacks [i]) {
-						_pDict.Add (_pList [j].pack, _pList [j].parentPack);
+				for (int j = 0; j < vg.artPackParentList.Count; j++) {
+					if (vg.artPackParentList [j].pack == _artPacks [i]) {
+						_pDict.Add (vg.artPackParentList [j].pack, vg.artPackParentList [j].parentPack);
 						break;
 					}
 				}
@@ -357,9 +354,9 @@ namespace CreVox
 			}
 		}
 
-		private void SetArtPackParent ()
+		private void UpdateAppList ()
 		{
-			_pList.Clear ();
+			List<VGlobal.ArtPackParent> _pList = new List<VGlobal.ArtPackParent>();
 			VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
 			foreach (KeyValuePair<string,string> k in _pDict) {
 				_a = new VGlobal.ArtPackParent ();
