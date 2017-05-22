@@ -21,7 +21,7 @@ namespace CreVox
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
-			volume.BuildVolume ();
+//			volume.BuildVolume ();
 			SubscribeEvents ();
 		}
 
@@ -34,30 +34,18 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-			float buttonW = 60;
+			float buttonW = 120;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
 			VGlobal vg = VGlobal.GetSetting ();
 			GUI.color = Color.white;
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Create New VolumeData", EditorStyles.boldLabel);
-				using (var h = new EditorGUILayout.HorizontalScope ()) {
-					EditorGUIUtility.labelWidth = 10;
-					cx = EditorGUILayout.IntField ("X", cx);
-					cy = EditorGUILayout.IntField ("Y", cy);
-					cz = EditorGUILayout.IntField ("Z", cz);
-					EditorGUIUtility.labelWidth = defLabelWidth;
-					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
-						volume.vd = null;
-						volume.Init (cx, cy, cz);
-						WriteVData (volume);
-					}
-				}
-			}
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUI.backgroundColor = Color.white;
-				EditorGUILayout.LabelField ("VolumeData", EditorStyles.boldLabel);
+				GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
+				if (GUILayout.Button ("Refresh")) {
+					volume.BuildVolume ();
+					SceneView.RepaintAll ();
+				}
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
 					EditorGUI.BeginChangeCheck ();
 					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
@@ -69,18 +57,31 @@ namespace CreVox
 						volume.SaveTempWorld ();
 					}
 				}
+				EditorGUILayout.Separator ();
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					EditorGUIUtility.labelWidth = 15;
+					cx = EditorGUILayout.IntField ("X", cx);
+					cy = EditorGUILayout.IntField ("Y", cy);
+					cz = EditorGUILayout.IntField ("Z", cz);
+					EditorGUIUtility.labelWidth = defLabelWidth;
+				}
+				if (GUILayout.Button ("Init")) {
+					volume.vd = null;
+					volume.Init (cx, cy, cz);
+					WriteVData (volume);
+				}
 			}
 
 			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
-				GUILayout.BeginHorizontal ();
-				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
+				GUILayout.Label ("ArtPack", EditorStyles.boldLabel);
+				EditorGUILayout.HelpBox ((volume.ArtPack != null) ? (volume.ArtPack + volume.vd.subArtPack) : "(none.)", MessageType.Info, true);
+				if (GUILayout.Button ("Set")) {
 					string ppath = EditorUtility.OpenFolderPanel (
-						"選擇場景風格元件包的目錄位置",
-						Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
-						 ""
-					);
+						                "選擇場景風格元件包的目錄位置",
+						                Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
+						                ""
+					                );
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					

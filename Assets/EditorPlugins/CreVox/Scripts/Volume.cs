@@ -40,7 +40,7 @@ namespace CreVox
 			float z = transform.position.z - transform.position.z % vg.d;
 			transform.position = new Vector3 (x, y, z);
 			#if UNITY_EDITOR
-			if (VGlobal.GetSetting ().saveBackup)
+			if (vg.saveBackup)
 				CompileSave ();
 			#endif
 		}
@@ -87,7 +87,6 @@ namespace CreVox
 			itemRoot.transform.parent = transform;
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
-            //VolumeAdapter.AfterVolumeInit(this);
 
             CreateChunks ();
 
@@ -101,7 +100,7 @@ namespace CreVox
 			#endif
 		}
 
-		public void Reset ()
+		private void Reset ()
 		{
 			if (chunks != null) {
 				DestoryChunks ();
@@ -275,7 +274,7 @@ namespace CreVox
 		}
 
 		PaletteItem[] itemArray = new PaletteItem[0];
-		public GameObject itemRoot;
+		GameObject itemRoot;
 		Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject>();
 
 		public GameObject GetItemNode (BlockItem blockItem)
@@ -291,7 +290,6 @@ namespace CreVox
 		#endregion
 
 		#region Block
-
 
 		public Block GetBlock (int x, int y, int z)
 		{
@@ -529,12 +527,12 @@ namespace CreVox
 								p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
 							}
 						}
-								PlacePiece (
-									new WorldPos (
-										c.cData.ChunkPos.x + ba.BlockPos.x,
-										c.cData.ChunkPos.y + ba.BlockPos.y,
-										c.cData.ChunkPos.z + ba.BlockPos.z),
-									new WorldPos (i % 3, 0, (int)(i / 3)),
+						PlacePiece (
+							new WorldPos (
+								c.cData.ChunkPos.x + ba.BlockPos.x,
+								c.cData.ChunkPos.y + ba.BlockPos.y,
+								c.cData.ChunkPos.z + ba.BlockPos.z),
+							new WorldPos (i % 3, 0, (int)(i / 3)),
 							p
 						);
 					}
@@ -579,7 +577,7 @@ namespace CreVox
 			for (int i = 0; i < _piece.holdBlocks.Count; i++) {
 				LevelPiece.Hold bh = _piece.holdBlocks [i];
 				int x = _bPos.x + bh.offset.x;
-				int y = _bPos.y + bh.offset.y;
+				int y = _bPos.y + bh.offset.y ;
 				int z = _bPos.z + bh.offset.z;
 				Chunk _chunk = GetChunk (x, y, z);
 				if (_chunk != null) {
@@ -587,28 +585,28 @@ namespace CreVox
 					y -= _chunk.cData.ChunkPos.y;
 					z -= _chunk.cData.ChunkPos.z;
 
-				BlockHold.piecePos bhData = new BlockHold.piecePos ();
-				bhData.blockPos = _bPos;
-				bhData.pieceID = _id;
+					BlockHold.piecePos bhData = new BlockHold.piecePos ();
+					bhData.blockPos = _bPos;
+					bhData.pieceID = _id;
 
 
 					Predicate<BlockHold.piecePos> samePiecePos = delegate(BlockHold.piecePos obj) {
-					return (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
-				};
+						return (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
+					};
 
 					BlockHold bhBlock = null;
 					int _index = GetBlockHoldIndex (x, y, z, _chunk);
 					if (_index > -1)
 						bhBlock = _chunk.cData.blockHolds [_index];
 					
-				if (_isErase) {
+					if (_isErase) {
 						if (bhBlock != null) { 
 							if (bhBlock.roots.Exists (samePiecePos))
-						bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
-					if (bhBlock.roots.Count == 0)
+								bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
+							if (bhBlock.roots.Count == 0)
 								_chunk.cData.blockHolds.Remove (bhBlock);
 						}
-				} else {
+					} else {
 						if (bhBlock == null) {
 							bhBlock = new BlockHold ();
 							bhBlock.BlockPos = new WorldPos (x, y, z);
@@ -618,10 +616,10 @@ namespace CreVox
 							bhBlock.roots.Add (bhData);
 						
 						if (bh.isSolid)
-						bhBlock.SetSolid (true);
+							bhBlock.SetSolid (true);
+					}
 				}
 			}
-		}
 		}
 
 		public static Vector3 GetPieceOffset (int x, int z)
@@ -854,7 +852,7 @@ namespace CreVox
 						chunkZ * vg.chunkSize * vg.d)
 				);
 
-			if (!EditorApplication.isPlaying) {
+			if (!EditorApplication.isPlaying && vg.debugRuler) {
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
 				DrawBlockHold ();
@@ -877,9 +875,7 @@ namespace CreVox
 							                  (blockHoldPos.z + chunkPos.z) * vg.d
 						                  );
 						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f);
-						Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
-						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 1.0f);
-						Gizmos.DrawSphere (localPos, 0.1f);
+						Gizmos.DrawWireCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
 					}
 				}
 			}

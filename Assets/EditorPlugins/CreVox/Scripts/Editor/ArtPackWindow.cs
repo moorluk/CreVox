@@ -397,7 +397,6 @@ namespace CreVox
 
 			string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
 			string pName = _vg.GetParentArtPack (cName);
-			Debug.LogWarning (cName + " >>> " + pName);
 			string pPath = PathCollect.artPack + "/" + pName;
 			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
 			while (pPath != PathCollect.pieces) {
@@ -416,7 +415,6 @@ namespace CreVox
 				_child = _parent;
 				cName = pName;
 				pName = _vg.GetParentArtPack (cName);
-				Debug.Log (cName + " >>> " + pName);
 				pPath = PathCollect.artPack + "/" + pName;
 			}
 
