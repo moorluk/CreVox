@@ -62,29 +62,31 @@ namespace CreVox
 		{
 			Color defColor = GUI.color;
 			Color volColor = new Color (0.5f, 0.8f, 0.75f);
+			float DefaultLabelWidth = EditorGUIUtility.labelWidth;
 
 			for (int i = 0; i < vm.dungeons.Count; i++) {
 				Dungeon _d = vm.dungeons [i];
 				GUI.color = volColor;
 				using (var v = new EditorGUILayout.VerticalScope ("Box")) {
 					GUI.color = defColor;
-					EditorGUIUtility.labelWidth = 92;
+					EditorGUIUtility.labelWidth = 100;
 					EditorGUILayout.ObjectField ("VolumeData",_d.volumeData, typeof(VolumeData), true);
-					EditorGUIUtility.labelWidth = 80;
+					EditorGUIUtility.labelWidth = 88;
 					EditorGUILayout.Vector3Field ("Position", _d.position);
 					EditorGUILayout.Vector3Field ("Rotation", _d.rotation.eulerAngles);
 					string _APName = _d.ArtPack.Replace (PathCollect.artPack + "/", "");
 					int _APNameIndex = artPacksList.IndexOf (_APName);
 					EditorGUI.BeginChangeCheck ();
 					_APNameIndex = EditorGUILayout.Popup("ArtPack",_APNameIndex,artPacks);
-					EditorGUILayout.LabelField (_d.vMaterial.Substring(_d.vMaterial.LastIndexOf("/")+1),EditorStyles.miniLabel);
+					EditorGUILayout.LabelField ("Final ArtPack", _APName + _d.volumeData.subArtPack, EditorStyles.miniLabel);
+					EditorGUILayout.LabelField ("Voxel Material", _d.vMaterial.Substring (_d.vMaterial.LastIndexOf ("/") + 1), EditorStyles.miniLabel);
 					if (EditorGUI.EndChangeCheck ()) {
 						_APName = artPacks [_APNameIndex];
-						string _APPath = PathCollect.artPack + "/" + _APName;
-						_d.ArtPack = _APPath;
 						if (_APName.Length == 4)
 							_APName =_APName.Remove (3);
-						_d.vMaterial = PathCollect.artPack + "/" + _APName + "/" + _APName + "_voxel";
+						string _APPath = PathCollect.artPack + "/" + _APName;
+						_d.ArtPack = _APPath;
+						_d.vMaterial = _APPath + "/" + _APName + "_voxel";
 						vm.dungeons [i] = _d;
 					}
 				}

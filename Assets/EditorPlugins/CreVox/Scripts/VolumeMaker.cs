@@ -61,7 +61,7 @@ namespace CreVox
             if (style > 1)
             {
                 PaletteItem[] itemArray = new PaletteItem[0];
-				itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + /*((ArtPack.Length == 3) ?*/ m_vd.subArtPack/* : "")*/);
+				itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + m_vd.subArtPack);
 
                 if ((style & 2) > 0)
                 {
