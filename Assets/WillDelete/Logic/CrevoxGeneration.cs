@@ -5,6 +5,8 @@ using CreVox;
 using MissionGrammarSystem;
 using System;
 using System.Linq;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace CrevoxExtend {
 	public class CrevoxGeneration {
@@ -191,6 +193,43 @@ namespace CrevoxExtend {
 			Debug.Log(stopWatch.ElapsedMilliseconds + " ms");
 			stopWatch.Stop();
 			CrevoxOperation.TransformStateIntoObject(nowState);
+		}
+		// Realtime level generation II
+		public static void GenerateLevel(CreVoxNode root, string volumeDataPath, int seed) {
+			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
+			List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
+			foreach (var node in Alphabet.Nodes) {
+				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
+					continue;
+				}
+				alphabets.Add(node);
+				volumeDatas.Add(new List<VolumeData>());
+			}
+			if (volumeDataPath != "") {
+				// Get the files.
+				string[] files = Directory.GetFiles(volumeDataPath);
+				const string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
+				for (int i = 0; i < files.Length; i++) {
+					if (Regex.IsMatch(files[i], regex)) {
+						for (int j = 0; j < alphabets.Count; j++) {
+							if (alphabets[j].Name.ToLower() == Regex.Match(files[i], regex).Groups[1].Value.ToLower()) {
+								volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i]));
+							}
+						}
+					}
+
+				}
+				// if not find match vData, default null.
+				for (int j = 0; j < alphabets.Count; j++) {
+					if (volumeDatas[j].Count < 1) {
+						volumeDatas[j].Add(null);
+					}
+				}
+			}
+			AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
+			SameVolumeDatas = volumeDatas;
+			InitialTable(seed);
+			Generate();
 		}
 	}
 }
