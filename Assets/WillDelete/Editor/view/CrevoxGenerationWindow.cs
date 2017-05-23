@@ -11,11 +11,13 @@ using System;
 
 namespace CrevoxExtend {
 	class CrevoxGenerationWindow : EditorWindow {
-		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
-
 		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 		private static string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
+
+		private static Vector2 scrollPosition = new Vector2(0, 0);
+		private static bool specificRandomSeed = false;
+		private static int randomSeed = 0;
 
 		void Initialize() {
 			alphabets.Clear();
@@ -102,12 +104,19 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("Generate")) {
 				CrevoxGeneration.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 				CrevoxGeneration.SameVolumeDatas = volumeDatas;
-				CrevoxGeneration.InitialTable();
+				if (!specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
+				CrevoxGeneration.InitialTable(randomSeed);
 				CrevoxGeneration.Generate();
 			}
 			if (GUILayout.Button("ReplaceConnection")) {
 				CrevoxGeneration.ReplaceConnection();
 			}
+			EditorGUILayout.BeginHorizontal();
+			specificRandomSeed = GUILayout.Toggle(specificRandomSeed, "Set Random Seed");
+			EditorGUI.BeginDisabledGroup(!specificRandomSeed);
+			randomSeed = EditorGUILayout.IntField(randomSeed, GUILayout.MaxWidth(Screen.width));
+			EditorGUI.EndDisabledGroup();
+			EditorGUILayout.EndHorizontal();
 			// [TEST] Will delete.
 			EditorGUI.EndDisabledGroup();
 		}

@@ -27,7 +27,8 @@ namespace CrevoxExtend {
 			set { sameVolumeDatas = value; }
 		}
 		// Initial.
-		public static void InitialTable() {
+		public static void InitialTable(int seed) {
+			UnityEngine.Random.InitState(seed);
 			_refrenceTable = new Dictionary<Guid, List<VolumeData>>();
 			for (int i = 0; i < _alphabetIDs.Count; i++) {
 				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
