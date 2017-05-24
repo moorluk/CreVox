@@ -40,7 +40,7 @@ namespace CreVox
 			float z = transform.position.z - transform.position.z % vg.d;
 			transform.position = new Vector3 (x, y, z);
 			#if UNITY_EDITOR
-			if (VGlobal.GetSetting ().saveBackup)
+			if (vg.saveBackup)
 				CompileSave ();
 			#endif
 		}
@@ -87,7 +87,6 @@ namespace CreVox
 			itemRoot.transform.parent = transform;
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
-            //VolumeAdapter.AfterVolumeInit(this);
 
             CreateChunks ();
 
@@ -427,14 +426,18 @@ namespace CreVox
 
 		private void PlaceItems()
 		{
+			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
 			for (int i = 0; i < vd.blockItems.Count; i++) {
 				BlockItem bItem = vd.blockItems [i];
+				LevelPiece p = _missingP;
 				for (int k = 0; k < itemArray.Length; k++) {
 					if (bItem.pieceName == itemArray [k].name) {
-						LevelPiece p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-						PlaceItem (i, p);
+						p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+						break;
 					}
 				}
+				PlaceItem (i, p);
 			}
 		}
 
@@ -512,21 +515,26 @@ namespace CreVox
 
 		private void PlacePieces ()
 		{
+			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
 			foreach (Chunk c in chunks.Values) {
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
+						LevelPiece p = _missingP;
 						for (int k = 0; k < itemArray.Length; k++) {
 							if (ba.pieceNames [i] == itemArray [k].name) {
-								PlacePiece (
-									new WorldPos (
-										c.cData.ChunkPos.x + ba.BlockPos.x,
-										c.cData.ChunkPos.y + ba.BlockPos.y,
-										c.cData.ChunkPos.z + ba.BlockPos.z),
-									new WorldPos (i % 3, 0, (int)(i / 3)),
-									itemArray [k].gameObject.GetComponent<LevelPiece> ());
+								p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
 							}
 						}
+						PlacePiece (
+							new WorldPos (
+								c.cData.ChunkPos.x + ba.BlockPos.x,
+								c.cData.ChunkPos.y + ba.BlockPos.y,
+								c.cData.ChunkPos.z + ba.BlockPos.z),
+							new WorldPos (i % 3, 0, (int)(i / 3)),
+							p
+						);
 					}
 				}
 			}
@@ -866,10 +874,8 @@ namespace CreVox
 							                  (blockHoldPos.y + chunkPos.y) * vg.h, 
 							                  (blockHoldPos.z + chunkPos.z) * vg.d
 						                  );
-						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.10f);
-						Gizmos.DrawWireCube (localPos, new Vector3 (vg.w-0.01f, vg.h-0.01f, vg.d-0.01f));
-//						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 1.0f);
-//						Gizmos.DrawSphere (localPos, 0.1f);
+						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f);
+						Gizmos.DrawWireCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
 					}
 				}
 			}
