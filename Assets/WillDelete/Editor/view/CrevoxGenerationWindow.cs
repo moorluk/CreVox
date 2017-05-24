@@ -20,14 +20,14 @@ namespace CrevoxExtend {
 		private static int randomSeed = 0;
 
 		void Initialize() {
-			alphabets.Clear ();
-			volumeDatas.Clear ();
+			alphabets.Clear();
+			volumeDatas.Clear();
 			foreach (var node in Alphabet.Nodes) {
 				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
 					continue;
 				}
-				alphabets.Add (node);
-				volumeDatas.Add (new List<VolumeData> ());
+				alphabets.Add(node);
+				volumeDatas.Add(new List<VolumeData>());
 			}
 		}
 		void Awake() {

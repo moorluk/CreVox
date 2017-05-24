@@ -46,8 +46,6 @@ namespace CrevoxExtend {
 					DeletePrefab("Connection_" + alphabets[i]);
 				}
 			}
-//			PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
-//			window.InitialPaletteWindow();
 			Load();
 		}
 		// Update dictionary.
