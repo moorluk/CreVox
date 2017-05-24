@@ -18,6 +18,7 @@ namespace CreVox
 	{
 		public List<Dungeon> dungeons;
 		public PaletteItem[] itemArray;
+		public bool autoRun;
 
 		void Awake ()
 		{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using UnityEditor;
+using System.IO;
 
 namespace CreVox
 {
@@ -13,7 +14,7 @@ namespace CreVox
 		string[] artPacks;
 		List<string> artPacksList;
 
-		private void Awake ()
+		void OnEnable ()
 		{
 			vm = (VolumeManager)target;
 			vg = VGlobal.GetSetting ();
@@ -21,11 +22,6 @@ namespace CreVox
 			artPacks = artPacksList.ToArray ();
 			UpdateStatus ();
 			ArtPackWindow.UpdateItemArrays (vg);
-		}
-
-		void OnEnable ()
-		{
-			Awake ();
 		}
 		
 		float buttonW = 70;
@@ -52,6 +48,7 @@ namespace CreVox
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.wideMode = true;
+				vm.autoRun = EditorGUILayout.ToggleLeft ("Auto Run on play", vm.autoRun);
 				DrawVolumeList ();
 			}
 
@@ -67,7 +64,7 @@ namespace CreVox
 			for (int i = 0; i < vm.dungeons.Count; i++) {
 				Dungeon _d = vm.dungeons [i];
 				GUI.color = volColor;
-				using (var v = new EditorGUILayout.VerticalScope ("Box")) {
+				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 					GUI.color = defColor;
 					EditorGUIUtility.labelWidth = 100;
 					EditorGUILayout.ObjectField ("VolumeData",_d.volumeData, typeof(VolumeData), true);

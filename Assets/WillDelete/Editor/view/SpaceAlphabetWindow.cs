@@ -111,6 +111,8 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("Save")) {
 				// Update alphabet types.//
 				SpaceAlphabet.alphabetUpdate(alphabets);
+				PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
+				window.InitialPaletteWindow();
 			}
 		}
 		

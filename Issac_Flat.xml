@@ -4352,7 +4352,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>10</Weight>
         <QuantityLimit>1</QuantityLimit>
       </Rule>
@@ -4641,7 +4641,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>10</Weight>
         <QuantityLimit>5</QuantityLimit>
       </Rule>
