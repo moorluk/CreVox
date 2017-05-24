@@ -15,14 +15,13 @@ namespace CrevoxExtend {
 			if (resultVolumeManager != null) { DestroyVolume(); }
 			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
+			resultVolumeManager.dungeons = new List<Dungeon> ();
 			if (generateVolume) {
 				foreach (var vdataEx in state.ResultVolumeDatas) {
 					CreateVolumeObject (vdataEx);
 					CreateDungeon (vdataEx, artPack);
 				}
-				RefreshVolume ();
 			} else {
-				resultVolumeManager.dungeons = new List<Dungeon> ();
 				foreach (var vdataEx in state.ResultVolumeDatas) {
 					CreateDungeon (vdataEx, artPack);
 				}
@@ -41,7 +40,7 @@ namespace CrevoxExtend {
 		}
 		// Create VolumeManager Dungeons.
 		public static void CreateDungeon(CrevoxState.VolumeDataEx vdataEx, string artPack) {
-			CreVox.Dungeon _d = new Dungeon ();
+			Dungeon _d = new Dungeon ();
 			_d.position = vdataEx.position;
 			_d.rotation = vdataEx.rotation;
 			_d.volumeData = vdataEx.volumeData;

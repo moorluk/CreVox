@@ -52,10 +52,10 @@ public class ChunkCollider : MonoBehaviour {
 	// Chunk interact.
 	private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 		// Get all of Blocks.
-		foreach (var block in chunkData.blocks) {
+		foreach (var block in chunkData.blockHolds) {
 			Vector3 blockPosition = chunkPosition + AbsolutePosition(block.BlockPos, rotateAngle).ToRealPosition();
 			// Get all of compared blocks.
-			foreach (var compareBlock in compareChunkData.blocks) {
+			foreach (var compareBlock in compareChunkData.blockHolds) {
 				Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlock.BlockPos, compareRotateAngle).ToRealPosition();
 				// Both postition interact.
 				if (blockPosition == compareBlockPosition) {

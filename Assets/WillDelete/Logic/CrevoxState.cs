@@ -129,12 +129,12 @@ namespace CrevoxExtend {
 		}
 		// Chunk interact.
 		private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
-			// Get all of Blocks.
-			foreach (var block in chunkData.blockHolds) {
-				Vector3 blockPosition = chunkPosition + AbsolutePosition(block.BlockPos, rotateAngle).ToRealPosition();
-				// Get all of compared blocks.
-				foreach (var compareBlock in compareChunkData.blocks) {
-					Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlock.BlockPos, compareRotateAngle).ToRealPosition();
+			// Get all of BlockHolds.
+			foreach (var blockHold in chunkData.blockHolds) {
+				Vector3 blockPosition = chunkPosition + AbsolutePosition(blockHold.BlockPos, rotateAngle).ToRealPosition();
+				// Get all of compared BlockHolds.
+				foreach (var compareBlockHold in compareChunkData.blockHolds) {
+					Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlockHold.BlockPos, compareRotateAngle).ToRealPosition();
 					// Both postition interact.
 					if (blockPosition == compareBlockPosition) {
 						return true;
