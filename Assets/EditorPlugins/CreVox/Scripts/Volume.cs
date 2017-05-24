@@ -407,6 +407,9 @@ namespace CreVox
 					pObj.transform.parent = itemRoot.transform;
 					pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 					pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
+					if (_piece.name == "Missing") {
+						pObj.GetComponentInChildren<TextMesh>().text += ("\n" + vd.blockItems [_id].pieceName);
+					}
 					itemNodes.Add (blockItem, pObj);
                     LevelPiece p = pObj.GetComponent<LevelPiece>();
                     if (p != null)
@@ -488,9 +491,13 @@ namespace CreVox
 
 				if (block is BlockAir) {
 					blockAir = block as BlockAir;
-					blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
-					blockAir.SolidCheck (nodes [bPos].pieces);
-					SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
+					if (_piece.name != "Missing") {
+						blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
+						blockAir.SolidCheck (nodes [bPos].pieces);
+						SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
+					} else {
+						pObj.GetComponentInChildren<TextMesh>().text += ("\n" + blockAir.pieceNames[id]);
+					}
 
 					if (_piece.isHold == true)
 						PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), false);
