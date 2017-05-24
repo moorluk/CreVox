@@ -452,8 +452,10 @@ namespace CreVox
 				return;
 
 			if (_piece != null) {
-				if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item)
-					return;
+				if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item) {
+					if (_piece.name != "Missing")
+						return;
+				}
 				
 				if (block == null) {
 					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
@@ -521,20 +523,22 @@ namespace CreVox
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
-						LevelPiece p = _missingP;
-						for (int k = 0; k < itemArray.Length; k++) {
-							if (ba.pieceNames [i] == itemArray [k].name) {
-								p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+						if (ba.pieceNames [i] != "") {
+							LevelPiece p = _missingP;
+							for (int k = 0; k < itemArray.Length; k++) {
+								if (ba.pieceNames [i] == itemArray [k].name) {
+									p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+								}
 							}
+							PlacePiece (
+								new WorldPos (
+									c.cData.ChunkPos.x + ba.BlockPos.x,
+									c.cData.ChunkPos.y + ba.BlockPos.y,
+									c.cData.ChunkPos.z + ba.BlockPos.z),
+								new WorldPos (i % 3, 0, (int)(i / 3)),
+								p
+							);
 						}
-						PlacePiece (
-							new WorldPos (
-								c.cData.ChunkPos.x + ba.BlockPos.x,
-								c.cData.ChunkPos.y + ba.BlockPos.y,
-								c.cData.ChunkPos.z + ba.BlockPos.z),
-							new WorldPos (i % 3, 0, (int)(i / 3)),
-							p
-						);
 					}
 				}
 			}
