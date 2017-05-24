@@ -47,6 +47,7 @@ namespace CrevoxExtend {
 			_d.volumeData = vdataEx.volumeData;
 			_d.ArtPack = PathCollect.artPack + "/" + artPack;
 			_d.vMaterial = _d.ArtPack + "/" + artPack + "_voxel" ;
+			resultVolumeManager.dungeons = new List<Dungeon>();
 			resultVolumeManager.dungeons.Add (_d);
 		}
 		// Update and repaint.
