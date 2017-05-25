@@ -14,6 +14,7 @@ public class TestRealTimeRun : MonoBehaviour {
 
 	public VGlobal vg;
 	public int stageLevel = 1;
+	public int randomSeed = 0;
 	public bool testGenerateStage = false;
 
 	void Awake()
@@ -35,7 +36,8 @@ public class TestRealTimeRun : MonoBehaviour {
 			testGenerateLevel = false;
 		}
 		if (testGenerateStage) {
-			vg.GenerateStage (stageLevel);
+			randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
+			vg.GenerateStage (stageLevel, randomSeed);
 			testGenerateStage = false;
 		}
 	}
