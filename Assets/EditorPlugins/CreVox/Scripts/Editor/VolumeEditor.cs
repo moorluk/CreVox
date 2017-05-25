@@ -78,10 +78,10 @@ namespace CreVox
 				EditorGUILayout.HelpBox ((volume.ArtPack != null) ? (volume.ArtPack + volume.vd.subArtPack) : "(none.)", MessageType.Info, true);
 				if (GUILayout.Button ("Set")) {
 					string ppath = EditorUtility.OpenFolderPanel (
-						                "選擇場景風格元件包的目錄位置",
-						                Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
-						                ""
-					                );
+						               "選擇場景風格元件包的目錄位置",
+						               Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
+						               ""
+					               );
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					
@@ -103,7 +103,7 @@ namespace CreVox
 					volume.LoadTempWorld ();
 				}
 				EditorGUIUtility.labelWidth = 120f;
-				volume.vd.subArtPack = EditorGUILayout.TextField("SubArtPack",volume.vd.subArtPack);
+				volume.vd.subArtPack = EditorGUILayout.TextField ("SubArtPack", volume.vd.subArtPack);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
 					new GUIContent ("Volume Material", "Auto Select if Material's name is ArtPack's name + \"_voxel\"")
 					, volume.vertexMaterial
@@ -120,7 +120,7 @@ namespace CreVox
 					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
-			DrawPieceInspectedGUI ();
+				DrawPieceInspectedGUI ();
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
@@ -812,22 +812,21 @@ namespace CreVox
 			if (currentEditMode != EditMode.Item)
 				return;
 
-			EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
-			if (_itemInspected != null) {
-				EditorGUILayout.BeginVertical ("box");
-				EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
-                if (_itemInspected.inspectedScript != null)
-                {
-                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor(_itemInspected.inspectedScript));
-                    Debug.Log("selectedItemID:" + selectedItemID.ToString());
-					BlockItem item = volume.vd.blockItems[selectedItemID];
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
+				if (_itemInspected != null) {
+					EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
+					if (_itemInspected.inspectedScript != null) {
+						LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (_itemInspected.inspectedScript));
+						Debug.Log ("selectedItemID:" + selectedItemID.ToString ());
+						BlockItem item = volume.vd.blockItems [selectedItemID];
 
-                    if (e != null)
-                        e.OnEditorGUI(ref item);
-                }
-				EditorGUILayout.EndVertical ();
-			} else {
-				EditorGUILayout.HelpBox ("No piece to edit!", MessageType.Info);
+						if (e != null)
+							e.OnEditorGUI (ref item);
+					}
+				} else {
+					EditorGUILayout.HelpBox ("No piece to edit!", MessageType.Info);
+				}
 			}
 		}
 

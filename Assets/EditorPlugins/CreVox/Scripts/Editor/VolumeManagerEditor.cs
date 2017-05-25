@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using UnityEditor;
-using System.IO;
 
 namespace CreVox
 {
