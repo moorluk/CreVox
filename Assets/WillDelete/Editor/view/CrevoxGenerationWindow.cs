@@ -18,10 +18,13 @@ namespace CrevoxExtend {
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static bool specificRandomSeed = false;
 		private static int randomSeed = 0;
+		private static int stageID = 1;
+		private VGlobal vg;
 
 		void Initialize() {
 			alphabets.Clear();
 			volumeDatas.Clear();
+			vg = VGlobal.GetSetting ();
 			foreach (var node in Alphabet.Nodes) {
 				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
 					continue;
@@ -82,7 +85,7 @@ namespace CrevoxExtend {
 				}
 			}
 			// Node list.
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height * 0.75f));
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height-230f));
 			for (int i = 0; i < alphabets.Count; i++) {
 				EditorGUILayout.LabelField(alphabets[i].ExpressName);
 				for (int j = 0; j < volumeDatas[i].Count; j++) {
@@ -98,22 +101,18 @@ namespace CrevoxExtend {
 				}
 			}
 			EditorGUILayout.EndScrollView();
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				stageID = EditorGUILayout.IntSlider ("Stage", stageID, 1, vg.StageList.Count);
+				CrevoxGeneration.stage = vg.GetStageSetting(stageID);
+				EditorGUILayout.LabelField ("Level", CrevoxGeneration.stage.number.ToString());
+				EditorGUILayout.LabelField ("Xml Path", CrevoxGeneration.stage.XmlPath);
+				EditorGUILayout.LabelField ("VData Path", CrevoxGeneration.stage.vDataPath);
+				EditorGUILayout.LabelField ("ArtPack", CrevoxGeneration.stage.artPack);
+			}
 			// If symbol has none vData, user cannot press Generate.
 			// Add null prevent.
 			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Count == 0||vs.Exists(v => v == null)));
-			// Generate button.
-			CrevoxGeneration.artPack = EditorGUILayout.TextField("ArtPack",CrevoxGeneration.artPack);
 			CrevoxGeneration.generateVolume = EditorGUILayout.Toggle ("Generate Volume", CrevoxGeneration.generateVolume);
-			if (GUILayout.Button("Generate")) {
-				CrevoxGeneration.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				CrevoxGeneration.SameVolumeDatas = volumeDatas;
-				if (!specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
-				CrevoxGeneration.InitialTable(randomSeed);
-				CrevoxGeneration.Generate();
-			}
-			if (GUILayout.Button("ReplaceConnection")) {
-				CrevoxGeneration.ReplaceConnection();
-			}
 			EditorGUILayout.BeginHorizontal();
 			specificRandomSeed = GUILayout.Toggle(specificRandomSeed, "Set Random Seed");
 			EditorGUI.BeginDisabledGroup(!specificRandomSeed);
@@ -122,6 +121,17 @@ namespace CrevoxExtend {
 			EditorGUILayout.EndHorizontal();
 			// [TEST] Will delete.
 			EditorGUI.EndDisabledGroup();
+			// Generate button.
+			if (GUILayout.Button("Generate")) {
+				CrevoxGeneration.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
+				CrevoxGeneration.SameVolumeDatas = volumeDatas;
+				if (!specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
+				CrevoxGeneration.InitialTable(randomSeed);
+				CrevoxGeneration.Generate(CrevoxGeneration.stage);
+			}
+			if (GUILayout.Button("ReplaceConnection")) {
+				CrevoxGeneration.ReplaceConnection(CrevoxGeneration.stage);
+			}
 		}
 	}
 }

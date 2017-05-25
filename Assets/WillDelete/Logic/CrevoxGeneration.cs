@@ -51,10 +51,10 @@ namespace CrevoxExtend {
 		private static List<Edge> edgeList;
 		// Record time.
 		private static System.Diagnostics.Stopwatch testStopWatch;
-		public static string artPack = "";
+		public static VGlobal.Stage stage;
 		public static bool generateVolume;
 		// Generate
-		public static void Generate() {
+		public static void Generate(VGlobal.Stage _stage) {
 			// Record.
 			testStopWatch = System.Diagnostics.Stopwatch.StartNew();
 			// Initialize connection table.
@@ -83,7 +83,7 @@ namespace CrevoxExtend {
 			if (nowState != null) {
 				Debug.Log("Completed.");
 				// Transform state into gameobject.
-				CrevoxOperation.TransformStateIntoObject (nowState, artPack, generateVolume);
+				CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
 			}else {
 				// Keep null means failed.
 				Debug.Log("Failed.");
@@ -159,7 +159,7 @@ namespace CrevoxExtend {
 			}
 		}
 		// Replace remaining connection.
-		public static void ReplaceConnection() {
+		public static void ReplaceConnection(VGlobal.Stage _stage) {
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
 			int counter = 1;
 			List<CrevoxState.VolumeDataEx> volumeList = nowState.ResultVolumeDatas;
@@ -194,10 +194,10 @@ namespace CrevoxExtend {
 			Debug.Log("Replace " + counter + " connections.");
 			Debug.Log(stopWatch.ElapsedMilliseconds + " ms");
 			stopWatch.Stop();
-			CrevoxOperation.TransformStateIntoObject (nowState, artPack, generateVolume);
+			CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
 		}
 		// Realtime level generation II
-		public static void GenerateLevel(CreVoxNode root, string volumeDataPath, int seed) {
+		public static void GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
 			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 			List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 			foreach (var node in Alphabet.Nodes) {
@@ -207,9 +207,9 @@ namespace CrevoxExtend {
 				alphabets.Add(node);
 				volumeDatas.Add(new List<VolumeData>());
 			}
-			if (volumeDataPath != "") {
+			if (_stage.vDataPath != "") {
 				// Get the files.
-				string[] files = Directory.GetFiles(volumeDataPath);
+				string[] files = Directory.GetFiles(_stage.vDataPath);
 				const string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
 				for (int i = 0; i < files.Length; i++) {
 					if (Regex.IsMatch(files[i], regex)) {
@@ -231,7 +231,7 @@ namespace CrevoxExtend {
 			AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 			SameVolumeDatas = volumeDatas;
 			InitialTable(seed);
-			Generate();
+			Generate(_stage);
 		}
 	}
 }

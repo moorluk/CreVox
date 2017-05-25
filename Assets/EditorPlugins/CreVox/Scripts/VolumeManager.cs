@@ -18,17 +18,19 @@ namespace CreVox
 	{
 		public List<Dungeon> dungeons;
 		public PaletteItem[] itemArray;
-		public bool autoRun;
+		public bool autoRun = true;
 
 		void Awake ()
 		{
-			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-			if (v.Length > 0) {
-				UpdateDungeon ();
+			if (autoRun) {
+				Volume[] v = transform.GetComponentsInChildren<Volume> (false);
+				if (v.Length > 0) {
+					UpdateDungeon ();
 
-				if (VGlobal.GetSetting ().FakeDeco) {
-					for (int i = 0; i < v.Length; i++) {
-						GameObject.Destroy (v [i].gameObject);
+					if (VGlobal.GetSetting ().FakeDeco) {
+						for (int i = 0; i < v.Length; i++) {
+							GameObject.Destroy (v [i].gameObject);
+						}
 					}
 				}
 			}
@@ -49,12 +51,12 @@ namespace CreVox
 			}
 			#endif
 
-			if (VGlobal.GetSetting().FakeDeco) {
-				CreateVoxels ();
+			if (VGlobal.GetSetting().FakeDeco && autoRun) {
+				CreateVolumes ();
             }
 		}
 
-		void CreateVoxels ()
+		public void CreateVolumes ()
 		{
 			for (int vi = 0; vi < dungeons.Count; vi++) {
 				GameObject volume = new GameObject ("Volume" + dungeons [vi].volumeData.ToString());
