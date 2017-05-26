@@ -197,7 +197,9 @@ namespace CrevoxExtend {
 			CrevoxOperation.TransformStateIntoObject (nowState, artPack, generateVolume);
 		}
 		// Realtime level generation II
-		public static void GenerateLevel(CreVoxNode root, string volumeDataPath, int seed) {
+		public static void GenerateLevel(CreVoxNode root, string volumeDataPath, int seed, String artPack, bool generateVolume) {
+			CrevoxGeneration.artPack = artPack;
+			CrevoxGeneration.generateVolume = generateVolume;
 			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 			List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 			foreach (var node in Alphabet.Nodes) {
