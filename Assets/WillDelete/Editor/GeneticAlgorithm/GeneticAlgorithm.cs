@@ -27,16 +27,21 @@ namespace CrevoxExtend {
 		Trap      = 3
 	}
 
-	[InitializeOnLoad]
 	public class CreVoxGA {
-		public static int GenerationNumber { get; set; }
-		// Crossover rate is [0, 100)
-		public static float CrossoverRate { get; set; }
-		// Mutation rate is [0, 100)
-		public static float MutationRate { get; set; }
-
+		public static int   GenerationNumber { get; set; }
+		public static float CrossoverRate    { get; set; }
+		public static float MutationRate     { get; set; }
+		// Game patterns objects are expressed via Enemy, 
+		private static GameObject GamePatternObjects {
+			get {
+				return GameObject.Find("GamePatternObjects") ?? new GameObject("GamePatternObjects");
+			}
+			set {
+				GamePatternObjects = value;
+			}
+		}
 		private static readonly string[] _picecName = { "Gnd.in.one" };
-		private static GameObject genePos = new GameObject("genePos");
+
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 		public static string GenesScore;
 		public static Dictionary<Vector3, CreVoxGene> tiles = new Dictionary<Vector3, CreVoxGene>();
@@ -44,24 +49,27 @@ namespace CrevoxExtend {
 		// Constructor.
 		static CreVoxGA() {
 			GenerationNumber = 20;
-			CrossoverRate    = 100.0f;
-			MutationRate     =   1.0f;
+			// Crossover rate is [0, 100)
+			CrossoverRate    = 1f;
+			// Mutation rate is [0, 100)
+			MutationRate     = 1.0f;
+		}
+
+		public static void Initialize() {
+			foreach (Transform child in GamePatternObjects.transform) {
+				GameObject.DestroyImmediate(child.gameObject);
+			}
 		}
 
 		// Add the 'Level settings' in 'Dungeon' menu.
-		[MenuItem("Dungeon/沒有CSV，直接跑GA", false, 99)]
+		[MenuItem("Dungeon/沒有CSV，直接跑GA", false, 998)]
 		public static void GoFighting() {
 			Segmentism();
 		}
 
-		// Add the 'Level settings' in 'Dungeon' menu.
-		[MenuItem("Dungeon/gg，直接跑GA", false, 99)]
-		public static void GoFigh() {
-			var sysra = new SystemRandom(100);
-			Debug.Log(Random.Range(0.0f, 100.0f));
-		}
-
 		public static void Segmentism() {
+			Initialize();
+			// Start timer.
 			Stopwatch sw = new Stopwatch();
 			sw.Start();
 			foreach (var volume in getVolumeByVolumeManager()) {
@@ -149,13 +157,12 @@ namespace CrevoxExtend {
 		//make the best gene is added into world.
 		public static void BestChromosomeToWorldPos(Dictionary<Vector3, CreVoxGene> tiles, IChromosome bestChromosome) {
 			// foreach (var gene in bestChromosome.GetGenes()) {
-			genePos = GameObject.Find("genePos") ?? new GameObject("genePos");
 			var genes = bestChromosome.GetGenes();
 			for (int i = 0; i < tiles.Count; i++) {
 				GameObject geneWorldPosition = null;
 				if ((genes[i].Value as CreVoxGene).Type != GeneType.Empty) {
 					geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-					geneWorldPosition.transform.SetParent(genePos.transform);
+					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
 					geneWorldPosition.transform.position = tiles.Keys.ElementAt(i);
 					// Set the color.
 					switch ((genes[i].Value as CreVoxGene).Type) {
@@ -221,10 +228,11 @@ namespace CrevoxExtend {
 							// + FitnessIntercept(chromosome) * 1
 							// + FitnessSupport(chromosome) * 10
 							// + FitnessEnemyDensity(chromosome) * 5
-							+ FitnessPatrol(chromosome) * 5
-							+ FitnessGuard(chromosome) * 10
+							+ FitnessPatrol(chromosome) * 3
+							+ FitnessGuard(chromosome) * 7
 							// + FitnessTesting(chromosome) * 1
-							+ FitnessEmptyDensity(chromosome)*3
+							
+							+ FitnessEmptyDensity(chromosome) * 10
 							;
 				GenesScore += fitnessValue + "\n";
 				return fitnessValue;

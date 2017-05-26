@@ -11,7 +11,7 @@ namespace CrevoxExtend {
 	public class Experiments {
 		// Add the 'test' in 'Dungeon' menu.
 		//test the A* for volume.
-		[MenuItem("Dungeon/GA and export", false, 99)]
+		[MenuItem("Dungeon/GA 以及輸出", false, 999)]
 		public static void ExperimentAndExport() {
 			LaunchGAExperiments();
 		}
