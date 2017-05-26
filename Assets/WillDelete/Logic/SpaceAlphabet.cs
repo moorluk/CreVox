@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEditor;
 using CreVox;
-using MissionGrammarSystem;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace CrevoxExtend {
 	public class SpaceAlphabet {
@@ -17,6 +17,7 @@ namespace CrevoxExtend {
 		private static List<string> alphabets = new List<string>();
 		public static List<bool> isSelected = new List<bool>() { false };
 
+#if UNITY_EDITOR
 		public static void Load() {
 			isSelected = new List<bool>() { false };
 			alphabets = new List<string>() { "Default" };
@@ -78,5 +79,6 @@ namespace CrevoxExtend {
 		private static GameObject GetPrefab(string name) {
 			return (Resources.Load(@"CreVox/VolumeArtPack/LevelPieces/4_Sign/ConnectionTypes/"+name) as GameObject);
 		}
+#endif
 	}
 }

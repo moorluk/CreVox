@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using CreVox;
-using UnityEditor;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace CrevoxExtend {
 
@@ -47,7 +44,6 @@ namespace CrevoxExtend {
 		// Update and repaint.
 		private static void RefreshVolume() {
 			resultVolumeManager.UpdateDungeon();
-			SceneView.RepaintAll();
 		}
 		// Destroy all volume.
 		private static void DestroyVolume() {
@@ -56,7 +52,9 @@ namespace CrevoxExtend {
 		}
 		// Get volumedata via path as string.
 		public static VolumeData GetVolumeData(string path) {
-			VolumeData vdata = (VolumeData) UnityEditor.AssetDatabase.LoadAssetAtPath(path, typeof(VolumeData));
+			path = path.Substring(path.IndexOf("Resources") + 10, path.Length - path.IndexOf("Resources") - 10);
+			path = path.Replace("\\", "/").Replace(".asset", "");
+			VolumeData vdata = Resources.Load<VolumeData>(path);
 			return vdata;
 		}
 	}
