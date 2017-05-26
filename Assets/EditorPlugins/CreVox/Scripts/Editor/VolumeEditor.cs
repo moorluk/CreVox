@@ -120,7 +120,7 @@ namespace CreVox
 					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
-				DrawPieceInspectedGUI ();
+			DrawPieceInspectedGUI ();
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
