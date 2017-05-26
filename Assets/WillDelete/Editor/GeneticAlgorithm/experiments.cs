@@ -8,19 +8,18 @@ using DateTime = System.DateTime;
 
 
 namespace CrevoxExtend {
-	public class experiments {
+	public class Experiments {
 		// Add the 'test' in 'Dungeon' menu.
 		//test the A* for volume.
-		[MenuItem("Dungeon/GAtest", false, 99)]
-		public static void GAtest() {
-			//Debug.Log(DateTime.Now.ToString());
-			getGAExpriments();
+		[MenuItem("Dungeon/GA and export", false, 99)]
+		public static void ExperimentAndExport() {
+			LaunchGAExperiments();
 		}
 
-		public static void getGAExpriments() {
+		public static void LaunchGAExperiments() {
 			int times = 1;
 			for (int i = 0; i < times; i++) {
-				StreamWriter sw = new StreamWriter("Export/expriment_" + (i + 1) + ".csv");
+				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
 				sw.WriteLine("FitnessSupport,all");
 				CreVoxGA.Segmentism();
 				sw.Write(CreVoxGA.GenesScore);

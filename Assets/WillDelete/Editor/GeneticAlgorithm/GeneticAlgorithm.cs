@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
-using SysRamdon = System.Random;
-using Stopwatch = System.Diagnostics.Stopwatch;
+using SystemRandom = System.Random;
+using Stopwatch    = System.Diagnostics.Stopwatch;
 using GC = System.GC;
 using Math = System.Math;
 using UnityEngine;
@@ -18,28 +18,34 @@ using GeneticSharp.Domain.Terminations;
 using CreVox;
 
 namespace CrevoxExtend {
+	// Enum for type of gene.
+	public enum GeneType {
+		Forbidden = -1,
+		Empty     = 0,
+		Enemy     = 1,
+		Treasure  = 2,
+		Trap      = 3
+	}
+
+	[InitializeOnLoad]
 	public class CreVoxGA {
-		private const int _generationNumber = 5;
-		private const float _enemyMutationRate = 0.05f;//5.0f;
-		private const float _treasureMutationRate = 0.025f;//2.0f;
-		private const float _trapMutationRate = 0.025f;//2.0f;
-		private const float _emptyMutationRate = 1.0f;
-		private const float _crossOverRate = 1.0f;
-		private const float _mutationRate = 0.1f;
-		private const int _volumeTraget = 0;
+		public static int GenerationNumber { get; set; }
+		// Crossover rate is [0, 100)
+		public static float CrossoverRate { get; set; }
+		// Mutation rate is [0, 100)
+		public static float MutationRate { get; set; }
+
 		private static readonly string[] _picecName = { "Gnd.in.one" };
 		private static GameObject genePos = new GameObject("genePos");
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 		public static string GenesScore;
-
 		public static Dictionary<Vector3, CreVoxGene> tiles = new Dictionary<Vector3, CreVoxGene>();
 
-		public enum GeneType {
-			Forbidden = -1,
-			Empty     = 0,
-			Enemy     = 1,
-			Treasure  = 2,
-			Trap      = 3
+		// Constructor.
+		static CreVoxGA() {
+			GenerationNumber = 20;
+			CrossoverRate    = 100.0f;
+			MutationRate     =   1.0f;
 		}
 
 		// Add the 'Level settings' in 'Dungeon' menu.
@@ -51,7 +57,7 @@ namespace CrevoxExtend {
 		// Add the 'Level settings' in 'Dungeon' menu.
 		[MenuItem("Dungeon/gg，直接跑GA", false, 99)]
 		public static void GoFigh() {
-			var sysra = new SysRamdon(100);
+			var sysra = new SystemRandom(100);
 			Debug.Log(Random.Range(0.0f, 100.0f));
 		}
 
@@ -71,9 +77,9 @@ namespace CrevoxExtend {
 				var population = new Population(250, 250, chromosome);
 				// Execute GA.
 				var ga = new GeneticAlgorithm(population, fitness, selection, crossover, mutation);
-				ga.Termination = new GenerationNumberTermination(_generationNumber);
-				ga.CrossoverProbability = _crossOverRate;
-				ga.MutationProbability = _mutationRate;
+				ga.Termination = new GenerationNumberTermination(GenerationNumber);
+				ga.CrossoverProbability = CrossoverRate;
+				ga.MutationProbability  = MutationRate;
 				Debug.Log("GA running...");
 				ga.Start();
 				Debug.Log("Best solution found has " + ga.BestChromosome.Fitness + " fitness.");
@@ -210,25 +216,15 @@ namespace CrevoxExtend {
 			public double Evaluate(IChromosome chromosome) {
 				double fitnessValue = default(double);
 
-				fitnessValue += 0
+				fitnessValue += 0.001
 							// + FitnessBlock(chromosome) * 10
 							// + FitnessIntercept(chromosome) * 1
 							// + FitnessSupport(chromosome) * 10
 							// + FitnessEnemyDensity(chromosome) * 5
-							// + FitnessPatrol(chromosome) *1
+							+ FitnessPatrol(chromosome) * 5
 							+ FitnessGuard(chromosome) * 10
 							// + FitnessTesting(chromosome) * 1
 							+ FitnessEmptyDensity(chromosome)*3
-
-							// + (FitnessBlock(chromosome) * 10
-							// + FitnessIntercept(chromosome) * 1
-							// + FitnessSupport(chromosome) * 2.5
-							// + FitnessEnemyDensity(chromosome) * 5
-							// + FitnessPatrol(chromosome) *1
-							// + FitnessGuard(chromosome) * 3
-							// + FitnessTesting(chromosome) * 1
-							// + FitnessEmptyDensity(chromosome)*3
-							// * FitnessEmptyDensity(chromosome)
 							;
 				GenesScore += fitnessValue + "\n";
 				return fitnessValue;
@@ -467,7 +463,11 @@ namespace CrevoxExtend {
 			//}
 		}
 
+		// Two-point crossover.
 		public class MyCrossover : CrossoverBase {
+			public int SwapPointOneGeneIndex { get; set; }
+			public int SwapPointTwoGeneIndex { get; set; }
+
 			public MyCrossover() : base(2, 2) {
 
 			}
@@ -481,34 +481,24 @@ namespace CrevoxExtend {
 				return CreateChildren(firstParent, secondParent);
 			}
 
-			protected IList<IChromosome> CreateChildren(IChromosome leftParent, IChromosome rightParent) {
-				List<Gene> leftParentGenes = leftParent.GetGenes().ToList();
-				List<Gene> rightParentGenes = rightParent.GetGenes().ToList();
-
-				var firstCutGenesCount = Random.Range(0, leftParentGenes.Count);
-				var secondCutGenesCount = Random.Range(firstCutGenesCount, rightParentGenes.Count);
-
-				var leftParentRange = leftParentGenes.GetRange(firstCutGenesCount, secondCutGenesCount - firstCutGenesCount);
-				var rightParentRange = rightParentGenes.GetRange(firstCutGenesCount, secondCutGenesCount - firstCutGenesCount);
-
-				// // Remove the range in right-hand side from left-hand side.
-				// foreach (var gene in leftParentRange) {
-				// 	rightParentGenes.RemoveAll(g => (gene.Value as CreVoxGene).Id == (g.Value as CreVoxGene).Id);
-				// }
-				// foreach (var gene in rightParentRange) {
-				// 	leftParentGenes.RemoveAll(g => (gene.Value as CreVoxGene).Id == (g.Value as CreVoxGene).Id);
-				// }
-
-				// leftParentGenes.InsertRange(firstCutGenesCount, rightParentRange);
-				// rightParentGenes.InsertRange(firstCutGenesCount, leftParentRange);
-
-				var firstChild = leftParent.CreateNew();
-				var secondChild = rightParent.CreateNew();
-
-				firstChild.ReplaceGenes(0, leftParentGenes.ToArray());
-				secondChild.ReplaceGenes(0, rightParentGenes.ToArray());
+			protected IList<IChromosome> CreateChildren(IChromosome firstParent, IChromosome secondParent) {
+				SwapPointOneGeneIndex = Random.Range(0, firstParent.GetGenes().ToList().Count - 1);
+				SwapPointTwoGeneIndex = Random.Range(SwapPointOneGeneIndex, firstParent.GetGenes().ToList().Count);
+				var firstChild  = CreateChild(firstParent, secondParent);
+				var secondChild = CreateChild(secondParent, firstParent);
 
 				return new List<IChromosome>() { firstChild, secondChild };
+			}
+
+			protected IChromosome CreateChild(IChromosome leftParent, IChromosome rightParent) {
+				var firstCutGenesCount  = SwapPointOneGeneIndex + 1;
+				var secondCutGenesCount = SwapPointTwoGeneIndex + 1;
+				var child = leftParent.CreateNew();
+				child.ReplaceGenes(0, leftParent.GetGenes().Take(firstCutGenesCount).ToArray());
+				child.ReplaceGenes(firstCutGenesCount, rightParent.GetGenes().Skip(firstCutGenesCount).Take(secondCutGenesCount - firstCutGenesCount).ToArray());
+				child.ReplaceGenes(secondCutGenesCount, leftParent.GetGenes().Skip(secondCutGenesCount).ToArray());
+
+				return child;
 			}
 		}
 
@@ -517,7 +507,7 @@ namespace CrevoxExtend {
 			private Dictionary<Vector3, CreVoxGene> GenePositions { get; set; }
 
 			public MyProblemChromosome(Dictionary<Vector3, CreVoxGene> genePositions) : base(genePositions.Count) {
-				this.GenePositions = genePositions;
+				GenePositions = genePositions;
 				CreateGenes();
 			}
 
@@ -529,7 +519,7 @@ namespace CrevoxExtend {
 				// this index is for gene of chromosome.
 				int index = 0;
 				foreach (var pair in GenePositions) {
-					this.ReplaceGene(index++, new Gene(new CreVoxGene(GeneType.Empty)));
+					ReplaceGene(index++, new Gene(new CreVoxGene(GeneType.Empty)));
 				}
 			}
 
@@ -544,34 +534,28 @@ namespace CrevoxExtend {
 			public bool IsOrdered { get; private set; }
 
 			public void Mutate(IChromosome chromosome, float probability) {
-				var genes = chromosome.GetGenes();
-				foreach (var gene in genes) {
+				var seed = Random.Range(0.0f, 100.0f);
+				// If out of seed range, skip this mutation.
+				if (seed > probability) {
+					return;
+				}
+				// Start to mutate.
+				var random = new SystemRandom();
+				// Filtering the percent numbers for genes.
+				var genes         = chromosome.GetGenes().ToList();
+				var percent       = (int) Math.Ceiling(Random.Range(0.05f, 0.20f) * genes.Count);
+				var filteredGenes = genes.OrderBy(g => random.Next()).Take(percent).ToList();
+				// Change type each gene.
+				foreach (var gene in filteredGenes) {
 					var CVGene = gene.Value as CreVoxGene;
-					var seed = Random.Range(0.0f, 100.0f);
-					//sysra.Next(0,100);				   
-					if (seed < _enemyMutationRate) {
-						CVGene.Type = GeneType.Enemy;
-						continue;
-					}
-					//seed -= _enemyMutationRate;
-					seed = Random.Range(0.0f, 100.0f);
-					if (seed < _emptyMutationRate) {
-						CVGene.Type = GeneType.Empty;
-						continue;
-					}
-					//seed -= _enemyMutationRate;
-					seed = Random.Range(0.0f, 100.0f);
-					if (seed < _treasureMutationRate) {
-						CVGene.Type = GeneType.Treasure;
-						continue;
-					}
-					// //seed -= _treasureMutationRate;
-					// seed = Random.Range(0.0f, 100.0f);
-					// if (seed < _trapMutationRate) {
-					//	 CVGene.Type = GeneType.Trap;
-					//	 continue;
-					// }
 
+					var types = System.Enum
+						.GetValues(typeof(GeneType))
+						.Cast<GeneType>()
+						.Where(t => t != GeneType.Forbidden && t != CVGene.Type)
+						.ToArray();
+
+					CVGene.Type = types[Random.Range(0, types.Length)];
 				}
 			}
 		}
@@ -585,7 +569,7 @@ namespace CrevoxExtend {
 			}
 
 			public CreVoxGene(GeneType type) {
-				this.Type = type;
+				Type = type;
 			}
 		}
 	}
