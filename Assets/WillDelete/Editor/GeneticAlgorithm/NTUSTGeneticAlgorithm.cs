@@ -22,35 +22,35 @@ namespace NTUSTGA
             this.sample = sample;
         }
 
-        abstract public void crossover(ref NTUSTChromosome parentCopy1, ref NTUSTChromosome parentCopy2);
+        abstract public void Crossover(ref NTUSTChromosome parentCopy1, ref NTUSTChromosome parentCopy2);
 
-        abstract public void mutation(ref NTUSTChromosome chrom);
+        abstract public void Mutation(ref NTUSTChromosome chrom);
 
-        public NTUSTChromosome algorithm(int countOfChromosome, int countOfGeneration)
+        public NTUSTChromosome Algorithm(int countOfChromosome, int countOfGeneration)
         {
-            initChromosome(countOfChromosome);
+            InitChromosome(countOfChromosome);
 
             for (int i = 0; i < countOfGeneration; i++)
             {
                 //printGeneration(chromosomes, i);
-                prepareSelection();
+                PrepareSelection();
                 List<NTUSTChromosome> newGeneration = new List<NTUSTChromosome>();
                 for (int j = 0; j < currentGeneration.Count; j += 2)
                 {
-                    NTUSTChromosome target1 = currentGeneration[selection()].copy();
-                    NTUSTChromosome target2 = currentGeneration[selection()].copy();
+                    NTUSTChromosome target1 = currentGeneration[Selection()].Copy();
+                    NTUSTChromosome target2 = currentGeneration[Selection()].Copy();
 
                     if (crossoverRate > Random.Range(0.0f, 1.0f))
                     {
-                        crossover(ref target1, ref target2);
+                        Crossover(ref target1, ref target2);
                     }
                     if (mutationRate > Random.Range(0.0f, 1.0f))
                     {
-                        mutation(ref target1);
+                        Mutation(ref target1);
                     }
                     if (mutationRate > Random.Range(0.0f, 1.0f))
                     {
-                        mutation(ref target2);
+                        Mutation(ref target2);
                     }
                     newGeneration.Add(target1);
                     newGeneration.Add(target2);
@@ -59,32 +59,32 @@ namespace NTUSTGA
             }
             
 
-            prepareSelection();
-            return currentGeneration[selection()];
+            PrepareSelection();
+            return currentGeneration[Selection()];
         }
 
-        void initChromosome(int countOfChromosome)
+        void InitChromosome(int countOfChromosome)
         {
             currentGeneration.Clear();
             for (int i = 0; i < countOfChromosome; i++)
-                currentGeneration.Add(sample.randomInitialize());
+                currentGeneration.Add(sample.RandomInitialize());
         }
 
         #region Selection
         List<float> wheel = new List<float>();
 
-        void prepareSelection()
+        void PrepareSelection()
         {
             float sum = 0.0f;
             wheel.Clear();
             for (int i = 0; i < currentGeneration.Count; ++i)
             {
-                sum += currentGeneration[i].fitnessFunction();
+                sum += currentGeneration[i].FitnessFunction();
                 wheel.Add(sum);
             }
         }
 
-        int selection()
+        int Selection()
         {
 
             float random = Random.Range(0.0f, wheel[wheel.Count - 1]);

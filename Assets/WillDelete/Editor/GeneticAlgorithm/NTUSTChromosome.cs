@@ -7,19 +7,19 @@ namespace NTUSTGA
     abstract public class NTUSTChromosome
     {
 
-        public List<NTUSTGene> genes = new List<NTUSTGene>();
+        public List<NTUSTGene> Genes = new List<NTUSTGene>();
 
-        abstract public class NTUSTGene
+        public abstract class NTUSTGene
         {
 
-            abstract public NTUSTGene copy();
+            abstract public NTUSTGene Copy();
         }
 
-        abstract public float fitnessFunction();
+        public abstract float FitnessFunction();
 
-        abstract public NTUSTChromosome copy();
+        public abstract NTUSTChromosome Copy();
 
-        abstract public NTUSTChromosome randomInitialize();
+        public abstract NTUSTChromosome RandomInitialize();
     }
 }
 
