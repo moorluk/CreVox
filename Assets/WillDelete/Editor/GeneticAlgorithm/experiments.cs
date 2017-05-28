@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Math         = System.Math;
 using StreamWriter = System.IO.StreamWriter;
 using Stopwatch    = System.Diagnostics.Stopwatch;
 
@@ -22,7 +23,7 @@ namespace CrevoxExtend {
 			for (int i = 0; i < times; i++) {
 				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
 				sw.WriteLine("FitnessSupport,all");
-				CreVoxGA.Segmentism();
+				CreVoxGA.Segmentism(250, 20);
 				sw.Write(CreVoxGA.GenesScore);
 				sw.Close();
 			}
@@ -35,10 +36,14 @@ namespace CrevoxExtend {
 	}
 
 	public class EditorDashboardWindow : EditorWindow {
+		private static int GenerationCount = 20;
+		private static int PopulationCount = 250;
+
 		private static int   EnemyCount    { get; set; }
 		private static int   TreasureCount { get; set; }
 		private static int   TrapCount     { get; set; }
 		private static int   EmptyCount    { get; set; }
+
 		private static long  TimeCost      { get; set; }
 		private static float OptimalScore  { get; set; }
 
@@ -66,13 +71,16 @@ namespace CrevoxExtend {
 			buttonStyle.fontSize = 20;
 			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
 
+			GenerationCount = Math.Max(1, EditorGUILayout.IntField("世代數量", GenerationCount, labelStyle));
+			PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", PopulationCount, labelStyle));
+
 			if (GUILayout.Button("跑跑 GA", buttonStyle, GUILayout.Height(35))) {
 				// Start timer.
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
 				// Core function.
 				CreVoxGA.SetWeights(FitnessWeights);
-				var bestChromosome = CreVoxGA.Segmentism();
+				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount);
 				// Stop timer.
 				sw.Stop();
 				TimeCost = sw.ElapsedMilliseconds;

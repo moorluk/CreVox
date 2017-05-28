@@ -28,6 +28,8 @@ namespace CrevoxExtend {
 	}
 
 	public class CreVoxGA {
+		public static int GenerationNumber { get; set; }
+		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
 
 		// Game patterns objects are expressed via Enemy, 
@@ -42,6 +44,8 @@ namespace CrevoxExtend {
 
 		// Constructor.
 		static CreVoxGA() {
+			GenerationNumber = 20;
+			PopulationNumber = 250;
 			FitnessWeights = new Dictionary<string, int>() {
 				{ "neglected", 0 },
 				{ "block"    , 0 },
@@ -63,13 +67,18 @@ namespace CrevoxExtend {
 			}
 		}
 
-		public static NTUSTChromosome Segmentism() {
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber) {
 			Initialize();
+
+			// Set the number of population and generation.
+			PopulationNumber = populationNumber;
+			GenerationNumber = generationNumber;
+
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume));
 
 				// Populations, Generations.
-				var bestChromosome = ntustGA.Algorithm(250, 20) as CreVoxChromosome;
+				var bestChromosome = ntustGA.Algorithm(PopulationNumber, GenerationNumber) as CreVoxChromosome;
 
 				BestChromosomeToWorldPos(bestChromosome);
 
