@@ -389,8 +389,6 @@ namespace CreVox
 						Event.current.type = EventType.mouseDown;
 						Event.current.button = 0;
 					}
-				} else {
-					Debug.LogWarning ("Cannot find item node[" + blockItem.pieceName + "](" + blockItem.BlockPos + ")");
 				}
 				Handles.color = defColor;
 			}

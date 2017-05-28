@@ -8,7 +8,6 @@ namespace CreVox
     public class PrefabPieceEditor : LevelPieceEditor
 	{
 		string[] artpacks;
-//		bool drawDef = false;
 		PrefabPiece pp;
 		GameObject tempObjold;
 		void OnEnable()
@@ -23,13 +22,7 @@ namespace CreVox
 			EditorGUI.BeginChangeCheck ();
 			pp.APId = EditorGUILayout.Popup ("ArtPack", pp.APId, artpacks);
 			pp.artPack = artpacks[pp.APId];
-
-//			drawDef = EditorGUILayout.Foldout (drawDef, "Default Inspector");
-//			if (drawDef) {
-				EditorGUI.indentLevel++;
-				DrawDefaultInspector ();
-				EditorGUI.indentLevel = 0;
-//			}
+			DrawDefaultInspector ();
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (pp);
 		}
@@ -37,13 +30,13 @@ namespace CreVox
         public override void OnEditorGUI(ref BlockItem item)
         {
 			PrefabPiece pp = (PrefabPiece)target;
-			tempObjold = pp.artPrefab;
+			if (pp.artPrefab != null)
+				tempObjold = pp.artPrefab;
 
             EditorGUI.BeginChangeCheck();
-			pp.artPrefab = (GameObject)EditorGUILayout.ObjectField ("Prefab", pp.artPrefab, typeof(GameObject));
-            if (EditorGUI.EndChangeCheck())
-			{
-				if (pp.artPrefab != null) {
+			pp.artPrefab = (GameObject)EditorGUILayout.ObjectField ("Prefab", pp.artPrefab, typeof(GameObject),false);
+			if (EditorGUI.EndChangeCheck ()) {
+				if (pp.artPrefab != null && item != null) {
 					string _path = AssetDatabase.GetAssetPath (pp.artPrefab);
 					_path = _path.Substring (_path.IndexOf (PathCollect.resourceSubPath));
 					string _name = Path.GetFileNameWithoutExtension (_path);
@@ -53,14 +46,22 @@ namespace CreVox
 						item.attributes [0] = _name;
 						if (pp.artInstance != null)
 							GameObject.DestroyImmediate (pp.artInstance, false);
-						EditorUtility.SetDirty(pp);
-						pp.SetupPiece(item);
+						EditorUtility.SetDirty (pp);
+						pp.SetupPiece (item);
 					} else {
 						item.attributes [0] = "";
 						pp.artPrefab = tempObjold;
 					}
 				}
 			}
+			EditorGUI.BeginChangeCheck();
+			pp.isRoot = EditorGUILayout.Toggle ("Force Zero Position", pp.isRoot);
+			if (EditorGUI.EndChangeCheck ()) {
+				item.attributes [1] = pp.isRoot.ToString ();
+				EditorUtility.SetDirty (pp);
+				pp.SetupPiece (item);
+			}
+
 			EditorGUILayout.HelpBox (PathCollect.artDeco + "/" + pp.artPack + "/ArtPrefab/" + item.attributes [0],MessageType.None);
 			EditorGUILayout.LabelField ("Path:",PathCollect.artDeco +"/(ArtPack)/ArtPrefab",EditorStyles.miniLabel);
 			EditorGUILayout.LabelField ("ArtPack:",pp.artPack,EditorStyles.miniLabel);

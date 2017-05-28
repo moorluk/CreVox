@@ -282,7 +282,6 @@ namespace CreVox
 			if (itemNodes.ContainsKey (blockItem))
 				return itemNodes [blockItem];
 			else {
-				Debug.LogWarning ("Cannot find item node("/* + vd.blockItems.BinarySearch(blockItem) + ": "*/ + blockItem.pieceName + ") !!!");
 				return null;
 			}
 		}
