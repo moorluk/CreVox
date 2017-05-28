@@ -35,16 +35,32 @@ namespace CrevoxExtend {
 	}
 
 	public class EditorDashboardWindow : EditorWindow {
-		private static int EnemyCount    { get; set; }
-		private static int TreasureCount { get; set; }
-		private static int TrapCount     { get; set; }
-		private static int EmptyCount    { get; set; }
+		private static int   EnemyCount    { get; set; }
+		private static int   TreasureCount { get; set; }
+		private static int   TrapCount     { get; set; }
+		private static int   EmptyCount    { get; set; }
+		private static long  TimeCost      { get; set; }
+		private static float OptimalScore  { get; set; }
+
+		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>() {
+			{ "neglected", 0 },
+			{ "block"    , 0 },
+			{ "intercept", 0 },
+			{ "patrol"   , 0 },
+			{ "guard"    , 0 },
+			{ "dominated", 0 },
+			{ "support"  , 0 }
+		};
 
 		void OnGUI() {
 			// GUI styles.
 			GUIStyle textStyle = new GUIStyle();
 			textStyle.fontSize = 18;
 			textStyle.margin = new RectOffset(10, 10, 5, 5);
+
+			GUIStyle labelStyle = new GUIStyle(GUI.skin.textField);
+			labelStyle.fontSize = 12;
+			labelStyle.margin = new RectOffset(10, 10, 5, 5);
 
 			GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
 			buttonStyle.fontSize = 20;
@@ -55,23 +71,38 @@ namespace CrevoxExtend {
 				Stopwatch sw = new Stopwatch();
 				sw.Start();
 				// Core function.
-				// CreVoxGA.SetWeights();
+				CreVoxGA.SetWeights(FitnessWeights);
 				var bestChromosome = CreVoxGA.Segmentism();
-				UpdateObjectInfo(bestChromosome);
 				// Stop timer.
 				sw.Stop();
-				Debug.Log(sw.ElapsedMilliseconds + " ms");
+				TimeCost = sw.ElapsedMilliseconds;
+				// Update informations.
+				UpdateObjectInfo(bestChromosome);
 			}
 
 			if (GUILayout.Button("揮揮衣袖不帶走一點雲彩", buttonStyle, GUILayout.Height(35))) {
 				CreVoxGA.Initialize();
 			}
 
+			EditorGUI.BeginDisabledGroup(true);
+			FitnessWeights["neglected"] = EditorGUILayout.IntField("死角點權重", FitnessWeights["neglected"], labelStyle);
+			FitnessWeights["block"]     = EditorGUILayout.IntField("阻擋點權重", FitnessWeights["block"], labelStyle);
+			FitnessWeights["intercept"] = EditorGUILayout.IntField("攔截點權重", FitnessWeights["intercept"], labelStyle);
+			FitnessWeights["patrol"]    = EditorGUILayout.IntField("巡邏點權重", FitnessWeights["patrol"], labelStyle);
+			EditorGUI.EndDisabledGroup();
+			FitnessWeights["guard"]     = EditorGUILayout.IntField("守衛點權重", FitnessWeights["guard"], labelStyle);
+			EditorGUI.BeginDisabledGroup(true);
+			FitnessWeights["dominated"] = EditorGUILayout.IntField("至高點權重", FitnessWeights["dominated"], labelStyle);
+			FitnessWeights["support"]   = EditorGUILayout.IntField("支援點權重", FitnessWeights["support"], labelStyle);
+			EditorGUI.EndDisabledGroup();
+			
 			// Description.
 			var description = "敵人數量: " + EnemyCount + "\n"
 							+ "寶箱數量: " + TreasureCount + "\n"
 							+ "陷阱數量: " + TrapCount + "\n"
-							+ "空格數量: " + EmptyCount + "\n";
+							+ "空格數量: " + EmptyCount + "\n\n"
+							+ "最佳得分: " + OptimalScore + "\n"
+							+ "演化總耗時: " + TimeCost + " ms\n";
 			GUILayout.TextField(description, textStyle);
 		}
 
@@ -96,6 +127,8 @@ namespace CrevoxExtend {
 			TreasureCount = treasures.Count;
 			TrapCount     = traps.Count;
 			EmptyCount    = empties.Count;
+
+			OptimalScore = chromosome.FitnessFunction();
 		}
 	}
 }

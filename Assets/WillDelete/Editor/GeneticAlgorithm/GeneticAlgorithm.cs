@@ -53,6 +53,10 @@ namespace CrevoxExtend {
 			};
 		}
 
+		public static void SetWeights(Dictionary<string, int> fitnessWeights) {
+			FitnessWeights = fitnessWeights;
+		}
+
 		public static void Initialize() {
 			foreach (var child in GamePatternObjects.transform.Cast<Transform>().ToList()) {
 				GameObject.DestroyImmediate(child.gameObject);
@@ -65,7 +69,7 @@ namespace CrevoxExtend {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume));
 
 				// Populations, Generations.
-				var bestChromosome = ntustGA.Algorithm(100, 100) as CreVoxChromosome;
+				var bestChromosome = ntustGA.Algorithm(250, 20) as CreVoxChromosome;
 
 				BestChromosomeToWorldPos(bestChromosome);
 
@@ -252,7 +256,7 @@ namespace CrevoxExtend {
 			public override float FitnessFunction() {
 				return 0.001f
 					+ FitnessGuard() * FitnessWeights["guard"]
-					// + FitnessEmptyDensity() * 1
+					+ FitnessEmptyDensity() * 1
 				;
 			}
 
