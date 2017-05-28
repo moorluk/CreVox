@@ -95,7 +95,7 @@ namespace CrevoxExtend {
 			FitnessWeights["dominated"] = EditorGUILayout.IntField("至高點權重", FitnessWeights["dominated"], labelStyle);
 			FitnessWeights["support"]   = EditorGUILayout.IntField("支援點權重", FitnessWeights["support"], labelStyle);
 			EditorGUI.EndDisabledGroup();
-			
+
 			// Description.
 			var description = "敵人數量: " + EnemyCount + "\n"
 							+ "寶箱數量: " + TreasureCount + "\n"
@@ -117,7 +117,7 @@ namespace CrevoxExtend {
 
 			var traps = chromosome.Genes
 				.Select(g => g as CreVoxGA.CreVoxGene)
-				.Where(g => g.Type == GeneType.Treasure).ToList();
+				.Where(g => g.Type == GeneType.Trap).ToList();
 
 			var empties = chromosome.Genes
 				.Select(g => g as CreVoxGA.CreVoxGene)

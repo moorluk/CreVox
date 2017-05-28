@@ -254,7 +254,7 @@ namespace CrevoxExtend {
 			}
 
 			public override float FitnessFunction() {
-				return 0.001f
+				return 0.0f
 					+ FitnessGuard() * FitnessWeights["guard"]
 					+ FitnessEmptyDensity() * 1
 				;
