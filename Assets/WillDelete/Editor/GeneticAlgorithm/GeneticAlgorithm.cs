@@ -39,6 +39,7 @@ namespace CrevoxExtend {
 			}
 		}
 		private static readonly string[] _picecName = { "Gnd.in.one" };
+		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 
 		public static string GenesScore;
 
@@ -127,7 +128,7 @@ namespace CrevoxExtend {
 			// Each item.
 			foreach (Transform item in items) {
 				// Ignore it if it is not connection.
-				if (!item.name.Contains("Connection_")) { continue; }
+				if (! item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
 				endPosition = item.transform.position;
 				// Execute the A-Star.
@@ -188,9 +189,6 @@ namespace CrevoxExtend {
 			}
 			return tiles;
 		}
-
-		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
-
 
 		public class CreVoxGAA : NTUSTGeneticAlgorithm {
 			public CreVoxGAA(float crossoverRate, float mutationRate, NTUSTChromosome sample) : base(crossoverRate, mutationRate, sample) {
@@ -264,35 +262,66 @@ namespace CrevoxExtend {
 
 			public override float FitnessFunction() {
 				return 0.0f
-					+ FitnessGuard() * FitnessWeights["guard"]
+					+ FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0
+					+ FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0
+					+ FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0
 					+ FitnessEmptyDensity() * 1
 				;
 			}
 
-			public float FitnessPatrol() {
+			public float FitnessBlock() {
+				float fitnessScore      = 0.0f;
+				float enemyWeightSum    = 0.0f;
+				float mainPathWeightSum = 0.0f;
+
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
-					.Where(g => g.Type == GeneType.Empty)
-					.ToList();
-				var ps = this.Genes
+					.Where(g => g.Type == GeneType.Enemy).ToList();
+
+				// Must have any enemy.
+				if (enemies.Count != 0) {
+					// Sum of enemy weight/count.
+					enemyWeightSum = enemies.Sum(e => (_mainPath.ContainsKey(e.pos) ? _mainPath[e.pos] : 0));
+					// Sum of the visited times in main path.
+					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
+					// Calculate the fitness score.
+					fitnessScore = (float) Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
+				}
+
+				// Write into the csv.
+				GenesScore += fitnessScore + ", ";
+
+				return fitnessScore;
+			}
+
+			public float FitnessPatrol() {
+				float fitnessScore  = 0.0f;
+				float radius        = 3.0f;
+				int   neighborCount = 0;
+
+				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
-					.Where(g => g.Type != GeneType.Forbidden)
-					.ToList();
-				// Path except wall(forbidden?)
+					.Where(g => g.Type == GeneType.Enemy).ToList();
+				var passables = this.Genes
+					.Select(g => g as CreVoxGene)
+					.Where(g => g.Type != GeneType.Forbidden).ToList();
 
-				double radius = 10;
-
-				float fitnessScore = 0.0f;
-				foreach (CreVoxGene enemy in enemies) {
-					foreach (CreVoxGene p in ps) {
-						if (p != enemy) {
-							// If dist less than radius.
-							if (Vector3.Distance(p.pos, enemy.pos) <= radius) {
-								fitnessScore += 1;
-							}
+				// Must have any enemy.
+				if (enemies.Count != 0) {
+					for (int i = 0; i < enemies.Count; i++) {
+						// Calculate the amount of neighbor.
+						neighborCount = passables.Sum(passable => (Vector3.Distance(passable.pos, enemies[i].pos) <= radius ? 1 : 0));
+						// If is the last one in list or not.
+						if (i != enemies.Count - 1) {
+							fitnessScore += (float) ((1.0 / Math.Pow(2, i + 1)) * neighborCount);
+						} else {
+							fitnessScore += (float) ((1.0 / Math.Pow(2, i)) * neighborCount);
 						}
 					}
 				}
+
+				// Write into the csv.
+				GenesScore += fitnessScore + ", ";
 
 				return fitnessScore;
 			}
@@ -303,12 +332,12 @@ namespace CrevoxExtend {
 				Dictionary<CreVoxGene, List<CreVoxGene>> neighbors;
 
 				var enemies = this.Genes
-						.Select(g => g as CreVoxGene)
-						.Where(g => g.Type == GeneType.Enemy).ToList();
+					.Select(g => g as CreVoxGene)
+					.Where(g => g.Type == GeneType.Enemy).ToList();
 
 				var objectives = this.Genes
-						.Select(g => g as CreVoxGene)
-						.Where(g => g.Type == GeneType.Treasure).ToList();
+					.Select(g => g as CreVoxGene)
+					.Where(g => g.Type == GeneType.Treasure).ToList();
 
 				// Must have any enemy and objective.
 				if (enemies.Count != 0 && objectives.Count != 0) {

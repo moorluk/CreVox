@@ -94,10 +94,12 @@ namespace CrevoxExtend {
 
 			EditorGUI.BeginDisabledGroup(true);
 			FitnessWeights["neglected"] = EditorGUILayout.IntField("死角點權重", FitnessWeights["neglected"], labelStyle);
-			FitnessWeights["block"]     = EditorGUILayout.IntField("阻擋點權重", FitnessWeights["block"], labelStyle);
-			FitnessWeights["intercept"] = EditorGUILayout.IntField("攔截點權重", FitnessWeights["intercept"], labelStyle);
-			FitnessWeights["patrol"]    = EditorGUILayout.IntField("巡邏點權重", FitnessWeights["patrol"], labelStyle);
 			EditorGUI.EndDisabledGroup();
+			FitnessWeights["block"]     = EditorGUILayout.IntField("阻擋點權重", FitnessWeights["block"], labelStyle);
+			EditorGUI.BeginDisabledGroup(true);
+			FitnessWeights["intercept"] = EditorGUILayout.IntField("攔截點權重", FitnessWeights["intercept"], labelStyle);
+			EditorGUI.EndDisabledGroup();
+			FitnessWeights["patrol"]    = EditorGUILayout.IntField("巡邏點權重", FitnessWeights["patrol"], labelStyle);
 			FitnessWeights["guard"]     = EditorGUILayout.IntField("守衛點權重", FitnessWeights["guard"], labelStyle);
 			EditorGUI.BeginDisabledGroup(true);
 			FitnessWeights["dominated"] = EditorGUILayout.IntField("至高點權重", FitnessWeights["dominated"], labelStyle);
