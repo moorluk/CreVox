@@ -348,9 +348,9 @@ namespace CreVox
 						handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
 
 						if (isItemSnap) {
-							float fixedX = Mathf.Round (handlePos.x/* / vg.w*/)/* * vg.w*/;
+							float fixedX = Mathf.Round (handlePos.x);
 							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
-							float fixedZ = Mathf.Round (handlePos.z/* / vg.d*/)/* * vg.d*/;
+							float fixedZ = Mathf.Round (handlePos.z);
 							pos = new Vector3 (fixedX, fixedY, fixedZ);
 						} else {
 							pos = handlePos;
@@ -362,6 +362,7 @@ namespace CreVox
 						blockItem.posZ = ItemNode.localPosition.z;
 
 						ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+
 						Quaternion tmp = ItemNode.localRotation;
 						Vector3 rot = tmp.eulerAngles;
 						rot.x = Mathf.Round (rot.x / 15f) * 15f;
