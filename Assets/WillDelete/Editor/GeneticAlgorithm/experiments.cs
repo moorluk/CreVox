@@ -11,24 +11,6 @@ using NTUSTGA;
 
 namespace CrevoxExtend {
 	public class Experiments {
-		// Add the 'test' in 'Dungeon' menu.
-		//test the A* for volume.
-		[MenuItem("Dungeon/GA 以及輸出", false, 999)]
-		public static void ExperimentAndExport() {
-			LaunchGAExperiments();
-		}
-
-		public static void LaunchGAExperiments() {
-			int times = 1;
-			for (int i = 0; i < times; i++) {
-				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
-				sw.WriteLine("FitnessSupport,all");
-				CreVoxGA.Segmentism(250, 20);
-				sw.Write(CreVoxGA.GenesScore);
-				sw.Close();
-			}
-		}
-
 		[MenuItem("Dungeon/GA 相關功能面板", false, 999)]
 		public static void EditorDashboard() {
 			EditorWindow window = EditorWindow.GetWindow<EditorDashboardWindow>("GA", true);
@@ -88,6 +70,10 @@ namespace CrevoxExtend {
 				UpdateObjectInfo(bestChromosome);
 			}
 
+			if (GUILayout.Button("一字一句寫下對你的心意", buttonStyle, GUILayout.Height(35))) {
+				LaunchGAExperiments();
+			}
+
 			if (GUILayout.Button("揮揮衣袖不帶走一點雲彩", buttonStyle, GUILayout.Height(35))) {
 				CreVoxGA.Initialize();
 			}
@@ -139,6 +125,21 @@ namespace CrevoxExtend {
 			EmptyCount    = empties.Count;
 
 			OptimalScore = chromosome.FitnessFunction();
+		}
+
+		public void LaunchGAExperiments() {
+			int times = 100;
+			for (int i = 0; i < times; i++) {
+				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
+				sw.WriteLine("Fitness,all");
+
+				// Core function.
+				CreVoxGA.SetWeights(FitnessWeights);
+				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount);
+
+				sw.Write(CreVoxGA.GenesScore);
+				sw.Close();
+			}
 		}
 	}
 }

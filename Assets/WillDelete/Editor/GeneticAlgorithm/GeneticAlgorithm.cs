@@ -63,6 +63,7 @@ namespace CrevoxExtend {
 		}
 
 		public static void Initialize() {
+			GenesScore = string.Empty;
 			foreach (var child in GamePatternObjects.transform.Cast<Transform>().ToList()) {
 				GameObject.DestroyImmediate(child.gameObject);
 			}
@@ -261,12 +262,17 @@ namespace CrevoxExtend {
 			}
 
 			public override float FitnessFunction() {
-				return 0.0f
-					+ FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0
-					+ FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0
-					+ FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0
-					+ FitnessEmptyDensity() * 1
+				float scoreSum = 0.0f
+					+ (FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0)
+					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
+					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
+					+ (FitnessEmptyDensity() * 0)
 				;
+
+				// Write into the csv.
+				GenesScore += scoreSum + "\n";
+
+				return scoreSum;
 			}
 
 			public float FitnessBlock() {
