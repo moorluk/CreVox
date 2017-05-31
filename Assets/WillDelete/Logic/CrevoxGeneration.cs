@@ -54,7 +54,7 @@ namespace CrevoxExtend {
 		public static string artPack = "";
 		public static bool generateVolume;
 		// Generate
-		public static void Generate() {
+		public static bool Generate() {
 			// Record.
 			testStopWatch = System.Diagnostics.Stopwatch.StartNew();
 			// Initialize connection table.
@@ -90,6 +90,8 @@ namespace CrevoxExtend {
 			}
 			Debug.Log(testStopWatch.ElapsedMilliseconds + " ms");
 			testStopWatch.Stop();
+			// Return boolean.
+			return nowState != null;
 		}
 		// Dfs the sequence.
 		private static bool Recursion(CrevoxState state, int edgeIndex) {
@@ -196,8 +198,8 @@ namespace CrevoxExtend {
 			stopWatch.Stop();
 			CrevoxOperation.TransformStateIntoObject (nowState, artPack, generateVolume);
 		}
-		// Realtime level generation II
-		public static void GenerateLevel(CreVoxNode root, string volumeDataPath, int seed, String artPack, bool generateVolume) {
+		// Realtime level generation II. Return succeed or failed.
+		public static bool GenerateLevel(CreVoxNode root, string volumeDataPath, int seed, String artPack, bool generateVolume) {
 			CrevoxGeneration.artPack = artPack;
 			CrevoxGeneration.generateVolume = generateVolume;
 			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
@@ -233,7 +235,7 @@ namespace CrevoxExtend {
 			AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 			SameVolumeDatas = volumeDatas;
 			InitialTable(seed);
-			Generate();
+			return Generate();
 		}
 	}
 }

@@ -10,13 +10,14 @@ namespace CrevoxExtend {
 		// Initial the resultVolumeData and create the VolumeManager.
 		public static void TransformStateIntoObject(CrevoxState state, string artPack, bool generateVolume = false) {
 			if (resultVolumeManager != null) { DestroyVolume(); }
-			GameObject volumeMangerObject = new GameObject() { name = "VolumeManger(Generated)" };
+			GameObject volumeMangerObject = new GameObject() { name = "VolumeManager(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			resultVolumeManager.dungeons = new List<Dungeon>();
 			if (generateVolume) {
 				foreach (var vdataEx in state.ResultVolumeDatas) {
 					CreateVolumeObject (vdataEx);
 					CreateDungeon (vdataEx, artPack);
+					RefreshVolume();
 				}
 			} else {
 				foreach (var vdataEx in state.ResultVolumeDatas) {

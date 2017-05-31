@@ -11,8 +11,31 @@ public class TestRealTimeRun : MonoBehaviour {
 	// Use this for initialization
 	void Start() {
 		if (XmlPath.Length > 0) {
-			CreVoxNode root = CreVoxAttach.GenerateMissionGraph(XmlPath, 538064);
-			CrevoxGeneration.GenerateLevel(root, ResourcePath, 0, "", true);
+			bool succeed = false;
+			while (!succeed) {
+				CreVoxNode root = CreVoxAttach.GenerateMissionGraph(XmlPath, Random.Range(int.MinValue, int.MaxValue));
+				succeed = CrevoxGeneration.GenerateLevel(root, ResourcePath, Random.Range(int.MinValue, int.MaxValue), "", true);
+			}
+
+
+			// [Test] Camera.
+			List<GameObject> gameList = new List<GameObject>();
+			for(int i=0;i< CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
+				gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
+			}
+			// 讓Camera照中心點 方便觀察
+			Vector3 allCenter = FindCenterPoint(gameList.ToArray());
+			Camera.main.transform.position = new Vector3(allCenter.x, Camera.main.transform.position.y, allCenter.z);
 		}
 	}
+	Vector3 FindCenterPoint(GameObject[] gos) {
+     if (gos.Length == 0)
+         return Vector3.zero;
+     if (gos.Length == 1)
+         return gos[0].transform.position;
+     var bounds = new Bounds(gos[0].transform.position, Vector3.zero);
+     for (var i = 1; i<gos.Length; i++)
+         bounds.Encapsulate(gos[i].transform.position); 
+     return bounds.center;
+ }
 }
