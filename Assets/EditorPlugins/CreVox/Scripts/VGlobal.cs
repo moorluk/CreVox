@@ -156,15 +156,17 @@ namespace CreVox
 			return StageList.Find (findStage);
 		}
 
-		public delegate void CreateStage(int _stageNumber,int seed);
-		public void GenerateStage(int _stageNumber,int seed = 0)
+		public delegate bool CreateStage(int _stageNumber,int seed);
+		public bool GenerateStage(int _stageNumber,int seed = 0)
 		{
 			Stage _s = GetStageSetting(_stageNumber);
 			if (seed == 0)
 				seed = UnityEngine.Random.Range (0, int.MaxValue);
 			if (_s.XmlPath.Length > 0) {
 				CreVoxNode root = CreVoxAttach.GenerateMissionGraph (_s.XmlPath, seed);
-				CrevoxGeneration.GenerateLevel (root, _s, 0);
+				return CrevoxGeneration.GenerateLevel (root, _s, seed);
+			} else {
+				return false;
 			}
 		}
 	}

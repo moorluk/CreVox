@@ -54,7 +54,7 @@ namespace CrevoxExtend {
 		public static VGlobal.Stage stage;
 		public static bool generateVolume;
 		// Generate
-		public static void Generate(VGlobal.Stage _stage) {
+		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
 			// Record.
 			testStopWatch = System.Diagnostics.Stopwatch.StartNew();
 			// Initialize connection table.
@@ -62,7 +62,7 @@ namespace CrevoxExtend {
 			// Initialize sequence of edges.
 			edgeList = new List<Edge>();
 			// Get sequence of edges.
-			RecursionGetSequence(CreVoxAttach.RootNode);
+			RecursionGetSequence(root != null ? root : CreVoxAttach.RootNode);
 			// Initialize state.
 			nowState = null;
 			// Get mapping vdata from root node.
@@ -90,6 +90,8 @@ namespace CrevoxExtend {
 			}
 			Debug.Log(testStopWatch.ElapsedMilliseconds + " ms");
 			testStopWatch.Stop();
+			// Return boolean.
+			return nowState != null;
 		}
 		// Dfs the sequence.
 		private static bool Recursion(CrevoxState state, int edgeIndex) {
@@ -196,8 +198,8 @@ namespace CrevoxExtend {
 			stopWatch.Stop();
 			CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
 		}
-		// Realtime level generation II
-		public static void GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
+		// Realtime level generation II. Return succeed or failed.
+		public static bool GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
 			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
 			List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
 			foreach (var node in Alphabet.Nodes) {
@@ -231,7 +233,7 @@ namespace CrevoxExtend {
 			AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
 			SameVolumeDatas = volumeDatas;
 			InitialTable(seed);
-			Generate(_stage);
+			return Generate (_stage, root);
 		}
 	}
 }
