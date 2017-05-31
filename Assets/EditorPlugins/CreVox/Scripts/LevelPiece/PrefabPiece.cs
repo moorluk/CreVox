@@ -45,6 +45,7 @@ namespace CreVox
 				artInstance = Instantiate (artPrefab);
 				#endif
 
+				this.name = artPrefab.name;
 				artInstance.transform.parent = this.transform;
 				if (item.attributes [1] == "True") {
 					Vector3 _pos = this.transform.localPosition;
