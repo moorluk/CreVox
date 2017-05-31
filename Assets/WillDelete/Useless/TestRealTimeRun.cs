@@ -25,7 +25,8 @@ public class TestRealTimeRun : MonoBehaviour {
 			}
 			// 讓Camera照中心點 方便觀察
 			Vector3 allCenter = FindCenterPoint(gameList.ToArray());
-			Camera.main.transform.position = new Vector3(allCenter.x, Camera.main.transform.position.y, allCenter.z);
+			Camera.main.transform.position = new Vector3(allCenter.x, 400.0f, allCenter.z);
+			Camera.main.transform.eulerAngles = new Vector3(90, 0, 0);
 		}
 	}
 	Vector3 FindCenterPoint(GameObject[] gos) {

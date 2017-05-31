@@ -165,7 +165,7 @@ namespace CrevoxExtend {
 				this.rotation = Quaternion.identity;
 				this.volumeData = vdata;
 				if (!ConnectionInfoVdataTable.ContainsKey(vdata)) {
-					ConnectionInfoVdataTable[vdata] = GetConnectionPosition(vdata);
+					ConnectionInfoVdataTable.Add(vdata, GetConnectionPosition(vdata));
 				}
 				this._connectionInfos = new List<ConnectionInfo>(ConnectionInfoVdataTable[vdata].Select(x => x.Clone()).ToArray());
 			}
