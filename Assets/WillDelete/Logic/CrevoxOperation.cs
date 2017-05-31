@@ -32,8 +32,7 @@ namespace CrevoxExtend {
 			volumeObject.transform.rotation = vdataEx.rotation;
 			Volume volume = volumeObject.AddComponent<Volume>();
 			volume.vd = vdataEx.volumeData;
-			VolumeExtend volumeExtend = volumeObject.AddComponent<VolumeExtend>();
-			volumeExtend.ConnectionInfos = vdataEx.ConnectionInfos;
+			volume.ConnectionInfos = vdataEx.ConnectionInfos;
 		}
 		// Create VolumeManager Dungeons.
 		public static void CreateDungeon(CrevoxState.VolumeDataEx vdataEx, string artPack) {
