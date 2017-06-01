@@ -163,7 +163,7 @@ namespace CreVox
 			if (seed == 0)
 				seed = UnityEngine.Random.Range (0, int.MaxValue);
 			if (_s.XmlPath.Length > 0) {
-				CreVoxNode root = CreVoxAttach.GenerateMissionGraph (_s.XmlPath, seed);
+				CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.save + "/" + _s.XmlPath, seed);
 				return CrevoxGeneration.GenerateLevel (root, _s, seed);
 			} else {
 				return false;

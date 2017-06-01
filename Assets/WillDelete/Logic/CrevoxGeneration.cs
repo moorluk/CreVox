@@ -211,17 +211,14 @@ namespace CrevoxExtend {
 			}
 			if (_stage.vDataPath != "") {
 				// Get the files.
-				string[] files = Directory.GetFiles(_stage.vDataPath);
-				const string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
-				for (int i = 0; i < files.Length; i++) {
-					if (Regex.IsMatch(files[i], regex)) {
-						for (int j = 0; j < alphabets.Count; j++) {
-							if (alphabets[j].Name.ToLower() == Regex.Match(files[i], regex).Groups[1].Value.ToLower()) {
-								volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i]));
-							}
+				const string regex = @"(\w+)_.+_vData$";
+				UnityEngine.Object[] vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
+				foreach (VolumeData vData in vDatas) {
+					for (int i = 0; i < alphabets.Count; i++) {
+						if (alphabets[i].Name.ToLower() == Regex.Match(vData.name, regex).Groups[1].Value.ToLower()) {
+							volumeDatas[i].Add(vData);
 						}
 					}
-
 				}
 				// if not find match vData, default null.
 				for (int j = 0; j < alphabets.Count; j++) {

@@ -39,7 +39,7 @@ public class TestRealTimeRun : MonoBehaviour {
 				while (!succeed && testTime < 20) {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
-					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (_s.XmlPath, randomSeed);
+					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.save + "/" + _s.XmlPath, randomSeed);
 					succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
 					testTime++;
 				}
