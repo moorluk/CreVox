@@ -14,14 +14,15 @@ namespace CreVox
 		public static string resourcesPath = "Assets/Resources/";
 		public static string resourceSubPath = "CreVox/";
 		
-		public static string chunk = resourceSubPath + "Chunk";
-		public static string box = resourceSubPath + "BoxCursor";
-		public static string save = resourceSubPath + "VolumeData";
-		public static string artDeco = resourceSubPath + "ArtResources";
-		public static string artPack = resourceSubPath + "VolumeArtPack";
+		public static string chunk = "CreVox/Chunk";
+		public static string box = "CreVox/BoxCursor";
+		public static string save = "CreVox/VolumeData";
+		public static string gram = "CreVox/Grammer";
+		public static string artDeco = "CreVox/ArtResources";
+		public static string artPack = "CreVox/VolumeArtPack";
 		public static string pieces = artPack + "/LevelPieces";
 		public static string defaultVoxelMaterial = pieces + "/LevelPieces_Voxel";
-		public static string camSetting = resourceSubPath + "CamSetting";
-		public static string setting = resourceSubPath + "GlobalSetting";
+		public static string camSetting = "CreVox/CamSetting";
+		public static string setting = "CreVox/GlobalSetting";
 	}
 }
