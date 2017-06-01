@@ -389,6 +389,7 @@ namespace CreVox
 						Debug.Log ("DrawEditMarker ID: " + workItemId.ToString ());
 						Event.current.type = EventType.mouseDown;
 						Event.current.button = 0;
+						EditorUtility.SetDirty (volume.vd);
 					}
 				}
 				Handles.color = defColor;
