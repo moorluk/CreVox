@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <MissionGrammar>
   <GrammarSetting>
     <StartingNode>2c1686b7-dadc-47f3-86b7-03d187de69da</StartingNode>
@@ -861,7 +861,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>add key item</Name>
@@ -1280,7 +1281,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>add level boss</Name>
@@ -1569,7 +1571,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>add master key</Name>
@@ -1923,7 +1926,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>add mini boss</Name>
@@ -2212,7 +2216,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>entrance and goal</Name>
@@ -2434,7 +2439,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>expand act 1</Name>
@@ -2723,7 +2729,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>expand act 2</Name>
@@ -3012,7 +3019,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>expand act 3</Name>
@@ -3431,7 +3439,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>lock mini boss</Name>
@@ -3785,7 +3794,8 @@
         <Valid>True</Valid>
         <Enable>True</Enable>
         <Weight>10</Weight>
-        <QuantityLimit>0</QuantityLimit>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
     </RuleGroup>
   </MissionRules>
