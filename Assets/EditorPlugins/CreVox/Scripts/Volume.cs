@@ -967,9 +967,9 @@ namespace CreVox
 			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
 			cutY = _y;
 			if (chunks != null && chunks.Count > 0)
-//				PlacePieces ();
 				UpdateChunks ();
 		}
+
 		#endif
 		#endregion
 		private List<ConnectionInfo> _connectionInfos;
