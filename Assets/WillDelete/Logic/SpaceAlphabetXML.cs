@@ -2,6 +2,7 @@
 using UnityEditor;
 using System.Collections;
 using System.Xml.Linq;
+using System.Linq;
 using System;
 
 using System.Collections.Generic;
@@ -44,10 +45,10 @@ namespace CrevoxExtend {
 			public static void UnserializeFromXml(string path) {
 				TextAsset xmlData = Resources.Load(path.Replace(".xml", "")) as TextAsset;
 				XDocument xmlDocument = (xmlData == null) ? XDocument.Load(path) : XDocument.Parse(xmlData.text);
-				UnserializeMissionGrammar(xmlDocument);
+				UnserializeSpaceAlphabet(xmlDocument);
 			}
 			// Unserialize SpaceAlphabet
-			private static void UnserializeMissionGrammar(XDocument xmlDocument) {
+			private static void UnserializeSpaceAlphabet(XDocument xmlDocument) {
 				XElement elementSpaceAlphabet = xmlDocument.Element("SpaceAlphabet");
 				UnserializeConnections(elementSpaceAlphabet);
 			}
@@ -71,6 +72,12 @@ namespace CrevoxExtend {
 					}
 					instructions.Add(connectionType, vDatas);
 				}
+
+#if UNITY_EDITOR
+				List<string> newAlphabet = element.Elements("Connection").Attributes().Select(e => e.Value).ToList();
+				SpaceAlphabet.alphabetUpdate(newAlphabet);
+				SpaceAlphabet._isChanged = true;
+#endif
 				return instructions;
 			}
 		}

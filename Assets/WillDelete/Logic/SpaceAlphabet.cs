@@ -16,6 +16,7 @@ namespace CrevoxExtend {
 		private static string prefabRegex = @".*[\\\/]Connection_(\w+)\.prefab$";
 		private static List<string> alphabets = new List<string>();
 		public static List<bool> isSelected = new List<bool>() { false };
+		public static bool _isChanged = false;
 
 #if UNITY_EDITOR
 		public static void Load() {
@@ -66,18 +67,19 @@ namespace CrevoxExtend {
 		public static void NewPrefab(string fileName) {
 			if(!File.Exists(_path + fileName + ".prefab")) {
 				File.Copy(_path + "Connection_Default.prefab", _path + fileName + ".prefab");
-				AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/" + fileName + ".prefab");
-				GetPrefab(fileName).GetComponent<PaletteItem>().itemName = fileName;
+				AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
+				PaletteItem pt  = GetPrefab(fileName).GetComponent<PaletteItem>();
+				pt.itemName = fileName;
 			}
 		}
 		public static void DeletePrefab(string fileName) {
-			AssetDatabase.DeleteAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\4_Sign\ConnectionTypes/" + fileName + ".prefab");
+			AssetDatabase.DeleteAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
 		}
 		public static List<string> Alphabets {
 			get { return alphabets; }
 		}
 		private static GameObject GetPrefab(string name) {
-			return (Resources.Load(@"CreVox/VolumeArtPack/LevelPieces/4_Sign/ConnectionTypes/"+name) as GameObject);
+			return (Resources.Load(@"CreVox\VolumeArtPack\LevelPieces\2_System/"+name) as GameObject);
 		}
 #endif
 		public static VolumeData GetReplaceVData(string fileName) {
