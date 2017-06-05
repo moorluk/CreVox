@@ -127,20 +127,31 @@ namespace CrevoxExtend {
 				state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingVdata);
 				// Get startingNode from the end node.
 				ConnectionInfo startingNode = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => !x.used && x.type == ConnectionInfoType.StartingNode);
-				// Get connection from the start node.
-				foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
-					// Ignore used or type-error connection.
-					if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
-					// Combine.
-					if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, startingNode)) {
-						// Success then add this vdata to state.
-						state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
-						// Recursion next level.
-						if(Recursion(state, edgeIndex + 1)) {
-							return true;
-						}else {
-							// If next level has problem then remove the vdata that added before.
-							state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
+				List<ConnectionInfo> newConnections = new List<ConnectionInfo>();
+				if (startingNode != null) {
+					newConnections.Add(startingNode);
+					Debug.Log(startingNode.connectionName);
+				} else {
+					// No starting node then find connections.
+					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
+					Debug.Log(newConnections.Count);
+				}
+				foreach (var newConnection in newConnections) {
+					// Get connection from the start node.
+					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
+						// Ignore used or type-error connection.
+						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
+						// Combine.
+						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
+							// Success then add this vdata to state.
+							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
+							// Recursion next level.
+							if(Recursion(state, edgeIndex + 1)) {
+								return true;
+							}else {
+								// If next level has problem then remove the vdata that added before.
+								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
+							}
 						}
 					}
 				}
