@@ -24,6 +24,20 @@ namespace CrevoxExtend {
 			Initialize();
 		}
 		void OnGUI() {
+			if (GUILayout.Button("Export")) {
+				string path = EditorUtility.SaveFilePanel("Export xml", "", "SpaceAlphabet.xml", "xml");
+				if (path != "") {
+					SpaceAlphabetXML.Serialize.SerializeToXml(path);
+				}
+			}
+			//[Warning] import wont change alphabets. Only works on realtime load data.
+			/*
+			if (GUILayout.Button("Import")) {
+				string path = EditorUtility.OpenFilePanel("Import xml", "", "xml");
+				if (path != "") {
+					SpaceAlphabetXML.Unserialize.UnserializeFromXml(path);
+				}
+			}*/
 			// Aphabets list.//
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height * 0.8f));
 			for (int i = 0; i < alphabets.Count; i++) {
@@ -114,10 +128,6 @@ namespace CrevoxExtend {
 				PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
 				window.InitialPaletteWindow();
 			}
-		}
-		
-		public static VolumeData GetReplaceVData(string fileName) {
-			return SpaceAlphabet.replaceDictionary[fileName][UnityEngine.Random.Range(0, SpaceAlphabet.replaceDictionary[fileName].Count)];
 		}
 	}
 }

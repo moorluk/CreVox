@@ -80,5 +80,8 @@ namespace CrevoxExtend {
 			return (Resources.Load(@"CreVox/VolumeArtPack/LevelPieces/4_Sign/ConnectionTypes/"+name) as GameObject);
 		}
 #endif
+		public static VolumeData GetReplaceVData(string fileName) {
+			return replaceDictionary[fileName][UnityEngine.Random.Range(0, replaceDictionary[fileName].Count)];
+		}
 	}
 }
