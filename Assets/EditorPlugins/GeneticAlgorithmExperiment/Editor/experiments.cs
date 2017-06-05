@@ -71,7 +71,11 @@ namespace CrevoxExtend {
 				screenshotCarema.transform.rotation = Quaternion.Euler(90, 0, 0);
 				screenshotCarema.transform.position = centerPoint + new Vector3(0, 20, 0);
 
+				// Select this camera.
+				Selection.objects = new GameObject[1] { screenshotCarema.gameObject };
+
 				// Record the shot.
+				EditorApplication.ExecuteMenuItem("Window/Game");
 				Application.CaptureScreenshot("Screenshot.png", 2);
 			}
 
