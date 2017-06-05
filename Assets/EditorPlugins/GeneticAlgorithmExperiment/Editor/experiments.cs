@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Math         = System.Math;
 using StreamWriter = System.IO.StreamWriter;
+using Diagnostics  = System.Diagnostics;
 using Stopwatch    = System.Diagnostics.Stopwatch;
 
 using NTUSTGA;
@@ -54,29 +55,11 @@ namespace CrevoxExtend {
 			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
 
 			if (GUILayout.Button("拍張相片紀錄下來", buttonStyle, GUILayout.Height(35))) {
+				// Store a screenshot from main camera.
 				var volumeManager = GameObject.Find("VolumeManager(Generated)");
-				var screenshotCarema = Camera.main;
-
-				// Get the center point of volume manager.
-				Vector3 centerPoint = default(Vector3);
-				foreach (Transform volume in volumeManager.transform) {
-					var chunk = volume.transform.Find("Chunk(0,0,0)");
-					centerPoint = volume.transform.position + chunk.GetComponent<Renderer>().bounds.center;
-					break;
-				}
-
-				// Set camera info.
-				screenshotCarema.orthographic = true;
-				screenshotCarema.orthographicSize = 15.0f;
-				screenshotCarema.transform.rotation = Quaternion.Euler(90, 0, 0);
-				screenshotCarema.transform.position = centerPoint + new Vector3(0, 20, 0);
-
-				// Select this camera.
-				Selection.objects = new GameObject[1] { screenshotCarema.gameObject };
-
-				// Record the shot.
-				EditorApplication.ExecuteMenuItem("Window/Game");
-				Application.CaptureScreenshot("Screenshot.png", 2);
+				LayoutScreenshot(volumeManager);
+				// Execute the python program about plot.
+				ExecutePythonPlot();
 			}
 
 			GenerationCount = Math.Max(1, EditorGUILayout.IntField("世代數量", GenerationCount, labelStyle));
@@ -126,6 +109,49 @@ namespace CrevoxExtend {
 							+ "最佳得分: " + OptimalScore + "\n"
 							+ "演化總耗時: " + TimeCost + " ms\n";
 			GUILayout.TextField(description, textStyle);
+		}
+
+		// 
+		private void LayoutScreenshot(GameObject volumeManager) {
+			var screenshotCarema = Camera.main;
+
+			// Get the center point of volume manager.
+			Vector3 centerPoint = default(Vector3);
+			foreach (Transform volume in volumeManager.transform) {
+				var chunk = volume.transform.Find("Chunk(0,0,0)");
+				centerPoint = volume.transform.position + chunk.GetComponent<Renderer>().bounds.center;
+				break;
+			}
+
+			// Set camera info.
+			screenshotCarema.orthographic = true;
+			screenshotCarema.orthographicSize = 15.0f;
+			screenshotCarema.transform.rotation = Quaternion.Euler(90, 0, 0);
+			screenshotCarema.transform.position = centerPoint + new Vector3(0, 20, 0);
+
+			// Select this camera.
+			Selection.objects = new GameObject[1] { screenshotCarema.gameObject };
+
+			// Record the shot.
+			EditorApplication.ExecuteMenuItem("Window/Game");
+			Application.CaptureScreenshot("Screenshot.png", 2);
+		}
+
+
+		private void AfterPythonPlot(object sender, System.EventArgs e) {
+			Debug.Log("Plot done.");
+		}
+
+		private void ExecutePythonPlot() {
+			Diagnostics.Process process = new Diagnostics.Process();
+			Diagnostics.ProcessStartInfo startInfo = new Diagnostics.ProcessStartInfo();
+			startInfo.WindowStyle = Diagnostics.ProcessWindowStyle.Hidden;
+			startInfo.FileName = "cmd.exe";
+			startInfo.Arguments = "/C C:/Python27/python.exe D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/PythonPlot/maxValue.py";
+			process.Exited += new System.EventHandler(AfterPythonPlot);
+			process.EnableRaisingEvents = true;
+			process.StartInfo = startInfo;
+			process.Start();
 		}
 
 		private void UpdateObjectInfo(NTUSTChromosome chromosome) {
