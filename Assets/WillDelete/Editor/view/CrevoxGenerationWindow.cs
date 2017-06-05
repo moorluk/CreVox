@@ -11,10 +11,8 @@ using System;
 
 namespace CrevoxExtend {
 	class CrevoxGenerationWindow : EditorWindow {
-		private static List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
-		private static List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
+		private static Dictionary<GraphGrammarNode, List<VolumeData>> RefrenceTable { get; set; }
 		private static string regex = @".*[\\\/](\w+)_.+_vData\.asset$";
-
 		private static Vector2 scrollPosition = new Vector2(0, 0);
 		private static bool specificRandomSeed = false;
 		private static int randomSeed = 0;
@@ -22,82 +20,88 @@ namespace CrevoxExtend {
 		private VGlobal vg;
 
 		void Initialize() {
-			alphabets.Clear();
-			volumeDatas.Clear();
-			vg = VGlobal.GetSetting ();
-			foreach (var node in Alphabet.Nodes) {
-				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
-					continue;
-				}
-				alphabets.Add(node);
-				volumeDatas.Add(new List<VolumeData>());
+			// Create a new one or clear it.
+			if (RefrenceTable == null) {
+				RefrenceTable = new Dictionary<GraphGrammarNode, List<VolumeData>>();
+			} else {
+				RefrenceTable.Clear();
+			}
+
+			vg = VGlobal.GetSetting();
+			foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
+				RefrenceTable.Add(node, new List<VolumeData>());
 			}
 		}
 		void Awake() {
 			Initialize();
 		}
+		// On focus on the window.
 		void OnFocus() {
-			if (isChanged()) {
+			if (RefrenceTable == null) {
+				Initialize();
+			} else if (IsChanged()) {
 				Initialize();
 			}
 		}
-		bool isChanged() {
-			for (int i = 0, index = 0; i < Alphabet.Nodes.Count; i++) {
-				if (Alphabet.Nodes[i] == Alphabet.AnyNode || Alphabet.Nodes[i].Terminal == NodeTerminalType.NonTerminal) {
-					continue;
-				}
-				if (index >= alphabets.Count || Alphabet.Nodes[i].AlphabetID != alphabets[index].AlphabetID) {
-					return true;
-				}
-				index++;
-			}
-			return false;
+		// If the alphabet changed, update the list of nodes.
+		bool IsChanged() {
+			var currentNodes = RefrenceTable.Keys.Select(n => n.Name).ToList();
+			var latestNodes  = Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal)).Select(n => n.Name).ToList();
+
+			var firstNotSecond = currentNodes.Except(latestNodes).ToList();
+			var secondNotFirst = latestNodes.Except(currentNodes).ToList();
+
+			return firstNotSecond.Any() || secondNotFirst.Any();
 		}
 
 		void OnGUI() {
 			if (GUILayout.Button("Open Folder")) {
-				// First clear all origin volumeDatas.
-				for (int j = 0; j < alphabets.Count; j++) {
-					volumeDatas[j].Clear();
-				}
+				// At first, clear all volume list.
+				RefrenceTable.Values.ToList().ForEach(vd => vd.Clear());
 				// Open folder.
 				string path = EditorUtility.OpenFolderPanel("Load Folder", 
 					Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save, "");
-				if (path != "") {
+				if (path != string.Empty) {
 					// Get the files.
 					string[] files = Directory.GetFiles(path);
-					for (int i = 0; i < files.Length; i++) {
-						if (Regex.IsMatch(files[i], regex)){
-							for (int j = 0; j < alphabets.Count; j++) {
-								if (alphabets[j].Name.ToLower() == Regex.Match(files[i], regex).Groups[1].Value.ToLower()) {
-									volumeDatas[j].Add(CrevoxOperation.GetVolumeData(files[i].Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
-								}
-							}
+					foreach (var file in files) {
+						if (! Regex.IsMatch(file, regex)) {
+							continue;
 						}
-						
+						foreach (var node in RefrenceTable.Keys) {
+							if (node.Name.ToLower() != Regex.Match(file, regex).Groups[1].Value.ToLower()) {
+								continue;
+							}
+							RefrenceTable[node].Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+						}
 					}
 					// if not find match vData, default null.
-					for (int j = 0; j < alphabets.Count; j++) {
-						if (volumeDatas[j].Count < 1) {
-							volumeDatas[j].Add(null);
+					foreach (var volumeList in RefrenceTable.Values) {
+						if (volumeList.Count == 0) {
+							volumeList.Clear();
 						}
 					}
 				}
 			}
 			// Node list.
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height-230f));
-			for (int i = 0; i < alphabets.Count; i++) {
-				EditorGUILayout.LabelField(alphabets[i].ExpressName);
-				for (int j = 0; j < volumeDatas[i].Count; j++) {
+			foreach (var node in RefrenceTable.Keys) {
+				// Label field, show the ExpressName of node.
+				EditorGUILayout.LabelField(node.ExpressName);
+				// Show volumeData object each node.
+				foreach (var volume in RefrenceTable[node].ToList()) {
 					EditorGUILayout.BeginHorizontal();
-					volumeDatas[i][j] = (VolumeData)EditorGUILayout.ObjectField(volumeDatas[i][j], typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
+					// Field about input the volume data.
+					RefrenceTable[node][RefrenceTable[node].IndexOf(volume)] = (VolumeData) EditorGUILayout.ObjectField(volume, typeof(VolumeData), false, GUILayout.Width(Screen.width / 2 - 10));
+					// Delete function.
 					if (GUILayout.Button("Delete")) {
-						volumeDatas[i].RemoveAt(j);
+						RefrenceTable[node].Remove(volume);
 					}
 					EditorGUILayout.EndHorizontal();
 				}
+				// Create function.
 				if (GUILayout.Button("Add New vData")) {
-					volumeDatas[i].Add(null);
+					RefrenceTable[node].Add(null);
 				}
 			}
 			EditorGUILayout.EndScrollView();
@@ -111,27 +115,32 @@ namespace CrevoxExtend {
 			}
 			// If symbol has none vData, user cannot press Generate.
 			// Add null prevent.
-			EditorGUI.BeginDisabledGroup(volumeDatas.Exists(vs => vs.Count == 0||vs.Exists(v => v == null)));
-			CrevoxGeneration.generateVolume = EditorGUILayout.Toggle ("Generate Volume", CrevoxGeneration.generateVolume);
+			EditorGUI.BeginDisabledGroup(RefrenceTable.Values.ToList().Exists(vs => vs.Count == 0 || vs.Exists(v => v == null)));
+			CrevoxGeneration.generateVolume = EditorGUILayout.Toggle("Generate Volume", CrevoxGeneration.generateVolume);
 			EditorGUILayout.BeginHorizontal();
+			// Random seed and its toggler.
 			specificRandomSeed = GUILayout.Toggle(specificRandomSeed, "Set Random Seed");
-			EditorGUI.BeginDisabledGroup(!specificRandomSeed);
+			EditorGUI.BeginDisabledGroup(! specificRandomSeed);
 			randomSeed = EditorGUILayout.IntField(randomSeed, GUILayout.MaxWidth(Screen.width));
 			EditorGUI.EndDisabledGroup();
 			EditorGUILayout.EndHorizontal();
-			// [TEST] Will delete.
-			EditorGUI.EndDisabledGroup();
-			// Generate button.
+			// Generate level.
 			if (GUILayout.Button("Generate")) {
-				CrevoxGeneration.AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-				CrevoxGeneration.SameVolumeDatas = volumeDatas;
-				if (!specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
+				// Pass the RefrenceTable to CrevoxGeneration.
+				CrevoxGeneration.RefrenceTable.Clear();
+				foreach (var node in RefrenceTable.Keys) {
+					CrevoxGeneration.RefrenceTable.Add(node.AlphabetID, RefrenceTable[node]);
+				}
+				// Set the random seed.
+				if (! specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
 				CrevoxGeneration.InitialTable(randomSeed);
 				CrevoxGeneration.Generate(CrevoxGeneration.stage);
 			}
+			// Replace connections.
 			if (GUILayout.Button("ReplaceConnection")) {
 				CrevoxGeneration.ReplaceConnection(CrevoxGeneration.stage);
 			}
+			EditorGUI.EndDisabledGroup();
 		}
 	}
 }

@@ -11,30 +11,23 @@ using System.Text.RegularExpressions;
 namespace CrevoxExtend {
 	public class CrevoxGeneration {
 		private const int TIMEOUT_MILLISECOND = 5000;
-		// Private members.
-		private static List<Guid> _alphabetIDs = new List<Guid>();
-		private static Dictionary<Guid, List<VolumeData>> _refrenceTable = new Dictionary<Guid, List<VolumeData>>();
-		private static List<List<VolumeData>> sameVolumeDatas = new List<List<VolumeData>>();
-		// Public members.
-		public static List<Guid> AlphabetIDs {
-			get { return _alphabetIDs; }
-			set { _alphabetIDs = value; }
-		}
+		// Members.
+		private static Dictionary<Guid, List<VolumeData>> _refrenceTable;
 		public static Dictionary<Guid, List<VolumeData>> RefrenceTable {
-			get { return _refrenceTable; }
-			set { _refrenceTable = value; }
-		}
-		public static List<List<VolumeData>> SameVolumeDatas {
-			get { return sameVolumeDatas; }
-			set { sameVolumeDatas = value; }
+			get {
+				// 
+				if (_refrenceTable == null) {
+					_refrenceTable = new Dictionary<Guid, List<VolumeData>>();
+				}
+				return _refrenceTable;
+			}
+			set {
+				_refrenceTable = value;
+			}
 		}
 		// Initial.
 		public static void InitialTable(int seed) {
 			UnityEngine.Random.InitState(seed);
-			_refrenceTable = new Dictionary<Guid, List<VolumeData>>();
-			for (int i = 0; i < _alphabetIDs.Count; i++) {
-				_refrenceTable[_alphabetIDs[i]] = sameVolumeDatas[i];
-			}
 		}
 		// State.
 		private static CrevoxState nowState;
@@ -55,6 +48,11 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
+			// Check the root of mission graph.
+			root = (root != null) ? root : CreVoxAttach.RootNode;
+			if (root == null) {
+				throw new System.Exception("Root of mission graph is NULL, please check the imported mission graph.");
+			}
 			// Record.
 			testStopWatch = System.Diagnostics.Stopwatch.StartNew();
 			// Initialize connection table.
@@ -62,16 +60,16 @@ namespace CrevoxExtend {
 			// Initialize sequence of edges.
 			edgeList = new List<Edge>();
 			// Get sequence of edges.
-			RecursionGetSequence(root != null ? root : CreVoxAttach.RootNode);
+			RecursionGetSequence(root);
 			// Initialize state.
 			nowState = null;
 			// Get mapping vdata from root node.
-			foreach (var rootVdata in _refrenceTable[CreVoxAttach.RootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
+			foreach (var rootVdata in RefrenceTable[CreVoxAttach.RootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
 				// Initialize a state.
 				CrevoxState state = new CrevoxState(rootVdata);
 				// Set the root vdata.
 				state.VolumeDatasByID[CreVoxAttach.RootNode.SymbolID] = state.ResultVolumeDatas[0];
-				if(Recursion(state, 0)) {
+				if (Recursion(state, 0)) {
 					// If time's up then nowState keeps null.
 					if (testStopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND) {
 						nowState = state;
@@ -83,8 +81,8 @@ namespace CrevoxExtend {
 			if (nowState != null) {
 				Debug.Log("Completed.");
 				// Transform state into gameobject.
-				CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
-			}else {
+				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
+			} else {
 				// Keep null means failed.
 				Debug.Log("Failed.");
 			}
@@ -110,7 +108,7 @@ namespace CrevoxExtend {
 			}
 			List<VolumeData> feasibleVdata = new List<VolumeData>();
 			// Find the suitable vdata.
-			foreach (var vdata in _refrenceTable[edge.end.AlphabetID]) {
+			foreach (var vdata in RefrenceTable[edge.end.AlphabetID]) {
 				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdata);
 				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
 					feasibleVdata.Add(vdata);
@@ -118,7 +116,7 @@ namespace CrevoxExtend {
 			}
 			// No vdata have enough connection. Return false.
 			if (feasibleVdata.Count == 0) {
-				Debug.Log("There is no vdata that have enough connection in " + _refrenceTable[edge.end.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
+				Debug.Log("There is no vdata that have enough connection in " + RefrenceTable[edge.end.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
 				return false;
 			}
 			// Find mapping vdata in table that order by random.
@@ -148,7 +146,7 @@ namespace CrevoxExtend {
 							// Recursion next level.
 							if(Recursion(state, edgeIndex + 1)) {
 								return true;
-							}else {
+							} else {
 								// If next level has problem then remove the vdata that added before.
 								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
 							}
@@ -211,35 +209,36 @@ namespace CrevoxExtend {
 		}
 		// Realtime level generation II. Return succeed or failed.
 		public static bool GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
-			List<GraphGrammarNode> alphabets = new List<GraphGrammarNode>();
-			List<List<VolumeData>> volumeDatas = new List<List<VolumeData>>();
-			foreach (var node in Alphabet.Nodes) {
-				if (node == Alphabet.AnyNode || node.Terminal == NodeTerminalType.NonTerminal) {
-					continue;
-				}
-				alphabets.Add(node);
-				volumeDatas.Add(new List<VolumeData>());
+			UnityEngine.Object[] vDatas;
+
+			// If vDataPath is empty, then throw error.
+			if (_stage.vDataPath == string.Empty) {
+				throw new System.Exception("vDataPath in stage cannot be empty.");
 			}
-			if (_stage.vDataPath != "") {
-				// Get the files.
-				const string regex = @"(\w+)_.+_vData$";
-				UnityEngine.Object[] vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
-				foreach (VolumeData vData in vDatas) {
-					for (int i = 0; i < alphabets.Count; i++) {
-						if (alphabets[i].Name.ToLower() == Regex.Match(vData.name, regex).Groups[1].Value.ToLower()) {
-							volumeDatas[i].Add(vData);
-						}
-					}
-				}
-				// if not find match vData, default null.
-				for (int j = 0; j < alphabets.Count; j++) {
-					if (volumeDatas[j].Count < 1) {
-						volumeDatas[j].Add(null);
+
+			// Create the keys of reference table.
+			RefrenceTable = new Dictionary<Guid, List<VolumeData>>();
+			foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
+				RefrenceTable.Add(node.AlphabetID, new List<VolumeData>());
+			}
+
+			// Get the files.
+			vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
+			foreach (VolumeData vData in vDatas) {
+				foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
+					if (node.Name.ToLower() == Regex.Match(vData.name, @"(\w+)_.+_vData$").Groups[1].Value.ToLower()) {
+						RefrenceTable[node.AlphabetID].Add(vData);
 					}
 				}
 			}
-			AlphabetIDs = alphabets.Select(x => x.AlphabetID).ToList();
-			SameVolumeDatas = volumeDatas;
+
+			// If not find match vData, then throw error.
+			foreach (var volumeList in RefrenceTable.Values) {
+				if (volumeList.Count == 0) {
+					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
+				}
+			}
+
 			InitialTable(seed);
 			return Generate (_stage, root);
 		}

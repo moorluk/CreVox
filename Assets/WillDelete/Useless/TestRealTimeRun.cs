@@ -11,8 +11,8 @@ public class TestRealTimeRun : MonoBehaviour {
 	[Header("Test generate stage by properties")]
 	[Tooltip("我是按鈕")]
 	public bool testGenerateLevel = false;
-	public string XmlPath = @"Issac_Flat.xml";
-	public string ResourcePath = @"Assets\Resources\CreVox\VolumeData\IsaacNew";
+	public string XmlPath = @"Issac.xml";
+	public string ResourcePath = @"IsaacNew";
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
