@@ -1,6 +1,7 @@
 # When you first execute the program, please install these packages below.
 # C:/Python27/python.exe -m pip install -U pip pandas numpy matplotlib
 
+import sys
 import os
 #get the max value of table
 from pandas import Series, DataFrame
@@ -9,9 +10,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Our program.
-def main():
+def main(root):
     # Root of folder.
-    root = os.path.dirname(os.path.abspath(__file__))
+    root = os.path.dirname(root)
     # Number of file.
     numRun = 100
     # Num of generation.
@@ -36,7 +37,7 @@ def main():
     # ...
     dataA = pd.read_csv(outputFolderRoot + "bestChromosome_Block_100_100.csv")
     dataB = pd.read_csv(outputFolderRoot + "bestChromosome_Graud_100_100.csv")
-    plotGenerationsWithSD([dataA, dataB], numRun, numGeneration)
+    plotGenerationsWithSD([dataA, dataB], numRun, numGeneration, outputFolderRoot)
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, numRun, numGeneration, chromosomeCount, inputFolder, outputFolder):
@@ -80,7 +81,7 @@ def plotGenerations(outputFolder):
     plt.ylabel('Score')
     plt.savefig(outputFolder + 'result.png')
 
-def plotGenerationsWithSD(dataset, numRun, numGeneration):
+def plotGenerationsWithSD(dataset, numRun, numGeneration, outputFolder):
     #setup the figure
     plt.figure(figsize = (16, 9), dpi = 120)
     # Get input file
@@ -96,7 +97,7 @@ def plotGenerationsWithSD(dataset, numRun, numGeneration):
     plt.xlabel('Generation', fontsize = 25)
     plt.ylabel('Score', fontsize = 25)
     plt.tick_params(labelsize = 25)
-    plt.savefig(outputFolderRoot + '1080P.png')
+    plt.savefig(outputFolder + 'resultPlot.png')
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])

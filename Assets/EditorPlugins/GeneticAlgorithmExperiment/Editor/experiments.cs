@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Math         = System.Math;
 using StreamWriter = System.IO.StreamWriter;
-using Diagnostics  = System.Diagnostics;
+using Process      = System.Diagnostics.Process;
 using Stopwatch    = System.Diagnostics.Stopwatch;
 
 using NTUSTGA;
@@ -14,11 +14,15 @@ namespace CrevoxExtend {
 	public class Experiments {
 		[MenuItem("Dungeon/GA 相關功能面板", false, 999)]
 		public static void EditorDashboard() {
-			EditorWindow window = EditorWindow.GetWindow<EditorDashboardWindow>("GA", true);
+			EditorWindow.GetWindow<EditorDashboardWindow>("GA", true);
 		}
 	}
 
 	public class EditorDashboardWindow : EditorWindow {
+		private static readonly string PYTHON_EXEC_PATH    = "C:/Python27/python.exe";
+		private static readonly string PYTHON_PLOT_PROGRAM = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/PythonPlot/maxValue.py";
+		private static string EXPERIMENT_EXPORT;
+
 		private static int GenerationCount = 20;
 		private static int PopulationCount = 250;
 
@@ -39,6 +43,10 @@ namespace CrevoxExtend {
 			{ "dominated", 0 },
 			{ "support"  , 0 }
 		};
+
+		void OnEnable() {
+			EXPERIMENT_EXPORT = Application.persistentDataPath + "/Experiments/";
+		}
 
 		void OnGUI() {
 			// GUI styles.
@@ -138,20 +146,41 @@ namespace CrevoxExtend {
 		}
 
 
-		private void AfterPythonPlot(object sender, System.EventArgs e) {
-			Debug.Log("Plot done.");
+		private void ProcessExited(object sender, System.EventArgs e) {
+			Debug.Log(e);
+		}
+
+		private void ErrorReceived(object sender, System.Diagnostics.DataReceivedEventArgs eventArgs) {
+			Debug.LogError(eventArgs.Data);
 		}
 
 		private void ExecutePythonPlot() {
-			Diagnostics.Process process = new Diagnostics.Process();
-			Diagnostics.ProcessStartInfo startInfo = new Diagnostics.ProcessStartInfo();
-			startInfo.WindowStyle = Diagnostics.ProcessWindowStyle.Hidden;
-			startInfo.FileName = "cmd.exe";
-			startInfo.Arguments = "/C C:/Python27/python.exe D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/PythonPlot/maxValue.py";
-			process.Exited += new System.EventHandler(AfterPythonPlot);
+			Process process = new Process();
+			process.StartInfo.FileName = "cmd.exe";
+			process.StartInfo.Arguments = "/C " + PYTHON_EXEC_PATH + " " + PYTHON_PLOT_PROGRAM + " " + EXPERIMENT_EXPORT;
+			process.StartInfo.CreateNoWindow  = true;
+			process.StartInfo.UseShellExecute = false;
+			// Capture python log from process.StandardOutput and process.StandardError.
+			process.StartInfo.RedirectStandardOutput = true;
+			process.StartInfo.RedirectStandardError  = true;
+			// When execute the cmd fail.
+			process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			process.ErrorDataReceived  += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			// Process finished.
+			process.Exited += new System.EventHandler(ProcessExited);
 			process.EnableRaisingEvents = true;
-			process.StartInfo = startInfo;
+			// Start executing.
+			Debug.Log("Subprocess is running: " + process.StartInfo.Arguments);
 			process.Start();
+
+			var error = process.StandardError.ReadToEnd();
+			if (error != string.Empty) {
+				Debug.LogError("Execute the python program fail:\n" + error);
+			} else {
+				Debug.Log("Done.");
+			}
+
+			process.WaitForExit();
 		}
 
 		private void UpdateObjectInfo(NTUSTChromosome chromosome) {
