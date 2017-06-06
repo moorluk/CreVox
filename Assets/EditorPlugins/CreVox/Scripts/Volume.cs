@@ -529,7 +529,7 @@ namespace CreVox
 				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
 					BlockAir ba = c.cData.blockAirs [b];
 					for (int i = 0; i < ba.pieceNames.Length; i++) {
-						if (ba.pieceNames [i] != "") {
+						if (ba.pieceNames [i] != null && ba.pieceNames [i] != "") {
 							LevelPiece p = _missingP;
 							for (int k = 0; k < itemArray.Length; k++) {
 								if (ba.pieceNames [i] == itemArray [k].name) {
@@ -967,9 +967,9 @@ namespace CreVox
 			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
 			cutY = _y;
 			if (chunks != null && chunks.Count > 0)
-//				PlacePieces ();
 				UpdateChunks ();
 		}
+
 		#endif
 		#endregion
 		private List<ConnectionInfo> _connectionInfos;

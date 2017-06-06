@@ -23,11 +23,13 @@ namespace CreVox
 		#if UNITY_EDITOR
 		void Update()
 		{
-			if (isRoot) {
-				Vector3 _pos = this.transform.localPosition;
-				artInstance.transform.localPosition = new Vector3 (-_pos.x, -_pos.y, -_pos.z);
-			} else {
-				artInstance.transform.localPosition = Vector3.zero;
+			if (artInstance) {
+				if (isRoot) {
+					Vector3 _pos = this.transform.localPosition;
+					artInstance.transform.localPosition = new Vector3 (-_pos.x, -_pos.y, -_pos.z);
+				} else {
+					artInstance.transform.localPosition = Vector3.zero;
+				}
 			}
 		}
 		#endif
