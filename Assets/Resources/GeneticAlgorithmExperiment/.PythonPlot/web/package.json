@@ -1,0 +1,17 @@
+{
+  "name": "ga-xaocx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "open": "0.0.5",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ze-Hao Wang",
+  "license": "ISC"
+}

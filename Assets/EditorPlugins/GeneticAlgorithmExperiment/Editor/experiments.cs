@@ -20,7 +20,7 @@ namespace CrevoxExtend {
 
 	public class EditorDashboardWindow : EditorWindow {
 		private static readonly string PYTHON_EXEC_PATH    = "C:/Python27/python.exe";
-		private static readonly string PYTHON_PLOT_PROGRAM = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/PythonPlot/maxValue.py";
+		private static readonly string PYTHON_PLOT_PROGRAM = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/.PythonPlot/maxValue.py";
 		private static string EXPERIMENT_EXPORT;
 
 		private static int GenerationCount = 20;
@@ -142,12 +142,12 @@ namespace CrevoxExtend {
 
 			// Record the shot.
 			EditorApplication.ExecuteMenuItem("Window/Game");
-			Application.CaptureScreenshot("Screenshot.png", 2);
+			Application.CaptureScreenshot(EXPERIMENT_EXPORT + "Screenshot.png", 2);
 		}
 
 
-		private void ProcessExited(object sender, System.EventArgs e) {
-			Debug.Log(e);
+		private void ProcessExited(object sender, System.EventArgs eventArgs) {
+			LaunchWebAnalysis();
 		}
 
 		private void ErrorReceived(object sender, System.Diagnostics.DataReceivedEventArgs eventArgs) {
@@ -181,6 +181,24 @@ namespace CrevoxExtend {
 			}
 
 			process.WaitForExit();
+		}
+
+		private static Process webServiceProcess;
+		private void LaunchWebAnalysis() {
+			// If webServiceProcess is not null, kill this process first.
+			if (webServiceProcess != null && ! webServiceProcess.HasExited) {
+				webServiceProcess.Kill();
+				webServiceProcess = null;
+			}
+			Process process = new Process();
+			process.StartInfo.FileName = "C:/nodejs/node.exe";
+			process.StartInfo.Arguments = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/.PythonPlot/web/main.js";
+			process.StartInfo.CreateNoWindow  = true;
+			process.StartInfo.UseShellExecute = false;
+			// Start executing.
+			process.Start();
+			// Update the webServiceProcess.
+			webServiceProcess = process;
 		}
 
 		private void UpdateObjectInfo(NTUSTChromosome chromosome) {
