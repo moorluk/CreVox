@@ -9,7 +9,6 @@ namespace CreVox
 	[CustomEditor (typeof(Volume))]
 	public class VolumeEditor : Editor
 	{
-        private int selectedItemID = 0;
 		Volume volume;
 		Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
 		int cx = 1;
@@ -22,8 +21,7 @@ namespace CreVox
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
-			if (volume.vd && !volume._useBytes)
-				volume.BuildVolume (null, volume.vd);
+//			volume.BuildVolume ();
 			SubscribeEvents ();
 		}
 
@@ -36,179 +34,78 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-			float buttonW = 40;
-			float bh = 23.5f;
+			float buttonW = 120;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
 			VGlobal vg = VGlobal.GetSetting ();
+			GUI.color = Color.white;
 
-			GUI.color = Color.gray;
-			using (var v0 = new EditorGUILayout.VerticalScope ("ProgressBarBack")) {
-				GUI.color = Color.white;
-				GUI.backgroundColor = volume._useBytes ? Color.white : Color.green;
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					GUI.backgroundColor = Color.white;
-					EditorGUILayout.LabelField ("", "VolumeData", "BoldLabel");
-					EditorGUI.indentLevel++;
-					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
-					EditorGUI.indentLevel--;
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				GUI.backgroundColor = Color.white;
+				GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
+				if (GUILayout.Button ("Refresh")) {
+					volume.BuildVolume ();
+					SceneView.RepaintAll ();
 				}
-
-				using (var h = new EditorGUILayout.HorizontalScope (GUILayout.Height(10))) {
-					if (GUILayout.Button (new GUIContent ("Link\n▼", "將資料檔連結到場景"), "miniButtonLeft",GUILayout.Height(bh))) {
-						volume._useBytes = false;
-						volume.BuildVolume (new Save (), volume.vd);
-						volume.tempPath = "";
-						SceneView.RepaintAll ();
-					}
-					if (GUILayout.Button (new GUIContent ("▲\nWrite", "將場景現況 寫入/新建 資料檔(轉檔用)"), "miniButtonRight", GUILayout.Height(bh))) {
-						volume._useBytes = false;
-						WriteVData (volume);
-						EditorUtility.SetDirty (volume.vd);
-						volume.tempPath = "";
-						SceneView.RepaintAll ();
-					}
-				}
-
-				bool linking;
-				if (volume.chunks != null && volume.chunks.Count > 0 && volume.vd != null && volume.vd.chunkDatas.Count > 0)
-					linking = ReferenceEquals (volume.chunks [volume.vd.chunkDatas [0].ChunkPos].cData, volume.vd.chunkDatas [0]);
-				else {
-//					Debug.LogWarning ("chunk list: " + ((volume.chunks == null) ? "null" : volume.chunks.Count.ToString()) +
-//						"; chunkData: " + ((volume.vd == null) ? "null" : volume.vd.chunkDatas.Count.ToString()));
-					linking = false;
-				}
-				
-				GUI.backgroundColor = linking ? Color.green : Color.red;
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					GUI.backgroundColor = Color.white;
-					EditorGUILayout.LabelField ("","Volume in Scene (" + (linking ? "連結中)" : "未連結)"), "BoldLabel");
-					GUILayout.BeginHorizontal ();
-					EditorGUIUtility.labelWidth = 15;
-					EditorGUILayout.LabelField ("New");
-					cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (buttonW-5));
-					cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (buttonW-5));
-					cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (buttonW-5));
-					EditorGUIUtility.labelWidth = defLabelWidth;
-					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
-						volume.Reset ();
-						volume.workFile = "";
-						volume.tempPath = "";
-						volume.Init (cx, cy, cz);
-//						volume.vd = null;
-						WriteVData(volume);
-					}
-					GUILayout.EndHorizontal ();
-				}
-
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
-					if (GUILayout.Button (new GUIContent ("Save\n▼", "存byte檔；同時按 SHIFT 快速存檔"), "miniButtonLeft", GUILayout.Height(bh))) {
-						if (Event.current.shift) {
-							if (volume.workFile != "") {
-								string sPath = 
-									Application.dataPath
-									+ PathCollect.resourcesPath.Substring (6)
-									+ volume.workFile + ".bytes";
-								Serialization.SaveWorld (volume, sPath);
-								volume.tempPath = "";
-							}
-						} else {
-							string sPath = Serialization.GetSaveLocation (volume.workFile == "" ? null : volume.workFile);
-							if (sPath != "") {
-								Serialization.SaveWorld (volume, sPath);
-								volume.workFile = sPath.Remove (sPath.LastIndexOf (".")).Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-								volume.tempPath = "";
-							}
-						}
+					EditorGUI.BeginChangeCheck ();
+					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
+					if (EditorGUI.EndChangeCheck ()) {
+						volume.BuildVolume ();
+						SceneView.RepaintAll ();
 					}
-					if (GUILayout.Button (new GUIContent ("▲\nLoad", "讀byte檔；同時按 SHIFT 快速讀檔"), "miniButtonRight", GUILayout.Height(bh))) {
-						if (Event.current.shift) {
-							if (volume.workFile != "") {
-								string lPath = 
-									Application.dataPath
-									+ PathCollect.resourcesPath.Substring (6)
-									+ volume.workFile + ".bytes";
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									volume._useBytes = true;
-									volume.BuildVolume (save, volume.vd);
-									volume.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						} else {
-							string lPath = Serialization.GetLoadLocation (volume.workFile == "" ? null : volume.workFile);
-							if (lPath != "") {
-								Save save = Serialization.LoadWorld (lPath);
-								if (save != null) {
-									volume._useBytes = true;
-									volume.workFile = lPath.Remove (lPath.LastIndexOf (".")).Substring (lPath.LastIndexOf (PathCollect.resourceSubPath));
-									volume.BuildVolume (save);
-									volume.tempPath = "";
-								}
-								SceneView.RepaintAll ();
-							}
-						}
+					if (GUILayout.Button ("Backup", GUILayout.Width (buttonW))) {
+						volume.SaveTempWorld ();
 					}
 				}
-
-				EditorGUI.BeginChangeCheck ();
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.objectFieldThumb)) {
-					EditorGUILayout.LabelField ("", "Bytes(Old)", "BoldLabel");
-					int cha = 17;
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						EditorGUILayout.LabelField ("Main: ", GUILayout.Width (50f));
-						if (volume.workFile != null) {
-							if (volume.workFile.Length > cha) {
-								if (volume.workFile.Contains (PathCollect.save))
-									EditorGUILayout.LabelField (volume.workFile, EditorStyles.miniLabel);
-							}
-						}
-					}
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						EditorGUILayout.LabelField ("Backup:", GUILayout.Width (50f));
-						if (volume.tempPath != null) {
-							if (volume.tempPath.Length > cha) {
-								if (volume.tempPath.Contains (PathCollect.save))
-									EditorGUILayout.LabelField (volume.tempPath, EditorStyles.miniLabel);
-							}
-						}
-					}
+				EditorGUILayout.Separator ();
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					EditorGUIUtility.labelWidth = 15;
+					cx = EditorGUILayout.IntField ("X", cx);
+					cy = EditorGUILayout.IntField ("Y", cy);
+					cz = EditorGUILayout.IntField ("Z", cz);
+					EditorGUIUtility.labelWidth = defLabelWidth;
+				}
+				if (GUILayout.Button ("Init")) {
+					volume.vd = null;
+					volume.Init (cx, cy, cz);
+					WriteVData (volume);
 				}
 			}
 
+			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("ArtPack", EditorStyles.boldLabel);
-				if (GUILayout.Button ("Set", GUILayout.Width (buttonW))) {
+				GUILayout.Label ("ArtPack", EditorStyles.boldLabel);
+				EditorGUILayout.HelpBox ((volume.ArtPack != null) ? (volume.ArtPack + volume.vd.subArtPack) : "(none.)", MessageType.Info, true);
+				if (GUILayout.Button ("Set")) {
 					string ppath = EditorUtility.OpenFolderPanel (
-						"選擇場景風格元件包的目錄位置",
-						Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
-						 ""
-					);
+						               "選擇場景風格元件包的目錄位置",
+						               Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
+						               ""
+					               );
 					if (vg.saveBackup)
 						volume.SaveTempWorld ();
 					
-					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourcesPath));
-					string[] mats = AssetDatabase.FindAssets ("voxel t:Material", new string[]{ ppath });
-					if (mats.Length == 1) {
-						string matPath = AssetDatabase.GUIDToAssetPath (mats [0]);
-						volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (matPath);
-						volume.vMaterial = matPath.Remove (matPath.Length - 4).Substring (matPath.LastIndexOf (PathCollect.resourceSubPath));
-					} else
-						volume.vertexMaterial = null;
-					ppath = ppath.Substring (ppath.LastIndexOf (PathCollect.resourceSubPath));
-					volume.ArtPack = ppath;
+					string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
+					if (artPackName.Length == 4) {
+						volume.vd.subArtPack = ppath.Substring (ppath.Length - 1);
+						ppath = ppath.Remove (ppath.Length - 1);
+						artPackName = artPackName.Remove (3);
+					} else {
+						volume.vd.subArtPack = "";
+					}
+					
+					volume.ArtPack = PathCollect.artPack + "/" + artPackName;
+					volume.vMaterial = volume.ArtPack + "/" + artPackName + "_voxel";
+					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
+					volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
 					EditorUtility.SetDirty (volume.vd);
 
 					volume.LoadTempWorld ();
 				}
-				GUILayout.EndHorizontal ();
-
 				EditorGUIUtility.labelWidth = 120f;
-				if (volume.vd != null)
-					EditorGUILayout.LabelField ((volume.ArtPack != null)?volume.ArtPack:"", EditorStyles.miniLabel);
+				volume.vd.subArtPack = EditorGUILayout.TextField ("SubArtPack", volume.vd.subArtPack);
 				volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
-					new GUIContent ("Volume Material", "Auto Select if ONLY ONE Material's name contain \"voxel\"")
+					new GUIContent ("Volume Material", "Auto Select if Material's name is ArtPack's name + \"_voxel\"")
 					, volume.vertexMaterial
 					, typeof(Material)
 					, false);
@@ -216,13 +113,15 @@ namespace CreVox
 			EditorGUI.BeginChangeCheck ();
 			DrawVGlobal ();
 			if (EditorGUI.EndChangeCheck ()) {
-					EditorUtility.SetDirty (vg);
+				EditorUtility.SetDirty (vg);
+				volume.BuildVolume ();
+				SceneView.RepaintAll ();
 				if (!UnityEditor.EditorApplication.isPlaying) {
 					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
 			}
+			if(selectedItemID != -1)
 			DrawPieceInspectedGUI ();
-			DrawVData ();
 
 			if (EditorGUI.EndChangeCheck()) {
 				EditorUtility.SetDirty (volume);
@@ -230,32 +129,19 @@ namespace CreVox
 			}
 		}
 
-		Editor vdEditor = null;
-
 		public static void DrawVGlobal ()
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Save Backup File(" + vg.saveBackup + ")", vg.saveBackup);
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File(" + vg.saveBackup + ")", vg.saveBackup);
 				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack(" + vg.volumeShowArtPack + ")", vg.volumeShowArtPack);
 				vg.FakeDeco = EditorGUILayout.ToggleLeft ("Use Release Deco(" + vg.FakeDeco + ")", vg.FakeDeco);
 				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
 			}
 		}
 
-		void DrawVData ()
-		{
-			if (volume.vd != null) {
-				if (vdEditor == null)
-					vdEditor = CreateEditor (volume.vd, typeof(VolumeDataEditor));
-				vdEditor.DrawHeader ();
-				vdEditor.OnInspectorGUI ();
-			}
-		}
-
 		#region Scene GUI
-
 		public enum EditMode
 		{
 			View,
@@ -263,7 +149,7 @@ namespace CreVox
 			Voxel,
 			ObjectLayer,
 			Object,
-			Edit
+			Item
 		}
 
 		private EditMode selectedEditMode;
@@ -271,10 +157,33 @@ namespace CreVox
 
 		private void OnSceneGUI ()
 		{
-			ModeHandler ();
-			DrawModeGUI ();
-			if (!EditorApplication.isPlaying)
+			if (!EditorApplication.isPlaying) {
+				ModeHandler ();
+				DrawModeGUI ();
 				EventHandler ();
+			}
+		}
+
+		private void ModeHandler ()
+		{
+			switch (selectedEditMode) {
+			case EditMode.Voxel:
+			case EditMode.VoxelLayer:
+			case EditMode.Object:
+			case EditMode.ObjectLayer:
+			case EditMode.Item:
+				Tools.current = Tool.None;
+				break;
+
+			case EditMode.View:
+			default:
+				break;
+			}
+			if (selectedEditMode != currentEditMode) {
+				currentEditMode = selectedEditMode;
+				_itemInspected = null;
+				Repaint ();
+			}
 		}
 
 		private void DrawModeGUI ()
@@ -299,6 +208,8 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (vg);
 			EditorGUILayout.LabelField (((int)vg.editDis).ToString (), GUILayout.Width (25));
+			if (selectedEditMode == EditMode.Item)
+				isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
 			GUILayout.EndHorizontal ();
 			GUILayout.EndArea ();
 			
@@ -306,25 +217,106 @@ namespace CreVox
 			Handles.EndGUI ();
 		}
 
-		private void ModeHandler ()
+		private void EventHandler ()
 		{
-			switch (selectedEditMode) {
-			case EditMode.Voxel:
-			case EditMode.VoxelLayer:
-			case EditMode.Object:
-			case EditMode.ObjectLayer:
-			case EditMode.Edit:
-				Tools.current = Tool.None;
-				break;
-
-			case EditMode.View:
-			default:
-				break;
+			if (Event.current.alt) {
+				return;
 			}
-			if (selectedEditMode != currentEditMode) {
-				currentEditMode = selectedEditMode;
-                _itemInspected = null;
-                Repaint ();
+
+			if (Event.current.type == EventType.KeyDown) {
+				HotkeyFunction (Event.current.keyCode.ToString ());
+				Event.current.Use ();
+				return;
+			} 
+
+			if (currentEditMode != EditMode.View) {
+				int button = -1;
+				if (currentEditMode != EditMode.Item) {
+					button = Event.current.button;
+				}
+				if (Event.current.type == EventType.MouseUp && Event.current.button < 2) {
+					button = Event.current.button;
+					if (Event.current.button == 1)
+						Event.current.button = 0;
+				}
+				HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
+
+				switch (currentEditMode) {
+				case EditMode.View:
+				case EditMode.Item:
+					volume.useBox = false;
+					break;
+
+				default:
+					volume.useBox = true;
+					break;
+				}
+
+				switch (currentEditMode) {
+				case EditMode.Voxel:
+					if (button == 0)
+						DrawMarker (false);
+					else if (button == 1) {
+						DrawMarker (true);
+					}
+
+					if (Event.current.type == EventType.MouseDown) {
+						if (button == 0)
+							Paint (false);
+						else if (button == 1) {
+							Paint (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
+						}
+					}
+					break;
+
+				case EditMode.VoxelLayer: 
+					DrawLayerMarker ();
+
+					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+						if (button == 0)
+							PaintLayer (false);
+						else if (button == 1) {
+							PaintLayer (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
+						}
+					}
+					break;
+
+				case EditMode.Object:
+				case EditMode.ObjectLayer:
+					DrawGridMarker ();
+
+					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+						if (button == 0)
+							PaintPiece (false);
+						else if (button == 1) {
+							PaintPiece (true);
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
+						}
+					}
+					break;
+
+				case EditMode.Item:
+					if (Event.current.type == EventType.MouseDown) {
+						if (button == 1) {
+							Tools.viewTool = ViewTool.None;
+							Event.current.Use ();
+						}
+					}
+					DrawEditMarker (ref button);
+					break;
+
+				default:
+					break;
+				}
+
+				if (Event.current.type == EventType.MouseUp) {
+					UpdateDirtyChunks ();
+				}
 			}
 		}
 
@@ -426,185 +418,121 @@ namespace CreVox
 			}
 		}
 
-		private bool isSelectItem;
-		private int workItemId; 
-		private void DrawEditMarker ()
+		private int workItemId = -1; 
+		private int selectedItemID = -1;
+		private bool isItemSnap = false;
+		private void DrawEditMarker (ref int button)
 		{
+			VGlobal vg = VGlobal.GetSetting ();
 			Matrix4x4 defMatrix = Handles.matrix;
 			Color defColor = Handles.color;
 			Quaternion facingCamera;
+			bool selected = false;
+			string log = "";
 
-			RaycastHit hit;
-			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
-			LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-			bool isHit = Physics.Raycast (worldRay, out hit, VGlobal.GetSetting ().editDis, _mask);
-
-			if (isHit && hit.collider.GetComponentInParent<Volume> () == volume 
-				&& hit.normal.y > 0){
-				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
-				Handles.DrawSolidDisc (hit.point,hit.normal, 0.5f);
-			}
-
-			for (int i = 0; i < volume.blockItems.Count; i++) {
-				BlockItem blockItem = volume.blockItems [i];
-				Transform ItemNode = volume.GetItemNode (blockItem).transform;
-
-				Vector3 pos = ItemNode.position;
-				pos = Handles.DoPositionHandle (pos, ItemNode.rotation);
-				ItemNode.position = pos;
-				blockItem.posX = ItemNode.localPosition.x;
-				blockItem.posY = ItemNode.localPosition.y;
-				blockItem.posZ = ItemNode.localPosition.z;
-				blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
-
-				ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
-				Quaternion tmp = ItemNode.localRotation;
-				Vector3 rot = tmp.eulerAngles;
-				rot.x = Mathf.Round(rot.x /15f) * 15f;
-				rot.y = Mathf.Round(rot.y /15f) * 15f;
-				rot.z = Mathf.Round(rot.z /15f) * 15f;
-				tmp.eulerAngles = rot;
-				ItemNode.localRotation = tmp;
-				blockItem.rotX = ItemNode.localRotation.x;
-				blockItem.rotY = ItemNode.localRotation.y;
-				blockItem.rotZ = ItemNode.localRotation.z;
-				blockItem.rotW = ItemNode.localRotation.w;
-
-				float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
-				Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
-				facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
-				bool selected = Handles.Button (pos, facingCamera, handleSize, handleSize,Handles.SphereCap);
-                
-				if (selected) {
-					Debug.Log ("fire!!!");
-					isSelectItem = true;
-					workItemId = i;
-                    selectedItemID = i;
-                    Debug.Log("DrawEditMarker ID: " + workItemId.ToString());
-                    Event.current.type = EventType.mouseDown;
-					Event.current.button = 0;
+			// if no item selected, draw handle 'can paint item'.
+			if (selectedItemID == -1) {
+				RaycastHit hit;
+				Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
+				LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
+				bool isHit = Physics.Raycast (worldRay, out hit, VGlobal.GetSetting ().editDis, _mask);
+				if (isHit && hit.collider.GetComponentInParent<Volume> () == volume && hit.normal.y > 0) {
+					Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
+					Handles.DrawSolidDisc (hit.point, hit.normal, 0.5f);
 				}
-				Handles.color = defColor;
 			}
+			// detect item select.
+			for (int i = 0; i < volume.vd.blockItems.Count; i++) {
+				BlockItem blockItem = volume.vd.blockItems [i];
+				GameObject itemObj = volume.GetItemNode (blockItem);
+				if (itemObj != null) {
+					Transform ItemNode = itemObj.transform;
+					Vector3 pos = ItemNode.position;
+					Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.hh, 0) : pos;
+					// draw move & rotate handle.
+					if (selectedItemID == i) {
+						handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
+
+						if (isItemSnap) {
+							float fixedX = Mathf.Round (handlePos.x);
+							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
+							float fixedZ = Mathf.Round (handlePos.z);
+							pos = new Vector3 (fixedX, fixedY, fixedZ);
+						} else {
+							pos = handlePos;
+						}
+						ItemNode.position = pos;
+						blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+						blockItem.posX = ItemNode.localPosition.x;
+						blockItem.posY = ItemNode.localPosition.y;
+						blockItem.posZ = ItemNode.localPosition.z;
+
+						ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+						Quaternion tmp = ItemNode.localRotation;
+						Vector3 rot = tmp.eulerAngles;
+						rot.x = Mathf.Round (rot.x / 15f) * 15f;
+						rot.y = Mathf.Round (rot.y / 15f) * 15f;
+						rot.z = Mathf.Round (rot.z / 15f) * 15f;
+						tmp.eulerAngles = rot;
+						ItemNode.localRotation = tmp;
+						blockItem.rotX = ItemNode.localRotation.x;
+						blockItem.rotY = ItemNode.localRotation.y;
+						blockItem.rotZ = ItemNode.localRotation.z;
+						blockItem.rotW = ItemNode.localRotation.w;
+
+						EditorUtility.SetDirty (volume.vd);
+					}
+					// draw button.
+					float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
+					Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
+					facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
+					selected = Handles.Button (pos, facingCamera, handleSize, handleSize, Handles.SphereCap);
+					Handles.color = defColor;
+					//compare selectedItemID.
+					if (selected && button > -1 && button < 2) {
+						log += "[Before Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
+						workItemId = i;
+						break;
+					}
+				}
+			}
+			// check mouse event & select item
+			switch (button) {
+			case 0:
+				// check if is selected item.
+				if (workItemId != -1) {
+					// toggle item selection.
+					selectedItemID = (selectedItemID == workItemId) ? -1 : workItemId;
+				} else if (!selected && selectedItemID == -1) {
+					// add new item.
+					int oldcount = volume.vd.blockItems.Count;
+					PaintItem (false);
+					if (volume.vd.blockItems.Count != oldcount)
+						selectedItemID = volume.vd.blockItems.Count - 1;
+				}
+				UpdateInapectedItem (selectedItemID);
+				log += "\n[After Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
+				break;
+			case 1:
+				if (workItemId != -1 && selectedItemID == workItemId) {
+					// delette selected item
+					PaintItem (true);
+					selectedItemID = -1;
+				}
+				UpdateInapectedItem (selectedItemID);
+				log += "\n[After Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
+				break;
+			default :
+				break;
+			}
+			workItemId = -1;
+			if (log.Length > 0) Debug.Log (log);
 			Handles.matrix = defMatrix;
 			SceneView.RepaintAll ();
 		}
-
-		private void EventHandler ()
-		{
-			if (Event.current.alt) {
-				return;
-			}
-
-			if (Event.current.type == EventType.KeyDown) {
-				HotkeyFunction (Event.current.keyCode.ToString ());
-				Event.current.Use ();
-				return;
-			} 
-
-			if (currentEditMode != EditMode.View) {
-				HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
-				int button = Event.current.button;
-
-				switch (currentEditMode) {
-				case EditMode.Voxel:
-				case EditMode.VoxelLayer:
-					volume.useBox = true;
-					break;
-
-				default:
-					volume.useBox = false;
-					break;
-				}
-
-				switch (currentEditMode) {
-				case EditMode.Voxel:
-					if (button == 0)
-						DrawMarker (false);
-					else if (button == 1) {
-						DrawMarker (true);
-					}
-
-					if (Event.current.type == EventType.MouseDown) {
-						if (button == 0)
-							Paint (false);
-						else if (button == 1) {
-							Paint (true);
-							Tools.viewTool = ViewTool.None;
-							Event.current.Use ();
-						}
-					}
-					break;
-
-				case EditMode.VoxelLayer: 
-					DrawLayerMarker ();
-
-					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-						if (button == 0)
-							PaintLayer (false);
-						else if (button == 1) {
-							PaintLayer (true);
-							Tools.viewTool = ViewTool.None;
-							Event.current.Use ();
-						}
-					}
-					break;
-
-				case EditMode.Object:
-				case EditMode.ObjectLayer:
-					DrawGridMarker ();
-
-					if (Event.current.type == EventType.MouseDown) {
-						if (button == 0)
-							PaintPiece (false);
-						else if (button == 1) {
-							PaintPiece (true);
-							Tools.viewTool = ViewTool.None;
-							Event.current.Use ();
-						}
-					}
-					break;
-
-				case EditMode.Edit:
-					DrawEditMarker ();
-
-					if (Event.current.type == EventType.MouseDown) {
-						Debug.Log (isSelectItem + ": " + workItemId);
-						if (!isSelectItem && button == 0) {
-							PaintItem (false);
-							Event.current.Use ();
-						} else if (isSelectItem) {
-							if (Event.current.shift)
-								PaintItem (true);
-							else {
-								GameObject ItemNode = volume.GetItemNode (volume.blockItems [workItemId]);
-                                _itemInspected = ItemNode.GetComponent<PaletteItem>();
-                                PaletteItem item = ItemNode.GetComponent<PaletteItem> ();
-								Texture2D preview = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent( ItemNode));
-								Debug.Log (PrefabUtility.GetPrefabParent (ItemNode));
-								UpdateCurrentPieceInstance (item, preview);
-							}
-							isSelectItem = false;
-							workItemId = -1;
-						}
-					}
-					break;
-
-				default:
-					break;
-				}
-
-				if (Event.current.type == EventType.MouseUp) {
-					UpdateDirtyChunks ();
-				}
-			}
-		}
-
 		#endregion
 
-
 		#region LayerControl
-
 		private int fixPointY = 0;
 		private int fixCutY = 0;
 
@@ -644,10 +572,10 @@ namespace CreVox
 				}
 			}
 		}
+
 		private PaletteItem _itemSelected;
 		private Texture2D _itemPreview;
 		private LevelPiece _pieceSelected;
-
 		private void DrawPieceSelectedGUI ()
 		{
 			using (var v = new EditorGUILayout.VerticalScope ()) {
@@ -657,70 +585,9 @@ namespace CreVox
 				}
 			}
 		}
-
-		private void HotkeyFunction (string funcKey = "")
-		{
-			int _index = (int)currentEditMode;
-			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
-
-			switch (funcKey) {
-			case "A":
-				if (_index == 0)
-					selectedEditMode = (EditMode)_count;
-				else
-					selectedEditMode = (EditMode)(_index - 1);
-				Repaint ();
-				break;
-
-			case "D":
-				if (_index == _count)
-					selectedEditMode = (EditMode)0;
-				else
-					selectedEditMode = (EditMode)(_index + 1);
-				Repaint ();
-				break;
-
-			case "Q":
-				volume.pointer = !volume.pointer;
-				fixPointY = volume.pointY;
-				volume.ChangePointY (fixPointY);
-				break;
-
-			case "W":
-				fixPointY = volume.pointY + 1;
-				volume.ChangePointY (fixPointY);
-				fixPointY = volume.pointY;
-				break;
-
-			case "S":
-				fixPointY = volume.pointY - 1;
-				volume.ChangePointY (fixPointY);
-				fixPointY = volume.pointY;
-				break;
-
-			case "E":
-				volume.cuter = !volume.cuter;
-				fixCutY = volume.cutY;
-				volume.ChangeCutY (fixCutY);
-				break;
-
-			case "R":
-				fixCutY = volume.cutY + 1;
-				volume.ChangeCutY (fixCutY);
-				fixCutY = volume.cutY;
-				break;
-
-			case "F":
-				fixCutY = volume.cutY - 1;
-				volume.ChangeCutY (fixCutY);
-				fixCutY = volume.cutY;
-				break;
-
-			}
-		}
-
 		#endregion
 
+		#region Paint
 		private void Paint (bool isErase)
 		{
 			RaycastHit gHit;
@@ -833,11 +700,81 @@ namespace CreVox
 						return;
 
 					gHit.point = volume.transform.InverseTransformPoint (gHit.point);
-					volume.PlaceItem (volume.blockItems.Count, _pieceSelected,gHit.point);
+					volume.PlaceItem (volume.vd.blockItems.Count, _pieceSelected,gHit.point);
 					SceneView.RepaintAll ();
 				}
 			}
 			EditorUtility.SetDirty (volume.vd);
+		}
+		#endregion
+
+		#region Tools
+		private void HotkeyFunction (string funcKey = "")
+		{
+			int _index = (int)currentEditMode;
+			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
+
+			switch (funcKey) {
+			case "A":
+				if (_index == 0)
+					selectedEditMode = (EditMode)_count;
+				else
+					selectedEditMode = (EditMode)(_index - 1);
+				Repaint ();
+				break;
+
+			case "D":
+				if (_index == _count)
+					selectedEditMode = (EditMode)0;
+				else
+					selectedEditMode = (EditMode)(_index + 1);
+				Repaint ();
+				break;
+
+			case "Q":
+				volume.pointer = !volume.pointer;
+				fixPointY = volume.pointY;
+				volume.ChangePointY (fixPointY);
+				break;
+
+			case "W":
+				fixPointY = volume.pointY + 1;
+				volume.ChangePointY (fixPointY);
+				fixPointY = volume.pointY;
+				break;
+
+			case "S":
+				fixPointY = volume.pointY - 1;
+				volume.ChangePointY (fixPointY);
+				fixPointY = volume.pointY;
+				break;
+
+			case "E":
+				volume.cuter = !volume.cuter;
+				fixCutY = volume.cutY;
+				volume.ChangeCutY (fixCutY);
+				break;
+
+			case "R":
+				fixCutY = volume.cutY + 1;
+				volume.ChangeCutY (fixCutY);
+				fixCutY = volume.cutY;
+				break;
+
+			case "F":
+				fixCutY = volume.cutY - 1;
+				volume.ChangeCutY (fixCutY);
+				fixCutY = volume.cutY;
+				break;
+
+			}
+		}
+
+		private void UpdateInapectedItem (int id)
+		{
+			GameObject ItemNode = (id > -1) ? volume.GetItemNode (volume.vd.blockItems [id]) : null;
+			_itemInspected = (ItemNode != null) ? ItemNode.GetComponent<PaletteItem> () : null;
+			EditorUtility.SetDirty (volume);
 		}
 
 		private void UpdateDirtyChunks ()
@@ -864,64 +801,61 @@ namespace CreVox
 
 		public static void WriteVData (Volume _volume)
 		{
-			VolumeData vd = _volume.vd;
-			if (vd == null) {
-				if (_volume.workFile != "")
-					vd = VolumeData.GetVData (_volume.workFile + "_vData.asset");
-				else {
-					string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-					sPath = EditorUtility.SaveFilePanel ("save vData", sPath, _volume.name + "_vData", "asset");
-					sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourceSubPath));
-					vd = VolumeData.GetVData (sPath);
-				}
+			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
+			sPath = EditorUtility.SaveFilePanel ("save vData", sPath, _volume.name + "_vData", "asset");
+			if (sPath.Length < 1)
+				return;
+			sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
 
-				vd.chunkX = _volume.chunkX;
-				vd.chunkY = _volume.chunkY;
-				vd.chunkZ = _volume.chunkZ;
-				vd.chunkDatas = new List<ChunkData> ();
-				vd.blockItems = _volume.blockItems;
-				foreach (Chunk _chunk in _volume.chunks.Values) {
-					WorldPos _pos = _chunk.cData.ChunkPos;
+			VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
+			UnityEditor.AssetDatabase.CreateAsset (vd, sPath);
+			UnityEditor.AssetDatabase.Refresh();
 
-					ChunkData newChunkData = new ChunkData ();
-					newChunkData.ChunkPos = _pos;
-					newChunkData.blocks = _chunk.cData.blocks;
-					newChunkData.blockAirs = _chunk.cData.blockAirs;
-					newChunkData.blockHolds = _chunk.cData.blockHolds;
+			_volume.vd = vd;
+			vd.chunkX = _volume.chunkX;
+			vd.chunkY = _volume.chunkY;
+			vd.chunkZ = _volume.chunkZ;
+			vd.chunkDatas = new List<ChunkData> ();
+			vd.blockItems = _volume.vd.blockItems;
+			foreach (Chunk _chunk in _volume.chunks.Values) {
+				WorldPos _pos = _chunk.cData.ChunkPos;
 
-					vd.chunkDatas.Add (newChunkData);
-					_chunk.cData = newChunkData;
-				}
+				ChunkData newChunkData = new ChunkData ();
+				newChunkData.ChunkPos = _pos;
+				newChunkData.blocks = _chunk.cData.blocks;
+				newChunkData.blockAirs = _chunk.cData.blockAirs;
+				newChunkData.blockHolds = _chunk.cData.blockHolds;
+
+				vd.chunkDatas.Add (newChunkData);
+				_chunk.cData = newChunkData;
 			}
 		}
-
+		#endregion
 
 		#region SubscribeEvents
-
 		private PaletteItem _itemInspected;
 
 		private void DrawPieceInspectedGUI()
 		{
-			if (currentEditMode != EditMode.Edit)
+			if (currentEditMode != EditMode.Item)
 				return;
 
-			EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
-			if (_itemInspected != null) {
-				EditorGUILayout.BeginVertical ("box");
-				EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
-                if (_itemInspected.inspectedScript != null)
-                {
-                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor(_itemInspected.inspectedScript));
-                    Debug.Log("selectedItemID:" + selectedItemID.ToString());
-                    BlockItem item = volume.blockItems[selectedItemID];
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				EditorGUILayout.LabelField ("Piece Edited[" + selectedItemID + "]", EditorStyles.boldLabel);
+				if (_itemInspected != null) {
+					EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
+					if (_itemInspected.inspectedScript != null) {
+						LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (_itemInspected.inspectedScript));
+						BlockItem item = volume.vd.blockItems [selectedItemID];
 
-                    if (e != null)
-                        e.OnEditorGUI(ref item);
-                        //VolumeEditorAdapter.DrawInspector(e, ref item);
-                }
-				EditorGUILayout.EndVertical ();
-			} else {
-				EditorGUILayout.HelpBox ("No piece to edit!", MessageType.Info);
+						if (e != null)
+							e.OnEditorGUI (ref item);
+					} else {
+						EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
+					}
+				} else {
+					EditorGUILayout.HelpBox ("Not select Item!", MessageType.Info);
+				}
 			}
 		}
 
@@ -942,7 +876,6 @@ namespace CreVox
 			_pieceSelected = (LevelPiece)item.GetComponent<LevelPiece> ();
 			Repaint ();
 		}
-
 		#endregion
 	}
 }

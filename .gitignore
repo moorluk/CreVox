@@ -49,8 +49,6 @@ Assets/Resources/Crevox/VolumeData/_TempBackup/
 27Resources/
 Assets/Gizmos/
 Assets/Gizmos.meta
-Assets/Plugins/Behavior Designer/
-Assets/Plugins/Behavior Designer.meta
 Assets/ArtWorks/
 Assets/ArtWorks.meta
 Assets/Lava_Flowing_Shader/
@@ -64,3 +62,9 @@ Assets/Standard Assets.meta
 Assets/Standard Assets/
 Assets/PostProcessing.meta
 Assets/PostProcessing/
+Assets/WillDelete/VolumeData/
+Assets/WillDelete/VolumeData.meta
+Assets/Resources/CreVox/VolumeData/Isaac.meta
+Assets/Resources/CreVox/VolumeData/Isaac/
+Assets/Resources/CreVox/VolumeData/TEST.meta
+Assets/Resources/CreVox/VolumeData/TEST/

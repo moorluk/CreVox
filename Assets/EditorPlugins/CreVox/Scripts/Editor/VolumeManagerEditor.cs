@@ -10,17 +10,17 @@ namespace CreVox
 	{
 		VolumeManager vm;
 		VGlobal vg;
-
-		private void Awake ()
-		{
-			vm = (VolumeManager)target;
-			vg = VGlobal.GetSetting ();
-			UpdateStatus ();
-		}
+		string[] artPacks;
+		List<string> artPacksList;
 
 		void OnEnable ()
 		{
-			Awake ();
+			vm = (VolumeManager)target;
+			vg = VGlobal.GetSetting ();
+			artPacksList = VGlobal.GetArtPacks ();
+			artPacks = artPacksList.ToArray ();
+			UpdateStatus ();
+			ArtPackWindow.UpdateItemArrays (vg);
 		}
 		
 		float buttonW = 70;
@@ -47,6 +47,7 @@ namespace CreVox
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.wideMode = true;
+				vm.autoRun = EditorGUILayout.ToggleLeft ("Auto Run on play", vm.autoRun);
 				DrawVolumeList ();
 			}
 
@@ -57,18 +58,33 @@ namespace CreVox
 		{
 			Color defColor = GUI.color;
 			Color volColor = new Color (0.5f, 0.8f, 0.75f);
+			float DefaultLabelWidth = EditorGUIUtility.labelWidth;
 
 			for (int i = 0; i < vm.dungeons.Count; i++) {
-
+				Dungeon _d = vm.dungeons [i];
 				GUI.color = volColor;
-				using (var v = new EditorGUILayout.VerticalScope ("Box")) {
+				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 					GUI.color = defColor;
-					EditorGUIUtility.labelWidth = 92;
-					EditorGUILayout.ObjectField ("VolumeData",vm.dungeons [i].volumeData, typeof(VolumeData), true);
-					EditorGUIUtility.labelWidth = 80;
-					EditorGUILayout.Vector3Field ("Position", vm.dungeons [i].position);
-					EditorGUILayout.Vector3Field ("Rotation", vm.dungeons [i].rotation.eulerAngles);
-					EditorGUILayout.LabelField ("ArtPack",vm.dungeons [i].ArtPack.Replace("CreVox/VolumeArtPack/",""),"miniLabel");
+					EditorGUIUtility.labelWidth = 100;
+					EditorGUILayout.ObjectField ("VolumeData",_d.volumeData, typeof(VolumeData), true);
+					EditorGUIUtility.labelWidth = 88;
+					EditorGUILayout.Vector3Field ("Position", _d.position);
+					EditorGUILayout.Vector3Field ("Rotation", _d.rotation.eulerAngles);
+					string _APName = _d.ArtPack.Replace (PathCollect.artPack + "/", "");
+					int _APNameIndex = artPacksList.IndexOf (_APName);
+					EditorGUI.BeginChangeCheck ();
+					_APNameIndex = EditorGUILayout.Popup("ArtPack",_APNameIndex,artPacks);
+					EditorGUILayout.LabelField ("Final ArtPack", _APName + _d.volumeData.subArtPack, EditorStyles.miniLabel);
+					EditorGUILayout.LabelField ("Voxel Material", _d.vMaterial.Substring (_d.vMaterial.LastIndexOf ("/") + 1), EditorStyles.miniLabel);
+					if (EditorGUI.EndChangeCheck ()) {
+						_APName = artPacks [_APNameIndex];
+						if (_APName.Length == 4)
+							_APName =_APName.Remove (3);
+						string _APPath = PathCollect.artPack + "/" + _APName;
+						_d.ArtPack = _APPath;
+						_d.vMaterial = _APPath + "/" + _APName + "_voxel";
+						vm.dungeons [i] = _d;
+					}
 				}
 			}
 		}

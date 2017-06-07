@@ -7,18 +7,8 @@ namespace CreVox
 	public class LevelPieceEditor : Editor
 	{
 		LevelPiece lp;
-		
 		bool drawIsSolid = true;
 		bool drawDef = false;
-
-		bool isHold {
-			get{ return lp.isHold; }
-			set {
-				lp.isHold = value;
-				EditorUtility.SetDirty (lp as Object);
-			}
-		}
-
 		public override void OnInspectorGUI ()
 		{
             lp = (LevelPiece)target;
@@ -111,14 +101,12 @@ namespace CreVox
 			for (int y = lp.minY; y < lp.maxY + 1; y++) {
 				for (int x = lp.minX; x < lp.maxX + 1; x++) {
 					for (int z = lp.minZ; z < lp.maxZ + 1; z++) {
-						if (!(x == 0 && y == 0 && z == 0)) {
-                            LevelPiece.Hold newHold = new LevelPiece.Hold ();
-							newHold.offset.x = x;
-							newHold.offset.y = y;
-							newHold.offset.z = z;
-							newHold.isSolid = false;
-							lp.holdBlocks.Add (newHold);
-						}
+						LevelPiece.Hold newHold = new LevelPiece.Hold ();
+						newHold.offset.x = x;
+						newHold.offset.y = y;
+						newHold.offset.z = z;
+						newHold.isSolid = false;
+						lp.holdBlocks.Add (newHold);
 					}
 				}
 			}

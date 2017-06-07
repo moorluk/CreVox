@@ -1,0 +1,3 @@
+[submodule "Assets/Plugins/DungeonGenerator"]
+	path = Assets/Plugins/DungeonGenerator
+	url = https://github.com/grass0916/DungeonGenerator

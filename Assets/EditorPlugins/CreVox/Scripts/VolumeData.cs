@@ -12,6 +12,23 @@ namespace CreVox
 		public int chunkZ = 1;
 		public List <ChunkData> chunkDatas = new List<ChunkData> ();
 		public List<BlockItem> blockItems = new List<BlockItem> ();
+		public string subArtPack = "";
+
+		// [XAOCX add]
+		public VolumeData() : base() { }
+		public VolumeData(VolumeData clone) : base() {
+			this.chunkX = clone.chunkX;
+			this.chunkY = clone.chunkY;
+			this.chunkZ = clone.chunkZ;
+			this.chunkDatas = new List<ChunkData>();
+			foreach (var chunkData in clone.chunkDatas) {
+				this.chunkDatas.Add(new ChunkData(chunkData));
+			}
+			this.blockItems = new List<BlockItem>();
+			foreach (var blockItem in clone.blockItems) {
+				this.blockItems.Add(new BlockItem(blockItem));
+			}
+		}
 
 		public void Awake()
 		{
@@ -32,16 +49,16 @@ namespace CreVox
 
 		public static VolumeData GetVData (string workFile)
 		{
-			VolumeData _vData = Resources.Load (workFile, typeof(VolumeData)) as VolumeData;
+			VolumeData _vData = ScriptableObject.CreateInstance<VolumeData> ();
 			#if UNITY_EDITOR
 			if (_vData == null) {
 				string bytesPath = PathCollect.resourcesPath + workFile;
 				VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
 				UnityEditor.AssetDatabase.CreateAsset (vd, bytesPath);
 				UnityEditor.AssetDatabase.Refresh();
-				_vData = Resources.Load (workFile.Replace(".asset",""), typeof(VolumeData)) as VolumeData;
 			}
 			#endif
+			_vData = Resources.Load (workFile.Replace(".asset",""), typeof(VolumeData)) as VolumeData;
 			return _vData;
 		}
 	}

@@ -35,7 +35,7 @@ namespace CreVox
 					}
 				}
 			}
-			blockItems = volume.blockItems;
+			blockItems = volume.vd.blockItems;
 		}
 
 		public void AddChunk(int _x, int _y, int _z, Chunk chunk)

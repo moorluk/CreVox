@@ -22,16 +22,14 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityGameObject
 		{
 			Random.InitState(System.Guid.NewGuid().GetHashCode());
 			if (Random.value < successProbability) {
-				GameObject n;
-				if (target.Value != null)
-					n = GameObject.Instantiate (target.Value, position, Quaternion.Euler(rotation)) as GameObject;
-				else
-					n = new GameObject ();
-
-				if (root.Value)
+				if (root.Value == null)
+					root.Value = this.gameObject;
+				if (target.Value != null) {
+					GameObject n = GameObject.Instantiate (target.Value, position, Quaternion.Euler (rotation)) as GameObject;
 					n.transform.parent = root.Value.transform;
-				n.transform.localPosition = position;
-				n.transform.localRotation = Quaternion.Euler(rotation);
+					n.transform.localPosition = position;
+					n.transform.localRotation = Quaternion.Euler (rotation);
+				}
 				return TaskStatus.Success;
 			}
 			return TaskStatus.Failure;

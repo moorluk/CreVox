@@ -20,14 +20,18 @@ namespace CreVox
 		public static ArtPackWindow instance;
 
 		private Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
+		private string vgName = "";
+		private VGlobal vg;
 
-		private List<string> _artPacks;
+		private List<string> _artPacks= new List<string> ();
 
 		private List<Item> _items;
 		private Dictionary<PaletteItem.Category, List<string>> itemNames;
 
 		private static string _path = PathCollect.resourcesPath + PathCollect.artPack;
 		private Vector2 _scrollPosition;
+		private Vector2 _scrollPositionX;
+		private Vector2 _scrollPositionY;
 		private float ButtonWidth = 140;
 
 		public static void ShowPalette ()
@@ -45,33 +49,28 @@ namespace CreVox
 		{
 			DrawList ();
 			DrawScroll ();
+			DrawRenameTool ();
 			DrawFunction ();
-		}
-
-		private Texture2D GetPreview(GameObject obj)
-		{
-			Texture2D thumbnail = null;
-			thumbnail = AssetPreview.GetAssetPreview (obj);
-			if (thumbnail == null)
-				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
-			return thumbnail;
 		}
 
 		private void InitContent ()
 		{
+			if (vg == null)
+				vg = VGlobal.GetSetting ();
+
 			//GetItems
 			_items = new List<Item> ();
 			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
-			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count + 1);
+			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count *2);
 			foreach (PaletteItem p in itemsP) {
-				Item newItem = new Item();
+				Item newItem = new Item ();
 				newItem.paletteitem = p;
 				newItem.category = p.category;
 				newItem.itemObject = p.gameObject;
 				newItem.itemName = p.gameObject.name;
 				newItem.artPack = AssetDatabase.GetAssetPath (p.gameObject).Replace(_path + "/","");
 				newItem.artPack = newItem.artPack.Remove (newItem.artPack.IndexOf ("/"));
-				newItem.preview = GetPreview(p.gameObject);
+				newItem.preview = GetPreview (p.gameObject);
 
 				_items.Add (newItem);
 			}
@@ -84,7 +83,8 @@ namespace CreVox
 			List<PaletteItem.Category> _categories;
 			_categories = EditorUtils.GetListFromEnum<PaletteItem.Category> ();
 
-			GetArtPackNames ();
+			_artPacks = VGlobal.GetArtPacks ();
+			UpdateAppDict ();
 
 			//GetItemCells
 			_itemCells = new Dictionary<string, Dictionary<PaletteItem.Category, List<Item>>> ();
@@ -122,66 +122,138 @@ namespace CreVox
 				logCell = logCell + " -------------\n";
 			}
 			Debug.Log (logCell);
+
+			UpdateAppList ();
+			UpdateItemArrays (vg);
 		}
 
 		private void DrawList ()
 		{
-			GUIStyle listLabel = new GUIStyle(GUI.skin.FindStyle("ProgressBarBack"));
+			GUIStyle listLabel = new GUIStyle (GUI.skin.FindStyle ("ProgressBarBack"));
 			listLabel.alignment = TextAnchor.MiddleLeft;
 			listLabel.fontSize = 14;
 			listLabel.fontStyle = FontStyle.Bold;
 
-			using (var h = new EditorGUILayout.HorizontalScope ()) {
-				for (int i = 0; i < _artPacks.Count; i++) {
-						GUILayout.Label (_artPacks [i], listLabel, GUILayout.Width (ButtonWidth));
+			string[] _ap = _artPacks.ToArray ();
+
+			using (var h = new EditorGUILayout.HorizontalScope (GUILayout.Height (45))) {
+				GUILayout.BeginScrollView (Vector2.zero, GUIStyle.none, GUIStyle.none, GUILayout.Width (ButtonWidth + 5));
+				using (var v = new EditorGUILayout.VerticalScope (GUILayout.Width (ButtonWidth))) {
+					GUILayout.Label (_artPacks [0], listLabel, GUILayout.Width (ButtonWidth));
+					GUILayout.Label ("Set Parent ArtPack", GUILayout.Width (ButtonWidth));
 				}
+				GUILayout.EndScrollView ();
+				GUILayout.BeginScrollView (_scrollPositionX, GUIStyle.none, GUIStyle.none);
+				EditorGUI.BeginChangeCheck ();
+				using (var h1 = new EditorGUILayout.HorizontalScope ()) {
+					for (int i = 1; i < _artPacks.Count; i++) {
+						using (var v = new EditorGUILayout.VerticalScope (GUILayout.Width (ButtonWidth))) {
+							string _c = _artPacks [i];
+							GUILayout.Label (_c, listLabel, GUILayout.Width (ButtonWidth));
+							_pDict[_c] = _artPacks[EditorGUILayout.Popup (_artPacks.IndexOf(_pDict[_c]), _ap, GUILayout.Width (ButtonWidth))];
+						}
+					}
+					GUILayout.Label ("", GUILayout.Width (15));
+				}
+				if (EditorGUI.EndChangeCheck ()) {
+					UpdateAppList ();
+				}
+				GUILayout.EndScrollView ();
 			}
 		}
 
+		bool showScroll = true;
 		private void DrawScroll ()
 		{
 			Color def = GUI.color;
-			_scrollPosition = GUILayout.BeginScrollView (_scrollPosition);
+			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField)) {
+				showScroll = EditorGUILayout.Toggle (showScroll, "foldout", GUILayout.Width (15));
+				EditorGUILayout.LabelField ("Item List", EditorStyles.boldLabel);
+			}
+			if (showScroll) {
+				using (var h0 = new EditorGUILayout.HorizontalScope ()) {
+					GUILayout.BeginScrollView (_scrollPositionY, GUIStyle.none, GUIStyle.none, GUILayout.Width (ButtonWidth + 5));
+					using (var v = new EditorGUILayout.VerticalScope (GUILayout.Width (ButtonWidth))) {
+						GUILayout.Space(2);
+						foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
+							GUILayout.Label (k.Key.ToString (), "In Title");
+							foreach (string n in k.Value) {
+								Predicate<Item> findItem = delegate(Item obj) {
+									return obj.itemName == n;
+								};
+								using (var h = new EditorGUILayout.HorizontalScope ()) {
+									Item _item = _itemCells [_artPacks [0]] [k.Key].Find (findItem);
+									if (_item != null) {
+										GUILayout.Label (_item.preview, GetPreviewStyle ());
+										string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
+										if (GUILayout.Button (itemLebel, GetLabelStyle ()))
+											Selection.activeGameObject = _item.itemObject;
+									} else {
+										GUI.color = Color.red;
+										GUILayout.Label (GetPreview (), GetPreviewStyle ());
+										GUILayout.Box ("", GetLabelStyle (), GUILayout.ExpandHeight (true));
+										GUI.color = def;
+									}
+								}
+							}
+						}
+						GUILayout.Space(15);
+					}
+					GUILayout.EndScrollView ();
 
-			foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
-				GUILayout.Label (k.Key.ToString (), "In Title");
-				foreach (string n in k.Value) {
-					Predicate<Item> findItem = delegate(Item obj) {
-						return obj.itemName == n;
-					};
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						for (int i = 0; i < _artPacks.Count; i++) {
-							Item _item = _itemCells [_artPacks [i]] [k.Key].Find (findItem);
-							if (_item != null) {
-								GUILayout.Label (_item.preview, GetPreviewStyle());
-								string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
-								if (GUILayout.Button (itemLebel, GetLabelStyle ()))
-									Selection.activeGameObject = _item.itemObject;
-							} else {
-								GUI.color = Color.red;
-								GUILayout.Box ("","button", GUILayout.Width (ButtonWidth),GUILayout.ExpandHeight(true));
-								GUI.color = def;
+					_scrollPosition = GUILayout.BeginScrollView (_scrollPosition);
+					_scrollPositionX.x = _scrollPosition.x;
+					_scrollPositionY.y = _scrollPosition.y;
+					using (var v = new EditorGUILayout.VerticalScope ()) {
+						foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
+							GUILayout.Label ("", "In Title");
+							foreach (string n in k.Value) {
+								Predicate<Item> findItem = delegate(Item obj) {
+									return obj.itemName == n;
+								};
+								using (var h = new EditorGUILayout.HorizontalScope ()) {
+									for (int i = 1; i < _artPacks.Count; i++) {
+										Item _item = _itemCells [_artPacks [i]] [k.Key].Find (findItem);
+										if (_item != null) {
+											GUILayout.Label (_item.preview, GetPreviewStyle ());
+											string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
+											if (GUILayout.Button (itemLebel, GetLabelStyle ()))
+												Selection.activeGameObject = _item.itemObject;
+										} else {
+											GUI.color = Color.red;
+											GUILayout.Label (GetPreview (), GetPreviewStyle ());
+											GUILayout.Box ("", GetLabelStyle (), GUILayout.ExpandHeight (true));
+											GUI.color = def;
+										}
+									}
+								}
 							}
 						}
 					}
+					GUILayout.EndScrollView ();
 				}
 			}
-			GUILayout.EndScrollView ();
 		}
 
 		private void DrawFunction ()
 		{
-			DrawRenameTool ();
-			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField)) {
-				GUILayout.Label ("", GUILayout.Width (Mathf.Clamp (Screen.width - 290, 0, Screen.width)));
+			using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.textField, GUILayout.Width (Screen.width))) {
+				GUILayout.Label ("");
+				EditorGUI.BeginChangeCheck ();
+				vg = (VGlobal)EditorGUILayout.ObjectField (vg, typeof(VGlobal), false, GUILayout.Width (170));
+				if (EditorGUI.EndChangeCheck () && vgName.Length > 0) {
+					vgName = AssetDatabase.GetAssetPath (vg);
+					vgName = vgName.Substring (vgName.LastIndexOf (PathCollect.resourceSubPath)).Replace (".asset", "");
+				}
 				GUILayout.Label ("Button Size", GUILayout.Width (70));
-				ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 100f, 300f, GUILayout.Width (100));
+				ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 100f, 300f, GUILayout.Width (90));
 				if (GUILayout.Button ("Refresh Preview", EditorStyles.miniButton, GUILayout.Width (90))) {
 					InitContent ();
 				}
 			}
 		}
 
+		#region rename tool
 		bool showRenameTool = false;
 		VolumeManager vm = null;
 		bool usePrefab = true;
@@ -231,6 +303,15 @@ namespace CreVox
 					if (GUILayout.Button ("Replace")) {
 						Debug.Log (oldName + " -> " + newName);
 						foreach (Dungeon d in vm.dungeons) {
+							foreach (BlockItem b in d.volumeData.blockItems) {
+								if (b.pieceName == oldName) {
+										Debug.Log (d.volumeData.name + "(" + b.BlockPos.ToString () + "): " + b.pieceName);
+										if (newName != "")
+											b.pieceName = newName;
+										else
+											b.pieceName = null;
+									}
+							}
 							foreach (ChunkData c in d.volumeData.chunkDatas) {
 								foreach (BlockAir b in c.blockAirs) {
 									for (int i = 0; i < b.pieceNames.Length; i++) {
@@ -243,8 +324,8 @@ namespace CreVox
 										}
 									}
 								}
-								EditorUtility.SetDirty (d.volumeData);
 							}
+							EditorUtility.SetDirty (d.volumeData);
 						}
 						Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
 						foreach (Volume vol in vols) {
@@ -255,17 +336,110 @@ namespace CreVox
 			}
 			EditorGUIUtility.labelWidth = lw;
 		}
-
-		private void GetArtPackNames()
+		#endregion
+		#region ArtPackParent
+		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
+		private void UpdateAppDict ()
 		{
-			_artPacks = new List<string> ();
-			_artPacks.Add (Path.GetFileName (PathCollect.pieces));
-			string[] _artPacksTemp = Directory.GetDirectories (_path, "*", SearchOption.TopDirectoryOnly);
-			for (int a = 0; a < _artPacksTemp.Length; a++) {
-				_artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
-				if (_artPacksTemp [a] != _artPacks [0])
-					_artPacks.Add (_artPacksTemp [a]);
+			_pDict.Clear();
+			for (int i = 1; i < _artPacks.Count; i++) {
+				for (int j = 0; j < vg.artPackParentList.Count; j++) {
+					if (vg.artPackParentList [j].pack == _artPacks [i]) {
+						_pDict.Add (vg.artPackParentList [j].pack, vg.artPackParentList [j].parentPack);
+						break;
+					}
+				}
+				if(!_pDict.ContainsKey(_artPacks[i]))
+					_pDict.Add (_artPacks[i], "LevelPieces");
 			}
+		}
+
+		private void UpdateAppList ()
+		{
+			List<VGlobal.ArtPackParent> _pList = new List<VGlobal.ArtPackParent>();
+			VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
+			foreach (KeyValuePair<string,string> k in _pDict) {
+				_a = new VGlobal.ArtPackParent ();
+				_a.pack = k.Key;
+				_a.parentPack = k.Value;
+				_pList.Add(_a);
+			}
+			vg.artPackParentList = _pList;
+			EditorUtility.SetDirty (vg);
+		}
+
+		public static void UpdateItemArrays(VGlobal _vg = null)
+		{
+			if (_vg == null)
+				_vg = VGlobal.GetSetting ();
+			List<string> artPacks = VGlobal.GetArtPacks ();
+			_vg.APItemPathList.Clear ();
+			for (int i = 0; i < artPacks.Count; i++) {
+				VGlobal.APItemPath _n = new VGlobal.APItemPath ();
+				_n.name = artPacks [i];
+				_n.itemPath = new List<string> ();
+				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + "/" + _n.name, _vg);
+				for (int j = 0; j < _p.Length; j++) {
+					string _itemPath = AssetDatabase.GetAssetPath (_p [j]);
+					_itemPath = _itemPath.Substring (_itemPath.IndexOf (PathCollect.resourceSubPath)).Replace(".prefab","");
+					_n.itemPath.Add (_itemPath);
+				}
+				_vg.APItemPathList.Add (_n);
+			}
+		}
+
+		private static PaletteItem[] UpdateItemArray(string _artPackPath, VGlobal _vg = null)
+		{
+			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
+
+			string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
+			string pName = _vg.GetParentArtPack (cName);
+			string pPath = PathCollect.artPack + "/" + pName;
+			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
+			while (pPath != PathCollect.pieces) {
+				PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
+				for (int i = 0; i < _parent.Length; i++) {
+					bool _finded = false;
+					for (int j = 0; j < _child.Length; j++) {
+						if (_child [j].name == _parent [i].name) {
+							_parent.SetValue (_child [j], i);
+							_finded = true;
+						}
+						if (_finded)
+							break;
+					}
+				}
+				_child = _parent;
+				cName = pName;
+				pName = _vg.GetParentArtPack (cName);
+				pPath = PathCollect.artPack + "/" + pName;
+			}
+
+			for (int i = 0; i < _final.Length; i++) {
+				bool _finded = false;
+				for (int j = 0; j < _child.Length; j++) {
+					if (_child [j].name == _final [i].name) {
+						_final.SetValue(_child [j], i);
+						_finded = true;
+					}
+					if (_finded)
+						break;
+				}
+			}
+
+			return _final;
+		}
+
+		#endregion
+		#region Get
+		private Texture2D GetPreview(GameObject obj = null)
+		{
+			Texture2D thumbnail = null;
+			if (obj != null)
+				thumbnail = AssetPreview.GetAssetPreview (obj);
+			if (thumbnail == null)
+				thumbnail = AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
+			return thumbnail;
 		}
 
 		private GUIStyle GetLabelStyle ()
@@ -289,5 +463,6 @@ namespace CreVox
 			guiStyle.fixedWidth = size;
 			return guiStyle;
 		}
+		#endregion
 	}
 }
