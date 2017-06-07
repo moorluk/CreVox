@@ -4,8 +4,10 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "csv": "^1.1.1",
     "express": "^4.15.3",
     "open": "0.0.5",
+    "pug": "^2.0.0-rc.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {},

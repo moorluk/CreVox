@@ -1,0 +1,45 @@
+doctype html
+html(lang='en')
+	head
+		meta(charset='UTF-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		meta(name='author', content='Ze-Hao Wang')
+		link(rel='shortcut icon', href='../favicon.ico')
+		link(rel='stylesheet', type='text/css', href='/stickytableheaders/css/normalize.css')
+		link(rel='stylesheet', type='text/css', href='/stickytableheaders/css/demo.css')
+		link(rel='stylesheet', type='text/css', href='/stickytableheaders/css/component.css')
+		link(rel='stylesheet', type='text/css', href='/style.css')
+	body
+		.container
+			.component
+				table.overflow-y
+					thead
+						tr
+							th 實驗
+							th 世代
+							th 個體
+							th 基因座標
+							th 遊戲物件
+							th 房間編號
+					tbody
+						each row in fitnessscores
+							tr
+								th #{row[0]}
+								td #{row[1]}
+								td #{row[2]}
+								td #{row[3]}
+								td
+									if row[4] === "Empty"
+										img.gameobject(src="/images/001-empty.png")
+									else if row[4] === "Enemy"
+										img.gameobject(src="/images/002-enemy.png")
+									else if row[4] === "Treasure"
+										img.gameobject(src="/images/003-treasure.png")
+									else if row[4] === "Trap"
+										img.gameobject(src="/images/004-trap.png")
+									| #{row[4]}
+								td #{row[5]}
+		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+		script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js')
+		script(src='/stickytableheaders/js/jquery.stickyheader.js')
