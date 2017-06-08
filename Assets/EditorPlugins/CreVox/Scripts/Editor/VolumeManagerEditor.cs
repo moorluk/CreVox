@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
 using UnityEditor;
 
 namespace CreVox
@@ -17,10 +16,10 @@ namespace CreVox
 		{
 			vm = (VolumeManager)target;
 			vg = VGlobal.GetSetting ();
+			ArtPackWindow.UpdateItemArrays (vg);
 			artPacksList = VGlobal.GetArtPacks ();
 			artPacks = artPacksList.ToArray ();
 			UpdateStatus ();
-			ArtPackWindow.UpdateItemArrays (vg);
 		}
 		
 		float buttonW = 70;
@@ -66,20 +65,20 @@ namespace CreVox
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 					GUI.color = defColor;
 					EditorGUIUtility.labelWidth = 100;
-					EditorGUILayout.ObjectField ("VolumeData",_d.volumeData, typeof(VolumeData), true);
+					EditorGUILayout.ObjectField ("VolumeData", _d.volumeData, typeof(VolumeData), true);
 					EditorGUIUtility.labelWidth = 88;
 					EditorGUILayout.Vector3Field ("Position", _d.position);
 					EditorGUILayout.Vector3Field ("Rotation", _d.rotation.eulerAngles);
 					string _APName = _d.ArtPack.Replace (PathCollect.artPack + "/", "");
 					int _APNameIndex = artPacksList.IndexOf (_APName);
 					EditorGUI.BeginChangeCheck ();
-					_APNameIndex = EditorGUILayout.Popup("ArtPack",_APNameIndex,artPacks);
+					_APNameIndex = EditorGUILayout.Popup ("ArtPack", _APNameIndex, artPacks);
 					EditorGUILayout.LabelField ("Final ArtPack", _APName + _d.volumeData.subArtPack, EditorStyles.miniLabel);
 					EditorGUILayout.LabelField ("Voxel Material", _d.vMaterial.Substring (_d.vMaterial.LastIndexOf ("/") + 1), EditorStyles.miniLabel);
 					if (EditorGUI.EndChangeCheck ()) {
 						_APName = artPacks [_APNameIndex];
 						if (_APName.Length == 4)
-							_APName =_APName.Remove (3);
+							_APName = _APName.Remove (3);
 						string _APPath = PathCollect.artPack + "/" + _APName;
 						_d.ArtPack = _APPath;
 						_d.vMaterial = _APPath + "/" + _APName + "_voxel";

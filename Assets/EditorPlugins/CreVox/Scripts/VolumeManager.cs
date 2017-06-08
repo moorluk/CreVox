@@ -17,7 +17,6 @@ namespace CreVox
 	public class VolumeManager : MonoBehaviour
 	{
 		public List<Dungeon> dungeons;
-		public PaletteItem[] itemArray;
 		public bool autoRun = true;
 
 		void Awake ()

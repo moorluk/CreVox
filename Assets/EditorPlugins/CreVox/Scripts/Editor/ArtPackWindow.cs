@@ -386,6 +386,7 @@ namespace CreVox
 				}
 				_vg.APItemPathList.Add (_n);
 			}
+			EditorUtility.SetDirty (_vg);
 		}
 
 		private static PaletteItem[] UpdateItemArray(string _artPackPath, VGlobal _vg = null)
