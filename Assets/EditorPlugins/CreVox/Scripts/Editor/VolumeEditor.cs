@@ -840,10 +840,14 @@ namespace CreVox
 			if (currentEditMode != EditMode.Item)
 				return;
 
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Piece Edited[" + selectedItemID + "]", EditorStyles.boldLabel);
-				if (_itemInspected != null) {
-					EditorGUILayout.LabelField ("Name:" + _itemInspected.name);
+			if (_itemInspected != null) {
+				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+					using (var h = new EditorGUILayout.HorizontalScope ()) {
+						string _label = "Piece Edited [" + selectedItemID + "]";
+						EditorGUILayout.LabelField (_label, EditorStyles.boldLabel, GUILayout.Width (110));
+						string _label2 = "(" + _itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") " + _itemInspected.name;
+						EditorGUILayout.LabelField (_label2,EditorStyles.miniLabel);
+					}
 					if (_itemInspected.inspectedScript != null) {
 						LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (_itemInspected.inspectedScript));
 						BlockItem item = volume.vd.blockItems [selectedItemID];
@@ -853,8 +857,6 @@ namespace CreVox
 					} else {
 						EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
 					}
-				} else {
-					EditorGUILayout.HelpBox ("Not select Item!", MessageType.Info);
 				}
 			}
 		}
