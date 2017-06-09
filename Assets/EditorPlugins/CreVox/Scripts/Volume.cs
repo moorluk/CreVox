@@ -16,10 +16,17 @@ namespace CreVox
 	{
 		public string ArtPack = PathCollect.pieces;
 		public string vMaterial = PathCollect.defaultVoxelMaterial;
-
 		public Material vertexMaterial;
-
 		public VolumeData vd;
+		#region delgate
+		private delegate void volumeAdd(GameObject volume);
+		private void AddComponent()
+		{
+			volumeAdd AfterVolumeInit = new volumeAdd(VolumeAdapter.AfterVolumeInit);
+			if (AfterVolumeInit != null)
+				AfterVolumeInit(this.gameObject);
+		}
+		#endregion
 
 		void Start ()
 		{
@@ -58,6 +65,7 @@ namespace CreVox
 			if (vd == null) {
 				return;
 			}
+			AddComponent ();
 			Init (vd.chunkX, vd.chunkY, vd.chunkZ);
 			foreach (Chunk c in chunks.Values) {
 				c.cData = vd.GetChunk (c.cData.ChunkPos);
