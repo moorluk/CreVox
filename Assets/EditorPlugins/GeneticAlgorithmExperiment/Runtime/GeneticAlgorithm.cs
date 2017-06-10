@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using SystemRandom = System.Random;
+using StreamWriter = System.IO.StreamWriter;
 using GC = System.GC;
 using Math = System.Math;
 using UnityEngine;
@@ -14,13 +15,15 @@ namespace CrevoxExtend {
 	// Enum for type of gene.
 	public enum GeneType {
 		Forbidden = -1,
-		Empty = 0,
-		Enemy = 1,
-		Treasure = 2,
-		Trap = 3
+		Empty     = 0,
+		Enemy     = 1,
+		Treasure  = 2,
+		Trap      = 3
 	}
 
 	public class CreVoxGA {
+		private static StreamWriter DatasetExport { get; set; }
+
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
@@ -34,7 +37,6 @@ namespace CrevoxExtend {
 		private static readonly string[] _picecName = { "Gnd.in.one" };
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 
-		public static string GenesScore;
 		//calculate all of chromosome.
 		public static uint AllChromosomeCount;
 
@@ -65,19 +67,20 @@ namespace CrevoxExtend {
 		}
 
 		public static void Initialize() {
-			GenesScore = string.Empty;
 			AllChromosomeCount = default(uint);
 			foreach (var child in GamePatternObjects.transform.Cast<Transform>().ToList()) {
 				GameObject.DestroyImmediate(child.gameObject);
 			}
 		}
 
-		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber) {
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, StreamWriter sw = null) {
 			Initialize();
 
 			// Set the number of population and generation.
 			PopulationNumber = populationNumber;
 			GenerationNumber = generationNumber;
+			// Update the StreamWriter of DatasetExport.
+			DatasetExport = sw;
 
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
@@ -231,26 +234,6 @@ namespace CrevoxExtend {
 					gene.Type = types[Random.Range(0, types.Length)];
 				}
 			}
-
-			public override void onGenrationEnd(int generation, List<NTUSTChromosome> currentGeneration, List<NTUSTChromosome> newGeneration) {
-				//for (var i = 0; i < currentGeneration.Count; ++i) {
-				//    string chromosomeInfo = (generation + 1) + ", " + (i + 1);
-				//    string fitnessInfo = "";
-				//    if ((currentGeneration[i] as CreVoxChromosome).calculated) {
-				//        fitnessInfo = "Block: " + (currentGeneration[i] as CreVoxChromosome).block + "\t"
-				//                            + "Patrol: " + (currentGeneration[i] as CreVoxChromosome).Patrol + "\t"
-				//                            + "Guard: " + (currentGeneration[i] as CreVoxChromosome).Guard + "\t";
-				//    }
-				//    else {
-				//        fitnessInfo = "Block: " + (currentGeneration[i] as CreVoxChromosome).FitnessBlock() + "\t"
-				//                    + "Patrol: " + (currentGeneration[i] as CreVoxChromosome).FitnessPatrol() + "\t"
-				//                    + "Guard: " + (currentGeneration[i] as CreVoxChromosome).FitnessGuard() + "\t";
-				//    }
-				//    foreach (var gene in currentGeneration[i].Genes.Select(g => g as CreVoxGene)) {
-				//        GenesScore += chromosomeInfo + ", " + fitnessInfo + ", " + gene.pos + ", " + gene.Type + "\n";
-				//    }
-				//}
-			}
 		}
 
 		public class CreVoxChromosome : NTUSTChromosome {
@@ -286,27 +269,31 @@ namespace CrevoxExtend {
 			}
 
 			public override float FitnessFunction() {
-				//chromosomeinfo for csv file, the number from 1 to end.(run,generation,chromosome)
+				// Chromosomeinfo for csv file, the number from 1 to end.(run,generation,chromosome)
 				string chromosomeInfo = (AllChromosomeCount / (GenerationNumber * PopulationNumber) + 1) + ","
 										+ (AllChromosomeCount / (PopulationNumber) % GenerationNumber + 1) + ","
 										+ (AllChromosomeCount % PopulationNumber + 1);
 
 				float scoreSum = 0.0f
-					+ (FitnessWeights["block"] != 0 ? FitnessBlock() * FitnessWeights["block"] : 0)
+					+ (FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0)
 					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
-					+ (FitnessWeights["guard"] != 0 ? FitnessGuard() * FitnessWeights["guard"] : 0)
+					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
 					+ (FitnessEmptyDensity() * 0)
 				;
 
-				//all of gene in a chromosome.
-				foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
-					//all of fitness and it's score in a gene.
-					foreach (FitnessFunctionName fitnessName in Enum.GetValues(typeof(FitnessFunctionName))) {
-						GenesScore += chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + "," + "\"" + gene.pos + "\"" + "," + gene.Type + "\n";
+				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
+
+				// If DatasetExport is not null, export the data.
+				if (DatasetExport != null) {
+					foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
+						// All of fitness and it's score in a gene.
+						foreach (FitnessFunctionName fitnessName in fitnessNames) {
+							DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + ",\"" + gene.pos + "\"," + gene.Type);
+						}
 					}
 				}
 
-				//iterrateTime++ for next time.
+				// IterrateTime++ for next time.
 				AllChromosomeCount++;
 
 				return scoreSum;

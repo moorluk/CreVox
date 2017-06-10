@@ -228,16 +228,17 @@ namespace CrevoxExtend {
 		}
 
 		public void LaunchGAExperiments() {
-			int times = 100;
+			int times = 2;
 			for (int i = 0; i < times; i++) {
-				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
-				sw.WriteLine("run, generation, chromosome, label, score, position, type,volume");
+				Debug.Log("Start running the experiment_" + (i + 1) + ".");
+
+				StreamWriter sw = new StreamWriter(EXPERIMENT_EXPORT + "datasets/experiment_" + (i + 1) + ".csv");
+				sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
 
 				// Core function.
 				CreVoxGA.SetWeights(FitnessWeights);
-				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount);
+				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount, sw);
 
-				sw.Write(CreVoxGA.GenesScore);
 				sw.Close();
 			}
 		}
