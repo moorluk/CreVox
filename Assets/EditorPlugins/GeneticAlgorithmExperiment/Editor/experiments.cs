@@ -228,7 +228,7 @@ namespace CrevoxExtend {
 		}
 
 		public void LaunchGAExperiments() {
-			int times = 2;
+			int times = 100;
 			for (int i = 0; i < times; i++) {
 				Debug.Log("Start running the experiment_" + (i + 1) + ".");
 
