@@ -20,6 +20,15 @@ namespace CrevoxExtend {
 	}
 
 	public class CreVoxGA {
+		// Gene prefab.
+		public static Dictionary<GeneType, GameObject> GenePrefab = new Dictionary <GeneType, GameObject>() {
+			{ GeneType.Forbidden, null },
+			{ GeneType.Empty, null },
+			{ GeneType.Enemy, Resources.Load("GeneticAlgorithmExperiment/Temp/Prefab/enemies/BossAI") as GameObject},
+			{ GeneType.Treasure, null },
+			{ GeneType.Trap, null }
+		};
+
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
@@ -143,27 +152,36 @@ namespace CrevoxExtend {
 		public static void BestChromosomeToWorldPos(CreVoxChromosome bestChromosome) {
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
-					GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
-					geneWorldPosition.transform.position = gene.pos;
-					geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					if (GenePrefab[gene.Type] != null) {
+						// The gene has prefab. 
+						GameObject geneWorldPosition = GameObject.Instantiate(GenePrefab[gene.Type]);
+						geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
+						geneWorldPosition.transform.position = gene.pos;
+						geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					} else {
+						// No prefab then use original function.
+						GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+						geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
+						geneWorldPosition.transform.position = gene.pos;
+						geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
 
 #if UNITY_EDITOR
-					switch (gene.Type) {
-					case GeneType.Forbidden:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
-						break;
-					case GeneType.Enemy:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-						break;
-					case GeneType.Treasure:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
-						break;
-					default:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
-						break;
-					}
+						switch (gene.Type) {
+						case GeneType.Forbidden:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+							break;
+						case GeneType.Enemy:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+							break;
+						case GeneType.Treasure:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+							break;
+						default:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
+							break;
+						}
 #endif
+					}
 				}
 			}
 		}
