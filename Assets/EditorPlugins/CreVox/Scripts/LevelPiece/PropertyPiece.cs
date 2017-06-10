@@ -15,9 +15,6 @@ namespace CreVox
 		EnemySpawner = 3
 	}
 
-	#if UNITY_EDITOR
-	[ExecuteInEditMode]
-	#endif
 	public class PropertyPiece : LevelPiece 
 	{
 		[Serializable]
@@ -27,20 +24,9 @@ namespace CreVox
 			public UnityEngine.Object tObject;
 		}
 		public PProperty[] PProperties = new PProperty[5];
-		public BlockItem insBlockItem = null;
-
-		void Awake()
-		{
-		}
-
-		void Update()
-		{
-		}
 
 		public override void SetupPiece(BlockItem item)
 		{
-			if (insBlockItem == null)
-				insBlockItem = item;
 			//解析從blockitem的attritube,進行相應的動作.
 			for (int i = 0; i < 5; i++) {
 				string[] _code = UpdateValue (ref item, i);
