@@ -1,10 +1,12 @@
 using System.Linq;
 using System.Collections.Generic;
 using SystemRandom = System.Random;
+using StreamWriter = System.IO.StreamWriter;
 using GC = System.GC;
 using Math = System.Math;
 using UnityEngine;
 using UnityEditor;
+using Enum = System.Enum;
 
 using CreVox;
 using NTUSTGA;
@@ -20,6 +22,8 @@ namespace CrevoxExtend {
 	}
 
 	public class CreVoxGA {
+		private static StreamWriter DatasetExport { get; set; }
+
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
@@ -33,7 +37,15 @@ namespace CrevoxExtend {
 		private static readonly string[] _picecName = { "Gnd.in.one" };
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 
-		public static string GenesScore;
+		//calculate all of chromosome.
+		public static uint AllChromosomeCount;
+
+		//enum for fitness function.
+		public enum FitnessFunctionName {
+			Block,
+			Patrol,
+			Guard
+		}
 
 		// Constructor.
 		static CreVoxGA() {
@@ -55,24 +67,26 @@ namespace CrevoxExtend {
 		}
 
 		public static void Initialize() {
-			GenesScore = string.Empty;
+			AllChromosomeCount = default(uint);
 			foreach (var child in GamePatternObjects.transform.Cast<Transform>().ToList()) {
 				GameObject.DestroyImmediate(child.gameObject);
 			}
 		}
 
-		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber) {
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, StreamWriter sw = null) {
 			Initialize();
 
 			// Set the number of population and generation.
 			PopulationNumber = populationNumber;
 			GenerationNumber = generationNumber;
+			// Update the StreamWriter of DatasetExport.
+			DatasetExport = sw;
 
 			foreach (var volume in GetVolumeByVolumeManager()) {
-				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume));
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
 
 				// Populations, Generations.
-				var bestChromosome = ntustGA.Algorithm(PopulationNumber, GenerationNumber) as CreVoxChromosome;
+				var bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
 
 				BestChromosomeToWorldPos(bestChromosome);
 
@@ -121,7 +135,7 @@ namespace CrevoxExtend {
 			// Each item.
 			foreach (Transform item in items) {
 				// Ignore it if it is not connection.
-				if (! item.name.Contains("Connection_")) { continue; }
+				if (!item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
 				endPosition = item.transform.position;
 				// Execute the A-Star.
@@ -130,7 +144,8 @@ namespace CrevoxExtend {
 				foreach (var pos in astar.theShortestPath) {
 					if (_mainPath.ContainsKey(pos.position3)) {
 						_mainPath[pos.position3] += 1;
-					} else {
+					}
+					else {
 						_mainPath.Add(pos.position3, 1);
 					}
 				}
@@ -150,18 +165,18 @@ namespace CrevoxExtend {
 
 #if UNITY_EDITOR
 					switch (gene.Type) {
-					case GeneType.Forbidden:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
-						break;
-					case GeneType.Enemy:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-						break;
-					case GeneType.Treasure:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
-						break;
-					default:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
-						break;
+						case GeneType.Forbidden:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
+							break;
+						case GeneType.Enemy:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+							break;
+						case GeneType.Treasure:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
+							break;
+						default:
+							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
+							break;
 					}
 #endif
 				}
@@ -184,7 +199,7 @@ namespace CrevoxExtend {
 		}
 
 		public class CreVoxGAA : NTUSTGeneticAlgorithm {
-			public CreVoxGAA(float crossoverRate, float mutationRate, NTUSTChromosome sample) : base(crossoverRate, mutationRate, sample) {
+			public CreVoxGAA(float crossoverRate, float mutationRate, NTUSTChromosome sample, int countOfChromosome, int countOfGeneration) : base(crossoverRate, mutationRate, sample, countOfChromosome, countOfGeneration) {
 
 			}
 
@@ -254,6 +269,11 @@ namespace CrevoxExtend {
 			}
 
 			public override float FitnessFunction() {
+				// Chromosomeinfo for csv file, the number from 1 to end.(run,generation,chromosome)
+				string chromosomeInfo = (AllChromosomeCount / (GenerationNumber * PopulationNumber) + 1) + ","
+										+ (AllChromosomeCount / (PopulationNumber) % GenerationNumber + 1) + ","
+										+ (AllChromosomeCount % PopulationNumber + 1);
+
 				float scoreSum = 0.0f
 					+ (FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0)
 					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
@@ -261,15 +281,40 @@ namespace CrevoxExtend {
 					+ (FitnessEmptyDensity() * 0)
 				;
 
-				// Write into the csv.
-				GenesScore += scoreSum + "\n";
+				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
+
+				// If DatasetExport is not null, export the data.
+				if (DatasetExport != null) {
+					foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
+						// All of fitness and it's score in a gene.
+						foreach (FitnessFunctionName fitnessName in fitnessNames) {
+							DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + ",\"" + gene.pos + "\"," + gene.Type);
+						}
+					}
+				}
+
+				// IterrateTime++ for next time.
+				AllChromosomeCount++;
 
 				return scoreSum;
 			}
 
+			public float GetFitnessScore(FitnessFunctionName functionName) {
+				switch (functionName) {
+					case FitnessFunctionName.Block:
+						return FitnessBlock();
+					case FitnessFunctionName.Patrol:
+						return FitnessPatrol();
+					case FitnessFunctionName.Guard:
+						return FitnessGuard();
+					default:
+						return 0;
+				}
+			}
+
 			public float FitnessBlock() {
-				float fitnessScore      = 0.0f;
-				float enemyWeightSum    = 0.0f;
+				float fitnessScore = 0.0f;
+				float enemyWeightSum = 0.0f;
 				float mainPathWeightSum = 0.0f;
 
 				var enemies = this.Genes
@@ -283,19 +328,16 @@ namespace CrevoxExtend {
 					// Sum of the visited times in main path.
 					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
 					// Calculate the fitness score.
-					fitnessScore = (float) Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
+					fitnessScore = (float)Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
 				}
-
-				// Write into the csv.
-				GenesScore += fitnessScore + ", ";
 
 				return fitnessScore;
 			}
 
 			public float FitnessPatrol() {
-				float fitnessScore  = 0.0f;
-				float radius        = 3.0f;
-				int   neighborCount = 0;
+				float fitnessScore = 0.0f;
+				float radius = 3.0f;
+				int neighborCount = 0;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
@@ -311,15 +353,13 @@ namespace CrevoxExtend {
 						neighborCount = passables.Sum(passable => (Vector3.Distance(passable.pos, enemies[i].pos) <= radius ? 1 : 0));
 						// If is the last one in list or not.
 						if (i != enemies.Count - 1) {
-							fitnessScore += (float) ((1.0 / Math.Pow(2, i + 1)) * neighborCount);
-						} else {
-							fitnessScore += (float) ((1.0 / Math.Pow(2, i)) * neighborCount);
+							fitnessScore += (float)((1.0 / Math.Pow(2, i + 1)) * neighborCount);
+						}
+						else {
+							fitnessScore += (float)((1.0 / Math.Pow(2, i)) * neighborCount);
 						}
 					}
 				}
-
-				// Write into the csv.
-				GenesScore += fitnessScore + ", ";
 
 				return fitnessScore;
 			}
@@ -348,21 +388,18 @@ namespace CrevoxExtend {
 					// Add the minimum distance into the neighbors of objective.
 					foreach (var enemy in enemies) {
 						var protectedTarget = (
-							from    objective in objectives
-							let     distance = Vector3.Distance(enemy.pos, objective.pos)
-							where   distance < 10
+							from objective in objectives
+							let distance = Vector3.Distance(enemy.pos, objective.pos)
+							where distance < 10
 							orderby distance
-							select  objective
+							select objective
 						).FirstOrDefault();
 						// If not found then add this one.
 						if (protectedTarget != null) { neighbors[protectedTarget].Add(enemy); }
 					}
 					// Calculate the fitness score.
-					fitnessScore = objectives.Sum(o => (avgProtector - Math.Abs(neighbors[o].Count - avgProtector) ) / avgProtector / objectives.Count);
+					fitnessScore = objectives.Sum(o => (avgProtector - Math.Abs(neighbors[o].Count - avgProtector)) / avgProtector / objectives.Count);
 				}
-
-				// Write into the csv.
-				GenesScore += fitnessScore + ", ";
 
 				return fitnessScore;
 			}

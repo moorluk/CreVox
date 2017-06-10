@@ -3,10 +3,10 @@ using UnityEditor;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Math         = System.Math;
+using Math = System.Math;
 using StreamWriter = System.IO.StreamWriter;
-using Process      = System.Diagnostics.Process;
-using Stopwatch    = System.Diagnostics.Stopwatch;
+using Process = System.Diagnostics.Process;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 using NTUSTGA;
 
@@ -19,20 +19,20 @@ namespace CrevoxExtend {
 	}
 
 	public class EditorDashboardWindow : EditorWindow {
-		private static readonly string PYTHON_EXEC_PATH    = "C:/Python27/python.exe";
+		private static readonly string PYTHON_EXEC_PATH = "C:/Python27/python.exe";
 		private static readonly string PYTHON_PLOT_PROGRAM = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/.PythonPlot/maxValue.py";
 		private static string EXPERIMENT_EXPORT;
 
 		private static int GenerationCount = 20;
 		private static int PopulationCount = 250;
 
-		private static int   EnemyCount    { get; set; }
-		private static int   TreasureCount { get; set; }
-		private static int   TrapCount     { get; set; }
-		private static int   EmptyCount    { get; set; }
+		private static int EnemyCount { get; set; }
+		private static int TreasureCount { get; set; }
+		private static int TrapCount { get; set; }
+		private static int EmptyCount { get; set; }
 
-		private static long  TimeCost      { get; set; }
-		private static float OptimalScore  { get; set; }
+		private static long TimeCost { get; set; }
+		private static float OptimalScore { get; set; }
 
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>() {
 			{ "neglected", 0 },
@@ -98,15 +98,15 @@ namespace CrevoxExtend {
 			EditorGUI.BeginDisabledGroup(true);
 			FitnessWeights["neglected"] = EditorGUILayout.IntField("死角點權重", FitnessWeights["neglected"], labelStyle);
 			EditorGUI.EndDisabledGroup();
-			FitnessWeights["block"]     = EditorGUILayout.IntField("阻擋點權重", FitnessWeights["block"], labelStyle);
+			FitnessWeights["block"] = EditorGUILayout.IntField("阻擋點權重", FitnessWeights["block"], labelStyle);
 			EditorGUI.BeginDisabledGroup(true);
 			FitnessWeights["intercept"] = EditorGUILayout.IntField("攔截點權重", FitnessWeights["intercept"], labelStyle);
 			EditorGUI.EndDisabledGroup();
-			FitnessWeights["patrol"]    = EditorGUILayout.IntField("巡邏點權重", FitnessWeights["patrol"], labelStyle);
-			FitnessWeights["guard"]     = EditorGUILayout.IntField("守衛點權重", FitnessWeights["guard"], labelStyle);
+			FitnessWeights["patrol"] = EditorGUILayout.IntField("巡邏點權重", FitnessWeights["patrol"], labelStyle);
+			FitnessWeights["guard"] = EditorGUILayout.IntField("守衛點權重", FitnessWeights["guard"], labelStyle);
 			EditorGUI.BeginDisabledGroup(true);
 			FitnessWeights["dominated"] = EditorGUILayout.IntField("至高點權重", FitnessWeights["dominated"], labelStyle);
-			FitnessWeights["support"]   = EditorGUILayout.IntField("支援點權重", FitnessWeights["support"], labelStyle);
+			FitnessWeights["support"] = EditorGUILayout.IntField("支援點權重", FitnessWeights["support"], labelStyle);
 			EditorGUI.EndDisabledGroup();
 
 			// Description.
@@ -158,14 +158,14 @@ namespace CrevoxExtend {
 			Process process = new Process();
 			process.StartInfo.FileName = "cmd.exe";
 			process.StartInfo.Arguments = "/C " + PYTHON_EXEC_PATH + " " + PYTHON_PLOT_PROGRAM + " " + EXPERIMENT_EXPORT;
-			process.StartInfo.CreateNoWindow  = true;
+			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
 			// Capture python log from process.StandardOutput and process.StandardError.
 			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError  = true;
+			process.StartInfo.RedirectStandardError = true;
 			// When execute the cmd fail.
 			process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
-			process.ErrorDataReceived  += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
 			// Process finished.
 			process.Exited += new System.EventHandler(ProcessExited);
 			process.EnableRaisingEvents = true;
@@ -176,7 +176,8 @@ namespace CrevoxExtend {
 			var error = process.StandardError.ReadToEnd();
 			if (error != string.Empty) {
 				Debug.LogError("Execute the python program fail:\n" + error);
-			} else {
+			}
+			else {
 				Debug.Log("Done.");
 			}
 
@@ -186,14 +187,14 @@ namespace CrevoxExtend {
 		private static Process webServiceProcess;
 		private void LaunchWebAnalysis() {
 			// If webServiceProcess is not null, kill this process first.
-			if (webServiceProcess != null && ! webServiceProcess.HasExited) {
+			if (webServiceProcess != null && !webServiceProcess.HasExited) {
 				webServiceProcess.Kill();
 				webServiceProcess = null;
 			}
 			Process process = new Process();
 			process.StartInfo.FileName = "C:/nodejs/node.exe";
 			process.StartInfo.Arguments = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/.PythonPlot/web/main.js";
-			process.StartInfo.CreateNoWindow  = true;
+			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
 			// Start executing.
 			process.Start();
@@ -218,10 +219,10 @@ namespace CrevoxExtend {
 				.Select(g => g as CreVoxGA.CreVoxGene)
 				.Where(g => g.Type == GeneType.Empty).ToList();
 
-			EnemyCount    = enemies.Count;
+			EnemyCount = enemies.Count;
 			TreasureCount = treasures.Count;
-			TrapCount     = traps.Count;
-			EmptyCount    = empties.Count;
+			TrapCount = traps.Count;
+			EmptyCount = empties.Count;
 
 			OptimalScore = chromosome.FitnessFunction();
 		}
@@ -229,14 +230,15 @@ namespace CrevoxExtend {
 		public void LaunchGAExperiments() {
 			int times = 100;
 			for (int i = 0; i < times; i++) {
-				StreamWriter sw = new StreamWriter("Export/experiment_" + (i + 1) + ".csv");
-				sw.WriteLine("Fitness,all");
+				Debug.Log("Start running the experiment_" + (i + 1) + ".");
+
+				StreamWriter sw = new StreamWriter(EXPERIMENT_EXPORT + "datasets/experiment_" + (i + 1) + ".csv");
+				sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
 
 				// Core function.
 				CreVoxGA.SetWeights(FitnessWeights);
-				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount);
+				var bestChromosome = CreVoxGA.Segmentism(PopulationCount, GenerationCount, sw);
 
-				sw.Write(CreVoxGA.GenesScore);
 				sw.Close();
 			}
 		}
