@@ -24,9 +24,9 @@ namespace CrevoxExtend {
 		public static Dictionary<GeneType, GameObject> GenePrefab = new Dictionary <GeneType, GameObject>() {
 			{ GeneType.Forbidden, null },
 			{ GeneType.Empty, null },
-			{ GeneType.Enemy, Resources.Load("GeneticAlgorithmExperiment/Temp/Prefab/enemies/BossAI") as GameObject},
-			{ GeneType.Treasure, null },
-			{ GeneType.Trap, null }
+			{ GeneType.Enemy, Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/enemies/BossAI") as GameObject},
+			{ GeneType.Treasure,Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/treasure/Invector-Chest") as GameObject  },
+			{ GeneType.Trap, Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/trap/spike_floor") as GameObject }
 		};
 
 		public static int GenerationNumber { get; set; }
