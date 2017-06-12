@@ -3,10 +3,11 @@ using UnityEditor;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using Math         = System.Math;
-using StreamWriter = System.IO.StreamWriter;
-using Process      = System.Diagnostics.Process;
-using Stopwatch    = System.Diagnostics.Stopwatch;
+using Math           = System.Math;
+using StreamWriter   = System.IO.StreamWriter;
+using Process        = System.Diagnostics.Process;
+using Stopwatch      = System.Diagnostics.Stopwatch;
+using NavMeshBuilder = UnityEditor.AI.NavMeshBuilder;
 
 using NTUSTGA;
 
@@ -46,6 +47,21 @@ namespace CrevoxExtend {
 				Experiments.Add("實驗 F", new Experiment("實驗_F", false));
 				Experiments.Add("實驗 G", new Experiment("實驗_G", false));
 				Experiments.Add("實驗 H", new Experiment("實驗_H", false));
+			}
+
+			if (GUILayout.Button("Bake the navigation", buttonStyle, GUILayout.Height(30))) {
+				SerializedObject settingsObject = new SerializedObject(NavMeshBuilder.navMeshSettingsObject);
+				settingsObject.FindProperty("m_BuildSettings.agentRadius").floatValue           = 0.30f;
+				settingsObject.FindProperty("m_BuildSettings.agentSlope").floatValue            = 30.0f;
+				// settingsObject.FindProperty("m_BuildSettings.ledgeDropHeight").floatValue       = 0f;
+				// settingsObject.FindProperty("m_BuildSettings.agentClimb").floatValue            = 0f;
+				// settingsObject.FindProperty("m_BuildSettings.maxJumpAcrossDistance").floatValue = 0.0f;
+				// settingsObject.FindProperty("m_BuildSettings.minRegionArea").floatValue         = 0f;
+				// settingsObject.FindProperty("m_BuildSettings.widthInaccuracy").floatValue       = 0f;
+				// settingsObject.FindProperty("m_BuildSettings.heightInaccuracy").floatValue      = 0f;
+				settingsObject.ApplyModifiedProperties();
+				// Build the mesh of navigation.
+				NavMeshBuilder.BuildNavMesh();
 			}
 
 			// Run the first experiment.
