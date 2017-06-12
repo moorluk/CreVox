@@ -85,6 +85,7 @@ namespace CreVox
 					"　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y.ToString () + ")",
 					EditorStyles.miniLabel,
 					GUILayout.Height (12 * 7));
+				if(!Application.isPlaying)
 				((EnemySpawner)pp.PProperties [_index].tObject).m_isStart = false;
 			} else {
 				DrawInsDragFirst ();
@@ -133,7 +134,7 @@ namespace CreVox
 					case FocalComponent.EnemySpawner:
 						if (pp.PProperties [i].tObject != null) {
 							EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
-							EditorGUI.BeginChangeCheck ();
+//							EditorGUI.BeginChangeCheck ();
 							obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
 							EditorGUILayout.LabelField ("Spawner Data");
 							EditorGUI.indentLevel++;
@@ -142,7 +143,7 @@ namespace CreVox
 							obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spwn Count Per Time", obj.m_spawnerData.m_spwnCountPerTime);
 							obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
 							EditorGUI.indentLevel--;
-							if (EditorGUI.EndChangeCheck ()) {
+//							if (EditorGUI.EndChangeCheck ()) {
 								string _code = pp.PProperties [i].tComponent + ";" +
 								               obj.m_enemyType.ToString () + ";" +
 								               obj.m_spawnerData.m_totalQty.ToString () + ";" +
@@ -150,7 +151,7 @@ namespace CreVox
 								               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
 								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
 								item.attributes [i] = _code;
-							}
+//							}
 						}
 						break;
 
