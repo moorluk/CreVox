@@ -8,15 +8,21 @@ public enum ATBT_EVN_PCE
 {
     EVENTType,
 }
-
+public enum EventGroup
+{
+	Blue,
+	Green,
+	Magenta,
+	Red,
+	Yellow,
+	Cyan
+}
 public class EventPiece : LevelPiece {
 
     private EventGroup eventGrp;
     private Color pieceColor;
 
-	// Use this for initialization
 	public override void SetupPiece (BlockItem item) {
-        //Debug.Log("Setup Piece!" + this.GetInstanceID().ToString());
         if(item.attributes[(int)ATBT_EVN_PCE.EVENTType] == "")
         {
             item.attributes[(int)ATBT_EVN_PCE.EVENTType] = EventGroup.Red.ToString();
@@ -24,10 +30,8 @@ public class EventPiece : LevelPiece {
 
         eventGrp = (EventGroup)Enum.Parse(typeof(EventGroup), item.attributes[(int)ATBT_EVN_PCE.EVENTType]);
         pieceColor = GetColor(eventGrp);
-        //Debug.Log("piece color: " + pieceColor.ToString());
 
 		TriggerEvent[] tes = GetComponentsInChildren<TriggerEvent> ();
-
 		foreach (TriggerEvent te in tes) {
 			List<string> msgs = te.m_keyStrings;
 			for (int i = 0; i < msgs.Count; i++) {
@@ -39,15 +43,13 @@ public class EventPiece : LevelPiece {
         EventActor[] acs = GetComponentsInChildren<EventActor>();
         foreach (EventActor a in acs)
         {
-            string msg = a.m_keyString;
+            //string msg = a.m_keyString;
             //if (msg.Contains ("global")) {
-            //Debug.Log("change global msg");
             a.m_keyString += " " + eventGrp.ToString();
             //}
 
             if (a.m_keyString != null)
             {
-                //Debug.Log("RegisterActor" + GetInstanceID());
 #if UNITY_STANDALONE_WIN
                 Debug.Log("RegisterActor" + GetInstanceID());
                 a.SendMessageUpwards("RegisterActor", a);
