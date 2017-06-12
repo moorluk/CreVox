@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Math           = System.Math;
 using StreamWriter   = System.IO.StreamWriter;
+using DirectoryInfo  = System.IO.DirectoryInfo;
 using Process        = System.Diagnostics.Process;
 using Stopwatch      = System.Diagnostics.Stopwatch;
 using NavMeshBuilder = UnityEditor.AI.NavMeshBuilder;
@@ -27,6 +28,10 @@ namespace CrevoxExtend {
 		public static Dictionary<string, Experiment> Experiments = new Dictionary<string, Experiment>();
 
 		public static Vector2 WindowScrollPosition;
+
+		void OnEnable() {
+			EXPERIMENT_EXPORT = Application.persistentDataPath + "/Experiments/";
+		}
 
 		void OnGUI() {
 			// Labels.
@@ -78,7 +83,9 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("多個實驗寫檔輸出", buttonStyle, GUILayout.Height(30))) {
 				foreach (var experimentName in Experiments.Keys) {
 					var experiment = Experiments[experimentName];
-					LaunchGAExperiment(experiment, true);
+					if (experiment.IsActived) {
+						LaunchGAExperiment(experiment, true);
+					}
 				}
 			}
 			// List of all experiments.
@@ -114,11 +121,18 @@ namespace CrevoxExtend {
 
 		// Launch a series GA experiment.
 		private void LaunchGAExperiment(Experiment experiment, bool isExportFiles) {
+			var datasetPath = EXPERIMENT_EXPORT + "datasets/" + experiment.Name;
+			DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
+			if (datasetDirectory.Exists) {
+				datasetDirectory.Delete(true);
+			}
+			datasetDirectory.Create();
+
 			for (int i = 1; i <= experiment.ExperimentCount; i++) {
 				Debug.Log("Start running the experiment_" + i + " of " + experiment.Name + ".");
 
 				if (isExportFiles) {
-					StreamWriter sw = new StreamWriter(EXPERIMENT_EXPORT + "datasets/experiment_" + i + ".csv");
+					StreamWriter sw = new StreamWriter(datasetPath + "/experiment_" + i + ".csv");
 					sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
 
 					// Core function.
@@ -133,7 +147,6 @@ namespace CrevoxExtend {
 				}
 			}
 		}
-
 		// Create a cemera and take a shot.
 		private void LayoutScreenshot(GameObject volumeManager) {
 			var screenshotCarema = Camera.main;
