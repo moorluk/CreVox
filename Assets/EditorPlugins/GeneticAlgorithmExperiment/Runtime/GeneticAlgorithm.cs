@@ -23,6 +23,14 @@ namespace CrevoxExtend {
 
 	public class CreVoxGA {
 		private static StreamWriter DatasetExport { get; set; }
+		// Gene prefab.
+		public static Dictionary<GeneType, GameObject> GenePrefab = new Dictionary <GeneType, GameObject>() {
+			{ GeneType.Forbidden, null },
+			{ GeneType.Empty, null },
+			{ GeneType.Enemy, Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/enemies/BossAI") as GameObject},
+			{ GeneType.Treasure,Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/treasure/Invector-Chest") as GameObject  },
+			{ GeneType.Trap, Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/trap/spike_floor") as GameObject }
+		};
 
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
@@ -158,13 +166,21 @@ namespace CrevoxExtend {
 		public static void BestChromosomeToWorldPos(CreVoxChromosome bestChromosome) {
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
-					GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
-					geneWorldPosition.transform.position = gene.pos;
-					geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					if (GenePrefab[gene.Type] != null) {
+						// The gene has prefab. 
+						GameObject geneWorldPosition = GameObject.Instantiate(GenePrefab[gene.Type]);
+						geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
+						geneWorldPosition.transform.position = gene.pos;
+						geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					} else {
+						// No prefab then use original function.
+						GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+						geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
+						geneWorldPosition.transform.position = gene.pos;
+						geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
 
 #if UNITY_EDITOR
-					switch (gene.Type) {
+						switch (gene.Type) {
 						case GeneType.Forbidden:
 							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
 							break;
@@ -177,8 +193,9 @@ namespace CrevoxExtend {
 						default:
 							geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
 							break;
-					}
 #endif
+						}
+					}
 				}
 			}
 		}
