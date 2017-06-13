@@ -4,19 +4,22 @@ using System;
 using System.Collections.Generic;
 using CreVox;
 
+[System.Serializable]
+public enum EventGroup
+{
+	Black,
+	Red,
+	Blue,
+	Green,
+	Yellow,
+	Magenta,
+}
+
 public enum ATBT_EVN_PCE
 {
     EVENTType,
 }
-public enum EventGroup
-{
-	Blue,
-	Green,
-	Magenta,
-	Red,
-	Yellow,
-	Cyan
-}
+
 public class EventPiece : LevelPiece {
 
     private EventGroup eventGrp;
@@ -35,7 +38,6 @@ public class EventPiece : LevelPiece {
 		foreach (TriggerEvent te in tes) {
 			List<string> msgs = te.m_keyStrings;
 			for (int i = 0; i < msgs.Count; i++) {
-				//if(msgs[i].Contains("global"))
 					te.m_keyStrings[i] += " " + eventGrp.ToString ();
 			}
 		}
@@ -43,17 +45,12 @@ public class EventPiece : LevelPiece {
         EventActor[] acs = GetComponentsInChildren<EventActor>();
         foreach (EventActor a in acs)
         {
-            //string msg = a.m_keyString;
-            //if (msg.Contains ("global")) {
             a.m_keyString += " " + eventGrp.ToString();
-            //}
 
             if (a.m_keyString != null)
             {
-#if UNITY_STANDALONE_WIN
                 Debug.Log("RegisterActor" + GetInstanceID());
                 a.SendMessageUpwards("RegisterActor", a);
-#endif
             }
         }
     }
