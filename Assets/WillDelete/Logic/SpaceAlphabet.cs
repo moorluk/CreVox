@@ -11,25 +11,25 @@ using UnityEditor;
 
 namespace CrevoxExtend {
 	public class SpaceAlphabet {
-		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>() { { "Default", new List<VolumeData>() } };
-		private static string _path;
+		public static Dictionary<string, List<VolumeData>> replaceDictionary = new Dictionary<string, List<VolumeData>>() {
+			{ "Default", new List<VolumeData>() }
+		};
+		private static string ArtPackPath { get; set; }
 		private static string prefabRegex = @".*[\\\/]Connection_(\w+)\.prefab$";
 		private static List<string> alphabets = new List<string>();
+		// [TODO] must remove from this file.
 		public static List<bool> isSelected = new List<bool>() { false };
-		public static bool _isChanged = false;
 
 #if UNITY_EDITOR
 		public static void SetPath(string path) {
-			if(path!= _path) {
-				_path = path;
-				Load();
-				_isChanged = true;
+			if (ArtPackPath != path) {
+				ArtPackPath = path;
 			}
 		}
 		public static void Load() {
 			isSelected = new List<bool>();
 			alphabets = new List<string>();
-			string[] files = Directory.GetFiles(Environment.CurrentDirectory +"/" +_path + "/2_System/");
+			string[] files = Directory.GetFiles(Environment.CurrentDirectory +"/" +ArtPackPath + "/2_System/");
 			string matchFile;
 			for (int i = 0; i < files.Length; i++) {
 				if (Regex.IsMatch(files[i], prefabRegex)) {
@@ -72,20 +72,20 @@ namespace CrevoxExtend {
 		}
 		// File IO
 		public static void NewPrefab(string fileName) {
-			AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", _path + "/2_System/" + fileName + ".prefab");
-			//File.Copy(_path + "Connection_Default.prefab", _path + fileName + ".prefab");
+			AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", ArtPackPath + "/2_System/" + fileName + ".prefab");
+			//File.Copy(ArtPackPath + "Connection_Default.prefab", ArtPackPath + fileName + ".prefab");
 			//AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
 			PaletteItem pt = GetPrefab(fileName).GetComponent<PaletteItem>();
 			pt.itemName = fileName;
 		}
 		public static void DeletePrefab(string fileName) {
-			AssetDatabase.DeleteAsset(_path + "/2_System/" + fileName + ".prefab");
+			AssetDatabase.DeleteAsset(ArtPackPath + "/2_System/" + fileName + ".prefab");
 		}
 		public static List<string> Alphabets {
 			get { return alphabets; }
 		}
 		private static GameObject GetPrefab(string name) {
-			return (AssetDatabase.LoadAssetAtPath(_path + "/2_System/" + name + ".prefab" ,typeof(GameObject))) as GameObject;
+			return (AssetDatabase.LoadAssetAtPath(ArtPackPath + "/2_System/" + name + ".prefab" ,typeof(GameObject))) as GameObject;
 		}
 #endif
 		public static void RealTimeGenerate(string xmlPath) {

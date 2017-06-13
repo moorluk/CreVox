@@ -71,6 +71,12 @@ namespace CrevoxExtend {
 						} else {
 							vDatas.Add(CrevoxOperation.GetVolumeData(vData.Value));
 						}
+						// if(Regex.IsMatch(vData.Value, regex)) {
+						// 	vDatas.Add(CrevoxOperation.GetVolumeData(vData.Value));
+						// 	//Debug.Log(vDatas.ToArray()[vDatas.ToArray().Length - 1].name);
+						// } else {
+						// 	vDatas.Add(null);
+						// }
 					}
 					instructions.Add(connectionType, vDatas);
 				}
@@ -78,7 +84,6 @@ namespace CrevoxExtend {
 #if UNITY_EDITOR
 				List<string> newAlphabet = element.Elements("Connection").Attributes().Select(e => e.Value).ToList();
 				SpaceAlphabet.alphabetUpdate(newAlphabet);
-				SpaceAlphabet._isChanged = true;
 #endif
 				return instructions;
 			}
