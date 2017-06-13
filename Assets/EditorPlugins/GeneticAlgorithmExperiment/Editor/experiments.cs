@@ -69,8 +69,8 @@ namespace CrevoxExtend {
 				NavMeshBuilder.BuildNavMesh();
 
 				var gamePatternObjects = GameObject.Find("GamePatternObjects") ?? new GameObject("GamePatternObjects");
-				if (gamePatternObjects.GetComponentInParent<GA_Experiment.Main>() == null) {
-					gamePatternObjects.AddComponent<GA_Experiment.Main>();
+				if (gamePatternObjects.GetComponentInParent<GA_Experiment.GA_Runtime>() == null) {
+					gamePatternObjects.AddComponent<GA_Experiment.GA_Runtime>();
 				}
 			}
 

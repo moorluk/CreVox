@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using CrevoxExtend;
 
 namespace GA_Experiment {
-	public class Main : MonoBehaviour {
+	public class GA_Runtime : MonoBehaviour {
 		// Gene prefab.
 		public static Dictionary<GeneType, GameObject> GameobjectPrefabs;
 
@@ -23,6 +23,7 @@ namespace GA_Experiment {
 		}
 
 		void Start() {
+			
 		}
 
 		private void ReplaceGameobjects() {
