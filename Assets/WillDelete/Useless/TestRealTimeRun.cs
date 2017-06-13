@@ -12,6 +12,7 @@ public class TestRealTimeRun : MonoBehaviour {
 	[Tooltip("我是按鈕")]
 	public bool testGenerateLevel = false;
 	public string XmlPath = @"Issac_Flat.xml";
+	public string SpaceXmlPath = @"SpaceAlphabet.xml";
 	public string ResourcePath = @"Assets\Resources\CreVox\VolumeData\IsaacNew";
 
 	[Header("Test generate stage from global setting")]
@@ -40,6 +41,8 @@ public class TestRealTimeRun : MonoBehaviour {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
+					//[new] load spaceAlphabetXML
+					SpaceAlphabet.RealTimeGenerate(SpaceXmlPath);
 					succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
 					testTime++;
 				}

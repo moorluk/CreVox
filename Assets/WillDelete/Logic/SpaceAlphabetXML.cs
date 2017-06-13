@@ -66,9 +66,11 @@ namespace CrevoxExtend {
 					List<CreVox.VolumeData> vDatas = new List<CreVox.VolumeData>();
 					XElement elementInstrucitons = connection.Element("Instructions");
 					foreach (var vData in elementInstrucitons.Elements("vData")) {
-						vDatas.Add(CrevoxOperation.GetVolumeData(vData.Value));
-						Debug.Log(vData.Value);
-						Debug.Log(vDatas.ToArray()[vDatas.ToArray().Length-1].name);
+						if(vData.Value == "") {
+							vDatas.Add(null);
+						} else {
+							vDatas.Add(CrevoxOperation.GetVolumeData(vData.Value));
+						}
 					}
 					instructions.Add(connectionType, vDatas);
 				}
