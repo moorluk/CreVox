@@ -18,9 +18,14 @@ namespace GA_Experiment {
 				{ GeneType.Treasure , Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/treasure/Invector-Chest") as GameObject },
 				{ GeneType.Trap     , Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/trap/spike_floor") as GameObject }
 			};
+			// Replace the gameobjects.
+			ReplaceGameobjects();
 		}
 
 		void Start() {
+		}
+
+		private void ReplaceGameobjects() {
 			Regex regex = new Regex(@"^(.+) \(.+\)$");
 			var gamePatternObjects = GameObject.Find("GamePatternObjects");
 
