@@ -66,18 +66,8 @@ namespace CreVox
 					}
 				}
 			}
-
-			EventActor[] acs = GetComponentsInChildren<EventActor>();
-			foreach (EventActor a in acs)
-			{
-				if (a.m_keyString != null)
-				{
-					#if UNITY_STANDALONE_WIN
-					Debug.Log("RegisterActor" + GetInstanceID());
-					a.SendMessageUpwards("RegisterActor", a);
-					#endif
-				}
-			}
+			//Actor register
+			SendActorUpward ();
 		}
 
 		public string[] UpdateValue(ref BlockItem item, int id)

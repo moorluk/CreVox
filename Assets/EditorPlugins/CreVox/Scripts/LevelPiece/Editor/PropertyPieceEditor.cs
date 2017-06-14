@@ -62,7 +62,7 @@ namespace CreVox
 				"Target", pp.PProperties [_index].tObject, typeof(AddLootActor), true);
 			if (pp.PProperties [_index].tObject != null) {
 				AddLootActor obj = (AddLootActor)pp.PProperties [_index].tObject;
-				EditorGUILayout.LabelField ("Locked Field : ",
+				EditorGUILayout.LabelField ("Modifiable Field : ",
 					"Loot ID　(" + obj.m_lootID.ToString () + ")",
 					EditorStyles.miniLabel);
 			} else {
@@ -75,7 +75,7 @@ namespace CreVox
 				"Target", pp.PProperties [_index].tObject, typeof(EnemySpawner), true);
 			if (pp.PProperties [_index].tObject != null) {
 				EnemySpawner obj = (EnemySpawner)pp.PProperties [_index].tObject;
-				EditorGUILayout.LabelField ("Locked Field : ",
+				EditorGUILayout.LabelField ("Modifiable Field : ",
 					"Enemy Type　(" + obj.m_enemyType.ToString () + ")\n" +
 					"Spawner Data\n" +
 					"　├─ Total Qty　(" + obj.m_spawnerData.m_totalQty.ToString () + ")\n" +

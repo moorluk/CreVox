@@ -5,7 +5,45 @@ namespace CreVox
 {
     [CustomEditor(typeof(EventPiece))]
     public class EventPieceEditor : LevelPieceEditor
-    {
+	{
+		EventPiece ep;
+
+		void OnEnable()
+		{
+			ep = (EventPiece)target;
+		}
+
+		public override void OnInspectorGUI ()
+		{
+			Color def = GUI.color;
+			GUI.color = (ep.mp == null) ? Color.red : Color.green;
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				GUI.color = def;
+
+				EditorGUI.BeginChangeCheck ();
+				ep.mp = (MoverProperty)EditorGUILayout.ObjectField (
+					"Target", ep.mp, typeof(MoverProperty), true);
+				if (EditorGUI.EndChangeCheck ())
+					EditorUtility.SetDirty (ep);
+				
+				if ((Object)(ep.mp) != null) {
+					string nodes = "Nodes";
+					for (int i = 0; i < ep.mp.m_nodes.Length; i++) {
+						nodes += "\n\u3000" + ((i == ep.mp.m_nodes.Length - 1) ? "└" : "├") + "─ [" + i + "] ";
+						Transform n = ep.mp.m_nodes [i];
+						if (n != null) {
+							nodes += n.name + n.localPosition.ToString ();
+						}
+					}
+					EditorGUILayout.LabelField ("Modifiable Field : ", nodes, 
+						EditorStyles.miniLabel, 
+						GUILayout.Height (17 + 12 * ep.mp.m_nodes.Length));
+				} else {
+					EditorGUILayout.HelpBox ("↗ Drag a component into object field...", MessageType.None, true);
+				}
+			}
+		}
+
         public override void OnEditorGUI(ref BlockItem item)
         {
             EventPiece ep = (EventPiece)target;

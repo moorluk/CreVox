@@ -7,6 +7,7 @@ using CreVox;
 [System.Serializable]
 public enum EventGroup
 {
+	Default,
 	Black,
 	Red,
 	Blue,
@@ -17,15 +18,22 @@ public enum EventGroup
 
 public enum ATBT_EVN_PCE
 {
-    EVENTType,
+    EVENTType = 0,
+	Points = 1,
 }
 
 public class EventPiece : LevelPiece {
+
+	public MoverProperty mp;
 
     private EventGroup eventGrp;
     private Color pieceColor;
 
 	public override void SetupPiece (BlockItem item) {
+		if (mp == null) {
+			mp = this.GetComponentInChildren<MoverProperty> ();
+		}
+
         if(item.attributes[(int)ATBT_EVN_PCE.EVENTType] == "")
         {
             item.attributes[(int)ATBT_EVN_PCE.EVENTType] = EventGroup.Red.ToString();
@@ -34,6 +42,7 @@ public class EventPiece : LevelPiece {
         eventGrp = (EventGroup)Enum.Parse(typeof(EventGroup), item.attributes[(int)ATBT_EVN_PCE.EVENTType]);
         pieceColor = GetColor(eventGrp);
 
+		//Trigger modify
 		TriggerEvent[] tes = GetComponentsInChildren<TriggerEvent> ();
 		foreach (TriggerEvent te in tes) {
 			List<string> msgs = te.m_keyStrings;
@@ -42,17 +51,8 @@ public class EventPiece : LevelPiece {
 			}
 		}
 
-        EventActor[] acs = GetComponentsInChildren<EventActor>();
-        foreach (EventActor a in acs)
-        {
-            a.m_keyString += " " + eventGrp.ToString();
-
-            if (a.m_keyString != null)
-            {
-                Debug.Log("RegisterActor" + GetInstanceID());
-                a.SendMessageUpwards("RegisterActor", a);
-            }
-        }
+		//Actor register
+		SendActorUpward (eventGrp);
     }
 
     void Start()

@@ -88,5 +88,27 @@ namespace CreVox
 			}
 			return false;
 		}
+	
+		public void SendActorUpward (EventGroup e = EventGroup.Default)
+		{
+			EventActor[] acs = GetComponentsInChildren<EventActor>();
+			foreach (EventActor a in acs) {
+				if(e != EventGroup.Default)
+					a.m_keyString += "." + e.ToString ();
+
+				Transform edt = a.transform;
+				EventDriver ed = edt.GetComponent<EventDriver> ();
+				while (ed == null) {
+					edt = edt.parent;
+					ed = edt.GetComponent<EventDriver> ();
+					if (Transform.Equals (edt, transform.root))
+						break;
+				}
+
+				if (a.m_keyString != null && ed != null) {
+					ed.RegisterActor (a);
+				}
+			}
+		}
 	}
 }
