@@ -32,7 +32,8 @@ namespace CreVox
         //public string[] attributes = new string[5];
 
         public virtual void SetupPiece(BlockItem item)
-        {
+		{
+			SendActorUpward ();
         }
 
         public bool IsSolid (Direction direction)
@@ -95,19 +96,23 @@ namespace CreVox
 			foreach (EventActor a in acs) {
 				if(e != EventGroup.Default)
 					a.m_keyString += "." + e.ToString ();
+				SendActorUpward (a);
+			}
+		}
 
-				Transform edt = a.transform;
-				EventDriver ed = edt.GetComponent<EventDriver> ();
-				while (ed == null) {
-					edt = edt.parent;
-					ed = edt.GetComponent<EventDriver> ();
-					if (Transform.Equals (edt, transform.root))
-						break;
-				}
+		public static void SendActorUpward (EventActor a)
+		{
+			Transform edt = a.transform;
+			EventDriver ed = edt.GetComponent<EventDriver> ();
+			while (ed == null) {
+				edt = edt.parent;
+				ed = edt.GetComponent<EventDriver> ();
+				if (Transform.Equals (edt, edt.root))
+					break;
+			}
 
-				if (a.m_keyString != null && ed != null) {
-					ed.RegisterActor (a);
-				}
+			if (a.m_keyString != null && ed != null) {
+				ed.RegisterActor (a);
 			}
 		}
 	}
