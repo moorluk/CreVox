@@ -8,13 +8,20 @@ namespace CreVox
 
 	public class LevelPiece : MonoBehaviour
 	{
-
 		public enum PivotType
 		{
 			Vertex,
 			Edge,
 			Center,
 			Grid
+		}
+
+		public enum EventRange
+		{
+			Free,
+			Marker,
+			Room,
+			Global,
 		}
 
 		[Serializable]
@@ -29,7 +36,8 @@ namespace CreVox
 		public bool isHold = false;
 		public List<Hold> holdBlocks;
 		public int maxX, minX, maxY, minY, maxZ, minZ;
-        //public string[] attributes = new string[5];
+
+		public EventRange eventRange = EventRange.Free;
 
         public virtual void SetupPiece(BlockItem item)
 		{
@@ -96,17 +104,17 @@ namespace CreVox
 			foreach (EventActor a in acs) {
 				if(e != EventGroup.Default)
 					a.m_keyString += "." + e.ToString ();
-				SendActorUpward (a);
+				SendActorUpward (a,eventRange);
 			}
 		}
 
-		public static void SendActorUpward (EventActor a)
+		public static void SendActorUpward (EventActor a, EventRange range = EventRange.Free)
 		{
 			Transform edt = a.transform;
-			EventDriver ed = edt.GetComponent<EventDriver> ();
+			EventDriver ed = GetDriver(edt,range);
 			while (ed == null) {
 				edt = edt.parent;
-				ed = edt.GetComponent<EventDriver> ();
+				ed = GetDriver(edt,range);
 				if (Transform.Equals (edt, edt.root))
 					break;
 			}
@@ -114,6 +122,30 @@ namespace CreVox
 			if (a.m_keyString != null && ed != null) {
 				ed.RegisterActor (a);
 			}
+		}
+
+		private static EventDriver GetDriver(Transform t, EventRange range)
+		{
+			EventDriver ed;
+			switch (range){
+			case EventRange.Marker:
+				ed = t.GetComponent (typeof(MarkerDriver)) as EventDriver;
+				break;
+
+			case EventRange.Room:
+				ed = t.GetComponent(typeof(RoomDriver)) as EventDriver;
+				break;
+
+			case EventRange.Global:
+				ed = t.GetComponent(typeof(GlobalDriver)) as EventDriver;
+				break;
+				
+			default:
+			case EventRange.Free:
+				ed = t.GetComponent<EventDriver> ();
+				break;
+			}
+			return ed;
 		}
 	}
 }

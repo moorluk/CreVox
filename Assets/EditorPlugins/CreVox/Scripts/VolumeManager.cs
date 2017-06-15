@@ -25,11 +25,14 @@ namespace CreVox
 				Volume[] v = transform.GetComponentsInChildren<Volume> (false);
 				if (v.Length > 0) {
 					UpdateDungeon ();
-
+					if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
+						gameObject.AddComponent (typeof(GlobalDriver));
+					}
 					if (VGlobal.GetSetting ().FakeDeco) {
 						for (int i = 0; i < v.Length; i++) {
 							GameObject.Destroy (v [i].gameObject);
 						}
+						CreateVolumes ();
 					}
 				}
 			}
@@ -49,10 +52,6 @@ namespace CreVox
 				Debug.LogWarning (log);
 			}
 			#endif
-
-			if (VGlobal.GetSetting().FakeDeco && autoRun) {
-				CreateVolumes ();
-            }
 		}
 
 		public void CreateVolumes ()
