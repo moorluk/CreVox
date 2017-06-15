@@ -11,9 +11,19 @@ namespace CreVox
 		bool drawDef = false;
 		public override void OnInspectorGUI ()
 		{
-            lp = (LevelPiece)target;
+			lp = (LevelPiece)target;
+			if (lp.eventRange.Length != 6)
+				lp.eventRange = new LevelPiece.EventRange[6];
+			
+			EditorGUI.BeginChangeCheck ();
 
-            EditorGUI.BeginChangeCheck ();
+			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
+				lp.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.eventRange[5]);
+			}
+			EditorGUILayout.Separator ();
+
+			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
 			lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);
 			drawIsSolid = EditorGUILayout.Foldout (drawIsSolid, "Is Solid");
 			if (drawIsSolid) {

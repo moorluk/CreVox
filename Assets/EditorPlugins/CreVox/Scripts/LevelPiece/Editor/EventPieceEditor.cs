@@ -11,20 +11,28 @@ namespace CreVox
 		void OnEnable()
 		{
 			ep = (EventPiece)target;
+			if (ep.eventRange.Length != 6)
+				ep.eventRange = new LevelPiece.EventRange[6];
 		}
 
 		public override void OnInspectorGUI ()
 		{
 			Color def = GUI.color;
+			EditorGUI.BeginChangeCheck ();
+
+			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
+				ep.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", ep.eventRange[5]);
+			}
+			EditorGUILayout.Separator ();
+
+			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
 			GUI.color = (ep.mp == null) ? Color.red : Color.green;
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUI.color = def;
 
-				EditorGUI.BeginChangeCheck ();
 				ep.mp = (MoverProperty)EditorGUILayout.ObjectField (
 					"Target", ep.mp, typeof(MoverProperty), true);
-				if (EditorGUI.EndChangeCheck ())
-					EditorUtility.SetDirty (ep);
 				
 				if ((Object)(ep.mp) != null) {
 					string nodes = "Nodes";
@@ -42,6 +50,8 @@ namespace CreVox
 					EditorGUILayout.HelpBox ("↗ Drag a component into object field...", MessageType.None, true);
 				}
 			}
+			if (EditorGUI.EndChangeCheck ())
+				EditorUtility.SetDirty (ep);
 		}
 
         public override void OnEditorGUI(ref BlockItem item)

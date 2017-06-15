@@ -15,12 +15,22 @@ namespace CreVox
 		void OnEnable()
 		{
 			pp = (PropertyPiece)target;
+			if (pp.eventRange.Length != 6)
+				pp.eventRange = new LevelPiece.EventRange[6];
 		}
 		#region InspectorGUI
 		public override void OnInspectorGUI ()
 		{
 			Color def = GUI.color;
 			EditorGUI.BeginChangeCheck ();
+
+			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
+				pp.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.eventRange[5]);
+			}
+			EditorGUILayout.Separator ();
+
+			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
 			for (int i = 0; i < pp.PProperties.Length; i++) {
 				if (pp.PProperties [i].tComponent != FocalComponent.Unused)
 					GUI.color = (pp.PProperties [i].tObject == null) ? Color.red : Color.green;

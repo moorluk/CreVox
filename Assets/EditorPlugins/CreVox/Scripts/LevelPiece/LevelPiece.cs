@@ -37,7 +37,15 @@ namespace CreVox
 		public List<Hold> holdBlocks;
 		public int maxX, minX, maxY, minY, maxZ, minZ;
 
-		public EventRange eventRange = EventRange.Free;
+		public EventRange[] eventRange = new EventRange[6]
+		{
+			EventRange.Free,
+			EventRange.Free,
+			EventRange.Free,
+			EventRange.Free,
+			EventRange.Free,
+			EventRange.Free
+		};
 
         public virtual void SetupPiece(BlockItem item)
 		{
@@ -104,7 +112,7 @@ namespace CreVox
 			foreach (EventActor a in acs) {
 				if(e != EventGroup.Default)
 					a.m_keyString += "." + e.ToString ();
-				SendActorUpward (a,eventRange);
+				SendActorUpward (a,eventRange[5]);
 			}
 		}
 
