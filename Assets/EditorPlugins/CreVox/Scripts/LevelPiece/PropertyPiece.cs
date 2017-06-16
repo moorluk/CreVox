@@ -12,7 +12,8 @@ namespace CreVox
 		Unused = 0,
 		Unknown = 1,
 		AddLootActor = 2,
-		EnemySpawner = 3
+		EnemySpawner = 3,
+		DefaultEventRange = 4
 	}
 
 	public class PropertyPiece : LevelPiece 
@@ -22,6 +23,7 @@ namespace CreVox
 		{
 			public FocalComponent tComponent;
 			public UnityEngine.Object tObject;
+			public EventRange tRange;
 		}
 		public PProperty[] PProperties = new PProperty[5];
 
@@ -30,33 +32,40 @@ namespace CreVox
 			//解析從blockitem的attritube,進行相應的動作.
 			for (int i = 0; i < 5; i++) {
 				string[] _code = UpdateValue (ref item, i);
+				UnityEngine.Object obj = PProperties [i].tObject;
 				if (_code.Length != 0) {
 					switch (_code [0]) {
 					case "AddLootActor":
-						if (PProperties [i].tObject != null && PProperties [i].tObject is AddLootActor) {
-							AddLootActor obj = (AddLootActor)PProperties [i].tObject;
-							obj.m_lootID = int.Parse (_code [1]);
+						if (obj != null && obj is AddLootActor) {
+							AddLootActor ala = (AddLootActor)obj;
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
+							ala.m_lootID = int.Parse (_code [2]);
 						}
 						break;
 
 					case "EnemySpawner":
-						if (PProperties [i].tObject != null && PProperties [i].tObject is EnemySpawner) {
-							EnemySpawner obj = (EnemySpawner)PProperties [i].tObject;
-							obj.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
-							obj.m_spawnerData.m_totalQty = int.Parse (_code [2]);
-							obj.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
-							obj.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
-							string[] _r = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
-							obj.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r [0]), float.Parse (_r [1]));
-							if (obj.m_isStart == false)
-								obj.m_isStart = true;
+						if (obj != null && obj is EnemySpawner) {
+							EnemySpawner es = (EnemySpawner)obj;
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
+							es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [2]);
+							es.m_spawnerData.m_totalQty = int.Parse (_code [3]);
+							es.m_spawnerData.m_maxLiveQty = int.Parse (_code [4]);
+							es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [5]);
+							string[] _r = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
+							es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r [0]), float.Parse (_r [1]));
+							if (es.m_isStart == false)
+								es.m_isStart = true;
 						}
 						break;
 
 					case "Unknown":
-						if (PProperties [i].tObject != null) {
+						if (obj != null) {
 
 						}
+						break;
+
+					case "DefaultEventRange":
+						eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
 						break;
 
 					default:
@@ -70,13 +79,20 @@ namespace CreVox
 			SendActorUpward ();
 		}
 
-		public string[] UpdateValue(ref BlockItem item, int id)
+		public override void SendActorUpward (EventGroup e = EventGroup.Default)
 		{
-			if (item.attributes [id] != null && item.attributes [id].Length > 0) {
-				//將item中紀錄的字串取代pProperty中Component特定欄位的值
-				return item.attributes [id].Split (new string[1]{ ";" }, StringSplitOptions.None);
-			} else {
-				return new string[0];
+			EventActor[] acs = GetComponentsInChildren<EventActor>();
+			foreach (EventActor a in acs) {
+				bool notPP = true;
+				for (int i = 0; i < PProperties.Length; i++) {
+					if (PProperties [i].tObject is EventActor && Equals (a, PProperties [i].tObject) && PProperties[i].tRange != EventRange.Free) {
+						notPP = false;
+						Debug.Log (this.name + ".[" + i + "]" + PProperties [i].tObject.name + ": " + eventRange + " >> " + PProperties [i].tRange);
+						SendActorUpward (a, PProperties [i].tRange);
+					}
+				}
+					if (notPP)
+						SendActorUpward (a, eventRange);
 			}
 		}
 	}

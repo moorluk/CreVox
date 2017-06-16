@@ -11,8 +11,6 @@ namespace CreVox
 		void OnEnable()
 		{
 			ep = (EventPiece)target;
-			if (ep.eventRange.Length != 6)
-				ep.eventRange = new LevelPiece.EventRange[6];
 		}
 
 		public override void OnInspectorGUI ()
@@ -22,7 +20,7 @@ namespace CreVox
 
 			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
 			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
-				ep.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", ep.eventRange[5]);
+				ep.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", ep.eventRange);
 			}
 			EditorGUILayout.Separator ();
 

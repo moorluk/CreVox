@@ -73,7 +73,17 @@ public class EventPiece : LevelPiece {
 		}
 
         Gizmos.color = oldColor;
-    }
+	}
+
+	public override void SendActorUpward (EventGroup e = EventGroup.Default)
+	{
+		EventActor[] acs = GetComponentsInChildren<EventActor>();
+		foreach (EventActor a in acs) {
+			if(e != EventGroup.Default)
+				a.m_keyString += "." + e.ToString ();
+			SendActorUpward (a,eventRange);
+		}
+	}
 
     Color GetColor(EventGroup grp) {
 		switch (grp) {

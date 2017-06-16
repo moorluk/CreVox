@@ -29,11 +29,10 @@ namespace CreVox
 				if (mp.tempObj != null) { 
 					if (mp.tempObj.markType != PaletteItem.MarkerType.Item) {
 						Debug.LogWarning ("Not a Item!!!");
-						mp.tempObj = new PaletteItem ();
 					} else {
 						item.pieceName = mp.tempObj.gameObject.name;
-						mp.tempObj = new PaletteItem ();
 					}
+					mp.tempObj = null;
 				}
 				HelpBoxX ("1. Drag a Item Marker into object field\n2. <color=red><b> REFRESH </b>VolumeData</color>");
 			} else {

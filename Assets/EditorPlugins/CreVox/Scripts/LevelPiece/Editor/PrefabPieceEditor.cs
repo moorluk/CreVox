@@ -22,7 +22,7 @@ namespace CreVox
 
 			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
 			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
-				pp.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.eventRange[5]);
+				pp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.eventRange);
 			}
 			EditorGUILayout.Separator ();
 

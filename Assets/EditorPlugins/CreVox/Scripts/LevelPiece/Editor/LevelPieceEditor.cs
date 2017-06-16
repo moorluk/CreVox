@@ -12,14 +12,12 @@ namespace CreVox
 		public override void OnInspectorGUI ()
 		{
 			lp = (LevelPiece)target;
-			if (lp.eventRange.Length != 6)
-				lp.eventRange = new LevelPiece.EventRange[6];
 			
 			EditorGUI.BeginChangeCheck ();
 
 			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
 			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
-				lp.eventRange[5] = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.eventRange[5]);
+				lp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.eventRange);
 			}
 			EditorGUILayout.Separator ();
 
@@ -54,7 +52,8 @@ namespace CreVox
 		}
 
         public virtual void OnEditorGUI(ref BlockItem item)
-        {
+		{
+			PropertyPiece lp = (PropertyPiece)target;
             EditorGUILayout.LabelField("Nothing to edit");
         }
 

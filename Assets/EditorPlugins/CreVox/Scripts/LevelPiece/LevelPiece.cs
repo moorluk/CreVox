@@ -37,18 +37,17 @@ namespace CreVox
 		public List<Hold> holdBlocks;
 		public int maxX, minX, maxY, minY, maxZ, minZ;
 
-		public EventRange[] eventRange = new EventRange[6]
-		{
-			EventRange.Free,
-			EventRange.Free,
-			EventRange.Free,
-			EventRange.Free,
-			EventRange.Free,
-			EventRange.Free
-		};
+		public EventRange eventRange = EventRange.Free;
 
         public virtual void SetupPiece(BlockItem item)
 		{
+			//解析從blockitem的attritube,進行相應的動作.
+			for (int i = 0; i < 5; i++) {
+				string[] _code = UpdateValue (ref item, i);
+				if (_code.Length != 0 && _code[0] == "DefaultEventRange"){
+					eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
+				}
+			}
 			SendActorUpward ();
         }
 
@@ -106,13 +105,11 @@ namespace CreVox
 			return false;
 		}
 	
-		public void SendActorUpward (EventGroup e = EventGroup.Default)
+		public virtual void SendActorUpward (EventGroup e = EventGroup.Default)
 		{
 			EventActor[] acs = GetComponentsInChildren<EventActor>();
 			foreach (EventActor a in acs) {
-				if(e != EventGroup.Default)
-					a.m_keyString += "." + e.ToString ();
-				SendActorUpward (a,eventRange[5]);
+				SendActorUpward (a,eventRange);
 			}
 		}
 
@@ -129,6 +126,15 @@ namespace CreVox
 
 			if (a.m_keyString != null && ed != null) {
 				ed.RegisterActor (a);
+			}
+		}
+
+		public string[] UpdateValue(ref BlockItem item, int id)
+		{
+			if (item.attributes [id] != null && item.attributes [id].Length > 0) {
+				return item.attributes [id].Split (new string[1]{ ";" }, StringSplitOptions.None);
+			} else {
+				return new string[0];
 			}
 		}
 
