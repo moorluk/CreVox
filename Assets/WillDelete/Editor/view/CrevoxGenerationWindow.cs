@@ -21,6 +21,7 @@ namespace CrevoxExtend {
 		private static int randomSeed = 0;
 		private static int stageID = 1;
 		private VGlobal vg;
+		private static string vDatasPath;
 
 		void Initialize() {
 			// Create a new one or clear it.
@@ -93,6 +94,8 @@ namespace CrevoxExtend {
 				string path = EditorUtility.OpenFolderPanel("Load Folder", 
 					Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save, "");
 				if (path != string.Empty) {
+					// Save the global path for loading XML
+					vDatasPath = path;
 					// Get the files.
 					string[] files = Directory.GetFiles(path);
 					foreach (var file in files) {
@@ -251,12 +254,12 @@ namespace CrevoxExtend {
 		// Serialize
 		private static void SerializeToXML(string path){
 			XDocument xmlDocument = new XDocument();
-			xmlDocument.Add(SerializeVolumeGeneration());
+			xmlDocument.Add(SerializeVolumeGeneration(vDatasPath));
 			xmlDocument.Save(path);
 		}
-		private static XElement SerializeVolumeGeneration(){
+		private static XElement SerializeVolumeGeneration(string vdataspath){
 			XElement elementVolumeGeneration = new XElement("VolumeGeneration");
-			elementVolumeGeneration.Add(SerializeSymbols());
+			elementVolumeGeneration.Add(SerializeSymbols(), new XElement("VDatasPath", vdataspath));
 			return elementVolumeGeneration;
 		}
 		private static XElement SerializeSymbols(){
@@ -298,6 +301,9 @@ namespace CrevoxExtend {
 		private static Dictionary<GraphGrammarNode, List<VDataAndMax>> DeserializeSymbols(XElement element){
 			Dictionary<GraphGrammarNode, List<VDataAndMax>> RefTableVMax = new Dictionary<GraphGrammarNode, List<VDataAndMax>>();
 			XElement elementSymbols = element.Element("Symbols");
+			XElement elementVDatasPath = element.Element("VDatasPath");
+			// This was a bug before
+			List<VolumeData> VDatas = GetVolumeDatasFromDir(elementVDatasPath.Value.ToString());
 
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later
@@ -307,7 +313,6 @@ namespace CrevoxExtend {
 				//	". Same? "+ (node.Name == elementSymbol.Element("Name").Value.ToString() ? true : false));
 
 				List<VDataAndMax> VDataAndMaxVs = new List<VDataAndMax>();
-				List<VolumeData> VDatas = GetVolumeDatasFromDir();
 
 				XElement elementVolumeDatas = elementSymbol.Element("VolumeDatas");
 				// In here volumeData means VolumeDataAndMaxV
@@ -330,9 +335,11 @@ namespace CrevoxExtend {
 		}
 
 		// Get All VolumeDatas from the directory
-		private static List<VolumeData> GetVolumeDatasFromDir(){
+		// [EDIT LATER] Change to GetVolumeDatasFromDir(string path)
+		private static List<VolumeData> GetVolumeDatasFromDir(string path){
+			Debug.Log("Load VDatas from: " + path);
 			// [EDIT LATER] [BUG] Change the directory according to the XML. The performance is also slow. 
-			String path = Application.dataPath + PathCollect.resourcesPath.Substring(6) + PathCollect.save + "/IsaacNew";
+			//String path = Application.dataPath + PathCollect.resourcesPath.Substring(6) + PathCollect.save + "/IsaacNew";
 			string[] files = Directory.GetFiles(path);
 			List<VolumeData> VDatas = new List<VolumeData>();
 
@@ -345,6 +352,7 @@ namespace CrevoxExtend {
 					if (node.Name.ToLower() != Regex.Match(file, regex).Groups[1].Value.ToLower()) {
 						continue;
 					}
+					// Just to make sure the path is correct
 					VDatas.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
 					// Debug.Log("" + VDatas.Last ().name);
 				}
