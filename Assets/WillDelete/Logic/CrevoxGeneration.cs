@@ -25,6 +25,21 @@ namespace CrevoxExtend {
 				_refrenceTable = value;
 			}
 		}
+		// New Dictionary
+		private static Dictionary<Guid, List<VDataAndMax>> _referenceTableVMax;
+		public static Dictionary<Guid, List<VDataAndMax>> ReferenceTableVMax {
+			get {
+				// 
+				if (_referenceTableVMax == null) {
+					_referenceTableVMax = new Dictionary<Guid, List<VDataAndMax>>();
+				}
+				return _referenceTableVMax;
+			}
+			set {
+				_referenceTableVMax = value;
+			}
+		}
+
 		// Initial.
 		public static void InitialTable(int seed) {
 			UnityEngine.Random.InitState(seed);
@@ -241,6 +256,15 @@ namespace CrevoxExtend {
 
 			InitialTable(seed);
 			return Generate (_stage, root);
+		}
+	}
+	// New Type for handling Max Usage
+	public class VDataAndMax{
+		public VolumeData vData;
+		public int maxVData;
+		public VDataAndMax (VolumeData v, int maxV){
+			this.vData = v;
+			this.maxVData = maxV;
 		}
 	}
 }
