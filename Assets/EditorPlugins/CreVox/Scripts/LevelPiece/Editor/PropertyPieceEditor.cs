@@ -138,8 +138,7 @@ namespace CreVox
 							AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
 							obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
 
-							string _code = pp.PProperties [i].tComponent + ";" +
-								pp.PProperties [i].tRange + ";" +
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
 								obj.m_lootID.ToString ();
 							item.attributes [i] = _code;
 						}
@@ -157,8 +156,7 @@ namespace CreVox
 							obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
 							EditorGUI.indentLevel--;
 
-							string _code = pp.PProperties [i].tComponent + ";" +
-								pp.PProperties [i].tRange + ";" +
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
 								obj.m_enemyType.ToString () + ";" +
 								obj.m_spawnerData.m_totalQty.ToString () + ";" +
 								obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
@@ -175,7 +173,7 @@ namespace CreVox
 						break;
 
 					case FocalComponent.DefaultEventRange:
-						item.attributes [i] = pp.PProperties [i].tComponent + ";" + pp.PProperties [i].tRange;
+						item.attributes [i] = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
 						break;
 
 					default:

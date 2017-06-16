@@ -53,8 +53,18 @@ namespace CreVox
 
         public virtual void OnEditorGUI(ref BlockItem item)
 		{
-			PropertyPiece lp = (PropertyPiece)target;
-            EditorGUILayout.LabelField("Nothing to edit");
+			EditorGUI.BeginChangeCheck ();
+			using (var v = new EditorGUILayout.VerticalScope ("box")) {
+				LevelPiece lp = (LevelPiece)target;
+				lp.PProperties [0].tComponent = FocalComponent.DefaultEventRange;
+				lp.PProperties [0].tObject = lp;
+				EditorGUILayout.LabelField (lp.PProperties [0].tComponent.ToString (), EditorStyles.boldLabel);
+				lp.PProperties [0].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.PProperties [0].tRange);
+				item.attributes [0] = lp.PProperties [0].tComponent + "," + lp.PProperties [0].tRange;
+				EditorGUILayout.LabelField (item.attributes [0], EditorStyles.miniTextField);
+			}
+			if (EditorGUI.EndChangeCheck ())
+				EditorUtility.SetDirty (lp);
         }
 
         void DrawInit ()

@@ -18,15 +18,6 @@ namespace CreVox
 
 	public class PropertyPiece : LevelPiece 
 	{
-		[Serializable]
-		public struct PProperty
-		{
-			public FocalComponent tComponent;
-			public UnityEngine.Object tObject;
-			public EventRange tRange;
-		}
-		public PProperty[] PProperties = new PProperty[5];
-
 		public override void SetupPiece(BlockItem item)
 		{
 			//解析從blockitem的attritube,進行相應的動作.
@@ -34,24 +25,25 @@ namespace CreVox
 				string[] _code = UpdateValue (ref item, i);
 				UnityEngine.Object obj = PProperties [i].tObject;
 				if (_code.Length != 0) {
-					switch (_code [0]) {
+					string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
+					switch (t [0]) {
 					case "AddLootActor":
 						if (obj != null && obj is AddLootActor) {
 							AddLootActor ala = (AddLootActor)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
-							ala.m_lootID = int.Parse (_code [2]);
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
+							ala.m_lootID = int.Parse (_code [1]);
 						}
 						break;
 
 					case "EnemySpawner":
 						if (obj != null && obj is EnemySpawner) {
 							EnemySpawner es = (EnemySpawner)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
-							es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [2]);
-							es.m_spawnerData.m_totalQty = int.Parse (_code [3]);
-							es.m_spawnerData.m_maxLiveQty = int.Parse (_code [4]);
-							es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [5]);
-							string[] _r = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
+							es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
+							es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
+							es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
+							es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
+							string[] _r = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
 							es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r [0]), float.Parse (_r [1]));
 							if (es.m_isStart == false)
 								es.m_isStart = true;
@@ -65,7 +57,7 @@ namespace CreVox
 						break;
 
 					case "DefaultEventRange":
-						eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
+						eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
 						break;
 
 					default:

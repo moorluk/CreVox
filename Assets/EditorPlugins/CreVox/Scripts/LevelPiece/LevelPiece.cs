@@ -8,6 +8,14 @@ namespace CreVox
 
 	public class LevelPiece : MonoBehaviour
 	{
+		[Serializable]
+		public struct PProperty
+		{
+			public FocalComponent tComponent;
+			public UnityEngine.Object tObject;
+			public EventRange tRange;
+		}
+
 		public enum PivotType
 		{
 			Vertex,
@@ -38,18 +46,19 @@ namespace CreVox
 		public int maxX, minX, maxY, minY, maxZ, minZ;
 
 		public EventRange eventRange = EventRange.Free;
+		public PProperty[] PProperties = new PProperty[5];
 
         public virtual void SetupPiece(BlockItem item)
 		{
 			//解析從blockitem的attritube,進行相應的動作.
-			for (int i = 0; i < 5; i++) {
-				string[] _code = UpdateValue (ref item, i);
-				if (_code.Length != 0 && _code[0] == "DefaultEventRange"){
-					eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), _code [1]);
-				}
+			string[] _code = UpdateValue (ref item, 0);
+			if (_code.Length != 0) {
+				string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
+				if (t [0] == "DefaultEventRange")
+					eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
 			}
 			SendActorUpward ();
-        }
+		}
 
         public bool IsSolid (Direction direction)
 		{
