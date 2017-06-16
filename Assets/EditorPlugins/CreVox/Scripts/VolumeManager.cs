@@ -32,7 +32,6 @@ namespace CreVox
 						for (int i = 0; i < v.Length; i++) {
 							GameObject.Destroy (v [i].gameObject);
 						}
-						CreateVolumes ();
 					}
 				}
 			}
@@ -52,6 +51,10 @@ namespace CreVox
 				Debug.LogWarning (log);
 			}
 			#endif
+
+			if (VGlobal.GetSetting().FakeDeco && autoRun) {
+				CreateVolumes ();
+            }
 		}
 
 		public void CreateVolumes ()

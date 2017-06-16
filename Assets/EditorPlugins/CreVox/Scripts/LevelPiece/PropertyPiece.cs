@@ -26,6 +26,8 @@ namespace CreVox
 				UnityEngine.Object obj = PProperties [i].tObject;
 				if (_code.Length != 0) {
 					string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
+					if (t.Length < 2)
+						t = new string[]{ t [0], PProperties [i].tRange.ToString() };
 					switch (t [0]) {
 					case "AddLootActor":
 						if (obj != null && obj is AddLootActor) {
