@@ -1,5 +1,6 @@
 ﻿using GC = System.GC;
 using Math = System.Math;
+using Exception = System.Exception;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -66,7 +67,7 @@ namespace CrevoxExtend {
 			}
 
 			//update the gscore and hscore,if gscore + hscore < current fscore.
-			public void distanceToEnd(Node end, int time) {
+			public void distanceToEnd(Node end, uint time) {
 				//if thie node is end, and then make this node fscore to  zero, and select it.
 				if (this.type == nodeType.end) {
 					this.gScore = 0;
@@ -106,7 +107,7 @@ namespace CrevoxExtend {
 			private set;
 		}
 
-		public int time {
+		public uint time {
 			get;
 			private set;
 		}
@@ -119,8 +120,10 @@ namespace CrevoxExtend {
 			this.nodeMap[(int)start.x / 3, (int)start.y / 2, (int)start.z / 3].type = nodeType.start;
 			this.nodeMap[(int)end.x / 3, (int)end.y / 2, (int)end.z / 3].type = nodeType.end;
 			this.time = 1;
-			this.theShortestPath = findThePath(this.nodeMap[(int)start.x / 3, (int)start.y / 2, (int)start.z / 3], this.nodeMap[(int)end.x / 3, (int)end.y / 2, (int)end.z / 3]);
-			this.theShortestPath.Reverse();
+			if (map.Cast<int>().Max() != 0) {
+				this.theShortestPath = findThePath(this.nodeMap[(int)start.x / 3, (int)start.y / 2, (int)start.z / 3], this.nodeMap[(int)end.x / 3, (int)end.y / 2, (int)end.z / 3]);
+				//this.theShortestPath.Reverse();
+			}
 			GC.Collect();
 		}
 
@@ -144,6 +147,8 @@ namespace CrevoxExtend {
 			Stack<Node> theShortestPath = new Stack<Node>();
 			theShortestPath.Push(start);
 			while (!finish) {
+				if (theShortestPath.Count == 0)
+					return null;
 				var aroundPositions = findAround(theShortestPath.Peek());
 				var selectedPosition = theShortestPath.Peek();
 
@@ -180,7 +185,7 @@ namespace CrevoxExtend {
 				if (selectedPosition.type == nodeType.end)
 					finish = true;
 			}
-			return theShortestPath.ToList();
+			return theShortestPath.Reverse().ToList();
 		}
 
 		//find the around node of input node.
