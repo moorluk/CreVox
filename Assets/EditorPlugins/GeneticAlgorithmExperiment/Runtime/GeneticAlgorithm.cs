@@ -43,8 +43,10 @@ namespace CrevoxExtend {
 		//enum for fitness function.
 		public enum FitnessFunctionName {
 			Block,
+			Intercept,
 			Patrol,
-			Guard
+			Guard,
+			Support
 		}
 
 		// Constructor.
@@ -276,8 +278,10 @@ namespace CrevoxExtend {
 
 				float scoreSum = 0.0f
 					+ (FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0)
+					+ (FitnessWeights["intercept"] != 0 ? FitnessIntercept() * FitnessWeights["intercept"] : 0)
 					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
 					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
+					+ (FitnessWeights["support"] != 0 ? FitnessSupport() * FitnessWeights["support"] : 0)
 					+ (FitnessEmptyDensity() * 0)
 				;
 
@@ -303,10 +307,14 @@ namespace CrevoxExtend {
 				switch (functionName) {
 					case FitnessFunctionName.Block:
 						return FitnessBlock();
+					case FitnessFunctionName.Intercept:
+						return FitnessIntercept();
 					case FitnessFunctionName.Patrol:
 						return FitnessPatrol();
 					case FitnessFunctionName.Guard:
 						return FitnessGuard();
+					case FitnessFunctionName.Support:
+						return FitnessSupport();
 					default:
 						return 0;
 				}
@@ -329,6 +337,40 @@ namespace CrevoxExtend {
 					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
 					// Calculate the fitness score.
 					fitnessScore = (float)Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
+				}
+
+				return fitnessScore;
+			}
+
+			public float FitnessIntercept() {
+				float fitnessScore = 0.0f;
+				float mainPathWeightSum = 0.0f;
+				float distanceOfEnemyAndMainPath = 0.0f;
+				float flexibilityScore = 0.0f;
+
+				var enemies = this.Genes
+					.Select(g => g as CreVoxGene)
+					.Where(g => g.Type == GeneType.Enemy).ToList();
+
+				// Must have any enemy.
+				if (enemies.Count != 0) {
+					// Sum of the visited times in main path.
+					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
+					// Different enemy
+					for (int i = 0; i < enemies.Count; i++) {
+						// Enemy cann't on the mathPath.
+						if (!_mainPath.ContainsKey(enemies[i].pos)) {
+							// Different point of mainPath
+							foreach (KeyValuePair<Vector3, int> pointOfMainPath in _mainPath) {
+								// Calculate the distance of enemy and mainPath.
+								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
+								// Calculate the flexibility score.
+								flexibilityScore += (1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
+							}
+						}						
+					}
+					// Normalize the flexibility score to be fitness Score.
+					fitnessScore = (float)Math.Max(Math.Log(flexibilityScore, enemies.Count), -1.0);
 				}
 
 				return fitnessScore;
@@ -399,6 +441,49 @@ namespace CrevoxExtend {
 					}
 					// Calculate the fitness score.
 					fitnessScore = objectives.Sum(o => (avgProtector - Math.Abs(neighbors[o].Count - avgProtector)) / avgProtector / objectives.Count);
+				}
+
+				return fitnessScore;
+			}
+
+			public float FitnessSupport() {
+				float fitnessScore = 0.0f;
+				float radius = 3.0f;
+				float distanceBetweenEnemies = 0.0f;
+				float mainPathWeightSum = 0.0f;
+				float distanceOfEnemyAndMainPath = 0.0f;
+				float flexibilityScore = 0.0f;
+				// The score of distance between enemies..
+				float distanceScore = 0.0f;
+
+				var enemies = this.Genes
+					.Select(g => g as CreVoxGene)
+					.Where(g => g.Type == GeneType.Enemy).ToList();
+
+				// Must have any enemy.
+				if (enemies.Count != 0) {
+					// Sum of the visited times in main path.
+					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
+					for (int i = 0; i < enemies.Count; i++) {
+						for (int j = 0; j < enemies.Count; j++) {
+							if (i != j) {
+								distanceBetweenEnemies = Vector3.Distance(enemies[i].pos, enemies[j].pos);
+								distanceScore += (1 - distanceBetweenEnemies / radius) / enemies.Count;
+							}							
+						}
+
+						if (!_mainPath.ContainsKey(enemies[i].pos)) {
+							// Different point of mainPath
+							foreach (KeyValuePair<Vector3, int> pointOfMainPath in _mainPath) {
+								// Calculate the distance of enemy and mainPath.
+								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
+								// Calculate the flexibility score.
+								flexibilityScore += (1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
+							}
+						}
+					}
+					// Calculate the fitness score.
+					fitnessScore = (float)Math.Max(Math.Log((distanceScore + (1 - flexibilityScore)) / 2, enemies.Count), -1.0);
 				}
 
 				return fitnessScore;
