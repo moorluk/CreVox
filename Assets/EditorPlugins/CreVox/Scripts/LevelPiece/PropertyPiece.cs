@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Runtime.InteropServices;
-using System.Reflection;
 
 namespace CreVox
 {
@@ -13,7 +11,9 @@ namespace CreVox
 		Unknown = 1,
 		AddLootActor = 2,
 		EnemySpawner = 3,
-		DefaultEventRange = 4
+		DefaultEventRange = 4,
+		ActorKeyString = 5,
+		TriggerKeyString = 6
 	}
 
 	public class PropertyPiece : LevelPiece 
@@ -29,16 +29,33 @@ namespace CreVox
 					if (t.Length < 2)
 						t = new string[]{ t [0], PProperties [i].tRange.ToString() };
 					switch (t [0]) {
+					case "ActorKeyString":
+						if (obj != null && obj is EventActor && _code.Length == 2) {
+							EventActor ea = (EventActor)obj;
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
+							ea.m_keyString = _code [1];
+						}
+						break;
+
+					case "TriggerKeyString":
+						if (obj != null && obj is TriggerEvent && _code.Length == 2) {
+							TriggerEvent te = (TriggerEvent)obj;
+							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
+							te.m_keyString = _code [1];
+						}
+						break;
+
 					case "AddLootActor":
-						if (obj != null && obj is AddLootActor) {
+						if (obj != null && obj is AddLootActor && _code.Length == 3) {
 							AddLootActor ala = (AddLootActor)obj;
 							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-							ala.m_lootID = int.Parse (_code [1]);
+							ala.m_keyString = _code [1];
+							ala.m_lootID = int.Parse (_code [2]);
 						}
 						break;
 
 					case "EnemySpawner":
-						if (obj != null && obj is EnemySpawner) {
+						if (obj != null && obj is EnemySpawner && _code.Length == 6) {
 							EnemySpawner es = (EnemySpawner)obj;
 							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
 							es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
@@ -75,18 +92,22 @@ namespace CreVox
 
 		public override void SendActorUpward (EventGroup e = EventGroup.Default)
 		{
-			EventActor[] acs = GetComponentsInChildren<EventActor>();
+			EventActor[] acs = GetComponentsInChildren<EventActor> ();
 			foreach (EventActor a in acs) {
 				bool notPP = true;
 				for (int i = 0; i < PProperties.Length; i++) {
-					if (PProperties [i].tObject is EventActor && Equals (a, PProperties [i].tObject) && PProperties[i].tRange != EventRange.Free) {
+					if (PProperties [i].tObject is EventActor && Equals (a, PProperties [i].tObject) && PProperties [i].tRange != EventRange.Free) {
 						notPP = false;
-						Debug.Log (this.name + ".[" + i + "]" + PProperties [i].tObject.name + ": " + eventRange + " >> " + PProperties [i].tRange);
+						Debug.Log ("<b>" + this.name + "</b> send <b>[" + i + "] " + PProperties [i].tObject.name + "</b>\n" +
+						"to <b>range(" + PProperties [i].tRange + ")</b>");
 						SendActorUpward (a, PProperties [i].tRange);
 					}
 				}
-					if (notPP)
-						SendActorUpward (a, eventRange);
+				if (notPP) {
+					Debug.Log ("<b>" + this.name + "</b> send <b> " + a.name + "</b>\n" +
+					"to <b>range(" + eventRange + ")</b>");
+					SendActorUpward (a, eventRange);
+				}
 			}
 		}
 	}

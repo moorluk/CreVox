@@ -44,6 +44,14 @@ namespace CreVox
 					}
 					//判斷tComponent類型並指定相應處理
 					switch (pp.PProperties [i].tComponent) {
+					case FocalComponent.ActorKeyString:
+						DrawInsActorKeyString (i);
+						break;
+
+					case FocalComponent.TriggerKeyString:
+						DrawInsTriggerKeyString (i);
+						break;
+
 					case FocalComponent.AddLootActor:
 						DrawInsAddLootActor (i);
 						break;
@@ -70,6 +78,33 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (pp);
 		}
+
+		private void DrawInsActorKeyString (int _index)
+		{
+			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+				"Target", pp.PProperties [_index].tObject, typeof(EventActor), true);
+			if (pp.PProperties [_index].tObject != null) {
+				EventActor obj = (EventActor)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")",
+					EditorStyles.miniLabel);
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
+		private void DrawInsTriggerKeyString (int _index)
+		{
+			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+				"Target", pp.PProperties [_index].tObject, typeof(TriggerEvent), true);
+			if (pp.PProperties [_index].tObject != null) {
+				TriggerEvent obj = (TriggerEvent)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")",
+					EditorStyles.miniLabel);
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
 		private void DrawInsAddLootActor (int _index)
 		{
 			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -77,8 +112,10 @@ namespace CreVox
 			if (pp.PProperties [_index].tObject != null) {
 				AddLootActor obj = (AddLootActor)pp.PProperties [_index].tObject;
 				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")\n" +
 					"Loot ID　(" + obj.m_lootID.ToString () + ")",
-					EditorStyles.miniLabel);
+					EditorStyles.miniLabel,
+					GUILayout.Height (12 * 3));
 			} else {
 				DrawInsDragFirst ();
 			}
@@ -131,14 +168,38 @@ namespace CreVox
 				EditorGUI.BeginDisabledGroup (pp.PProperties [i].tComponent == FocalComponent.Unused);
 				using (var v = new EditorGUILayout.VerticalScope ("box")) {
 					EditorGUILayout.LabelField (pp.PProperties [i].tComponent.ToString (), EditorStyles.boldLabel);
-					pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range",pp.PProperties [i].tRange);
+					pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.PProperties [i].tRange);
 					switch (pp.PProperties [i].tComponent) {
+					case FocalComponent.ActorKeyString:
+						if (pp.PProperties [i].tObject != null) {
+							EventActor obj = (EventActor)pp.PProperties [i].tObject;
+							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								obj.m_keyString;
+							item.attributes [i] = _code;
+						}
+						break;
+
+					case FocalComponent.TriggerKeyString:
+						if (pp.PProperties [i].tObject != null) {
+							TriggerEvent obj = (TriggerEvent)pp.PProperties [i].tObject;
+							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								obj.m_keyString;
+							item.attributes [i] = _code;
+						}
+						break;
+
 					case FocalComponent.AddLootActor:
 						if (pp.PProperties [i].tObject != null) {
 							AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
+							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
 							obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
 
 							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								obj.m_keyString + ";" +
 								obj.m_lootID.ToString ();
 							item.attributes [i] = _code;
 						}
