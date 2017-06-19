@@ -43,15 +43,13 @@ namespace CreVox
 				GUI.backgroundColor = Color.white;
 				GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
 				if (GUILayout.Button ("Refresh")) {
-					volume.BuildVolume ();
-					SceneView.RepaintAll ();
+					UpdateVolume ();
 				}
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
 					EditorGUI.BeginChangeCheck ();
 					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
 					if (EditorGUI.EndChangeCheck ()) {
-						volume.BuildVolume ();
-						SceneView.RepaintAll ();
+						UpdateVolume ();
 					}
 					if (GUILayout.Button ("Backup", GUILayout.Width (buttonW))) {
 						volume.SaveTempWorld ();
@@ -114,8 +112,7 @@ namespace CreVox
 			DrawVGlobal ();
 			if (EditorGUI.EndChangeCheck ()) {
 				EditorUtility.SetDirty (vg);
-				volume.BuildVolume ();
-				SceneView.RepaintAll ();
+				UpdateVolume ();
 				if (!UnityEditor.EditorApplication.isPlaying) {
 					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 				}
@@ -768,6 +765,12 @@ namespace CreVox
 				break;
 
 			}
+		}
+		private void UpdateVolume()
+		{
+			selectedItemID = -1;
+			volume.BuildVolume ();
+			SceneView.RepaintAll ();
 		}
 
 		private void UpdateInapectedItem (int id)
