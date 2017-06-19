@@ -39,7 +39,7 @@ public class EventDriver : MonoBehaviour {
 			newList.Add(a_actor);
 			m_actorMap.Add(key, newList);
 		}
-		Debug.Log ("[EA]" + a_actor.GetComponentInParent<CreVox.PaletteItem> ().name + " >> [ED]" + this.name);
+		Debug.Log (a_actor.GetComponentInParent<CreVox.PaletteItem> ().name + " >>[" + key + "]>>" + this.name);
 	}
 
 	virtual public void RemoveActor(EventActor a_actor)
