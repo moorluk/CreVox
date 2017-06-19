@@ -19,8 +19,17 @@ namespace CreVox
 		#region InspectorGUI
 		public override void OnInspectorGUI ()
 		{
+			pp = (PropertyPiece)target;
 			Color def = GUI.color;
 			EditorGUI.BeginChangeCheck ();
+
+			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
+				pp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.eventRange);
+			}
+			EditorGUILayout.Separator ();
+
+			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
 			for (int i = 0; i < pp.PProperties.Length; i++) {
 				if (pp.PProperties [i].tComponent != FocalComponent.Unused)
 					GUI.color = (pp.PProperties [i].tObject == null) ? Color.red : Color.green;
@@ -47,6 +56,11 @@ namespace CreVox
 						DrawInsUnknown (i);
 						break;
 
+					case FocalComponent.DefaultEventRange:
+						pp.PProperties [i].tObject = pp;
+						EditorGUILayout.HelpBox ("Modify each item's Default Event Range", MessageType.Info, true);
+						break;
+
 					default:
 						EditorGUILayout.HelpBox ("↗ Select a componennt Type...", MessageType.None, true);
 						break;
@@ -62,7 +76,7 @@ namespace CreVox
 				"Target", pp.PProperties [_index].tObject, typeof(AddLootActor), true);
 			if (pp.PProperties [_index].tObject != null) {
 				AddLootActor obj = (AddLootActor)pp.PProperties [_index].tObject;
-				EditorGUILayout.LabelField ("Locked Field : ",
+				EditorGUILayout.LabelField ("Modifiable Field : ",
 					"Loot ID　(" + obj.m_lootID.ToString () + ")",
 					EditorStyles.miniLabel);
 			} else {
@@ -75,7 +89,7 @@ namespace CreVox
 				"Target", pp.PProperties [_index].tObject, typeof(EnemySpawner), true);
 			if (pp.PProperties [_index].tObject != null) {
 				EnemySpawner obj = (EnemySpawner)pp.PProperties [_index].tObject;
-				EditorGUILayout.LabelField ("Locked Field : ",
+				EditorGUILayout.LabelField ("Modifiable Field : ",
 					"Enemy Type　(" + obj.m_enemyType.ToString () + ")\n" +
 					"Spawner Data\n" +
 					"　├─ Total Qty　(" + obj.m_spawnerData.m_totalQty.ToString () + ")\n" +
@@ -85,6 +99,7 @@ namespace CreVox
 					"　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y.ToString () + ")",
 					EditorStyles.miniLabel,
 					GUILayout.Height (12 * 7));
+				if(!Application.isPlaying)
 				((EnemySpawner)pp.PProperties [_index].tObject).m_isStart = false;
 			} else {
 				DrawInsDragFirst ();
@@ -116,24 +131,22 @@ namespace CreVox
 				EditorGUI.BeginDisabledGroup (pp.PProperties [i].tComponent == FocalComponent.Unused);
 				using (var v = new EditorGUILayout.VerticalScope ("box")) {
 					EditorGUILayout.LabelField (pp.PProperties [i].tComponent.ToString (), EditorStyles.boldLabel);
+					pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range",pp.PProperties [i].tRange);
 					switch (pp.PProperties [i].tComponent) {
 					case FocalComponent.AddLootActor:
 						if (pp.PProperties [i].tObject != null) {
 							AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
-							EditorGUI.BeginChangeCheck ();
 							obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
-							if (EditorGUI.EndChangeCheck ()) {
-								string _code = pp.PProperties [i].tComponent + ";" +
-									obj.m_lootID.ToString ();
-								item.attributes [i] = _code;
-							}
+
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								obj.m_lootID.ToString ();
+							item.attributes [i] = _code;
 						}
 						break;
 
 					case FocalComponent.EnemySpawner:
 						if (pp.PProperties [i].tObject != null) {
 							EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
-							EditorGUI.BeginChangeCheck ();
 							obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
 							EditorGUILayout.LabelField ("Spawner Data");
 							EditorGUI.indentLevel++;
@@ -142,15 +155,14 @@ namespace CreVox
 							obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spwn Count Per Time", obj.m_spawnerData.m_spwnCountPerTime);
 							obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
 							EditorGUI.indentLevel--;
-							if (EditorGUI.EndChangeCheck ()) {
-								string _code = pp.PProperties [i].tComponent + ";" +
-								               obj.m_enemyType.ToString () + ";" +
-								               obj.m_spawnerData.m_totalQty.ToString () + ";" +
-								               obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
-								               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
-								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
-								item.attributes [i] = _code;
-							}
+
+							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								obj.m_enemyType.ToString () + ";" +
+								obj.m_spawnerData.m_totalQty.ToString () + ";" +
+								obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
+								obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
+								obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
+							item.attributes [i] = _code;
 						}
 						break;
 
@@ -158,6 +170,10 @@ namespace CreVox
 						if (pp.PProperties [i].tObject != null) {
 
 						}
+						break;
+
+					case FocalComponent.DefaultEventRange:
+						item.attributes [i] = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
 						break;
 
 					default:

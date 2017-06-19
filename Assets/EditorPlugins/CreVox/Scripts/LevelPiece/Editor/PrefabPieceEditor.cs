@@ -18,8 +18,15 @@ namespace CreVox
 
 		public override void OnInspectorGUI ()
 		{
-
 			EditorGUI.BeginChangeCheck ();
+
+			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
+				pp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.eventRange);
+			}
+			EditorGUILayout.Separator ();
+
+			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
 			pp.APId = EditorGUILayout.Popup ("ArtPack", pp.APId, artpacks);
 			pp.artPack = artpacks[pp.APId];
 			DrawDefaultInspector ();
