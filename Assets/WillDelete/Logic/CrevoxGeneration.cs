@@ -12,26 +12,12 @@ namespace CrevoxExtend {
 	public class CrevoxGeneration {
 		private const int TIMEOUT_MILLISECOND = 5000;
 		// Members.
-		private static Dictionary<Guid, List<VolumeData>> _refrenceTable;
-		public static Dictionary<Guid, List<VolumeData>> RefrenceTable {
-			get {
-				// 
-				if (_refrenceTable == null) {
-					_refrenceTable = new Dictionary<Guid, List<VolumeData>>();
-				}
-				return _refrenceTable;
-			}
-			set {
-				_refrenceTable = value;
-			}
-		}
-		// New Dictionary
-		private static Dictionary<Guid, List<VDataAndMax>> _referenceTableVMax;
-		public static Dictionary<Guid, List<VDataAndMax>> ReferenceTableVMax {
+		private static Dictionary<Guid, List<VDataAndMaxV>> _referenceTableVMax;
+		public static Dictionary<Guid, List<VDataAndMaxV>> ReferenceTableVMax {
 			get {
 				// 
 				if (_referenceTableVMax == null) {
-					_referenceTableVMax = new Dictionary<Guid, List<VDataAndMax>>();
+					_referenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
 				}
 				return _referenceTableVMax;
 			}
@@ -63,6 +49,8 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
+			// To hold the original ReferenceTable
+			Dictionary<Guid, List<VDataAndMaxV>> tempRefTab = new Dictionary<Guid, List<VDataAndMaxV>>(ReferenceTableVMax);
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
 			if (root == null) {
@@ -78,21 +66,23 @@ namespace CrevoxExtend {
 			RecursionGetSequence(root);
 			// Initialize state.
 			nowState = null;
-			// Get mapping vdata from root node.
-			foreach (var rootVdata in RefrenceTable[CreVoxAttach.RootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)) {
+
+			// Mapping VData from root node
+			foreach (var rootVDataAndMaxV in ReferenceTableVMax[CreVoxAttach.RootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)){
 				// Initialize a state.
-				CrevoxState state = new CrevoxState(rootVdata);
-				// Set the root vdata.
+				CrevoxState state = new CrevoxState(rootVDataAndMaxV.vData);
+				// Set the root of VData.
 				state.VolumeDatasByID[CreVoxAttach.RootNode.SymbolID] = state.ResultVolumeDatas[0];
 				if (Recursion(state, 0)) {
-					// If time's up then nowState keeps null.
+					// If time's up then nowState still null. 
 					if (testStopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND) {
 						nowState = state;
 					}
 					break;
 				}
-				// If Recursion return false then it means this root(vdata) cannot generate. 
+				// Recursion return false means this root(VData) can't be generated. 
 			}
+
 			if (nowState != null) {
 				Debug.Log("Completed.");
 				// Transform state into gameobject.
@@ -121,19 +111,35 @@ namespace CrevoxExtend {
 					return true;
 				}
 			}
-			List<VolumeData> feasibleVdata = new List<VolumeData>();
-			// Find the suitable vdata.
-			foreach (var vdata in RefrenceTable[edge.end.AlphabetID]) {
-				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdata);
+				
+			// Generate vData
+			List<VDataAndMaxV> feasibleVDataAndMaxVs = new List<VDataAndMaxV>();
+			// Find the suitable VData.
+			foreach (var vdataAndmaxv in ReferenceTableVMax[edge.end.AlphabetID]) {
+				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdataAndmaxv.vData);
 				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
-					feasibleVdata.Add(vdata);
+					// Throw exception if none of VData is (infinity or MaxV >= 1)
+					//Debug.Log("n.maxVData != 0: "+ReferenceTableVMax[edge.end.AlphabetID].FindAll(n => n.maxVData != 0).Count);
+					if(!(ReferenceTableVMax[edge.end.AlphabetID].Exists(n => n.maxVData != 0))) {
+						throw new System.Exception("["+vdataAndmaxv.vData.name+"] There is not enough value of MaxVData. Please change the Max fields.");
+					}
+					// If current maxVData is not 0 
+					if (vdataAndmaxv.maxVData != 0) {
+						Debug.Log ("Suitable VData: " + vdataAndmaxv.vData.name + ", MaxV: " +vdataAndmaxv.maxVData);
+						feasibleVDataAndMaxVs.Add(vdataAndmaxv);
+						if (vdataAndmaxv.maxVData != -1) {
+							vdataAndmaxv.maxVData--;
+						}
+					}
 				}
 			}
-			// No vdata have enough connection. Return false.
-			if (feasibleVdata.Count == 0) {
-				Debug.Log("There is no vdata that have enough connection in " + RefrenceTable[edge.end.AlphabetID][0].name + ". It means this graph  doesn't match with vdata.");
+			// If non of VData have enough connection, return false. 
+			if (feasibleVDataAndMaxVs.Count == 0){
+				Debug.Log ("There is no vdata that have enough connection in " + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name + ". It means this graph doesn't match with vdata.");
 				return false;
 			}
+
+			/*
 			// Find mapping vdata in table that order by random.
 			foreach (var mappingVdata in feasibleVdata.OrderBy(x => UnityEngine.Random.value)) {
 				// Set the end node.
@@ -171,6 +177,48 @@ namespace CrevoxExtend {
 			}
 			// If no one success then restore state.
 			state.VolumeDatasByID.Remove(edge.end.SymbolID);
+			*/
+
+			// [NEW] 
+			// Find mapping VDataAndMaxV in table that ordered randomly. 
+			foreach (var mappingvdataAndmaxv in feasibleVDataAndMaxVs.OrderBy(x => UnityEngine.Random.value)) {
+				// Set the end node.
+				state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData);
+				// Get starting node from the end node.
+				ConnectionInfo startingNode = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+				List<ConnectionInfo> newConnections = new List<ConnectionInfo>();
+				if (startingNode != null) {
+					newConnections.Add (startingNode);
+					Debug.Log (startingNode.connectionName);
+				} else {
+					// If there is no starting node then find connections. 
+					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
+					Debug.Log(newConnections.Count);
+				}
+				foreach (var newConnection in newConnections) {
+					// Get connection from the start node
+					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
+						// Ignore used or type-error connection. 
+						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
+						// Combine.
+						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
+							// If Success, add this VData to the state
+							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
+							// Recursion next level. 
+							if (Recursion (state, edgeIndex + 1)) {
+								return true;
+							} else {
+								// If next level has problem then remove the VData that has been added before
+								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
+							}
+						}
+					}
+				}
+			}
+			// If none is success then restore the state.
+			state.VolumeDatasByID.Remove(edge.end.SymbolID);
+
+
 			return false;
 		}
 		// Dfs get sequence.
@@ -210,7 +258,7 @@ namespace CrevoxExtend {
 							break;
 						}
 					}
-					// No one can combine then alert.
+					// If none can combined then alert.
 					if (!success) {
 						Debug.Log(volumeList[i].volumeData.name + ":" + connection.connectionName + " replace failed.");
 					}
@@ -231,12 +279,12 @@ namespace CrevoxExtend {
 				throw new System.Exception("vDataPath in stage cannot be empty.");
 			}
 
+			/*
 			// Create the keys of reference table.
 			RefrenceTable = new Dictionary<Guid, List<VolumeData>>();
 			foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
 				RefrenceTable.Add(node.AlphabetID, new List<VolumeData>());
 			}
-
 			// Get the files.
 			vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
 			foreach (VolumeData vData in vDatas) {
@@ -246,9 +294,33 @@ namespace CrevoxExtend {
 					}
 				}
 			}
-
 			// If not find match vData, then throw error.
 			foreach (var volumeList in RefrenceTable.Values) {
+				if (volumeList.Count == 0) {
+					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
+				}
+			}
+			*/
+			// [NEW]
+			// Create the keys of reference table. 
+			ReferenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
+			foreach (var node in Alphabet.Nodes.Where(n => n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal)) {
+				ReferenceTableVMax.Add(node.AlphabetID, new List<VDataAndMaxV>());
+			}
+			// Get the files. 
+			vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
+			foreach (VolumeData vData in vDatas) {
+				foreach (var node in Alphabet.Nodes.Where(n => ( n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
+					if (node.Name.ToLower () == Regex.Match (vData.name, @"(\w+)_.+_vData$").Groups [1].Value.ToLower ()) {
+						// [EDIT LATER] MaxV = 0 just for initial
+						ReferenceTableVMax[node.AlphabetID].Add (new VDataAndMaxV (vData, 0));
+						// [TO DO] Handle the MaxV. Get it from CrevoxGenerationWindow.cs?
+						Debug.Log(""+vData.name);
+					}
+				}
+			}
+			// If no VData match, throw error
+			foreach (var volumeList in ReferenceTableVMax.Values) {
 				if (volumeList.Count == 0) {
 					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
 				}
@@ -259,10 +331,10 @@ namespace CrevoxExtend {
 		}
 	}
 	// New Type for handling Max Usage
-	public class VDataAndMax{
+	public class VDataAndMaxV {
 		public VolumeData vData;
 		public int maxVData;
-		public VDataAndMax (VolumeData v, int maxV){
+		public VDataAndMaxV (VolumeData v, int maxV){
 			this.vData = v;
 			this.maxVData = maxV;
 		}
