@@ -272,6 +272,7 @@ namespace CrevoxExtend {
 		}
 		// Realtime level generation II. Return succeed or failed.
 		public static bool GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
+			// There is a bug here. 
 			UnityEngine.Object[] vDatas;
 
 			// If vDataPath is empty, then throw error.
@@ -301,7 +302,7 @@ namespace CrevoxExtend {
 				}
 			}
 			*/
-			// [NEW]
+			// [NEW] 
 			// Create the keys of reference table. 
 			ReferenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
 			foreach (var node in Alphabet.Nodes.Where(n => n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal)) {
@@ -329,6 +330,8 @@ namespace CrevoxExtend {
 			InitialTable(seed);
 			return Generate (_stage, root);
 		}
+		// TODO Load Volume Generation XML
+
 	}
 	// New Type for handling Max Usage
 	public class VDataAndMaxV {

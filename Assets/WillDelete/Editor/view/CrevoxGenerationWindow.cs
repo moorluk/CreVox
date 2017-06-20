@@ -160,8 +160,8 @@ namespace CrevoxExtend {
 
 		// Save to and Load from XML
 		private static void SaveToXML(){
-			string path = EditorUtility.SaveFilePanel("Save to XML", Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save,
-				"VolumeGeneration.xml", "xml");
+			string path = EditorUtility.SaveFilePanel("Save to XML", Application.dataPath + PathCollect.resourcesPath.Substring (6) + 
+				PathCollect.save, "VolumeGeneration.xml", "xml");
 			if (path != string.Empty) {
 				SerializeToXML(path);
 			}
@@ -249,27 +249,16 @@ namespace CrevoxExtend {
 				// Add node and vdataAndmaxv to dictionary
 				RefTableVMax.Add(node, VDataAndMaxVs);
 			}
-			Debug.Log(RefTableVMax.Count + " VolumeData are loaded from " + elementVDatasPath.Value);
+			Debug.Log(" VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
 			return RefTableVMax;
 		}
 
 		// Get All VolumeDatas from the directory
 		private static List<VolumeData> GetVolumeDatasFromDir(string path){
-			string[] files = Directory.GetFiles(path);
-			List<VolumeData> VDatas = new List<VolumeData>();
-			foreach (var file in files) {
-				if (!Regex.IsMatch (file, regex)) {
-					continue;
-				}
-				foreach (var node in ReferenceTableVMax.Keys) {
-					if (node.Name.ToLower() != Regex.Match(file, regex).Groups[1].Value.ToLower()) {
-						continue;
-					}
-					// Just to make sure the path is correct
-					VDatas.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
-				}
-			}
-			return VDatas;
+			List<VolumeData> vDatas;
+			vDatas = Resources.LoadAll(path.Substring(17).Replace("\\", "/"), typeof(VolumeData)).Cast<VolumeData>().ToList();
+			Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
+			return vDatas;
 		}
 	}
 }
