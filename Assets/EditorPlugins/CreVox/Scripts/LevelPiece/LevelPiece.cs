@@ -118,6 +118,8 @@ namespace CreVox
 		{
 			EventActor[] acs = GetComponentsInChildren<EventActor>();
 			foreach (EventActor a in acs) {
+				Debug.Log ("<b>" + this.name + "</b> send <b> " + a.name + "</b>\n" +
+					"to <b>range(" + eventRange + ")</b>");
 				SendActorUpward (a,eventRange);
 			}
 		}
