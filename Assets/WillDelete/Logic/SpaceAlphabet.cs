@@ -32,7 +32,7 @@ namespace CrevoxExtend {
 		public static void SetPath(string path) {
 			if (ArtPackPath != path) {
 				ArtPackPath = path;
-				Debug.Log("Now: " + ArtPackPath);
+
 			}
 		}
 		// 

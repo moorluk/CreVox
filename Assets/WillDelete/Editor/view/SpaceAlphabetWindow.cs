@@ -24,12 +24,12 @@ namespace CrevoxExtend {
 			// Load files and set Alphabets.
 			SpaceAlphabet.Load();
 			// Copy a new alphabet.
-			Debug.Log(SpaceAlphabet.ReplacementAlphabet.Count);
+			
 
 			Alphabets = new List<string>(SpaceAlphabet.ReplacementAlphabet);
 			AlphabetIsChanged = false;
 			// Toggler of the connections.
-			IsSelected = new List<bool>(Alphabets.Count) { false };
+			IsSelected = new List<bool>(new bool[Alphabets.Count]);
 		}
 		void Awake() {
 			Initialize();
@@ -61,7 +61,9 @@ namespace CrevoxExtend {
 			for (int i = 0; i < Alphabets.Count; i++) {
 				// Check if this alphabet is Saved or not.
 				string currentName = Alphabets[i];
-				bool isExistInAlphabet = SpaceAlphabet.ReplacementAlphabet.Exists(a => (a == Alphabets[i]));
+				bool isExistInAlphabet = SpaceAlphabet.ReplacementDictionary.ContainsKey(Alphabets[i]);
+
+
 
 				EditorGUILayout.BeginHorizontal();
 				currentName = EditorGUILayout.TextField(currentName, GUILayout.Width(Screen.width * 0.47f), GUILayout.Height(17));
@@ -88,41 +90,40 @@ namespace CrevoxExtend {
 				// If this alphabet is exist in Last Saved version, then can check if setting is clicked.
 				// If setting button is switched to true. Open the UI.
 
-				Debug.Log(i + "  " + IsSelected[i]);
-				
-				// if (isExistInAlphabet && IsSelected[i]) {
-				// 	var vDataList = SpaceAlphabet.ReplacementDictionary[Alphabets[i]];
-				// 	// Load the vData from the folder.
-				// 	if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
-				// 		// Open folder.
-				// 		string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
-				// 		if (path != string.Empty) {
-				// 			// First clear all origin volumeDatas.
-				// 			vDataList.Clear();
-				// 			// Get the files.
-				// 			foreach (var file in Directory.GetFiles(path)) {
-				// 				if (Regex.IsMatch(file, @".*[\\\/].*_vData\.asset$")) {
-				// 					vDataList.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
-				// 				}
-				// 			}
-				// 		}
-				// 	}
-				// 	// Buttons.
-				// 	for (int j = 0; j < vDataList.Count; j++) {
-				// 		EditorGUILayout.BeginHorizontal();
-				// 		// Object field.
-				// 		vDataList[j] = (CreVox.VolumeData) EditorGUILayout.ObjectField(vDataList[j], typeof(CreVox.VolumeData), false, GUILayout.Height(17));
-				// 		// Button of deleting vData.
-				// 		if (GUILayout.Button("Delete vData", GUILayout.Height(17))) {
-				// 			vDataList.RemoveAt(j);
-				// 		}
-				// 		EditorGUILayout.EndHorizontal();
-				// 	}
-				// 	// Button of adding vData.
-				// 	if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
-				// 		vDataList.Add(null);
-				// 	}
-				// }
+
+				if (isExistInAlphabet && IsSelected[i]) {
+					var vDataList = SpaceAlphabet.ReplacementDictionary[Alphabets[i]];
+					// Load the vData from the folder.
+					if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
+						// Open folder.
+						string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
+						if (path != string.Empty) {
+							// First clear all origin volumeDatas.
+							vDataList.Clear();
+							// Get the files.
+							foreach (var file in Directory.GetFiles(path)) {
+								if (Regex.IsMatch(file, @".*[\\\/].*_vData\.asset$")) {
+									vDataList.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+								}
+							}
+						}
+					}
+					// Buttons.
+					for (int j = 0; j < vDataList.Count; j++) {
+						EditorGUILayout.BeginHorizontal();
+						// Object field.
+						vDataList[j] = (CreVox.VolumeData)EditorGUILayout.ObjectField(vDataList[j], typeof(CreVox.VolumeData), false, GUILayout.Height(17));
+						// Button of deleting vData.
+						if (GUILayout.Button("Delete vData", GUILayout.Height(17))) {
+							vDataList.RemoveAt(j);
+						}
+						EditorGUILayout.EndHorizontal();
+					}
+					// Button of adding vData.
+					if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
+						vDataList.Add(null);
+					}
+				}
 			}
 			EditorGUILayout.EndScrollView();
 			string _msg;
