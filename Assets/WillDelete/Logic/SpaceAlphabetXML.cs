@@ -19,7 +19,7 @@ namespace CrevoxExtend {
 			// Serialize SpaceAlphabet
 			private static XElement SerializeSpaceAlphabet() {
 				XElement elementSpaceAlphabet = new XElement("SpaceAlphabet");
-				elementSpaceAlphabet.Add(SerializeConnections(SpaceAlphabet.Alphabets));
+				elementSpaceAlphabet.Add(SerializeConnections(SpaceAlphabet.ReplacementAlphabet));
 
 				return elementSpaceAlphabet;
 			}
@@ -31,7 +31,7 @@ namespace CrevoxExtend {
 					elementConnection.Add(new XElement("Instructions"));
 
 					XElement elementInstruction = elementConnection.Element("Instructions");
-					foreach (var vData in SpaceAlphabet.replaceDictionary[connectionType]) {
+					foreach (var vData in SpaceAlphabet.ReplacementDictionary[connectionType]) {
 						elementInstruction.Add(new XElement("vData", AssetDatabase.GetAssetPath(vData)));
 					}
 					element.Add(elementConnection);
@@ -55,7 +55,7 @@ namespace CrevoxExtend {
 			// Unserialize Instructions
 			private static void UnserializeConnections(XElement elementSpaceAlphabet) {
 				XElement elementConnections = elementSpaceAlphabet.Element("Connections");
-				SpaceAlphabet.replaceDictionary = UnserializeInstruction(elementConnections);
+				SpaceAlphabet.ReplacementDictionary = UnserializeInstruction(elementConnections);
 			}
 			// Unserialize nodes
 			private static Dictionary<string,List<CreVox.VolumeData>> UnserializeInstruction(XElement element) {

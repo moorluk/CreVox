@@ -12,22 +12,31 @@ namespace CrevoxExtend {
 	public class SpaceAlphabetWindow : EditorWindow {
 		private Vector2 scrollPosition = new Vector2(0, 0);
 		private List<string> Alphabets { get; set; }
-		private static bool AlphabetIsChanged { get; set; }
-		private static string ArtPackPath { get; set; }
+		private bool AlphabetIsChanged { get; set; }
+		private string ArtPackPath { get; set; }
+		// Togglers of the replacement alphabet.
+		private List<bool> IsSelected { get; set; }
+
 		void Initialize() {
+			// Update the art pack path.
+			ArtPackPath = CreVox.PaletteWindow.GetLevelPiecePath();
+			SpaceAlphabet.SetPath(ArtPackPath);
 			// Load files and set Alphabets.
 			SpaceAlphabet.Load();
-			Alphabets = new List<string>(SpaceAlphabet.Alphabets);
+			// Copy a new alphabet.
+			Debug.Log(SpaceAlphabet.ReplacementAlphabet.Count);
+
+			Alphabets = new List<string>(SpaceAlphabet.ReplacementAlphabet);
 			AlphabetIsChanged = false;
+			// Toggler of the connections.
+			IsSelected = new List<bool>(Alphabets.Count) { false };
 		}
 		void Awake() {
 			Initialize();
 		}
 		void OnFocus() {
-			// Update the art pack path and initialize the window when the path is changed.
+			// Initialize the window when the path is changed.
 			if (ArtPackPath != CreVox.PaletteWindow.GetLevelPiecePath()) {
-				ArtPackPath = CreVox.PaletteWindow.GetLevelPiecePath();
-				SpaceAlphabet.SetPath(ArtPackPath);
 				Initialize();
 			}
 		}
@@ -52,7 +61,7 @@ namespace CrevoxExtend {
 			for (int i = 0; i < Alphabets.Count; i++) {
 				// Check if this alphabet is Saved or not.
 				string currentName = Alphabets[i];
-				bool isExistInAlphabet = SpaceAlphabet.Alphabets.Exists(a => (a == Alphabets[i]));
+				bool isExistInAlphabet = SpaceAlphabet.ReplacementAlphabet.Exists(a => (a == Alphabets[i]));
 
 				EditorGUILayout.BeginHorizontal();
 				currentName = EditorGUILayout.TextField(currentName, GUILayout.Width(Screen.width * 0.47f), GUILayout.Height(17));
@@ -65,58 +74,60 @@ namespace CrevoxExtend {
 				EditorGUI.BeginDisabledGroup(! isExistInAlphabet);
 				if (GUILayout.Button("Setting", GUILayout.Width(Screen.width * 0.27f), GUILayout.Height(17))) {
 					// Switch setting between 0/1.
-					SpaceAlphabet.isSelected[i] = ! SpaceAlphabet.isSelected[i];
+					IsSelected[i] = ! IsSelected[i];
 				}
 				EditorGUI.EndDisabledGroup();
 
 				// delete button.
 				if (GUILayout.Button("Delete Alphabet", GUILayout.Width(Screen.width * 0.23f), GUILayout.Height(17))) {
 					Alphabets.RemoveAt(i);
+					IsSelected.RemoveAt(i);
 					isExistInAlphabet = false;
 				}
 				EditorGUILayout.EndHorizontal();
 				// If this alphabet is exist in Last Saved version, then can check if setting is clicked.
-				if (isExistInAlphabet) {
-					// If setting button is switched to true. Open the UI.
-					if (SpaceAlphabet.isSelected[i]) {
-						var vDataList = SpaceAlphabet.replaceDictionary[Alphabets[i]];
-						// Load the vData from the folder.
-						if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
-							// Open folder.
-							string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
-							if (path != string.Empty) {
-								// First clear all origin volumeDatas.
-								vDataList.Clear();
-								// Get the files.
-								foreach (var file in Directory.GetFiles(path)) {
-									if (Regex.IsMatch(file, @".*[\\\/].*_vData\.asset$")) {
-										vDataList.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
-									}
-								}
-							}
-						}
-						// Buttons.
-						for (int j = 0; j < vDataList.Count; j++) {
-							EditorGUILayout.BeginHorizontal();
-							// Object field.
-							vDataList[j] = (CreVox.VolumeData) EditorGUILayout.ObjectField(vDataList[j], typeof(CreVox.VolumeData), false, GUILayout.Height(17));
-							// Button of deleting vData.
-							if (GUILayout.Button("Delete vData", GUILayout.Height(17))) {
-								vDataList.RemoveAt(j);
-							}
-							EditorGUILayout.EndHorizontal();
-						}
-						// Button of adding vData.
-						if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
-							vDataList.Add(null);
-						}
-					}
-				}
+				// If setting button is switched to true. Open the UI.
+
+				Debug.Log(i + "  " + IsSelected[i]);
+				
+				// if (isExistInAlphabet && IsSelected[i]) {
+				// 	var vDataList = SpaceAlphabet.ReplacementDictionary[Alphabets[i]];
+				// 	// Load the vData from the folder.
+				// 	if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
+				// 		// Open folder.
+				// 		string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
+				// 		if (path != string.Empty) {
+				// 			// First clear all origin volumeDatas.
+				// 			vDataList.Clear();
+				// 			// Get the files.
+				// 			foreach (var file in Directory.GetFiles(path)) {
+				// 				if (Regex.IsMatch(file, @".*[\\\/].*_vData\.asset$")) {
+				// 					vDataList.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+				// 				}
+				// 			}
+				// 		}
+				// 	}
+				// 	// Buttons.
+				// 	for (int j = 0; j < vDataList.Count; j++) {
+				// 		EditorGUILayout.BeginHorizontal();
+				// 		// Object field.
+				// 		vDataList[j] = (CreVox.VolumeData) EditorGUILayout.ObjectField(vDataList[j], typeof(CreVox.VolumeData), false, GUILayout.Height(17));
+				// 		// Button of deleting vData.
+				// 		if (GUILayout.Button("Delete vData", GUILayout.Height(17))) {
+				// 			vDataList.RemoveAt(j);
+				// 		}
+				// 		EditorGUILayout.EndHorizontal();
+				// 	}
+				// 	// Button of adding vData.
+				// 	if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
+				// 		vDataList.Add(null);
+				// 	}
+				// }
 			}
 			EditorGUILayout.EndScrollView();
 			string _msg;
 			if (!AlphabetIsChanged) {
-				AlphabetIsChanged = SpaceAlphabet.Alphabets.Exists(a => (!Alphabets.Exists(newA => (newA == a)))) || Alphabets.Exists(newA => (!SpaceAlphabet.Alphabets.Exists(a => (newA == a))));
+				AlphabetIsChanged = SpaceAlphabet.ReplacementAlphabet.Exists(a => (!Alphabets.Exists(newA => (newA == a)))) || Alphabets.Exists(newA => (!SpaceAlphabet.ReplacementAlphabet.Exists(a => (newA == a))));
 			}
 			_msg = AlphabetIsChanged ? "Space alphabet has changed press 'Save' to save your changes." : "none";
 
@@ -132,6 +143,7 @@ namespace CrevoxExtend {
 					Count++;
 				}
 				Alphabets.Add("NewConnection" + Count);
+				IsSelected.Add(false);
 			}
 			// Saving this alphabet's "types".
 			if (GUILayout.Button("Save")) {

@@ -182,7 +182,7 @@ namespace CrevoxExtend {
 				foreach (var connection in volumeList[i].ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
 					bool success = false;
 					// Find all vdata replaced order by random.
-					foreach (var vdata in SpaceAlphabet.replaceDictionary[connection.connectionName].OrderBy(x => UnityEngine.Random.value)) {
+					foreach (var vdata in SpaceAlphabet.ReplacementDictionary[connection.connectionName].OrderBy(x => UnityEngine.Random.value)) {
 						CrevoxState.VolumeDataEx replaceVol = new CrevoxState.VolumeDataEx(vdata);
 						ConnectionInfo replaceStartingNode = replaceVol.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
 						// Combine.

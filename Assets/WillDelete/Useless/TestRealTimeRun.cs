@@ -41,8 +41,8 @@ public class TestRealTimeRun : MonoBehaviour {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
-					//[new] load spaceAlphabetXML
-					SpaceAlphabet.RealTimeGenerate(SpaceXmlPath);
+					// Load XML of space alphabet.
+					SpaceAlphabet.RuntimeGenerate(SpaceXmlPath);
 					succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
 					testTime++;
 				}
