@@ -14,9 +14,9 @@ namespace GA_Experiment {
 			GameobjectPrefabs = new Dictionary<GeneType, GameObject>() {
 				{ GeneType.Forbidden, null },
 				{ GeneType.Empty    , null },
-				{ GeneType.Enemy    , Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/enemies/BossAI") as GameObject },
-				{ GeneType.Treasure , Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/treasure/Invector-Chest") as GameObject },
-				{ GeneType.Trap     , Resources.Load(@"GeneticAlgorithmExperiment/TempFolder/Prefab/trap/spike_floor") as GameObject }
+				{ GeneType.Enemy    , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/gameobjects/enemies/BossAI") },
+				{ GeneType.Treasure , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/gameobjects/treasure/Invector-Chest") },
+				{ GeneType.Trap     , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/gameobjects/trap/spike_floor") }
 			};
 			// Replace the gameobjects.
 			ReplaceGameobjects();

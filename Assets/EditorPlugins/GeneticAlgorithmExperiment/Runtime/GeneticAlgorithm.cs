@@ -28,6 +28,14 @@ namespace CrevoxExtend {
 		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
 
+		public static Dictionary<GeneType, GameObject> MarkerPrefabs = new Dictionary<GeneType, GameObject>() {
+			{ GeneType.Forbidden, null },
+			{ GeneType.Empty    , null },
+			{ GeneType.Enemy    , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_enemy") },
+			{ GeneType.Treasure , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_treasure") },
+			{ GeneType.Trap     , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_trap") }
+		};
+
 		// Game patterns objects are expressed via Enemy, Treasure, Trap, ... etc.
 		private static GameObject GamePatternObjects {
 			get {
@@ -158,29 +166,16 @@ namespace CrevoxExtend {
 
 		//make the best gene is added into world.
 		public static void BestChromosomeToWorldPos(CreVoxChromosome bestChromosome) {
+
+			Debug.Log(Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_enemy"));
+			Debug.Log(Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_trap"));
+
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
-					GameObject geneWorldPosition = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+					GameObject geneWorldPosition = GameObject.Instantiate(MarkerPrefabs[gene.Type]);
 					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
 					geneWorldPosition.transform.position = gene.pos;
 					geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
-
-#if UNITY_EDITOR
-					switch (gene.Type) {
-					case GeneType.Forbidden:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.black);
-						break;
-					case GeneType.Enemy:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-						break;
-					case GeneType.Treasure:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.yellow);
-						break;
-					default:
-						geneWorldPosition.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
-						break;
-					}
-#endif
 				}
 			}
 		}
