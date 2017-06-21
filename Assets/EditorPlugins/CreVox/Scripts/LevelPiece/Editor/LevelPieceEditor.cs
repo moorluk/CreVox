@@ -58,10 +58,14 @@ namespace CreVox
 			using (var v = new EditorGUILayout.VerticalScope ("box")) {
 				lp.PProperties [0].tComponent = FocalComponent.DefaultEventRange;
 				lp.PProperties [0].tObject = lp;
-				EditorGUILayout.LabelField (lp.PProperties [0].tComponent.ToString (), EditorStyles.boldLabel);
-				lp.PProperties [0].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.PProperties [0].tRange);
-				item.attributes [0] = lp.PProperties [0].tComponent + "," + lp.PProperties [0].tRange;
-				EditorGUILayout.LabelField (item.attributes [0], EditorStyles.miniTextField);
+				lp.PProperties [0].tActive = EditorGUILayout.ToggleLeft (lp.PProperties [0].tComponent.ToString (),lp.PProperties [0].tActive, EditorStyles.boldLabel);
+				if (lp.PProperties [0].tActive) {
+					lp.PProperties [0].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.PProperties [0].tRange);
+					item.attributes [0] = "true," + lp.PProperties [0].tComponent + "," + lp.PProperties [0].tRange;
+					EditorGUILayout.LabelField (item.attributes [0], EditorStyles.miniTextField);
+				} else {
+					item.attributes [0] = "false," + lp.PProperties [0].tComponent + "," + lp.PProperties [0].tRange;
+				}
 			}
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (lp);

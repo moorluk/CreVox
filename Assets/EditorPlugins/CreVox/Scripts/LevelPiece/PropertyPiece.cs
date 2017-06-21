@@ -26,63 +26,75 @@ namespace CreVox
 				UnityEngine.Object obj = PProperties [i].tObject;
 				if (_code.Length != 0) {
 					string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
-					if (t.Length < 2)
-						t = new string[]{ t [0], PProperties [i].tRange.ToString() };
-					switch (t [0]) {
-					case "ActorKeyString":
-						if (obj != null && obj is EventActor && _code.Length == 2) {
-							EventActor ea = (EventActor)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-							ea.m_keyString = _code [1];
+					switch (t.Length) {
+					case 1:
+						t = new string[]{ "true", t [0], PProperties [0].tRange.ToString () };
+						break;
+
+					case 2:
+						t = new string[]{ "true", t [0], t [1] };
+						break;
+					}
+					if (t [0] == "true") {
+						PProperties [i].tActive = true;
+						switch (t [1]) {
+						case "DefaultEventRange":
+							eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+							break;
+
+						case "ActorKeyString":
+							if (obj != null && obj is EventActor && _code.Length == 2) {
+								EventActor ea = (EventActor)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								ea.m_keyString = _code [1];
+							}
+							break;
+
+						case "TriggerKeyString":
+							if (obj != null && obj is TriggerEvent && _code.Length == 2) {
+								TriggerEvent te = (TriggerEvent)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								te.m_keyString = _code [1];
+							}
+							break;
+
+						case "AddLootActor":
+							if (obj != null && obj is AddLootActor && _code.Length == 3) {
+								AddLootActor ala = (AddLootActor)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								ala.m_keyString = _code [1];
+								ala.m_lootID = int.Parse (_code [2]);
+							}
+							break;
+
+						case "EnemySpawner":
+							if (obj != null && obj is EnemySpawner && _code.Length == 6) {
+								EnemySpawner es = (EnemySpawner)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
+								es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
+								es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
+								es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
+								string[] _r = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
+								es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r [0]), float.Parse (_r [1]));
+								if (es.m_isStart == false)
+									es.m_isStart = true;
+							}
+							break;
+
+						case "Unknown":
+							if (obj != null) {
+
+							}
+							break;
+
+						default:
+							if (item.attributes [i].Length > 0)
+								item.attributes [i] = "";
+							break;
 						}
-						break;
-
-					case "TriggerKeyString":
-						if (obj != null && obj is TriggerEvent && _code.Length == 2) {
-							TriggerEvent te = (TriggerEvent)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-							te.m_keyString = _code [1];
-						}
-						break;
-
-					case "AddLootActor":
-						if (obj != null && obj is AddLootActor && _code.Length == 3) {
-							AddLootActor ala = (AddLootActor)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-							ala.m_keyString = _code [1];
-							ala.m_lootID = int.Parse (_code [2]);
-						}
-						break;
-
-					case "EnemySpawner":
-						if (obj != null && obj is EnemySpawner && _code.Length == 6) {
-							EnemySpawner es = (EnemySpawner)obj;
-							PProperties[i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-							es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
-							es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
-							es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
-							es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
-							string[] _r = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
-							es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r [0]), float.Parse (_r [1]));
-							if (es.m_isStart == false)
-								es.m_isStart = true;
-						}
-						break;
-
-					case "Unknown":
-						if (obj != null) {
-
-						}
-						break;
-
-					case "DefaultEventRange":
-						eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
-						break;
-
-					default:
-						if (item.attributes [i].Length > 0)
-							item.attributes [i] = "";
-						break;
+					} else {
+						PProperties [i].tActive = false;
 					}
 				}
 			}

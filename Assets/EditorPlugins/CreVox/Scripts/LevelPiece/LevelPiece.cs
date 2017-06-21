@@ -11,6 +11,7 @@ namespace CreVox
 		[Serializable]
 		public struct PProperty
 		{
+			public bool tActive;
 			public FocalComponent tComponent;
 			public UnityEngine.Object tObject;
 			public EventRange tRange;
@@ -54,8 +55,23 @@ namespace CreVox
 			string[] _code = UpdateValue (ref item, 0);
 			if (_code.Length != 0) {
 				string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
-				if (t [0] == "DefaultEventRange")
-					eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [1]);
+				switch (t.Length) {
+				case 1:
+					t = new string[]{ "true", t [0], PProperties [0].tRange.ToString () };
+					break;
+
+				case 2:
+					t = new string[]{ "true", t [0], t [1] };
+					break;
+				}
+				if (t [0] == "true") {
+					PProperties [0].tActive = true;
+					if (t [1] == "DefaultEventRange") {
+						eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+					}
+				} else {
+					PProperties [0].tActive = false;
+				}
 			}
 			SendActorUpward ();
 		}

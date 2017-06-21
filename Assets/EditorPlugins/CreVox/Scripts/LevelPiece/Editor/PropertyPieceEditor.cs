@@ -79,10 +79,12 @@ namespace CreVox
 				EditorUtility.SetDirty (pp);
 		}
 
-		private void DrawInsActorKeyString (int _index)
+		private void DrawInsActorKeyString (int _index, bool isIns = true)
 		{
-			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
-				"Target", pp.PProperties [_index].tObject, typeof(EventActor), true);
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(EventActor), true);
+			}
 			if (pp.PProperties [_index].tObject != null) {
 				EventActor obj = (EventActor)pp.PProperties [_index].tObject;
 				EditorGUILayout.LabelField ("Modifiable Field : ",
@@ -92,10 +94,12 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
-		private void DrawInsTriggerKeyString (int _index)
+		private void DrawInsTriggerKeyString (int _index, bool isIns = true)
 		{
-			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
-				"Target", pp.PProperties [_index].tObject, typeof(TriggerEvent), true);
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(TriggerEvent), true);
+			}
 			if (pp.PProperties [_index].tObject != null) {
 				TriggerEvent obj = (TriggerEvent)pp.PProperties [_index].tObject;
 				EditorGUILayout.LabelField ("Modifiable Field : ",
@@ -105,10 +109,12 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
-		private void DrawInsAddLootActor (int _index)
+		private void DrawInsAddLootActor (int _index, bool isIns = true)
 		{
-			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
-				"Target", pp.PProperties [_index].tObject, typeof(AddLootActor), true);
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(AddLootActor), true);
+			}
 			if (pp.PProperties [_index].tObject != null) {
 				AddLootActor obj = (AddLootActor)pp.PProperties [_index].tObject;
 				EditorGUILayout.LabelField ("Modifiable Field : ",
@@ -120,10 +126,12 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
-		private void DrawInsEnemySpawner (int _index)
+		private void DrawInsEnemySpawner (int _index, bool isIns = true)
 		{
-			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
-				"Target", pp.PProperties [_index].tObject, typeof(EnemySpawner), true);
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(EnemySpawner), true);
+			}
 			if (pp.PProperties [_index].tObject != null) {
 				EnemySpawner obj = (EnemySpawner)pp.PProperties [_index].tObject;
 				EditorGUILayout.LabelField ("Modifiable Field : ",
@@ -142,10 +150,12 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
-		private void DrawInsUnknown (int _index)
+		private void DrawInsUnknown (int _index, bool isIns = true)
 		{
-			pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
-				"Target", pp.PProperties [_index].tObject, typeof(object), true);
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(object), true);
+			}
 			if (pp.PProperties [_index].tObject != null) {
 				EditorGUILayout.HelpBox ("實現夢想請洽二七...", MessageType.Warning, true);
 			} else {
@@ -167,82 +177,115 @@ namespace CreVox
 			for (int i = 0; i < pp.PProperties.Length; i++) {
 				EditorGUI.BeginDisabledGroup (pp.PProperties [i].tComponent == FocalComponent.Unused);
 				using (var v = new EditorGUILayout.VerticalScope ("box")) {
-					EditorGUILayout.LabelField (pp.PProperties [i].tComponent.ToString (), EditorStyles.boldLabel);
-					pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.PProperties [i].tRange);
-					switch (pp.PProperties [i].tComponent) {
-					case FocalComponent.ActorKeyString:
-						if (pp.PProperties [i].tObject != null) {
-							EventActor obj = (EventActor)pp.PProperties [i].tObject;
-							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+					pp.PProperties [i].tActive = EditorGUILayout.ToggleLeft (pp.PProperties [i].tComponent.ToString (),pp.PProperties [i].tActive, EditorStyles.boldLabel);
+					if (pp.PProperties [i].tActive) {
+						pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.PProperties [i].tRange);
+						switch (pp.PProperties [i].tComponent) {
+						case FocalComponent.ActorKeyString:
+							if (pp.PProperties [i].tObject != null) {
+								EventActor obj = (EventActor)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
 
-							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
-								obj.m_keyString;
-							item.attributes [i] = _code;
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								               obj.m_keyString;
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.TriggerKeyString:
+							if (pp.PProperties [i].tObject != null) {
+								TriggerEvent obj = (TriggerEvent)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								               obj.m_keyString;
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.AddLootActor:
+							if (pp.PProperties [i].tObject != null) {
+								AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+								obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								               obj.m_keyString + ";" +
+								               obj.m_lootID.ToString ();
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.EnemySpawner:
+							if (pp.PProperties [i].tObject != null) {
+								EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
+								obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
+								EditorGUILayout.LabelField ("Spawner Data");
+								EditorGUI.indentLevel++;
+								obj.m_spawnerData.m_totalQty = EditorGUILayout.IntField ("Total Qty", obj.m_spawnerData.m_totalQty);
+								obj.m_spawnerData.m_maxLiveQty = EditorGUILayout.IntField ("Max Live Qty", obj.m_spawnerData.m_maxLiveQty);
+								obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spwn Count Per Time", obj.m_spawnerData.m_spwnCountPerTime);
+								obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
+								EditorGUI.indentLevel--;
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+								               obj.m_enemyType.ToString () + ";" +
+								               obj.m_spawnerData.m_totalQty.ToString () + ";" +
+								               obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
+								               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
+								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.Unknown:
+							if (pp.PProperties [i].tObject != null) {
+
+							}
+							break;
+
+						case FocalComponent.DefaultEventRange:
+							item.attributes [i] = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
+							break;
+
+						default:
+							if (item.attributes [i].Length > 0)
+								item.attributes [i] = "";
+							break;
 						}
-						break;
+						EditorGUILayout.LabelField (item.attributes [i], EditorStyles.miniTextField);
+					} else {
+						item.attributes [i] = "false," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
+						switch (pp.PProperties [i].tComponent) {
+						case FocalComponent.ActorKeyString:
+							DrawInsActorKeyString (i,false);
+							break;
 
-					case FocalComponent.TriggerKeyString:
-						if (pp.PProperties [i].tObject != null) {
-							TriggerEvent obj = (TriggerEvent)pp.PProperties [i].tObject;
-							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+						case FocalComponent.TriggerKeyString:
+							DrawInsTriggerKeyString (i,false);
+							break;
 
-							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
-								obj.m_keyString;
-							item.attributes [i] = _code;
+						case FocalComponent.AddLootActor:
+							DrawInsAddLootActor (i,false);
+							break;
+
+						case FocalComponent.EnemySpawner:
+							DrawInsEnemySpawner (i,false);
+							break;
+
+						case FocalComponent.Unknown:
+							DrawInsUnknown (i,false);
+							break;
+
+						case FocalComponent.DefaultEventRange:
+							pp.PProperties [i].tObject = pp;
+							EditorGUILayout.HelpBox ("Modify each item's Default Event Range", MessageType.Info, true);
+							break;
+
+						default:
+							break;
 						}
-						break;
-
-					case FocalComponent.AddLootActor:
-						if (pp.PProperties [i].tObject != null) {
-							AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
-							obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
-							obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
-
-							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
-								obj.m_keyString + ";" +
-								obj.m_lootID.ToString ();
-							item.attributes [i] = _code;
-						}
-						break;
-
-					case FocalComponent.EnemySpawner:
-						if (pp.PProperties [i].tObject != null) {
-							EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
-							obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
-							EditorGUILayout.LabelField ("Spawner Data");
-							EditorGUI.indentLevel++;
-							obj.m_spawnerData.m_totalQty = EditorGUILayout.IntField ("Total Qty", obj.m_spawnerData.m_totalQty);
-							obj.m_spawnerData.m_maxLiveQty = EditorGUILayout.IntField ("Max Live Qty", obj.m_spawnerData.m_maxLiveQty);
-							obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spwn Count Per Time", obj.m_spawnerData.m_spwnCountPerTime);
-							obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
-							EditorGUI.indentLevel--;
-
-							string _code = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
-								obj.m_enemyType.ToString () + ";" +
-								obj.m_spawnerData.m_totalQty.ToString () + ";" +
-								obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
-								obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
-								obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
-							item.attributes [i] = _code;
-						}
-						break;
-
-					case FocalComponent.Unknown:
-						if (pp.PProperties [i].tObject != null) {
-
-						}
-						break;
-
-					case FocalComponent.DefaultEventRange:
-						item.attributes [i] = pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
-						break;
-
-					default:
-						if (item.attributes [i].Length > 0)
-							item.attributes [i] = "";
-						break;
 					}
-					EditorGUILayout.LabelField (item.attributes [i], EditorStyles.miniTextField);
 				}
 				EditorGUI.EndDisabledGroup ();
 			}
