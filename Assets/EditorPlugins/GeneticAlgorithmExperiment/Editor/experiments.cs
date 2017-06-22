@@ -133,6 +133,9 @@ namespace CrevoxExtend {
 			}
 			datasetDirectory.Create();
 
+			EditorUtility.RevealInFinder(datasetPath);
+			Debug.Log("The export of experiment in '" + datasetPath + "'.");
+
 			for (int i = 1; i <= experiment.ExperimentCount; i++) {
 				Debug.Log("Start running the experiment_" + i + " of " + experiment.Name + ".");
 
