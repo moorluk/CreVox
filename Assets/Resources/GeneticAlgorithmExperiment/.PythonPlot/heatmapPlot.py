@@ -44,7 +44,8 @@ def main():
 			heatmapData[heatmapData == 0] = np.nan
 
 			# Create the heatmap figure.
-			fig, ax = plt.subplots()
+			fig, ax = plt.subplots(figsize=(7.0, 3.0))
+			plt.subplots_adjust(right=1.0)
 			cax = ax.imshow(heatmapData, cmap='coolwarm', interpolation='nearest', vmin=0, vmax=positionCount)
 			# Set the title and labels.
 			ax.set_title('run ({}), generation ({})'.format(runNumber, generationNumber))
@@ -57,7 +58,6 @@ def main():
 			plt.savefig("{}/{}_{}_result.png".format(os.getcwd(), runNumber, generationNumber), dpi=300)
 			plt.close(fig)
 			print ('Rendered the heatmap figure. Run ({}), generation ({}).'.format(runNumber, generationNumber));
-
 
 def getAmountRecord(data):
 	amountRecord = pd.DataFrame()
