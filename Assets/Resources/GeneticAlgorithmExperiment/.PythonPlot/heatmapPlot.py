@@ -5,6 +5,7 @@
 
 import sys
 import os
+import gc
 from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
@@ -46,7 +47,7 @@ def main():
 			# Create the heatmap figure.
 			fig, ax = plt.subplots(figsize=(7.0, 3.0))
 			plt.subplots_adjust(right=1.0)
-			cax = ax.imshow(heatmapData, cmap='coolwarm', interpolation='nearest', vmin=0, vmax=positionCount)
+			cax = ax.imshow(heatmapData, cmap='rainbow', interpolation='nearest', vmin=0, vmax=positionCount)
 			# Set the title and labels.
 			ax.set_title('run ({}), generation ({})'.format(runNumber, generationNumber))
 			ax.set_xlabel("Empty tile amount")
@@ -83,6 +84,10 @@ def getAmountRecord(data):
 	# Reset the index of rows, and reorder the column.
 	amountRecord = amountRecord.reset_index(drop=True)
 	amountRecord = amountRecord[['run', 'generation', 'emptyCount', 'enemyCount', 'treasureCount', 'trapCount', 'totalCount']]
+
+	# Release the memory.
+	gc.collect()
+
 	return amountRecord
 
 def getChromosome(data, runNum, genNum, chmNum):
