@@ -21,16 +21,18 @@ namespace CrevoxExtend {
 	}
 
 	public class EditorDashboardWindow2 : EditorWindow {
-		private static readonly string PYTHON_EXEC_PATH = "C:/Python27/python.exe";
-		private static readonly string PYTHON_PLOT_PROGRAM = "D:/XAOCX/CreVox/Assets/Resources/GeneticAlgorithmExperiment/.PythonPlot/maxValue.py";
-		private static string EXPERIMENT_EXPORT;
+		private static readonly string DEFAULT_PYTHON_EXEC_PATH = "C:/Python27/python.exe";
+		private static string EXPERIMENT_DIR;
+		private static string PYTHON_SRC_DIR;
 
 		public static Dictionary<string, Experiment> Experiments = new Dictionary<string, Experiment>();
 
 		public static Vector2 WindowScrollPosition;
 
 		void OnEnable() {
-			EXPERIMENT_EXPORT = Application.persistentDataPath + "/Experiments/";
+			// Base on the OS environment.
+			EXPERIMENT_DIR = Application.persistentDataPath + "/Experiments/";
+			PYTHON_SRC_DIR = Application.dataPath + "/Resources/GeneticAlgorithmExperiment/.PythonPlot/";
 		}
 
 		void OnGUI() {
@@ -77,7 +79,14 @@ namespace CrevoxExtend {
 			// Run the first experiment.
 			if (GUILayout.Button("運行第一筆實驗", buttonStyle, GUILayout.Height(30))) {
 				var experiment = Experiments[Experiments.Keys.First()];
-				LaunchGAExperiment(experiment, false);
+
+				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
+					ExecutePythonPlot();
+				} else {
+					Debug.LogError("Please check your system has 'python' in the environment path.");
+				}
+
+				// LaunchGAExperiment(experiment, false);
 			}
 			if (GUILayout.Button("拍攝上視圖", buttonStyle, GUILayout.Height(30))) {
 				// Store a screenshot from main camera.
@@ -130,7 +139,7 @@ namespace CrevoxExtend {
 
 			// Delete the directory then recreator again.
 			if (isExportFiles) {
-				datasetPath = EXPERIMENT_EXPORT + "datasets/" + experiment.Name;
+				datasetPath = EXPERIMENT_DIR + "datasets/" + experiment.Name;
 				DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
 				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
 				datasetDirectory.Create();
@@ -159,6 +168,39 @@ namespace CrevoxExtend {
 				}
 			}
 		}
+
+		private void ExecutePythonPlot() {
+			var pythonPath = ExistsOnPath("python.exe") ? GetFullPath("python.exe") : GetFullPath(DEFAULT_PYTHON_EXEC_PATH);
+
+			Process process = new Process();
+			process.StartInfo.FileName = "cmd.exe";
+			process.StartInfo.Arguments = "/C \"" + pythonPath + "\" \"" + PYTHON_SRC_DIR + "maxValue.py\" \"" + EXPERIMENT_DIR + "\"";
+
+			process.StartInfo.CreateNoWindow = true;
+			process.StartInfo.UseShellExecute = false;
+			// Capture python log from process.StandardOutput and process.StandardError.
+			process.StartInfo.RedirectStandardOutput = true;
+			process.StartInfo.RedirectStandardError = true;
+			// // When execute the cmd fail.
+			// process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			// process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			// // Process finished.
+			// process.Exited += new System.EventHandler(ProcessExited);
+			process.EnableRaisingEvents = true;
+			// Start executing.
+			Debug.Log("Subprocess is running:\n" + process.StartInfo.Arguments);
+			process.Start();
+
+			var error = process.StandardError.ReadToEnd();
+			if (error != string.Empty) {
+				Debug.LogError("Execute the python program fail:\n" + error);
+			} else {
+				Debug.Log("Done.");
+			}
+
+			process.WaitForExit();
+		}
+
 		// Create a cemera and take a shot.
 		private void LayoutScreenshot(GameObject volumeManager) {
 			var screenshotCarema = Camera.main;
@@ -182,7 +224,9 @@ namespace CrevoxExtend {
 
 			// Record the shot.
 			EditorApplication.ExecuteMenuItem("Window/Game");
-			Application.CaptureScreenshot(EXPERIMENT_EXPORT + "Screenshot.png", 2);
+			Application.CaptureScreenshot(EXPERIMENT_DIR + "Screenshot.png", 2);
+			// Open this directory in explorer.
+			EditorUtility.RevealInFinder(EXPERIMENT_DIR);
 		}
 
 		public class Experiment {
@@ -228,6 +272,25 @@ namespace CrevoxExtend {
 
 		public static bool Foldout(bool foldout, string content, bool toggleOnLabelClick, GUIStyle style) {
 			return Foldout(foldout, new UnityEngine.GUIContent(content), toggleOnLabelClick, style);
+		}
+
+		private static bool ExistsOnPath(string fileName) {
+			return GetFullPath(fileName) != null;
+		}
+
+		private static string GetFullPath(string fileName) {
+			if (System.IO.File.Exists(fileName)) {
+				return System.IO.Path.GetFullPath(fileName);
+			}
+
+			var values = System.Environment.GetEnvironmentVariable("PATH");
+			foreach (var path in values.Split(';')) {
+				var fullPath = System.IO.Path.Combine(path, fileName);
+				if (System.IO.File.Exists(fullPath)) {
+					return fullPath;
+				}
+			}
+			return null;
 		}
 	}
 }
