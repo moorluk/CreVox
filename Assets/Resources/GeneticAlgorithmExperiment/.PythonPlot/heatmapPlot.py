@@ -6,6 +6,7 @@
 import sys
 import os
 import gc
+import shutil
 from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
@@ -13,19 +14,59 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Our program.
-def main():
-	data = pd.read_csv(os.getcwd() + "/experiment_1.csv")
+def main(root, experiments):
+	# Root of folder.
+	root = os.path.dirname(root)
 
-	# Remove the useless columns and duplicated rows.
-	data = data.drop(['label', 'score'], 1)
-	data = data.drop_duplicates(subset=['run', 'generation', 'chromosome', 'position'], keep='first')
+	for experiment in experiments:
+		# Load the csv.
+		data = pd.read_csv(root + "/datasets/" + experiment + "/experiment_1.csv")
+		# Remove the useless columns and duplicated rows.
+		data = data.drop(['label', 'score'], 1)
+		data = data.drop_duplicates(subset=['run', 'generation', 'chromosome', 'position'], keep='first')
+		# Plot the heatmaps.
+		plotHeatmap(root, getAmountRecord(data), experiment)
 
-	amountRecord = getAmountRecord(data)
+# Filtering and cleaning the data about the gene amount information.
+def getAmountRecord(data):
+	amountRecord = pd.DataFrame()
 
+	for runNumber in range(1, data['run'].max() + 1):
+		for generationNumber in range(1, data['generation'].max() + 1):
+			print "Current state: run is {}, generation is {}.".format(runNumber, generationNumber)
+			for chromosomeNumber in range(1, data['chromosome'].max() + 1):
+				# Get the chromosome info
+				chromosome = getChromosome(data, runNumber, generationNumber, chromosomeNumber)
+				# Calculate the number based on gene type.
+				row = pd.DataFrame({
+					"run"           : [ runNumber ],
+					"generation"    : [ generationNumber ],
+					"emptyCount"    : [ sum(chromosome.type == 'Empty') ],
+					"enemyCount"    : [ sum(chromosome.type == 'Enemy') ],
+					"treasureCount" : [ sum(chromosome.type == 'Treasure') ],
+					"trapCount"     : [ sum(chromosome.type == 'Trap') ],
+					"totalCount"    : [ len(chromosome) ]
+				})
+				amountRecord = amountRecord.append(row)
+
+	# Reset the index of rows, and reorder the column.
+	amountRecord = amountRecord.reset_index(drop=True)
+	amountRecord = amountRecord[['run', 'generation', 'emptyCount', 'enemyCount', 'treasureCount', 'trapCount', 'totalCount']]
+
+	# Release the memory.
+	gc.collect()
+	return amountRecord
+
+# Plot the heatmap.
+def plotHeatmap(root, amountRecord, experiment):
 	# Export to the file.
-	exportPath = os.getcwd() + "/export.csv"
-	amountRecord.to_csv(exportPath, sep=',', index=False)
-	print ( "Export the file to {}.".format(exportPath) )
+	exportPath = root + "/output/" + experiment + "/heatmap/"
+	exportFile = exportPath + "export.csv"
+	if os.path.exists(exportPath):
+		shutil.rmtree(exportPath)
+	os.makedirs(exportPath)
+	amountRecord.to_csv(exportFile, sep=',', index=False)
+	print ( "Export the file to {}.".format(exportFile) )
 
 	# Render the heatmap figures.
 	for runNumber in range(1, amountRecord['run'].max() + 1):
@@ -59,41 +100,15 @@ def main():
 			cbar = fig.colorbar(im, cax=cax, ticks=[int(i) for i in np.linspace(0, positionCount, 5)])
 			## cbar.ax.set_yticklabels(['Low', 'Medium', 'High'])
 			# Save the figure and close it.
-			plt.savefig("{}/{}_{}_result.png".format(os.getcwd(), runNumber, generationNumber), dpi=300)
+			plt.savefig("{}/{}_{}_result.png".format(exportPath, runNumber, generationNumber), dpi=300)
 			plt.close(fig)
 			print ('Rendered the heatmap figure. Run ({}), generation ({}).'.format(runNumber, generationNumber));
-
-def getAmountRecord(data):
-	amountRecord = pd.DataFrame()
-
-	for runNumber in range(1, 2): #data['run'].max() + 1):
-		for generationNumber in range(1, 4): #data['generation'].max() + 1):
-			print "Current state: run is {}, generation is {}.".format(runNumber, generationNumber)
-			for chromosomeNumber in range(1, data['chromosome'].max() + 1):
-				# Get the chromosome info
-				chromosome = getChromosome(data, runNumber, generationNumber, chromosomeNumber)
-				# Calculate the number based on gene type.
-				row = pd.DataFrame({
-					"run"           : [ runNumber ],
-					"generation"    : [ generationNumber ],
-					"emptyCount"    : [ sum(chromosome.type == 'Empty') ],
-					"enemyCount"    : [ sum(chromosome.type == 'Enemy') ],
-					"treasureCount" : [ sum(chromosome.type == 'Treasure') ],
-					"trapCount"     : [ sum(chromosome.type == 'Trap') ],
-					"totalCount"    : [ len(chromosome) ]
-				})
-				amountRecord = amountRecord.append(row)
-
-	# Reset the index of rows, and reorder the column.
-	amountRecord = amountRecord.reset_index(drop=True)
-	amountRecord = amountRecord[['run', 'generation', 'emptyCount', 'enemyCount', 'treasureCount', 'trapCount', 'totalCount']]
-
-	# Release the memory.
-	gc.collect()
-	return amountRecord
 
 def getChromosome(data, runNum, genNum, chmNum):
 	return data[(data.run == runNum) & (data.generation == genNum) & (data.chromosome == chmNum)]
 
 if __name__ == "__main__":
-    main()
+	if (len(sys.argv) <= 2):
+		print ("Sorry, the number of experiment is not enough.")
+	else:
+		main(sys.argv[1], sys.argv[2:])

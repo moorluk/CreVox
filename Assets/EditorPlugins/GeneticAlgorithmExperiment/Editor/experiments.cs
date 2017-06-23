@@ -88,15 +88,19 @@ namespace CrevoxExtend {
 			}
 			// Write into the files.
 			if (GUILayout.Button("多個實驗寫檔輸出", buttonStyle, GUILayout.Height(30))) {
+				var activedExperiments = new Dictionary<string, Experiment>();
+
 				foreach (var experimentName in Experiments.Keys) {
 					var experiment = Experiments[experimentName];
 					if (experiment.IsActived) {
+						activedExperiments.Add(experimentName, experiment);
 						LaunchGAExperiment(experiment, true);
 					}
 				}
 				
 				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
-					ExecutePythonPlot();
+					// ExecutePythonPlot();
+					ExecutePythonPlot2(activedExperiments);
 				} else {
 					Debug.LogError("Please check your system has 'python' in the environment path.");
 				}
@@ -174,6 +178,42 @@ namespace CrevoxExtend {
 			Process process = new Process();
 			process.StartInfo.FileName = "cmd.exe";
 			process.StartInfo.Arguments = "/C  + pythonPath + "  + PYTHON_SRC_DIR + "maxValue.py \"" + EXPERIMENT_DIR + "\"";
+
+			process.StartInfo.CreateNoWindow = true;
+			process.StartInfo.UseShellExecute = false;
+			// Capture python log from process.StandardOutput and process.StandardError.
+			process.StartInfo.RedirectStandardOutput = true;
+			process.StartInfo.RedirectStandardError = true;
+			// // When execute the cmd fail.
+			// process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			// process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
+			// // Process finished.
+			// process.Exited += new System.EventHandler(ProcessExited);
+			process.EnableRaisingEvents = true;
+			// Start executing.
+			Debug.Log("Subprocess is running:\n" + process.StartInfo.Arguments);
+			process.Start();
+
+			var error = process.StandardError.ReadToEnd();
+			if (error != string.Empty) {
+				Debug.LogError("Execute the python program fail:\n" + error);
+			} else {
+				Debug.Log("Done.");
+			}
+
+			process.WaitForExit();
+		}
+
+		private void ExecutePythonPlot2(Dictionary<string, Experiment> experiments) {
+			var pythonPath = ExistsOnPath("python.exe") ? GetFullPath("python.exe") : GetFullPath(DEFAULT_PYTHON_EXEC_PATH);
+
+			Process process = new Process();
+			process.StartInfo.FileName = "cmd.exe";
+			process.StartInfo.Arguments = "/C " + pythonPath + " " + PYTHON_SRC_DIR + "heatmapPlot.py \"" + EXPERIMENT_DIR + "\"";
+
+			foreach (var experimentName in experiments.Keys) {
+				process.StartInfo.Arguments += " \"" + experiments[experimentName].Name + "\" ";
+			}
 
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
