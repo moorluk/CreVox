@@ -126,27 +126,31 @@ namespace CrevoxExtend {
 
 		// Launch a series GA experiment.
 		private void LaunchGAExperiment(Experiment experiment, bool isExportFiles) {
-			var datasetPath = EXPERIMENT_EXPORT + "datasets/" + experiment.Name;
-			DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
-			if (datasetDirectory.Exists) {
-				datasetDirectory.Delete(true);
+			string datasetPath = string.Empty;
+
+			// Delete the directory then recreator again.
+			if (isExportFiles) {
+				datasetPath = EXPERIMENT_EXPORT + "datasets/" + experiment.Name;
+				DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
+				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
+				datasetDirectory.Create();
+				// Open this directory in explorer.
+				EditorUtility.RevealInFinder(datasetPath);
+				Debug.Log("The export of experiment in '" + datasetPath + "'.");
 			}
-			datasetDirectory.Create();
 
-			EditorUtility.RevealInFinder(datasetPath);
-			Debug.Log("The export of experiment in '" + datasetPath + "'.");
-
+			// For each experiment.
 			for (int i = 1; i <= experiment.ExperimentCount; i++) {
 				Debug.Log("Start running the experiment_" + i + " of " + experiment.Name + ".");
-
+				// Write the export or not.
 				if (isExportFiles) {
+					// Create StreamWriter.
 					StreamWriter sw = new StreamWriter(datasetPath + "/experiment_" + i + ".csv");
 					sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
-
 					// Core function.
 					CreVoxGA.SetWeights(experiment.Weights);
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, sw);
-
+					// Close StreamWriter.
 					sw.Close();
 				} else {
 					// Core function.
