@@ -79,14 +79,7 @@ namespace CrevoxExtend {
 			// Run the first experiment.
 			if (GUILayout.Button("運行第一筆實驗", buttonStyle, GUILayout.Height(30))) {
 				var experiment = Experiments[Experiments.Keys.First()];
-
-				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
-					ExecutePythonPlot();
-				} else {
-					Debug.LogError("Please check your system has 'python' in the environment path.");
-				}
-
-				// LaunchGAExperiment(experiment, false);
+				LaunchGAExperiment(experiment, false);
 			}
 			if (GUILayout.Button("拍攝上視圖", buttonStyle, GUILayout.Height(30))) {
 				// Store a screenshot from main camera.
@@ -100,6 +93,12 @@ namespace CrevoxExtend {
 					if (experiment.IsActived) {
 						LaunchGAExperiment(experiment, true);
 					}
+				}
+				
+				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
+					ExecutePythonPlot();
+				} else {
+					Debug.LogError("Please check your system has 'python' in the environment path.");
 				}
 			}
 			// List of all experiments.
@@ -174,7 +173,7 @@ namespace CrevoxExtend {
 
 			Process process = new Process();
 			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = "/C \"" + pythonPath + "\" \"" + PYTHON_SRC_DIR + "maxValue.py\" \"" + EXPERIMENT_DIR + "\"";
+			process.StartInfo.Arguments = "/C  + pythonPath + "  + PYTHON_SRC_DIR + "maxValue.py \"" + EXPERIMENT_DIR + "\"";
 
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
