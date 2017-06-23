@@ -13,6 +13,8 @@ public class TestRealTimeRun : MonoBehaviour {
 	public bool testGenerateLevel = false;
 	public string XmlPath = @"Issac.xml";
 	public string ResourcePath = @"IsaacNew";
+	// [EDIT LATER]
+	public string VGXmlPath = @"IssacVolumeGeneration.xml";
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
@@ -29,18 +31,22 @@ public class TestRealTimeRun : MonoBehaviour {
 
 	void Update() {
 		if (testGenerateLevel) {
-			if (XmlPath.Length > 0) {
+			// if (XmlPath.Length > 0) {
+			if (XmlPath.Length > 0 && VGXmlPath.Length > 0) {
 				bool succeed = false;
 				VGlobal.Stage _s = new VGlobal.Stage ();
 				_s.artPack = "B02";
 				_s.XmlPath = XmlPath;
 				_s.vDataPath = ResourcePath;
+				_s.VGXmlPath = VGXmlPath;
+				Debug.Log ("_s.VGXmlPath" + _s.VGXmlPath);
 				int testTime = 0;
 				while (!succeed && testTime < 20) {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
-					succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
+					// succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
+					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;
 				}
 			}

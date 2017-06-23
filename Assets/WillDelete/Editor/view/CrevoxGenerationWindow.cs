@@ -96,7 +96,7 @@ namespace CrevoxExtend {
 			}
 
 			// Layout for Nodes and their list of VolumeData in Window.
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - 270f));
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - 300f));
 			GUILayout.Label("Nodes & Volume Data", EditorStyles.boldLabel);
 			float originalLabelWidth = EditorGUIUtility.labelWidth;
 			EditorGUIUtility.labelWidth = 50;
@@ -127,6 +127,7 @@ namespace CrevoxExtend {
 				EditorGUILayout.LabelField ("Level", CrevoxGeneration.stage.number.ToString());
 				EditorGUILayout.LabelField ("Xml Path", CrevoxGeneration.stage.XmlPath);
 				EditorGUILayout.LabelField ("VData Path", CrevoxGeneration.stage.vDataPath);
+				EditorGUILayout.LabelField ("VG Xml Path", CrevoxGeneration.stage.VGXmlPath);
 				EditorGUILayout.LabelField ("ArtPack", CrevoxGeneration.stage.artPack);
 			}
 			// If symbol has none of vData or if there is null vData, user cannot press Generate.
@@ -149,6 +150,9 @@ namespace CrevoxExtend {
 				if (! specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
 				CrevoxGeneration.InitialTable(randomSeed);
 				CrevoxGeneration.Generate(CrevoxGeneration.stage);
+				foreach (var vm in CrevoxGeneration.tempFeasible) {
+					Debug.Log("Feasible vData: " + vm.vData + ", maxV:" + vm.maxVData);
+				}
 			}
 			// [EDIT LATER] [Must modify the operations in "Generate" Button later (adding the max usage)]. In CrevoxGeneration.cs
 			// Replace connections.
@@ -249,7 +253,7 @@ namespace CrevoxExtend {
 				// Add node and vdataAndmaxv to dictionary
 				RefTableVMax.Add(node, VDataAndMaxVs);
 			}
-			Debug.Log(" VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
+			Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
 			return RefTableVMax;
 		}
 
