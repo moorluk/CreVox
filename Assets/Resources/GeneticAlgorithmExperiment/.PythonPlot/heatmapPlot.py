@@ -52,10 +52,11 @@ def main():
 			ax.set_title('run ({}), generation ({})'.format(runNumber, generationNumber))
 			ax.set_xlabel("Empty tile amount")
 			ax.set_ylabel("Enemy tile amount")
+			ax.set_yticks(np.arange(0, enemyBound + 1, 2))
 			# Colorbar.
 			divider = make_axes_locatable(ax)
-			cax = divider.append_axes("right", size="5%", pad=0.05)
-			cbar = fig.colorbar(im, cax=cax, ticks=getRangedList(0, positionCount, 5))
+			cax = divider.append_axes("right", size="5%", pad=0.1)
+			cbar = fig.colorbar(im, cax=cax, ticks=[int(i) for i in np.linspace(0, positionCount, 5)])
 			## cbar.ax.set_yticklabels(['Low', 'Medium', 'High'])
 			# Save the figure and close it.
 			plt.savefig("{}/{}_{}_result.png".format(os.getcwd(), runNumber, generationNumber), dpi=300)
@@ -93,12 +94,6 @@ def getAmountRecord(data):
 
 def getChromosome(data, runNum, genNum, chmNum):
 	return data[(data.run == runNum) & (data.generation == genNum) & (data.chromosome == chmNum)]
-
-def getRangedList(minVal, maxVal, sectionCount):
-	rangedList = [minVal]
-	for idx in range(1, sectionCount):
-		rangedList.append(float(maxVal - minVal) / (sectionCount - 1) * idx)
-	return [int(i) for i in rangedList]
 
 if __name__ == "__main__":
     main()
