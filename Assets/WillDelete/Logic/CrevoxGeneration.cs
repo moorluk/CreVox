@@ -230,72 +230,12 @@ namespace CrevoxExtend {
 			stopWatch.Stop();
 			CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
 		}
-
-		// Realtime level generation II. Return succeed or failed.
-		/*public static bool GenerateLevel(CreVoxNode root, VGlobal.Stage _stage, int seed) {
-			// There is a bug here. 
-			UnityEngine.Object[] vDatas;
-
-			// If vDataPath is empty, then throw error.
-			if (_stage.vDataPath == string.Empty) {
-				throw new System.Exception("vDataPath in stage cannot be empty.");
-			}
-
-
-			// Create the keys of reference table.
-			RefrenceTable = new Dictionary<Guid, List<VolumeData>>();
-			foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
-				RefrenceTable.Add(node.AlphabetID, new List<VolumeData>());
-			}
-			// Get the files.
-			vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
-			foreach (VolumeData vData in vDatas) {
-				foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
-					if (node.Name.ToLower() == Regex.Match(vData.name, @"(\w+)_.+_vData$").Groups[1].Value.ToLower()) {
-						RefrenceTable[node.AlphabetID].Add(vData);
-					}
-				}
-			}
-			// If not find match vData, then throw error.
-			foreach (var volumeList in RefrenceTable.Values) {
-				if (volumeList.Count == 0) {
-					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
-				}
-			}
-
-			// [NEW] 
-			// Create the keys of reference table. 
-			ReferenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
-			foreach (var node in Alphabet.Nodes.Where(n => n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal)) {
-				ReferenceTableVMax.Add(node.AlphabetID, new List<VDataAndMaxV>());
-			}
-			// Get the files. 
-			vDatas = Resources.LoadAll(PathCollect.save + "/" + _stage.vDataPath, typeof(VolumeData));
-			foreach (VolumeData vData in vDatas) {
-				foreach (var node in Alphabet.Nodes.Where(n => ( n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
-					if (node.Name.ToLower () == Regex.Match (vData.name, @"(\w+)_.+_vData$").Groups [1].Value.ToLower ()) {
-						// [EDIT LATER] MaxV = 0 just for initial
-						ReferenceTableVMax[node.AlphabetID].Add (new VDataAndMaxV (vData, 0));
-						// [TO DO] Handle the MaxV. Get it from CrevoxGenerationWindow.cs?
-						Debug.Log(""+vData.name);
-					}
-				}
-			}
-			// If no VData match, throw error
-			foreach (var volumeList in ReferenceTableVMax.Values) {
-				if (volumeList.Count == 0) {
-					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
-				}
-			}
-
-			InitialTable(seed);
-			return Generate (_stage, root);
-		}*/
+			
 		// [NEW] Replace the GenerateLevel with this function
-		// Runtime Level Generation
+		// Realtime Level Generation II
 		public static bool GenerateRealLevel(CreVoxNode root, VGlobal.Stage _stage, int seed){
-			// List<VolumeData> vDataList;
-			// [EDIT LATER] Pass this to ReferenceTableVMax later
+			// List<VolumeData> vDataList; for debug purpose
+			// [EDIT LATER] Pass this to ReferenceTableVMax later. Seperate the original table for reuse purpose
 			Dictionary<Guid, List<VDataAndMaxV>> refTabMaxV = new Dictionary<Guid, List<VDataAndMaxV>>();
 
 			if (_stage.vDataPath == string.Empty) {
@@ -304,10 +244,12 @@ namespace CrevoxExtend {
 			if (_stage.VGXmlPath == string.Empty){
 				throw new System.Exception("VGXmlPath in stage cannot be empty.");
 			}
-			// [EDIT LATER] the vg xml path doesn't seems right
-			refTabMaxV = LoadFromXML(_stage.VGXmlPath);
-			Debug.Log ("Stage vgxmlpath: " + _stage.VGXmlPath);
-			//vDataList = GetVolumeDatasFromDir(_stage.VGXmlPath);
+
+			ReferenceTableVMax = LoadFromXML(_stage.VGXmlPath);
+			/*refTabMaxV = LoadFromXML(_stage.VGXmlPath);
+			ReferenceTableVMax.Clear();
+			ReferenceTableVMax = refTabMaxV;*/
+			// vDataList = GetVolumeDatasFromDir(_stage.VGXmlPath);
 
 			// Check if there is null VData
 			foreach (var volumeList in refTabMaxV.Values){
@@ -338,7 +280,6 @@ namespace CrevoxExtend {
 			return DeserializeSymbols(elementVolumeGeneration);
 		}
 		private static Dictionary<Guid, List<VDataAndMaxV>> DeserializeSymbols(XElement element){
-			/* Dictionary<GraphGrammarNode, List<VDataAndMaxV>> RefTableVMax = new Dictionary<GraphGrammarNode, List<VDataAndMaxV>>();*/
 			Dictionary<Guid, List<VDataAndMaxV>> newRefTableMax = new Dictionary<Guid, List<VDataAndMaxV>>();
 			XElement elementSymbols = element.Element("Symbols");
 			XElement elementVDatasPath = element.Element("VDatasPath");
@@ -363,12 +304,9 @@ namespace CrevoxExtend {
 					VDataAndMaxVs.Add(vdataAndMax);
 				}
 				// Add node and vdataAndmaxv to dictionary.
-				/*RefTableVMax.Add(node, VDataAndMaxVs);*/
 				newRefTableMax.Add(node.AlphabetID, VDataAndMaxVs);
 			}
-			/*Debug.Log(" VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
-			return RefTableVMax;*/
-			Debug.Log("VolumeData from " + elementVDatasPath.Value + "are mapped to" + newRefTableMax.Count + " symbols");
+			Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + newRefTableMax.Count + " symbols");
 			return newRefTableMax;
 		}
 		// Get All VolumeDatas from the directory that match the Nodes

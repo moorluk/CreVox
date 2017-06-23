@@ -30,6 +30,7 @@ public class TestRealTimeRun : MonoBehaviour {
 	}
 
 	void Update() {
+		CrevoxGeneration.generateVolume = true;
 		if (testGenerateLevel) {
 			// if (XmlPath.Length > 0) {
 			if (XmlPath.Length > 0 && VGXmlPath.Length > 0) {
@@ -39,7 +40,6 @@ public class TestRealTimeRun : MonoBehaviour {
 				_s.XmlPath = XmlPath;
 				_s.vDataPath = ResourcePath;
 				_s.VGXmlPath = VGXmlPath;
-				Debug.Log ("_s.VGXmlPath" + _s.VGXmlPath);
 				int testTime = 0;
 				while (!succeed && testTime < 20) {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
@@ -82,7 +82,7 @@ public class TestRealTimeRun : MonoBehaviour {
 //
 //
 //			// [Test] Camera.
-//			List<GameObject> gameList = new List<GameObject>();
+//			List<GameObject> gameList = new List<GameObject>();	
 //			for(int i=0;i< CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
 //				gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
 //			}
