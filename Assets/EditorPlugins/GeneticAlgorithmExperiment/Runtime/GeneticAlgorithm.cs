@@ -360,7 +360,7 @@ namespace CrevoxExtend {
 								// Calculate the distance of enemy and mainPath.
 								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
 								// Calculate the flexibility score.
-								flexibilityScore += (1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
+								flexibilityScore += (float)(1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
 							}
 						}						
 					}
@@ -463,22 +463,12 @@ namespace CrevoxExtend {
 						for (int j = 0; j < enemies.Count; j++) {
 							if (i != j) {
 								distanceBetweenEnemies = Vector3.Distance(enemies[i].pos, enemies[j].pos);
-								distanceScore += (1 - distanceBetweenEnemies / radius) / enemies.Count;
+								distanceScore += (float)(1 - distanceBetweenEnemies / radius) / enemies.Count;
 							}							
-						}
-
-						if (!_mainPath.ContainsKey(enemies[i].pos)) {
-							// Different point of mainPath
-							foreach (KeyValuePair<Vector3, int> pointOfMainPath in _mainPath) {
-								// Calculate the distance of enemy and mainPath.
-								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
-								// Calculate the flexibility score.
-								flexibilityScore += (1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
-							}
 						}
 					}
 					// Calculate the fitness score.
-					fitnessScore = (float)Math.Max(Math.Log((distanceScore + (1 - flexibilityScore)) / 2, enemies.Count), -1.0);
+					fitnessScore = (float)(Math.Max(Math.Log((float)(Math.Max((distanceScore + (1 - FitnessIntercept())) / 2, Math.Pow(enemies.Count, -1.0))), enemies.Count), -1.0));
 				}
 
 				return fitnessScore;
