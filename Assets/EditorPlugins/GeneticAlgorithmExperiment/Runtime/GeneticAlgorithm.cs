@@ -150,6 +150,9 @@ namespace CrevoxExtend {
 				endPosition = item.transform.position;
 				// Execute the A-Star.
 				AStar astar = new AStar(map, startPosition, endPosition);
+				//if theShortestPath is not exist, then return null. so theShortestPath = null, then continue it.
+				if (astar.theShortestPath == null)
+					continue;
 				// Parse the path. Increase 1 if the position is exist; otherwise create a new one. 
 				foreach (var pos in astar.theShortestPath) {
 					if (_mainPath.ContainsKey(pos.position3)) {
@@ -184,12 +187,14 @@ namespace CrevoxExtend {
 		public static int[,,] MakeAMap(GameObject volume) {
 			int[,,] tiles = new int[9, 9, 9];
 			var decorationRoots = volume.transform.Find("DecorationRoot");
-			for (int i = 0; i < decorationRoots.childCount; ++i) {
-				var tile = decorationRoots.GetChild(i).Find(_picecName[0]).position;
-				// 1 means the tile is passable. (Width: 3 x Height: 2 x Length: 3)
-				if (tile != null) {
-					// Because all "decorations" are reduced 1.
-					tiles[(int)tile.x / 3, (int)(tile.y + 1) / 2, (int)tile.z / 3] = 1;
+			for (int tile = 0; tile < decorationRoots.childCount; ++tile) {				
+				if (decorationRoots.GetChild(tile).Find(_picecName[0]) != null) {
+					var tilePosition = decorationRoots.GetChild(tile).Find(_picecName[0]).position;
+					// 1 means the tile is passable. (Width: 3 x Height: 2 x Length: 3)
+					if (tilePosition != null) {
+						// Because all "decorations" are reduced 1.
+						tiles[(int)tilePosition.x / 3, (int)(tilePosition.y + 1) / 2, (int)tilePosition.z / 3] = 1;
+					}
 				}
 			}
 			return tiles;
