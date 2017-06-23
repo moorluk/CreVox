@@ -57,6 +57,9 @@ namespace NTUSTGA {
 				onGenrationEnd(currentGenrationID, currentGeneration, newGeneration);
 				currentGeneration = newGeneration;
 			}
+			for(var i = 0; i < currentGeneration.Count; ++i) {
+				currentGeneration[i].csvFinished = true;
+			}
 
 			PrepareSelection();
 			return currentGeneration[SelectTheBestChromosomeIndex()];

@@ -17,6 +17,8 @@ namespace NTUSTGA {
 		public abstract NTUSTChromosome Copy();
 
 		public abstract NTUSTChromosome RandomInitialize();
+
+		public bool csvFinished = false;
 	}
 }
 

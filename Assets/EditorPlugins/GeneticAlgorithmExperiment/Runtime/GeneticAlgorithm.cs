@@ -283,15 +283,16 @@ namespace CrevoxExtend {
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
 
 				// If DatasetExport is not null, export the data.
-				if (DatasetExport != null) {
-					foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
-						// All of fitness and it's score in a gene.
-						foreach (FitnessFunctionName fitnessName in fitnessNames) {
-							DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + ",\"" + gene.pos + "\"," + gene.Type);
+				if (!csvFinished) {
+					if (DatasetExport != null) {
+						foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
+							// All of fitness and it's score in a gene.
+							foreach (FitnessFunctionName fitnessName in fitnessNames) {
+								DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + ",\"" + gene.pos + "\"," + gene.Type);
+							}
 						}
 					}
 				}
-
 				// IterrateTime++ for next time.
 				AllChromosomeCount++;
 
