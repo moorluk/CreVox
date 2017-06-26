@@ -120,11 +120,11 @@ namespace CrevoxExtend {
 				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdataAndmaxv.vData);
 				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
 					feasibleVDataAndMaxVs.Add(vdataAndmaxv);
-					Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
+					// Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
 				}
 			}
-			// Reduce the maxV of vData. 
-			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs) {
+			// Reduce the maxV of vData. Use tolist to modify the enumerating list
+			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs.ToList()) {
 				if (vdataAndmaxv.maxVData == 0) {
 					feasibleVDataAndMaxVs.Remove (vdataAndmaxv);
 				} else {
@@ -138,11 +138,10 @@ namespace CrevoxExtend {
 				Debug.Log ("There is no vdata that have enough connection in " + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name.Substring(0,6) + ". It means this graph doesn't match with vdata.");
 				return false;
 			}
-
-			// [NEW] 
+				
 			// Find mapping VDataAndMaxV in table that ordered randomly. 
 			foreach (var mappingvdataAndmaxv in feasibleVDataAndMaxVs.OrderBy(x => UnityEngine.Random.value)) {
-				Debug.Log("Mapping vData : " + mappingvdataAndmaxv.vData.name + " has " + mappingvdataAndmaxv.maxVData + "vData.");
+				// Debug.Log("Mapping vData : " + mappingvdataAndmaxv.vData.name + " has " + mappingvdataAndmaxv.maxVData + "vData.");
 				// Set the end node.
 				state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData);
 				// Get starting node from the end node.
@@ -231,13 +230,8 @@ namespace CrevoxExtend {
 			CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
 		}
 			
-		// [NEW] Replace the GenerateLevel with this function
-		// Realtime Level Generation II
+		// Realtime Level Generation II.
 		public static bool GenerateRealLevel(CreVoxNode root, VGlobal.Stage _stage, int seed){
-			// List<VolumeData> vDataList; for debug purpose
-			// [EDIT LATER] Pass this to ReferenceTableVMax later. Seperate the original table for reuse purpose
-			Dictionary<Guid, List<VDataAndMaxV>> refTabMaxV = new Dictionary<Guid, List<VDataAndMaxV>>();
-
 			if (_stage.vDataPath == string.Empty) {
 				throw new System.Exception("vDataPath in stage cannot be empty.");
 			}
@@ -246,13 +240,9 @@ namespace CrevoxExtend {
 			}
 
 			ReferenceTableVMax = LoadFromXML(_stage.VGXmlPath);
-			/*refTabMaxV = LoadFromXML(_stage.VGXmlPath);
-			ReferenceTableVMax.Clear();
-			ReferenceTableVMax = refTabMaxV;*/
-			// vDataList = GetVolumeDatasFromDir(_stage.VGXmlPath);
 
 			// Check if there is null VData
-			foreach (var volumeList in refTabMaxV.Values){
+			foreach (var volumeList in ReferenceTableVMax.Values){
 				if (volumeList.Count == 0) {
 					throw new System.Exception("Every nodes in alphabet must map at least one vData.");
 				}
@@ -262,7 +252,7 @@ namespace CrevoxExtend {
 		}
 
 		// Load Volume Generation XML
-		// Call this function before generate actual level, VGXMLpath = stage.vgpath
+		// Call this function before generate actual level, VGXMLpath = stage.vgpath.
 		private static Dictionary<Guid, List<VDataAndMaxV>> LoadFromXML(string VGXMLPath){
 			if (VGXMLPath != string.Empty) {
 				return DeserializeFromXML (VGXMLPath);
@@ -283,15 +273,13 @@ namespace CrevoxExtend {
 			Dictionary<Guid, List<VDataAndMaxV>> newRefTableMax = new Dictionary<Guid, List<VDataAndMaxV>>();
 			XElement elementSymbols = element.Element("Symbols");
 			XElement elementVDatasPath = element.Element("VDatasPath");
-			// We can also use stage.vDataPath as alternation of elementVDatasPath.Value
+			// We can also use stage.vDataPath as alternation of elementVDatasPath.Value.
 			List<VolumeData> VDatas = GetVolumeDatasFromDir(elementVDatasPath.Value.ToString());
 
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later.
 				GraphGrammarNode node = new GraphGrammarNode(); 
 				node = Alphabet.Nodes.Find(n => n.Name == elementSymbol.Element("Name").Value.ToString());
-				// Debug.Log("Node Name: "+node.Name+", Element Symbol: "+elementSymbol.Element("Name").Value + 
-				//	". Same? "+ (node.Name == elementSymbol.Element("Name").Value.ToString() ? true : false));
 				List<VDataAndMaxV> VDataAndMaxVs = new List<VDataAndMaxV>();
 				XElement elementVolumeDatas = elementSymbol.Element("VolumeDatas");
 
@@ -306,18 +294,19 @@ namespace CrevoxExtend {
 				// Add node and vdataAndmaxv to dictionary.
 				newRefTableMax.Add(node.AlphabetID, VDataAndMaxVs);
 			}
-			Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + newRefTableMax.Count + " symbols");
+			// Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + newRefTableMax.Count + " symbols");
 			return newRefTableMax;
 		}
-		// Get All VolumeDatas from the directory that match the Nodes
+		// Get All VolumeDatas from the directory that match the Nodes.
 		private static List<VolumeData> GetVolumeDatasFromDir(string path){
 			List<VolumeData> vDatas;
+			// [BUG]
 			vDatas = Resources.LoadAll(path.Substring(17).Replace("\\", "/"), typeof(VolumeData)).Cast<VolumeData>().ToList();
-			Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
+			// Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
 			return vDatas;
 		}
 	}
-	// New Type for handling Max Usage
+	// New Type for handling Max Usage.
 	public class VDataAndMaxV {
 		public VolumeData vData;
 		public int maxVData;

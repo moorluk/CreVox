@@ -28,9 +28,7 @@ namespace CrevoxExtend {
 				ReferenceTableVMax.Clear();
 			}
 			vg = VGlobal.GetSetting();
-			/*foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
-				RefrenceTable.Add(node, new List<VolumeData>());
-			}*/
+
 			foreach (var node in Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal))) {
 				ReferenceTableVMax.Add(node, new List<VDataAndMaxV>());
 			}
@@ -150,9 +148,9 @@ namespace CrevoxExtend {
 				if (! specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
 				CrevoxGeneration.InitialTable(randomSeed);
 				CrevoxGeneration.Generate(CrevoxGeneration.stage);
-				foreach (var vm in CrevoxGeneration.tempFeasible) {
+				/*foreach (var vm in CrevoxGeneration.tempFeasible) {
 					Debug.Log("Feasible vData: " + vm.vData + ", maxV:" + vm.maxVData);
-				}
+				}*/
 			}
 			// [EDIT LATER] [Must modify the operations in "Generate" Button later (adding the max usage)]. In CrevoxGeneration.cs
 			// Replace connections.
@@ -235,7 +233,7 @@ namespace CrevoxExtend {
 				// Find node in Alphabet to be added to dictionary later
 				GraphGrammarNode node = new GraphGrammarNode(); 
 				node = Alphabet.Nodes.Find(n => n.Name == elementSymbol.Element("Name").Value.ToString());
-				//Debug.Log("Node Name: "+node.Name+", Element Symbol: "+elementSymbol.Element("Name").Value + 
+				// Debug.Log("Node Name: "+node.Name+", Element Symbol: "+elementSymbol.Element("Name").Value + 
 				//	". Same? "+ (node.Name == elementSymbol.Element("Name").Value.ToString() ? true : false));
 
 				List<VDataAndMaxV> VDataAndMaxVs = new List<VDataAndMaxV>();
@@ -253,7 +251,7 @@ namespace CrevoxExtend {
 				// Add node and vdataAndmaxv to dictionary
 				RefTableVMax.Add(node, VDataAndMaxVs);
 			}
-			Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
+			// Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
 			return RefTableVMax;
 		}
 
@@ -261,7 +259,7 @@ namespace CrevoxExtend {
 		private static List<VolumeData> GetVolumeDatasFromDir(string path){
 			List<VolumeData> vDatas;
 			vDatas = Resources.LoadAll(path.Substring(17).Replace("\\", "/"), typeof(VolumeData)).Cast<VolumeData>().ToList();
-			Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
+			// Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
 			return vDatas;
 		}
 	}

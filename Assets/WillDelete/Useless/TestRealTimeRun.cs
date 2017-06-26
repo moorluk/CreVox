@@ -10,11 +10,13 @@ public class TestRealTimeRun : MonoBehaviour {
 
 	[Header("Test generate stage by properties")]
 	[Tooltip("我是按鈕")]
-	public bool testGenerateLevel = false;
+	public bool testGenerateLevel = true;
 	public string XmlPath = @"Issac.xml";
+	// public string ResourcePath = "Assets\\Resources\\CreVox\\VolumeData\\IsaacNew";
+	// public string VGXmlPath = "Assets/Resources/CreVox/VolumeData/VolumeGeneration.xml";
 	public string ResourcePath = @"IsaacNew";
-	// [EDIT LATER]
 	public string VGXmlPath = @"IssacVolumeGeneration.xml";
+
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
@@ -27,12 +29,11 @@ public class TestRealTimeRun : MonoBehaviour {
 	{
 		if (vg == null)
 			vg = VGlobal.GetSetting ();
+		CrevoxGeneration.generateVolume = true;
 	}
 
 	void Update() {
-		CrevoxGeneration.generateVolume = true;
 		if (testGenerateLevel) {
-			// if (XmlPath.Length > 0) {
 			if (XmlPath.Length > 0 && VGXmlPath.Length > 0) {
 				bool succeed = false;
 				VGlobal.Stage _s = new VGlobal.Stage ();
@@ -45,12 +46,14 @@ public class TestRealTimeRun : MonoBehaviour {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
+					Debug.Log ("Root:"+root.ToString ());
 					// succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
 					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;
 				}
 			}
 			testGenerateLevel = false;
+			//MoveCharacter();
 		}
 		if (testGenerateStage) {
 			bool succeed = false;
@@ -102,5 +105,12 @@ public class TestRealTimeRun : MonoBehaviour {
 		for (var i = 1; i < gos.Length; i++)
 			bounds.Encapsulate (gos [i].transform.position); 
 		return bounds.center;
+	}
+
+	void MoveCharacter(){
+		GameObject character = GameObject.Find("Controller");
+		GameObject vdPosition = GameObject.Find("VolumeManager(Generated)/Entrance_01_vData");
+		character.transform.position = new Vector3 (vdPosition.transform.position.x, character.transform.position.y, vdPosition.transform.position.z);
+		Debug.Log (character.transform.position + ", " + vdPosition.transform.position);
 	}
 }
