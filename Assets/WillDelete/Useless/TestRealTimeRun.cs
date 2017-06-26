@@ -13,7 +13,7 @@ public class TestRealTimeRun : MonoBehaviour {
 	public bool testGenerateLevel = true;
 	public string XmlPath = @"Issac.xml";
 	public string ResourcePath = @"IsaacNew";
-	public string VGXmlPath = @"IssacVolumeGeneration.xml";
+	public string VGXmlPath = @"IsaacVolumeGeneration.xml";
 
 
 	[Header("Test generate stage from global setting")]
@@ -52,6 +52,8 @@ public class TestRealTimeRun : MonoBehaviour {
 			}
 			testGenerateLevel = false;
 			//MoveCharacter();
+			MoveCamera();
+			Debug.Log(randomSeed);
 		}
 		if (testGenerateStage) {
 			bool succeed = false;
@@ -65,35 +67,37 @@ public class TestRealTimeRun : MonoBehaviour {
 				testTime++;
 			}
 			testGenerateStage = false;
+			Debug.Log(randomSeed);
 		}
+		
 	}
-//=======
-//	void Start() {
-//		if (XmlPath.Length > 0) {
-//			bool succeed = false;
-//			while (!succeed) {
-//				randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
-//				VGlobal.Stage _s = new VGlobal.Stage ();
-//				_s.artPack = "B02";
-//				_s.XmlPath = XmlPath;
-//				_s.vDataPath = ResourcePath;
-//				CreVoxNode root = CreVoxAttach.GenerateMissionGraph(_s.XmlPath, randomSeed);
-//				succeed = CrevoxGeneration.GenerateLevel(root, _s,randomSeed);
-//			}
-//
-//
-//			// [Test] Camera.
-//			List<GameObject> gameList = new List<GameObject>();	
-//			for(int i=0;i< CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
-//				gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
-//			}
-//			// 讓Camera照中心點 方便觀察
-//			Vector3 allCenter = FindCenterPoint(gameList.ToArray());
-//			Camera.main.transform.position = new Vector3(allCenter.x, 400.0f, allCenter.z);
-//			Camera.main.transform.eulerAngles = new Vector3(90, 0, 0);
-//>>>>>>> Move_VolumeExtend_into_Volume
-//		}
-//	}
+	//=======
+	//	void Start() {
+	//		if (XmlPath.Length > 0) {
+	//			bool succeed = false;
+	//			while (!succeed) {
+	//				randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
+	//				VGlobal.Stage _s = new VGlobal.Stage ();
+	//				_s.artPack = "B02";
+	//				_s.XmlPath = XmlPath;
+	//				_s.vDataPath = ResourcePath;
+	//				CreVoxNode root = CreVoxAttach.GenerateMissionGraph(_s.XmlPath, randomSeed);
+	//				succeed = CrevoxGeneration.GenerateLevel(root, _s,randomSeed);
+	//			}
+	//
+	//
+	//			// [Test] Camera.
+	//			List<GameObject> gameList = new List<GameObject>();	
+	//			for(int i=0;i< CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
+	//				gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
+	//			}
+	//			// 讓Camera照中心點 方便觀察
+	//			Vector3 allCenter = FindCenterPoint(gameList.ToArray());
+	//			Camera.main.transform.position = new Vector3(allCenter.x, 400.0f, allCenter.z);
+	//			Camera.main.transform.eulerAngles = new Vector3(90, 0, 0);
+	//>>>>>>> Move_VolumeExtend_into_Volume
+	//		}
+	//	}
 	Vector3 FindCenterPoint(GameObject[] gos) {
 		if (gos.Length == 0)
 			return Vector3.zero;
@@ -110,5 +114,16 @@ public class TestRealTimeRun : MonoBehaviour {
 		GameObject vdPosition = GameObject.Find("VolumeManager(Generated)/Entrance_01_vData");
 		character.transform.position = new Vector3 (vdPosition.transform.position.x, character.transform.position.y, vdPosition.transform.position.z);
 		Debug.Log (character.transform.position + ", " + vdPosition.transform.position);
+	}
+	void MoveCamera() {
+		// [Test] Camera.
+		List<GameObject> gameList = new List<GameObject>();
+		for (int i = 0; i < CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
+			gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
+		}
+		// 讓Camera照中心點 方便觀察
+		Vector3 allCenter = FindCenterPoint(gameList.ToArray());
+		Camera.main.transform.position = new Vector3(allCenter.x, 400.0f, allCenter.z);
+		Camera.main.transform.eulerAngles = new Vector3(90, 0, 0);
 	}
 }

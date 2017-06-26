@@ -11,7 +11,6 @@ using System.Xml.Linq;
 
 namespace CrevoxExtend {
 	public class CrevoxGeneration {
-		public static List<VDataAndMaxV> tempFeasible = new List<VDataAndMaxV>();
 		private const int TIMEOUT_MILLISECOND = 5000;
 		// Members.
 		private static Dictionary<Guid, List<VDataAndMaxV>> _referenceTableVMax;
@@ -27,6 +26,7 @@ namespace CrevoxExtend {
 				_referenceTableVMax = value;
 			}
 		}
+		//private static Dictionary<Guid, List<VDataAndMaxV>> _cloneReferenceTableVMax;
 
 		// Initial.
 		public static void InitialTable(int seed) {
@@ -51,8 +51,10 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
-			// To hold the original ReferenceTable
-			Dictionary<Guid, List<VDataAndMaxV>> tempRefTab = new Dictionary<Guid, List<VDataAndMaxV>>(ReferenceTableVMax);
+			/*_cloneReferenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
+			foreach (var vdataMax in _referenceTableVMax) {
+				_cloneReferenceTableVMax.Add(vdataMax.Key, vdataMax.Value.Select(x => x.Clone()).ToList());
+			}*/
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
 			if (root == null) {
@@ -119,23 +121,24 @@ namespace CrevoxExtend {
 			foreach (var vdataAndmaxv in ReferenceTableVMax[edge.end.AlphabetID]) {
 				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdataAndmaxv.vData);
 				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
+					// Get clone.
 					feasibleVDataAndMaxVs.Add(vdataAndmaxv);
-					// Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
+					
+					//Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
 				}
 			}
 			// Reduce the maxV of vData. Use tolist to modify the enumerating list
-			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs.ToList()) {
-				if (vdataAndmaxv.maxVData == 0) {
-					feasibleVDataAndMaxVs.Remove (vdataAndmaxv);
-				} else {
-					// Reduce the maxV if it's not infinity
-					vdataAndmaxv.maxVData -= vdataAndmaxv.maxVData != -1 ? 1 : 0;
-					// Debug.Log("Reduce 1 for " + vdataAndmaxv.vData.name + ", maxV left:" + vdataAndmaxv.maxVData);
+			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs.ToArray()) {
+				// Count.
+				int vdataCount = state.ResultVolumeDatas.Count(v => v.volumeData.name == vdataAndmaxv.vData.name);
+				if(vdataCount >= vdataAndmaxv.maxVData) {
+					feasibleVDataAndMaxVs.Remove(vdataAndmaxv);
+					//Debug.Log(vdataAndmaxv.vData.name + " Over");
 				}
 			}
 			// If none of VData have enough connection, return false. 
 			if (feasibleVDataAndMaxVs.Count == 0) {
-				Debug.Log ("There is no vdata that have enough connection in " + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name.Substring(0,6) + ". It means this graph doesn't match with vdata.");
+				Debug.Log ("There is no vdata that have enough connection in " + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name + ". It means this graph doesn't match with vdata.");
 				return false;
 			}
 				
@@ -314,6 +317,14 @@ namespace CrevoxExtend {
 		public VDataAndMaxV (VolumeData v, int maxV){
 			this.vData = v;
 			this.maxVData = maxV;
+		}
+		// Copy constructor.
+		public VDataAndMaxV(VDataAndMaxV clone) {
+			this.vData = clone.vData;
+			this.maxVData = clone.maxVData;
+		}
+		public VDataAndMaxV Clone() {
+			return new VDataAndMaxV(this);
 		}
 	}
 }
