@@ -1,4 +1,4 @@
-﻿using CrevoxExtend;
+using CrevoxExtend;
 using MissionGrammarSystem;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,11 +10,11 @@ public class TestRealTimeRun : MonoBehaviour {
 
 	[Header("Test generate stage by properties")]
 	[Tooltip("我是按鈕")]
-	public bool testGenerateLevel = true;
-	public string XmlPath = @"Issac.xml";
-	public string ResourcePath = @"IsaacNew";
+	public bool testGenerateLevel = false;
+	public string XmlPath = @"Issac_Flat.xml";
+	public string SpaceXmlPath = @"SpaceAlphabet.xml";
+	public string ResourcePath = @"Assets\Resources\CreVox\VolumeData\IsaacNew";
 	public string VGXmlPath = @"IsaacVolumeGeneration.xml";
-
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
@@ -44,8 +44,8 @@ public class TestRealTimeRun : MonoBehaviour {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
-					Debug.Log ("Root:"+root.ToString ());
-					// succeed = CrevoxGeneration.GenerateLevel (root, _s, randomSeed);
+					// Load XML of space alphabet.
+					SpaceAlphabet.RuntimeGenerate(SpaceXmlPath);
 					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;
 				}
@@ -71,6 +71,7 @@ public class TestRealTimeRun : MonoBehaviour {
 		}
 		
 	}
+  
 	Vector3 FindCenterPoint(GameObject[] gos) {
 		if (gos.Length == 0)
 			return Vector3.zero;
