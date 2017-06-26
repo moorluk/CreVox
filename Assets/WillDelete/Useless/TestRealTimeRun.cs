@@ -71,33 +71,6 @@ public class TestRealTimeRun : MonoBehaviour {
 		}
 		
 	}
-	//=======
-	//	void Start() {
-	//		if (XmlPath.Length > 0) {
-	//			bool succeed = false;
-	//			while (!succeed) {
-	//				randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
-	//				VGlobal.Stage _s = new VGlobal.Stage ();
-	//				_s.artPack = "B02";
-	//				_s.XmlPath = XmlPath;
-	//				_s.vDataPath = ResourcePath;
-	//				CreVoxNode root = CreVoxAttach.GenerateMissionGraph(_s.XmlPath, randomSeed);
-	//				succeed = CrevoxGeneration.GenerateLevel(root, _s,randomSeed);
-	//			}
-	//
-	//
-	//			// [Test] Camera.
-	//			List<GameObject> gameList = new List<GameObject>();	
-	//			for(int i=0;i< CrevoxOperation.resultVolumeManager.transform.childCount; i++) {
-	//				gameList.Add(CrevoxOperation.resultVolumeManager.transform.GetChild(i).gameObject);
-	//			}
-	//			// 讓Camera照中心點 方便觀察
-	//			Vector3 allCenter = FindCenterPoint(gameList.ToArray());
-	//			Camera.main.transform.position = new Vector3(allCenter.x, 400.0f, allCenter.z);
-	//			Camera.main.transform.eulerAngles = new Vector3(90, 0, 0);
-	//>>>>>>> Move_VolumeExtend_into_Volume
-	//		}
-	//	}
 	Vector3 FindCenterPoint(GameObject[] gos) {
 		if (gos.Length == 0)
 			return Vector3.zero;

@@ -26,7 +26,6 @@ namespace CrevoxExtend {
 				_referenceTableVMax = value;
 			}
 		}
-		//private static Dictionary<Guid, List<VDataAndMaxV>> _cloneReferenceTableVMax;
 
 		// Initial.
 		public static void InitialTable(int seed) {
@@ -51,10 +50,6 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
-			/*_cloneReferenceTableVMax = new Dictionary<Guid, List<VDataAndMaxV>>();
-			foreach (var vdataMax in _referenceTableVMax) {
-				_cloneReferenceTableVMax.Add(vdataMax.Key, vdataMax.Value.Select(x => x.Clone()).ToList());
-			}*/
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
 			if (root == null) {
@@ -123,7 +118,6 @@ namespace CrevoxExtend {
 				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
 					// Get clone.
 					feasibleVDataAndMaxVs.Add(vdataAndmaxv);
-					
 					//Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
 				}
 			}
