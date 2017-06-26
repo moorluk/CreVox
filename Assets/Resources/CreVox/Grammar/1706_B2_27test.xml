@@ -351,7 +351,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkARoomB</Name>
         <Abbreviation>fab</Abbreviation>
-        <Description>123</Description>
+        <Description>A房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -385,7 +385,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkARoomC</Name>
         <Abbreviation>fac</Abbreviation>
-        <Description>123</Description>
+        <Description>A房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -453,7 +453,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkBRoomA</Name>
         <Abbreviation>fba</Abbreviation>
-        <Description>123</Description>
+        <Description>B房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -487,7 +487,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkBRoomB</Name>
         <Abbreviation>fbb</Abbreviation>
-        <Description>123</Description>
+        <Description>B房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -521,7 +521,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkBRoomC</Name>
         <Abbreviation>fbc</Abbreviation>
-        <Description>123</Description>
+        <Description>B房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -584,13 +584,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="b714c356-d020-4409-8e5a-c96ae7bb29fc">
-        <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+      <Node id="44efb99e-3bc7-4cf1-ac9d-1ca2896a4be8">
+        <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkD</Name>
-        <Abbreviation>FD</Abbreviation>
-        <Description>框架D(地牢)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkCRoomA</Name>
+        <Abbreviation>fca</Abbreviation>
+        <Description>C房間A</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -613,18 +613,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#E8A4FF</Filled>
+          <Filled>#839FFF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="dad5f740-ad98-4fec-8278-46b17a74e35b">
-        <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
+      <Node id="e6ff56b7-2bdb-402f-83a0-eb57c1e269c2">
+        <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkE</Name>
-        <Abbreviation>FE</Abbreviation>
-        <Description>框架E(鬥技場)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkCRoomB</Name>
+        <Abbreviation>fcb</Abbreviation>
+        <Description>C房間B</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -647,17 +647,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#B25349</Filled>
+          <Filled>#839FFF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="44efb99e-3bc7-4cf1-ac9d-1ca2896a4be8">
-        <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
+      <Node id="2102e12a-1fe8-495a-82b4-5a9e372a8640">
+        <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomA</Name>
-        <Abbreviation>fca</Abbreviation>
-        <Description>fca</Description>
+        <Name>frameworkCRoomC</Name>
+        <Abbreviation>fcc</Abbreviation>
+        <Description>C房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -686,13 +686,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="e6ff56b7-2bdb-402f-83a0-eb57c1e269c2">
-        <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
+      <Node id="b714c356-d020-4409-8e5a-c96ae7bb29fc">
+        <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomB</Name>
-        <Abbreviation>fcb</Abbreviation>
-        <Description>fcb</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkD</Name>
+        <Abbreviation>FD</Abbreviation>
+        <Description>框架D(地牢)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -715,17 +715,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#839FFF</Filled>
+          <Filled>#E8A4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="2102e12a-1fe8-495a-82b4-5a9e372a8640">
-        <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
+      <Node id="592d58cb-5a0d-483d-8e32-d14243d785b5">
+        <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomC</Name>
-        <Abbreviation>fcc</Abbreviation>
-        <Description>fcc</Description>
+        <Name>frameworkDRoomA</Name>
+        <Abbreviation>fda</Abbreviation>
+        <Description>D房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -749,17 +749,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#839FFF</Filled>
+          <Filled>#E8A4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="592d58cb-5a0d-483d-8e32-d14243d785b5">
-        <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
+      <Node id="8f62de80-d227-4995-85d4-b5167a00ddba">
+        <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomA</Name>
-        <Abbreviation>fda</Abbreviation>
-        <Description>fda</Description>
+        <Name>frameworkDRoomB</Name>
+        <Abbreviation>fdb</Abbreviation>
+        <Description>D房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -788,12 +788,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="8f62de80-d227-4995-85d4-b5167a00ddba">
-        <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
+      <Node id="60a4ec85-5f90-45e6-a597-4ac46c6cc8b9">
+        <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomB</Name>
-        <Abbreviation>fdb</Abbreviation>
-        <Description>fdb</Description>
+        <Name>frameworkDRoomC</Name>
+        <Abbreviation>fdc</Abbreviation>
+        <Description>D房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -822,13 +822,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="60a4ec85-5f90-45e6-a597-4ac46c6cc8b9">
-        <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
+      <Node id="dad5f740-ad98-4fec-8278-46b17a74e35b">
+        <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomC</Name>
-        <Abbreviation>fdc</Abbreviation>
-        <Description>fdc</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkE</Name>
+        <Abbreviation>FE</Abbreviation>
+        <Description>框架E(鬥技場)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -851,7 +851,7 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#E8A4FF</Filled>
+          <Filled>#B25349</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
@@ -861,7 +861,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkERoomA</Name>
         <Abbreviation>fea</Abbreviation>
-        <Description>fea</Description>
+        <Description>E房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -895,7 +895,7 @@
         <Ordering>0</Ordering>
         <Name>frameworkERoomB</Name>
         <Abbreviation>feb</Abbreviation>
-        <Description>feb</Description>
+        <Description>E房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -920,6 +920,142 @@
         <SymbolColor>
           <Outline>#000000</Outline>
           <Filled>#B25349</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="ee350a65-2cd9-4170-99bb-ec771c994390">
+        <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>Branch</Name>
+        <Abbreviation>B</Abbreviation>
+        <Description>未定義支線框架</Description>
+        <Terminal>NonTerminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>1355.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>1357.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>1358</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#AB9472</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="4c12ac4a-cfa7-4e49-b056-97c43bbcc06f">
+        <AlphabetID>fbacac8a-9c29-4c9c-b243-98704d508cc3</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>branchA</Name>
+        <Abbreviation>ba</Abbreviation>
+        <Description>分支房間A</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>1405.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>1407.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>1408</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#AB9472</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="20473a4e-33f0-4273-9cb2-445e8deaf53f">
+        <AlphabetID>119fe7dd-0b2b-479d-8bbc-c1f735af376a</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>branchB</Name>
+        <Abbreviation>bb</Abbreviation>
+        <Description>分支房間B</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>1455.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>1457.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>1458</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#AB9472</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="f31592de-9ab8-4c5a-9f94-0d4348e6f063">
+        <AlphabetID>d79bae83-13b7-4483-b399-b9df68171911</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>branchC</Name>
+        <Abbreviation>bc</Abbreviation>
+        <Description>分支房間C</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>1505.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>1507.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>1508</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#AB9472</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
@@ -2599,10 +2735,10 @@
       </Rule>
     </RuleGroup>
     <RuleGroup>
-      <Name>Randon window or subpath</Name>
-      <Description>Description here.</Description>
+      <Name>Random window or branch</Name>
+      <Description>隨機生成窗或支線</Description>
       <Rule>
-        <Name>Window W &gt; c+s</Name>
+        <Name>Window W &gt; c+bs</Name>
         <Description>Description here.</Description>
         <SourceRule>
           <MissionGraph>
@@ -2761,20 +2897,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>123.5</X>
-                    <Y>100.5</Y>
+                    <X>246.5</X>
+                    <Y>120.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>125.5</X>
-                    <Y>102.5</Y>
+                    <X>248.5</X>
+                    <Y>122.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>120.5</X>
-                    <Y>103</Y>
+                    <X>243.5</X>
+                    <Y>123</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -2785,7 +2921,7 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310</ConnectionID>
+                  <ConnectionID>bce0955a-c427-48c1-b94f-c9e1e9501dfb</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="f97fba3a-f290-481a-afbb-8fcf02deffc1">
@@ -2824,6 +2960,43 @@
                   <ConnectionID>e0ee55c8-56ff-4f14-a1b0-487cee0896bc</ConnectionID>
                 </StickiedConnections>
               </Node>
+              <Node id="41c75987-c6d7-405f-94f3-3c9d30aed3ae">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>133.5</X>
+                    <Y>122.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>135.5</X>
+                    <Y>124.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>130.5</X>
+                    <Y>125</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310</ConnectionID>
+                  <ConnectionID>bce0955a-c427-48c1-b94f-c9e1e9501dfb</ConnectionID>
+                </StickiedConnections>
+              </Node>
             </Nodes>
             <Connections>
               <Connection id="e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310">
@@ -2834,14 +3007,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>74.86009</X>
-                    <Y>90.71269</Y>
+                    <X>73.60997</X>
+                    <Y>93.32829</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>121.139908</X>
-                    <Y>108.287308</Y>
+                    <X>132.39003</X>
+                    <Y>127.671707</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -2850,7 +3023,7 @@
                   <Outline>#000000</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>16b0289b-975c-47da-9d8f-b1d184e09bf1</StartpointStickyOn>
-                <EndpointStickyOn>c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a</EndpointStickyOn>
+                <EndpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
@@ -2882,6 +3055,34 @@
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
+              <Connection id="bce0955a-c427-48c1-b94f-c9e1e9501dfb">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>164.997253</X>
+                    <Y>136.1903</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>243.002747</X>
+                    <Y>134.8097</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</StartpointStickyOn>
+                <EndpointStickyOn>c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
             </Connections>
           </MissionGraph>
         </ReplacementRule>
@@ -2892,7 +3093,427 @@
         <QuantityLimitMax>2</QuantityLimitMax>
       </Rule>
       <Rule>
-        <Name>Window W &gt; w+s</Name>
+        <Name>Window W &gt; c+bbs</Name>
+        <Description>Description here.</Description>
+        <SourceRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="ed1e556c-1c48-4821-974d-da5583f3564d">
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>35.5</X>
+                    <Y>85.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>37.5</X>
+                    <Y>87.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>32.5</X>
+                    <Y>88</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#A9A9A9</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>1e465d74-0e79-45cd-997f-b7f7e6b9e52d</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="2fe588b8-803d-4693-ab66-a5925baf745b">
+                <AlphabetID>aa9ce950-ecbd-4ec6-9426-c94300b18d5f</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>Window</Name>
+                <Abbreviation>W</Abbreviation>
+                <Description>未定義窗</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>131.5</X>
+                    <Y>75.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>133.5</X>
+                    <Y>77.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>128.5</X>
+                    <Y>78</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                  <Filled>#7FE4FF</Filled>
+                  <Text>#00647F</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>1e465d74-0e79-45cd-997f-b7f7e6b9e52d</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="1e465d74-0e79-45cd-997f-b7f7e6b9e52d">
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>66.90582</X>
+                    <Y>97.68689</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>128.094177</X>
+                    <Y>91.3131</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>ed1e556c-1c48-4821-974d-da5583f3564d</StartpointStickyOn>
+                <EndpointStickyOn>2fe588b8-803d-4693-ab66-a5925baf745b</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </SourceRule>
+        <ReplacementRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="16b0289b-975c-47da-9d8f-b1d184e09bf1">
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>15.5</X>
+                    <Y>40.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>17.5</X>
+                    <Y>42.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>12.5</X>
+                    <Y>43</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#A9A9A9</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310</ConnectionID>
+                  <ConnectionID>e0ee55c8-56ff-4f14-a1b0-487cee0896bc</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a">
+                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+                <Ordering>3</Ordering>
+                <Name>specialRoom</Name>
+                <Abbreviation>s</Abbreviation>
+                <Description>特殊房</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>220.5</X>
+                    <Y>117.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>222.5</X>
+                    <Y>119.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>217.5</X>
+                    <Y>120</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FFC578</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>bce0955a-c427-48c1-b94f-c9e1e9501dfb</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="f97fba3a-f290-481a-afbb-8fcf02deffc1">
+                <AlphabetID>4ffe78c0-65af-4fa2-926b-8ac6218ca3fe</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>closed</Name>
+                <Abbreviation>c</Abbreviation>
+                <Description>封閉可觀測窗</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>128.5</X>
+                    <Y>39.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>130.5</X>
+                    <Y>41.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>125.5</X>
+                    <Y>42</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                  <Filled>#7FE4FF</Filled>
+                  <Text>#00647F</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>e0ee55c8-56ff-4f14-a1b0-487cee0896bc</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="41c75987-c6d7-405f-94f3-3c9d30aed3ae">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>140.5</X>
+                    <Y>117.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>142.5</X>
+                    <Y>119.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>137.5</X>
+                    <Y>120</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>bce0955a-c427-48c1-b94f-c9e1e9501dfb</ConnectionID>
+                  <ConnectionID>f54726b6-bcb2-4612-9aba-f2c65e53ba9c</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="4d69b3bd-914c-4b07-aae2-af6c51b7503e">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>5</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>79.5</X>
+                    <Y>118.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>81.5</X>
+                    <Y>120.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>76.5</X>
+                    <Y>121</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>f54726b6-bcb2-4612-9aba-f2c65e53ba9c</ConnectionID>
+                  <ConnectionID>e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>40.60054</X>
+                    <Y>68.0287857</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>82.39946</X>
+                    <Y>118.971214</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>16b0289b-975c-47da-9d8f-b1d184e09bf1</StartpointStickyOn>
+                <EndpointStickyOn>4d69b3bd-914c-4b07-aae2-af6c51b7503e</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="e0ee55c8-56ff-4f14-a1b0-487cee0896bc">
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>46.9993134</X>
+                    <Y>54.34514</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>125.000687</X>
+                    <Y>53.65486</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>16b0289b-975c-47da-9d8f-b1d184e09bf1</StartpointStickyOn>
+                <EndpointStickyOn>f97fba3a-f290-481a-afbb-8fcf02deffc1</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="bce0955a-c427-48c1-b94f-c9e1e9501dfb">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>172</X>
+                    <Y>131.5</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>217</X>
+                    <Y>131.5</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</StartpointStickyOn>
+                <EndpointStickyOn>c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="f54726b6-bcb2-4612-9aba-f2c65e53ba9c">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>110.99765</X>
+                    <Y>132.21315</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>137.00235</X>
+                    <Y>131.78685</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>4d69b3bd-914c-4b07-aae2-af6c51b7503e</StartpointStickyOn>
+                <EndpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </ReplacementRule>
+        <Valid>True</Valid>
+        <Enable>True</Enable>
+        <Weight>10</Weight>
+        <QuantityLimitMin>1</QuantityLimitMin>
+        <QuantityLimitMax>2</QuantityLimitMax>
+      </Rule>
+      <Rule>
+        <Name>Window W &gt; w+bs</Name>
         <Description>Description here.</Description>
         <SourceRule>
           <MissionGraph>
@@ -3042,6 +3663,43 @@
                   <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
                 </StickiedConnections>
               </Node>
+              <Node id="612c05b6-53a3-4cea-94ff-49547273c644">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>115.5</X>
+                    <Y>115.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>117.5</X>
+                    <Y>117.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>112.5</X>
+                    <Y>118</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
+                  <ConnectionID>95e1f359-ff30-4a3d-92fd-e49d77f000d5</ConnectionID>
+                </StickiedConnections>
+              </Node>
               <Node id="7353c484-5200-463a-80b5-ba88b9f77460">
                 <AlphabetID>4d90dedb-377d-41c0-a518-a7e6ff38959c</AlphabetID>
                 <Ordering>2</Ordering>
@@ -3111,7 +3769,7 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
+                  <ConnectionID>95e1f359-ff30-4a3d-92fd-e49d77f000d5</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
@@ -3152,14 +3810,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>79.14731</X>
-                    <Y>99.89603</Y>
+                    <X>78.0111</X>
+                    <Y>102.602814</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>190.852692</X>
-                    <Y>136.103973</Y>
+                    <X>113.988892</X>
+                    <Y>121.397186</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3168,7 +3826,455 @@
                   <Outline>#000000</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>a08f7cf7-ce73-401d-899d-0fd996de6a96</StartpointStickyOn>
+                <EndpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="95e1f359-ff30-4a3d-92fd-e49d77f000d5">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>146.796509</X>
+                    <Y>132.161</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>190.203491</X>
+                    <Y>138.839</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</StartpointStickyOn>
                 <EndpointStickyOn>91540c0a-dc78-4ed4-8dd6-71010908c7b3</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </ReplacementRule>
+        <Valid>True</Valid>
+        <Enable>True</Enable>
+        <Weight>6</Weight>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>1</QuantityLimitMax>
+      </Rule>
+      <Rule>
+        <Name>Window W &gt; w+bbs</Name>
+        <Description>Description here.</Description>
+        <SourceRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="d4a38bfc-9084-423b-8608-ad690ee4d973">
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>68.5</X>
+                    <Y>68.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>70.5</X>
+                    <Y>70.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>65.5</X>
+                    <Y>71</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#A9A9A9</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>e859ab40-f68b-4b7a-84f5-71dc627a94ad</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="09134cbd-6c54-4ab7-86a4-1b6f08024ea0">
+                <AlphabetID>aa9ce950-ecbd-4ec6-9426-c94300b18d5f</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>Window</Name>
+                <Abbreviation>W</Abbreviation>
+                <Description>未定義窗</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>181.5</X>
+                    <Y>65.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>183.5</X>
+                    <Y>67.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>178.5</X>
+                    <Y>68</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                  <Filled>#7FE4FF</Filled>
+                  <Text>#00647F</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>e859ab40-f68b-4b7a-84f5-71dc627a94ad</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="e859ab40-f68b-4b7a-84f5-71dc627a94ad">
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>99.9938354</X>
+                    <Y>82.03556</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>178.006165</X>
+                    <Y>79.96444</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>d4a38bfc-9084-423b-8608-ad690ee4d973</StartpointStickyOn>
+                <EndpointStickyOn>09134cbd-6c54-4ab7-86a4-1b6f08024ea0</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </SourceRule>
+        <ReplacementRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="a08f7cf7-ce73-401d-899d-0fd996de6a96">
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>28.5</X>
+                    <Y>41.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>30.5</X>
+                    <Y>43.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>25.5</X>
+                    <Y>44</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#A9A9A9</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>cf5f3ae9-6704-4953-9c86-ac779c72a7b3</ConnectionID>
+                  <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="612c05b6-53a3-4cea-94ff-49547273c644">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>112.5</X>
+                    <Y>129.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>114.5</X>
+                    <Y>131.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>109.5</X>
+                    <Y>132</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>95e1f359-ff30-4a3d-92fd-e49d77f000d5</ConnectionID>
+                  <ConnectionID>f24fec4c-a411-4b25-ae67-c9dd010ba21e</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="7353c484-5200-463a-80b5-ba88b9f77460">
+                <AlphabetID>4d90dedb-377d-41c0-a518-a7e6ff38959c</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>window</Name>
+                <Abbreviation>w</Abbreviation>
+                <Description>框架間觀測窗(不可通行)</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>124.5</X>
+                    <Y>47.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>126.5</X>
+                    <Y>49.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>121.5</X>
+                    <Y>50</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                  <Filled>#7FE4FF</Filled>
+                  <Text>#00647F</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>cf5f3ae9-6704-4953-9c86-ac779c72a7b3</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="91540c0a-dc78-4ed4-8dd6-71010908c7b3">
+                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+                <Ordering>3</Ordering>
+                <Name>specialRoom</Name>
+                <Abbreviation>s</Abbreviation>
+                <Description>特殊房</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>193.5</X>
+                    <Y>127.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>195.5</X>
+                    <Y>129.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>190.5</X>
+                    <Y>130</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FFC578</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>95e1f359-ff30-4a3d-92fd-e49d77f000d5</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="6899211f-2dd3-41f2-ac64-817078fce862">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>5</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>34.5</X>
+                    <Y>122.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>36.5</X>
+                    <Y>124.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>31.5</X>
+                    <Y>125</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>f24fec4c-a411-4b25-ae67-c9dd010ba21e</ConnectionID>
+                  <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="cf5f3ae9-6704-4953-9c86-ac779c72a7b3">
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>59.96592</X>
+                    <Y>56.59162</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>121.034081</X>
+                    <Y>60.40838</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#00647F</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>a08f7cf7-ce73-401d-899d-0fd996de6a96</StartpointStickyOn>
+                <EndpointStickyOn>7353c484-5200-463a-80b5-ba88b9f77460</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>43.7927551</X>
+                    <Y>72.95219</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>47.2072449</X>
+                    <Y>119.047813</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>a08f7cf7-ce73-401d-899d-0fd996de6a96</StartpointStickyOn>
+                <EndpointStickyOn>6899211f-2dd3-41f2-ac64-817078fce862</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="95e1f359-ff30-4a3d-92fd-e49d77f000d5">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>143.994659</X>
+                    <Y>143.068024</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>190.005341</X>
+                    <Y>141.931961</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</StartpointStickyOn>
+                <EndpointStickyOn>91540c0a-dc78-4ed4-8dd6-71010908c7b3</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="f24fec4c-a411-4b25-ae67-c9dd010ba21e">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>65.92995</X>
+                    <Y>138.064224</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>109.070053</X>
+                    <Y>141.935776</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>6899211f-2dd3-41f2-ac64-817078fce862</StartpointStickyOn>
+                <EndpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
@@ -3630,6 +4736,365 @@
         <Weight>4</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
+      </Rule>
+    </RuleGroup>
+    <RuleGroup>
+      <Name>Generate Branch</Name>
+      <Description>生成支線框架</Description>
+      <Rule>
+        <Name>Pattern A</Name>
+        <Description>支線模板A</Description>
+        <SourceRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="1332d67b-af11-4b48-9c79-89344f838fb0">
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>69.5</X>
+                    <Y>72.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>71.5</X>
+                    <Y>74.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>66.5</X>
+                    <Y>75</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>6eb6a2ec-da2b-4e91-b938-3fb6db6e0fec</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="fc29d507-fc1a-4025-9d6e-cf8368588ea0">
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>149.5</X>
+                    <Y>74.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>151.5</X>
+                    <Y>76.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>146.5</X>
+                    <Y>77</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FFFFFF</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>6eb6a2ec-da2b-4e91-b938-3fb6db6e0fec</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="6eb6a2ec-da2b-4e91-b938-3fb6db6e0fec">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>100.994537</X>
+                    <Y>86.93736</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>146.005463</X>
+                    <Y>88.06264</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>1332d67b-af11-4b48-9c79-89344f838fb0</StartpointStickyOn>
+                <EndpointStickyOn>fc29d507-fc1a-4025-9d6e-cf8368588ea0</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>True</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </SourceRule>
+        <ReplacementRule>
+          <MissionGraph>
+            <Nodes>
+              <Node id="24c10018-0875-4a80-a63d-e098b4214179">
+                <AlphabetID>fbacac8a-9c29-4c9c-b243-98704d508cc3</AlphabetID>
+                <Ordering>1</Ordering>
+                <Name>branchA</Name>
+                <Abbreviation>ba</Abbreviation>
+                <Description>分支房間A</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>35.5</X>
+                    <Y>74.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>37.5</X>
+                    <Y>76.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>32.5</X>
+                    <Y>77</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>986b3b9a-0beb-42ce-b1f2-d4499b3e3888</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="36fcb0a6-aa16-4842-aa32-2e05a8c0cfda">
+                <AlphabetID>119fe7dd-0b2b-479d-8bbc-c1f735af376a</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>branchB</Name>
+                <Abbreviation>bb</Abbreviation>
+                <Description>分支房間B</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>101.5</X>
+                    <Y>78.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>103.5</X>
+                    <Y>80.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>98.5</X>
+                    <Y>81</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>986b3b9a-0beb-42ce-b1f2-d4499b3e3888</ConnectionID>
+                  <ConnectionID>7c5f7758-22a1-4a56-8c67-aad0eb75c41a</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="cc620023-54e7-42fb-bc52-4a19f8bb358e">
+                <AlphabetID>d79bae83-13b7-4483-b399-b9df68171911</AlphabetID>
+                <Ordering>3</Ordering>
+                <Name>branchC</Name>
+                <Abbreviation>bc</Abbreviation>
+                <Description>分支房間C</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>168.5</X>
+                    <Y>76.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>170.5</X>
+                    <Y>78.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>165.5</X>
+                    <Y>79</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>7c5f7758-22a1-4a56-8c67-aad0eb75c41a</ConnectionID>
+                  <ConnectionID>29c405c1-bd40-4e7c-a3e7-48d6e89e3616</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="9dbb1ec1-48c5-4dc7-ac8a-6155502b45be">
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
+                <Ordering>2</Ordering>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>231.5</X>
+                    <Y>82.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>233.5</X>
+                    <Y>84.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>228.5</X>
+                    <Y>85</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FFFFFF</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>29c405c1-bd40-4e7c-a3e7-48d6e89e3616</ConnectionID>
+                </StickiedConnections>
+              </Node>
+            </Nodes>
+            <Connections>
+              <Connection id="986b3b9a-0beb-42ce-b1f2-d4499b3e3888">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>66.96795</X>
+                    <Y>89.55866</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>98.03205</X>
+                    <Y>91.44134</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>24c10018-0875-4a80-a63d-e098b4214179</StartpointStickyOn>
+                <EndpointStickyOn>36fcb0a6-aa16-4842-aa32-2e05a8c0cfda</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="7c5f7758-22a1-4a56-8c67-aad0eb75c41a">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>132.9922</X>
+                    <Y>91.9778442</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>165.0078</X>
+                    <Y>91.0221558</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>36fcb0a6-aa16-4842-aa32-2e05a8c0cfda</StartpointStickyOn>
+                <EndpointStickyOn>cc620023-54e7-42fb-bc52-4a19f8bb358e</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="29c405c1-bd40-4e7c-a3e7-48d6e89e3616">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>Weak requirement</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>199.921173</X>
+                    <Y>92.15916</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>228.078827</X>
+                    <Y>94.84084</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>cc620023-54e7-42fb-bc52-4a19f8bb358e</StartpointStickyOn>
+                <EndpointStickyOn>9dbb1ec1-48c5-4dc7-ac8a-6155502b45be</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+            </Connections>
+          </MissionGraph>
+        </ReplacementRule>
+        <Valid>True</Valid>
+        <Enable>True</Enable>
+        <Weight>10</Weight>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
     </RuleGroup>
     <RuleGroup>
