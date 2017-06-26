@@ -179,7 +179,6 @@ namespace CrevoxExtend {
 		// Serialize
 		private static void SerializeToXML(string path){
 			XDocument xmlDocument = new XDocument();
-			// [Edit Later] Change this
 			xmlDocument.Add(SerializeVolumeGeneration(CrevoxGeneration.stage.vDataPath));
 			xmlDocument.Save(path);
 		}
