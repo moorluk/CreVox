@@ -239,7 +239,8 @@ namespace CrevoxExtend {
 				throw new System.Exception("VGXmlPath in stage cannot be empty.");
 			}
 
-			ReferenceTableVMax = LoadFromXML(_stage.VGXmlPath);
+			ReferenceTableVMax = LoadFromXML(PathCollect.save + "/" + _stage.VGXmlPath);
+			// ReferenceTableVMax = LoadFromXML(_stage.VGXmlPath);
 
 			// Check if there is null VData
 			foreach (var volumeList in ReferenceTableVMax.Values){
@@ -273,8 +274,10 @@ namespace CrevoxExtend {
 			Dictionary<Guid, List<VDataAndMaxV>> newRefTableMax = new Dictionary<Guid, List<VDataAndMaxV>>();
 			XElement elementSymbols = element.Element("Symbols");
 			XElement elementVDatasPath = element.Element("VDatasPath");
-			// We can also use stage.vDataPath as alternation of elementVDatasPath.Value.
-			List<VolumeData> VDatas = GetVolumeDatasFromDir(elementVDatasPath.Value.ToString());
+			List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + elementVDatasPath.Value.ToString());
+			// or like this-> GetVolumeDatasFromDir(PathCollect.save + "/" + stage.vDataPath); 
+			// vDataPath is still empty because of the order of function call
+			Debug.Log ("Load VData from " + PathCollect.save + "/" + stage.vDataPath);
 
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later.
@@ -300,9 +303,7 @@ namespace CrevoxExtend {
 		// Get All VolumeDatas from the directory that match the Nodes.
 		private static List<VolumeData> GetVolumeDatasFromDir(string path){
 			List<VolumeData> vDatas;
-			// [BUG]
-			vDatas = Resources.LoadAll(path.Substring(17).Replace("\\", "/"), typeof(VolumeData)).Cast<VolumeData>().ToList();
-			// Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
+			vDatas = Resources.LoadAll(path, typeof(VolumeData)).Cast<VolumeData>().ToList();
 			return vDatas;
 		}
 	}

@@ -12,8 +12,6 @@ public class TestRealTimeRun : MonoBehaviour {
 	[Tooltip("我是按鈕")]
 	public bool testGenerateLevel = true;
 	public string XmlPath = @"Issac.xml";
-	// public string ResourcePath = "Assets\\Resources\\CreVox\\VolumeData\\IsaacNew";
-	// public string VGXmlPath = "Assets/Resources/CreVox/VolumeData/VolumeGeneration.xml";
 	public string ResourcePath = @"IsaacNew";
 	public string VGXmlPath = @"IssacVolumeGeneration.xml";
 

@@ -179,6 +179,7 @@ namespace CrevoxExtend {
 		// Serialize
 		private static void SerializeToXML(string path){
 			XDocument xmlDocument = new XDocument();
+			// [Edit Later] Change this
 			xmlDocument.Add(SerializeVolumeGeneration(CrevoxGeneration.stage.vDataPath));
 			xmlDocument.Save(path);
 		}
@@ -216,7 +217,6 @@ namespace CrevoxExtend {
 		}
 		private static void DeserializeVolumeGeneration(XDocument xmlDocument){
 			XElement elementVolumeGeneration = xmlDocument.Element("VolumeGeneration");
-			// [EDIT LATER] Must Update the UI using the this new Dictionary. 
 			Dictionary<GraphGrammarNode, List<VDataAndMaxV>> RefTabVMax = new Dictionary<GraphGrammarNode, List<VDataAndMaxV>>();
 			RefTabVMax = DeserializeSymbols(elementVolumeGeneration);
 			ReferenceTableVMax.Clear();
@@ -227,8 +227,8 @@ namespace CrevoxExtend {
 			XElement elementSymbols = element.Element("Symbols");
 			XElement elementVDatasPath = element.Element("VDatasPath");
 			// This was a bug before
-			List<VolumeData> VDatas = GetVolumeDatasFromDir(elementVDatasPath.Value.ToString());
-
+			List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + elementVDatasPath.Value.ToString());
+			// List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + stage.vDataPath);
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later
 				GraphGrammarNode node = new GraphGrammarNode(); 
@@ -258,8 +258,7 @@ namespace CrevoxExtend {
 		// Get All VolumeDatas from the directory
 		private static List<VolumeData> GetVolumeDatasFromDir(string path){
 			List<VolumeData> vDatas;
-			vDatas = Resources.LoadAll(path.Substring(17).Replace("\\", "/"), typeof(VolumeData)).Cast<VolumeData>().ToList();
-			// Debug.Log (vDatas.Count + " vData are loaded from " + path.Substring(17).Replace("\\", "/"));
+			vDatas = Resources.LoadAll(path, typeof(VolumeData)).Cast<VolumeData>().ToList();
 			return vDatas;
 		}
 	}

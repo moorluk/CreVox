@@ -129,5 +129,5 @@
       </VolumeDatas>
     </Symbol>
   </Symbols>
-  <VDatasPath>Assets\Resources\CreVox\VolumeData\IsaacNew</VDatasPath>
+  <VDatasPath>IsaacNew</VDatasPath>
 </VolumeGeneration>
