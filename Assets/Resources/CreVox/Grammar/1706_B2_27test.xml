@@ -346,12 +346,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="486b2fc7-556b-4e25-b271-928f08ba1a45">
-        <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
+      <Node id="fab74182-e841-44c7-9868-2899ef42a7c4">
+        <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkARoomB</Name>
-        <Abbreviation>fab</Abbreviation>
-        <Description>A房間B</Description>
+        <Name>frameworkARoomA</Name>
+        <Abbreviation>faa</Abbreviation>
+        <Description>A房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -380,12 +380,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="eebf3c8e-875b-44ce-b194-b0ce8a823b8a">
-        <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+      <Node id="486b2fc7-556b-4e25-b271-928f08ba1a45">
+        <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkARoomC</Name>
-        <Abbreviation>fac</Abbreviation>
-        <Description>A房間C</Description>
+        <Name>frameworkARoomB</Name>
+        <Abbreviation>fab</Abbreviation>
+        <Description>A房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -414,13 +414,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="3491d7aa-613e-4cf5-baf6-c478bf3a7a11">
-        <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
+      <Node id="eebf3c8e-875b-44ce-b194-b0ce8a823b8a">
+        <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkB</Name>
-        <Abbreviation>FB</Abbreviation>
-        <Description>框架B(墓穴)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkARoomC</Name>
+        <Abbreviation>fac</Abbreviation>
+        <Description>A房間C</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -443,18 +443,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#A7DB6F</Filled>
+          <Filled>#FF7E7E</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="1fb928a0-4a1c-49f1-bb15-0a896ed685dd">
-        <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
+      <Node id="3491d7aa-613e-4cf5-baf6-c478bf3a7a11">
+        <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomA</Name>
-        <Abbreviation>fba</Abbreviation>
-        <Description>B房間A</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkB</Name>
+        <Abbreviation>FB</Abbreviation>
+        <Description>框架B(墓穴)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -482,12 +482,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="0b409466-d7bf-410d-96e2-75a2468b0484">
-        <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
+      <Node id="1fb928a0-4a1c-49f1-bb15-0a896ed685dd">
+        <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomB</Name>
-        <Abbreviation>fbb</Abbreviation>
-        <Description>B房間B</Description>
+        <Name>frameworkBRoomA</Name>
+        <Abbreviation>fba</Abbreviation>
+        <Description>B房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -516,12 +516,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="36b01166-7ff6-41b4-a361-f850b914b442">
-        <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
+      <Node id="0b409466-d7bf-410d-96e2-75a2468b0484">
+        <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomC</Name>
-        <Abbreviation>fbc</Abbreviation>
-        <Description>B房間C</Description>
+        <Name>frameworkBRoomB</Name>
+        <Abbreviation>fbb</Abbreviation>
+        <Description>B房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -550,13 +550,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="e95872a1-8e49-40c5-a9f1-029a2dd890f4">
-        <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
+      <Node id="36b01166-7ff6-41b4-a361-f850b914b442">
+        <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkC</Name>
-        <Abbreviation>FC</Abbreviation>
-        <Description>框架C(水道)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkBRoomC</Name>
+        <Abbreviation>fbc</Abbreviation>
+        <Description>B房間C</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -579,18 +579,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#839FFF</Filled>
+          <Filled>#A7DB6F</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="44efb99e-3bc7-4cf1-ac9d-1ca2896a4be8">
-        <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
+      <Node id="e95872a1-8e49-40c5-a9f1-029a2dd890f4">
+        <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomA</Name>
-        <Abbreviation>fca</Abbreviation>
-        <Description>C房間A</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkC</Name>
+        <Abbreviation>FC</Abbreviation>
+        <Description>框架C(水道)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -618,12 +618,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="e6ff56b7-2bdb-402f-83a0-eb57c1e269c2">
-        <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
+      <Node id="44efb99e-3bc7-4cf1-ac9d-1ca2896a4be8">
+        <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomB</Name>
-        <Abbreviation>fcb</Abbreviation>
-        <Description>C房間B</Description>
+        <Name>frameworkCRoomA</Name>
+        <Abbreviation>fca</Abbreviation>
+        <Description>C房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -652,12 +652,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="2102e12a-1fe8-495a-82b4-5a9e372a8640">
-        <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
+      <Node id="e6ff56b7-2bdb-402f-83a0-eb57c1e269c2">
+        <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomC</Name>
-        <Abbreviation>fcc</Abbreviation>
-        <Description>C房間C</Description>
+        <Name>frameworkCRoomB</Name>
+        <Abbreviation>fcb</Abbreviation>
+        <Description>C房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -686,13 +686,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="b714c356-d020-4409-8e5a-c96ae7bb29fc">
-        <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+      <Node id="2102e12a-1fe8-495a-82b4-5a9e372a8640">
+        <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkD</Name>
-        <Abbreviation>FD</Abbreviation>
-        <Description>框架D(地牢)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkCRoomC</Name>
+        <Abbreviation>fcc</Abbreviation>
+        <Description>C房間C</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -715,18 +715,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#E8A4FF</Filled>
+          <Filled>#839FFF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="592d58cb-5a0d-483d-8e32-d14243d785b5">
-        <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
+      <Node id="b714c356-d020-4409-8e5a-c96ae7bb29fc">
+        <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomA</Name>
-        <Abbreviation>fda</Abbreviation>
-        <Description>D房間A</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkD</Name>
+        <Abbreviation>FD</Abbreviation>
+        <Description>框架D(地牢)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -754,12 +754,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="8f62de80-d227-4995-85d4-b5167a00ddba">
-        <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
+      <Node id="592d58cb-5a0d-483d-8e32-d14243d785b5">
+        <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomB</Name>
-        <Abbreviation>fdb</Abbreviation>
-        <Description>D房間B</Description>
+        <Name>frameworkDRoomA</Name>
+        <Abbreviation>fda</Abbreviation>
+        <Description>D房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -788,12 +788,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="60a4ec85-5f90-45e6-a597-4ac46c6cc8b9">
-        <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
+      <Node id="8f62de80-d227-4995-85d4-b5167a00ddba">
+        <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomC</Name>
-        <Abbreviation>fdc</Abbreviation>
-        <Description>D房間C</Description>
+        <Name>frameworkDRoomB</Name>
+        <Abbreviation>fdb</Abbreviation>
+        <Description>D房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -822,13 +822,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="dad5f740-ad98-4fec-8278-46b17a74e35b">
-        <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
+      <Node id="60a4ec85-5f90-45e6-a597-4ac46c6cc8b9">
+        <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkE</Name>
-        <Abbreviation>FE</Abbreviation>
-        <Description>框架E(鬥技場)</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkDRoomC</Name>
+        <Abbreviation>fdc</Abbreviation>
+        <Description>D房間C</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -851,18 +851,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#B25349</Filled>
+          <Filled>#E8A4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="328d564b-d980-4e4a-9380-8ba8304ac955">
-        <AlphabetID>bcedb862-c710-4044-b815-fcad44857ac1</AlphabetID>
+      <Node id="dad5f740-ad98-4fec-8278-46b17a74e35b">
+        <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkERoomA</Name>
-        <Abbreviation>fea</Abbreviation>
-        <Description>E房間A</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>FrameworkE</Name>
+        <Abbreviation>FE</Abbreviation>
+        <Description>框架E(鬥技場)</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -890,12 +890,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="9361ac70-865e-4eb2-a66f-e881f289679b">
-        <AlphabetID>0c2dff40-c65b-4d72-8231-8e537fbeab51</AlphabetID>
+      <Node id="328d564b-d980-4e4a-9380-8ba8304ac955">
+        <AlphabetID>bcedb862-c710-4044-b815-fcad44857ac1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkERoomB</Name>
-        <Abbreviation>feb</Abbreviation>
-        <Description>E房間B</Description>
+        <Name>frameworkERoomA</Name>
+        <Abbreviation>fea</Abbreviation>
+        <Description>E房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -924,13 +924,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="ee350a65-2cd9-4170-99bb-ec771c994390">
-        <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
+      <Node id="9361ac70-865e-4eb2-a66f-e881f289679b">
+        <AlphabetID>0c2dff40-c65b-4d72-8231-8e537fbeab51</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>Branch</Name>
-        <Abbreviation>B</Abbreviation>
-        <Description>未定義支線框架</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>frameworkERoomB</Name>
+        <Abbreviation>feb</Abbreviation>
+        <Description>E房間B</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -953,18 +953,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#AB9472</Filled>
+          <Filled>#B25349</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="4c12ac4a-cfa7-4e49-b056-97c43bbcc06f">
-        <AlphabetID>fbacac8a-9c29-4c9c-b243-98704d508cc3</AlphabetID>
+      <Node id="ee350a65-2cd9-4170-99bb-ec771c994390">
+        <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>branchA</Name>
-        <Abbreviation>ba</Abbreviation>
-        <Description>分支房間A</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>Branch</Name>
+        <Abbreviation>B</Abbreviation>
+        <Description>未定義支線框架</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -992,12 +992,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="20473a4e-33f0-4273-9cb2-445e8deaf53f">
-        <AlphabetID>119fe7dd-0b2b-479d-8bbc-c1f735af376a</AlphabetID>
+      <Node id="4c12ac4a-cfa7-4e49-b056-97c43bbcc06f">
+        <AlphabetID>fbacac8a-9c29-4c9c-b243-98704d508cc3</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>branchB</Name>
-        <Abbreviation>bb</Abbreviation>
-        <Description>分支房間B</Description>
+        <Name>branchA</Name>
+        <Abbreviation>ba</Abbreviation>
+        <Description>分支房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -1026,12 +1026,12 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="f31592de-9ab8-4c5a-9f94-0d4348e6f063">
-        <AlphabetID>d79bae83-13b7-4483-b399-b9df68171911</AlphabetID>
+      <Node id="20473a4e-33f0-4273-9cb2-445e8deaf53f">
+        <AlphabetID>119fe7dd-0b2b-479d-8bbc-c1f735af376a</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>branchC</Name>
-        <Abbreviation>bc</Abbreviation>
-        <Description>分支房間C</Description>
+        <Name>branchB</Name>
+        <Abbreviation>bb</Abbreviation>
+        <Description>分支房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -1060,10 +1060,44 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
+      <Node id="f31592de-9ab8-4c5a-9f94-0d4348e6f063">
+        <AlphabetID>d79bae83-13b7-4483-b399-b9df68171911</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>branchC</Name>
+        <Abbreviation>bc</Abbreviation>
+        <Description>分支房間C</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>1555.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>1557.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>1558</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#AB9472</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
     </Nodes>
     <Connections>
-      <Connection id="891a6486-8bf7-471f-a67c-38dd29bd6780">
-        <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+      <Connection id="3586b724-c421-4ca1-94b7-b1ba083ac30e">
+        <AlphabetID>58e49658-bfde-4a69-a6fe-7dcb99c59c42</AlphabetID>
         <Name>Weak requirement</Name>
         <Description>System default.</Description>
         <Requirement>WeakRequirement</Requirement>
@@ -1090,8 +1124,8 @@
         <StartSelected>False</StartSelected>
         <EndSelected>False</EndSelected>
       </Connection>
-      <Connection id="baea0933-0ced-4c02-bb10-f332bb4fe5bd">
-        <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+      <Connection id="9f7a20b3-10d5-44a9-8aac-6138659bde63">
+        <AlphabetID>837d2c9f-9d72-45ed-8704-b84f00d468ad</AlphabetID>
         <Name>Strong requirement</Name>
         <Description>System default.</Description>
         <Requirement>StrongRequirement</Requirement>
@@ -1118,12 +1152,12 @@
         <StartSelected>False</StartSelected>
         <EndSelected>False</EndSelected>
       </Connection>
-      <Connection id="98f7e0de-f047-49ab-94fa-58c3fbabb82b">
-        <AlphabetID>3d5c9b0f-3d7d-4b6d-a817-25fe1ba8dfa8</AlphabetID>
-        <Name>Inhibition</Name>
+      <Connection id="891a6486-8bf7-471f-a67c-38dd29bd6780">
+        <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+        <Name>main</Name>
         <Description>System default.</Description>
-        <Requirement>Inhibition</Requirement>
-        <ArrowType>WithCircle</ArrowType>
+        <Requirement>WeakRequirement</Requirement>
+        <ArrowType>Double</ArrowType>
         <Scope>
           <Startpoint>
             <X>4.5</X>
@@ -1134,6 +1168,62 @@
           <Endpoint>
             <X>54.5</X>
             <Y>119.5</Y>
+            <Width>11</Width>
+            <Height>11</Height>
+          </Endpoint>
+        </Scope>
+        <SymbolColor>
+          <Outline>#4E4E4E</Outline>
+        </SymbolColor>
+        <StartpointStickyOn></StartpointStickyOn>
+        <EndpointStickyOn></EndpointStickyOn>
+        <StartSelected>False</StartSelected>
+        <EndSelected>False</EndSelected>
+      </Connection>
+      <Connection id="baea0933-0ced-4c02-bb10-f332bb4fe5bd">
+        <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+        <Name>branch</Name>
+        <Description>System default.</Description>
+        <Requirement>WeakRequirement</Requirement>
+        <ArrowType>Normal</ArrowType>
+        <Scope>
+          <Startpoint>
+            <X>4.5</X>
+            <Y>169.5</Y>
+            <Width>11</Width>
+            <Height>11</Height>
+          </Startpoint>
+          <Endpoint>
+            <X>54.5</X>
+            <Y>169.5</Y>
+            <Width>11</Width>
+            <Height>11</Height>
+          </Endpoint>
+        </Scope>
+        <SymbolColor>
+          <Outline>#858585</Outline>
+        </SymbolColor>
+        <StartpointStickyOn></StartpointStickyOn>
+        <EndpointStickyOn></EndpointStickyOn>
+        <StartSelected>False</StartSelected>
+        <EndSelected>False</EndSelected>
+      </Connection>
+      <Connection id="98f7e0de-f047-49ab-94fa-58c3fbabb82b">
+        <AlphabetID>3d5c9b0f-3d7d-4b6d-a817-25fe1ba8dfa8</AlphabetID>
+        <Name>Inhibition</Name>
+        <Description>System default.</Description>
+        <Requirement>Inhibition</Requirement>
+        <ArrowType>WithCircle</ArrowType>
+        <Scope>
+          <Startpoint>
+            <X>4.5</X>
+            <Y>219.5</Y>
+            <Width>11</Width>
+            <Height>11</Height>
+          </Startpoint>
+          <Endpoint>
+            <X>54.5</X>
+            <Y>219.5</Y>
             <Width>11</Width>
             <Height>11</Height>
           </Endpoint>
@@ -1155,13 +1245,13 @@
         <Scope>
           <Startpoint>
             <X>4.5</X>
-            <Y>169.5</Y>
+            <Y>269.5</Y>
             <Width>11</Width>
             <Height>11</Height>
           </Startpoint>
           <Endpoint>
             <X>54.5</X>
-            <Y>169.5</Y>
+            <Y>269.5</Y>
             <Width>11</Width>
             <Height>11</Height>
           </Endpoint>
@@ -1525,10 +1615,10 @@
             <Connections>
               <Connection id="3a0d3c8e-e263-4b85-b7f9-4a23627c981a">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>57.9984055</X>
@@ -1544,7 +1634,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>23d99e54-a2e1-4739-9561-18623067fc35</StartpointStickyOn>
                 <EndpointStickyOn>0e54fcf7-6247-4bf8-a208-ad7a4687539c</EndpointStickyOn>
@@ -1553,10 +1643,10 @@
               </Connection>
               <Connection id="0c4936b4-fabf-4707-81f3-1a31f54b6733">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>131.9941</X>
@@ -1572,7 +1662,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>0e54fcf7-6247-4bf8-a208-ad7a4687539c</StartpointStickyOn>
                 <EndpointStickyOn>079bf5a5-f68b-4bdd-8fde-b5c4d8df65c0</EndpointStickyOn>
@@ -1665,10 +1755,10 @@
               </Connection>
               <Connection id="961d6e81-fc78-4a1c-82ba-668a20ae7338">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>208.198959</X>
@@ -1684,7 +1774,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>079bf5a5-f68b-4bdd-8fde-b5c4d8df65c0</StartpointStickyOn>
                 <EndpointStickyOn>93966140-fc9a-4ace-92c8-6e323ace0401</EndpointStickyOn>
@@ -1693,10 +1783,10 @@
               </Connection>
               <Connection id="59e78d03-7a81-4253-9bf4-a000217d5326">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>265.334625</X>
@@ -1712,7 +1802,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>93966140-fc9a-4ace-92c8-6e323ace0401</StartpointStickyOn>
                 <EndpointStickyOn>1b59ca88-01ed-404e-a6e6-9325622464d8</EndpointStickyOn>
@@ -2001,20 +2091,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>280.5</X>
-                    <Y>114.5</Y>
+                    <X>348.5</X>
+                    <Y>50.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>282.5</X>
-                    <Y>116.5</Y>
+                    <X>350.5</X>
+                    <Y>52.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>277.5</X>
-                    <Y>117</Y>
+                    <X>345.5</X>
+                    <Y>53</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -2031,8 +2121,8 @@
             </Nodes>
             <Connections>
               <Connection id="efcfd3e1-cca3-41e5-85f7-f5e270e882f7">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2051,7 +2141,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>5a4e9541-5e98-42ff-a70d-cc05a2de50e4</StartpointStickyOn>
                 <EndpointStickyOn>2a96c226-4506-42d8-a510-d462a92b94cf</EndpointStickyOn>
@@ -2059,8 +2149,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="7b7830c3-a23b-4081-a566-d114aec4f8db">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2079,7 +2169,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>94a73e75-3ffc-47bc-8e43-8c0e5881248c</StartpointStickyOn>
                 <EndpointStickyOn>599f991b-95f5-4610-992a-9c64056e294c</EndpointStickyOn>
@@ -2087,8 +2177,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="9ab89577-ad4e-4f41-b637-c39f6b226368">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2107,7 +2197,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>65cc6276-3833-4a3e-8d91-1a113726419a</StartpointStickyOn>
                 <EndpointStickyOn>0122a6f5-1b2b-4c7a-b4f4-055a8f301a60</EndpointStickyOn>
@@ -2116,10 +2206,10 @@
               </Connection>
               <Connection id="0b683cb8-edd7-475a-8484-75a8959ad037">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>67.9893646</X>
@@ -2135,7 +2225,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>5a4e9541-5e98-42ff-a70d-cc05a2de50e4</StartpointStickyOn>
                 <EndpointStickyOn>94a73e75-3ffc-47bc-8e43-8c0e5881248c</EndpointStickyOn>
@@ -2144,10 +2234,10 @@
               </Connection>
               <Connection id="d607eafe-44f7-4c9a-b93e-8f14338aa460">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>153.998566</X>
@@ -2163,7 +2253,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>94a73e75-3ffc-47bc-8e43-8c0e5881248c</StartpointStickyOn>
                 <EndpointStickyOn>65cc6276-3833-4a3e-8d91-1a113726419a</EndpointStickyOn>
@@ -2172,26 +2262,26 @@
               </Connection>
               <Connection id="b4cc4344-7665-4b25-933a-ea722cc5a473">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>291.5749</X>
-                    <Y>80.96696</Y>
+                    <X>307.998322</X>
+                    <Y>63.7430344</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>293.4251</X>
-                    <Y>111.033043</Y>
+                    <X>345.001678</X>
+                    <Y>64.2569656</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>3f34e8ce-a13a-498e-bd13-0f85bbfb7f84</StartpointStickyOn>
                 <EndpointStickyOn>29af8305-4e4e-47c4-9efc-413a4a08d1d8</EndpointStickyOn>
@@ -2200,10 +2290,10 @@
               </Connection>
               <Connection id="3c9dbdde-d396-432a-8289-f50ec3ada34b">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>231.878571</X>
@@ -2219,7 +2309,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>65cc6276-3833-4a3e-8d91-1a113726419a</StartpointStickyOn>
                 <EndpointStickyOn>3f34e8ce-a13a-498e-bd13-0f85bbfb7f84</EndpointStickyOn>
@@ -2499,20 +2589,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>276.5</X>
-                    <Y>122.5</Y>
+                    <X>345.5</X>
+                    <Y>54.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>278.5</X>
-                    <Y>124.5</Y>
+                    <X>347.5</X>
+                    <Y>56.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>273.5</X>
-                    <Y>125</Y>
+                    <X>342.5</X>
+                    <Y>57</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -2529,8 +2619,8 @@
             </Nodes>
             <Connections>
               <Connection id="8a6a9821-4e56-49de-9ae9-ebbad5eb0338">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2549,7 +2639,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9a083c33-c6f6-4f10-849b-159478acd3cc</StartpointStickyOn>
                 <EndpointStickyOn>a0f26631-d531-405a-b8c8-1f5ccd1eaac1</EndpointStickyOn>
@@ -2557,8 +2647,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="69d3f97a-8120-4ac8-a6fc-3dad048f0e50">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2577,7 +2667,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9c8b8080-c4ed-4610-8ae8-1afcb71593a5</StartpointStickyOn>
                 <EndpointStickyOn>ba19dbc5-1d23-4d27-b92d-429552028afb</EndpointStickyOn>
@@ -2585,8 +2675,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="4e1dcb3c-8d9c-4d22-96fd-ad37251cdf3b">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -2605,7 +2695,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9dc1924f-1fc3-4f2d-9c20-3e9ac214a5bd</StartpointStickyOn>
                 <EndpointStickyOn>eaeb90d1-ebbe-4192-8f46-adcfa929dfe9</EndpointStickyOn>
@@ -2614,10 +2704,10 @@
               </Connection>
               <Connection id="4dbdae24-f724-4a10-b56f-c3d1bfbb7e2a">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>67.9449</X>
@@ -2633,7 +2723,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9a083c33-c6f6-4f10-849b-159478acd3cc</StartpointStickyOn>
                 <EndpointStickyOn>9c8b8080-c4ed-4610-8ae8-1afcb71593a5</EndpointStickyOn>
@@ -2642,10 +2732,10 @@
               </Connection>
               <Connection id="2047a86a-e210-4a7c-b889-3e872ee5a981">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>155.915558</X>
@@ -2661,7 +2751,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9c8b8080-c4ed-4610-8ae8-1afcb71593a5</StartpointStickyOn>
                 <EndpointStickyOn>9dc1924f-1fc3-4f2d-9c20-3e9ac214a5bd</EndpointStickyOn>
@@ -2670,26 +2760,26 @@
               </Connection>
               <Connection id="6eb1b9d7-9434-4fd3-a65e-24fb12e021da">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>291.2308</X>
-                    <Y>88.9979248</Y>
+                    <X>308.983</X>
+                    <Y>70.72869</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>290.7692</X>
-                    <Y>119.002075</Y>
+                    <X>342.017</X>
+                    <Y>69.27131</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>8369366f-2a9e-422f-b993-9976c5d4db2d</StartpointStickyOn>
                 <EndpointStickyOn>b8ca3fcf-af2a-4710-9792-85c5e05fb557</EndpointStickyOn>
@@ -2698,10 +2788,10 @@
               </Connection>
               <Connection id="24a3ca9e-4ad6-4dd1-82f1-3949fa6013f8">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>226.9948</X>
@@ -2717,7 +2807,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>9dc1924f-1fc3-4f2d-9c20-3e9ac214a5bd</StartpointStickyOn>
                 <EndpointStickyOn>8369366f-2a9e-422f-b993-9976c5d4db2d</EndpointStickyOn>
@@ -3000,8 +3090,8 @@
             </Nodes>
             <Connections>
               <Connection id="e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3020,7 +3110,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>16b0289b-975c-47da-9d8f-b1d184e09bf1</StartpointStickyOn>
                 <EndpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</EndpointStickyOn>
@@ -3056,8 +3146,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="bce0955a-c427-48c1-b94f-c9e1e9501dfb">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3076,7 +3166,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</StartpointStickyOn>
                 <EndpointStickyOn>c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a</EndpointStickyOn>
@@ -3385,15 +3475,15 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f54726b6-bcb2-4612-9aba-f2c65e53ba9c</ConnectionID>
                   <ConnectionID>e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310</ConnectionID>
+                  <ConnectionID>f54726b6-bcb2-4612-9aba-f2c65e53ba9c</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
             <Connections>
               <Connection id="e7c6f9f1-bd3a-4e0c-99d2-b5fb1d932310">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3412,7 +3502,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>16b0289b-975c-47da-9d8f-b1d184e09bf1</StartpointStickyOn>
                 <EndpointStickyOn>4d69b3bd-914c-4b07-aae2-af6c51b7503e</EndpointStickyOn>
@@ -3448,8 +3538,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="bce0955a-c427-48c1-b94f-c9e1e9501dfb">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3468,7 +3558,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</StartpointStickyOn>
                 <EndpointStickyOn>c3dcf526-52d7-4fbc-b67c-7ed35cefaf1a</EndpointStickyOn>
@@ -3476,8 +3566,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="f54726b6-bcb2-4612-9aba-f2c65e53ba9c">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3496,7 +3586,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>4d69b3bd-914c-4b07-aae2-af6c51b7503e</StartpointStickyOn>
                 <EndpointStickyOn>41c75987-c6d7-405f-94f3-3c9d30aed3ae</EndpointStickyOn>
@@ -3803,8 +3893,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3823,7 +3913,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>a08f7cf7-ce73-401d-899d-0fd996de6a96</StartpointStickyOn>
                 <EndpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</EndpointStickyOn>
@@ -3831,8 +3921,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="95e1f359-ff30-4a3d-92fd-e49d77f000d5">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -3851,7 +3941,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</StartpointStickyOn>
                 <EndpointStickyOn>91540c0a-dc78-4ed4-8dd6-71010908c7b3</EndpointStickyOn>
@@ -4160,8 +4250,8 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f24fec4c-a411-4b25-ae67-c9dd010ba21e</ConnectionID>
                   <ConnectionID>f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7</ConnectionID>
+                  <ConnectionID>f24fec4c-a411-4b25-ae67-c9dd010ba21e</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
@@ -4195,8 +4285,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="f6ddb7ab-71b3-4da2-ac8c-ff439e0aa4c7">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -4215,7 +4305,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>a08f7cf7-ce73-401d-899d-0fd996de6a96</StartpointStickyOn>
                 <EndpointStickyOn>6899211f-2dd3-41f2-ac64-817078fce862</EndpointStickyOn>
@@ -4223,8 +4313,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="95e1f359-ff30-4a3d-92fd-e49d77f000d5">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -4243,7 +4333,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</StartpointStickyOn>
                 <EndpointStickyOn>91540c0a-dc78-4ed4-8dd6-71010908c7b3</EndpointStickyOn>
@@ -4251,8 +4341,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="f24fec4c-a411-4b25-ae67-c9dd010ba21e">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -4271,7 +4361,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>6899211f-2dd3-41f2-ac64-817078fce862</StartpointStickyOn>
                 <EndpointStickyOn>612c05b6-53a3-4cea-94ff-49547273c644</EndpointStickyOn>
@@ -4368,9 +4458,9 @@
             </Nodes>
             <Connections>
               <Connection id="2c427c05-97e8-4903-943f-b7306f3bb369">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
-                <Description>System default.</Description>
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
@@ -4388,7 +4478,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#00647F</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>dc518c77-08f8-4994-bd85-aab07f6f3bfc</StartpointStickyOn>
                 <EndpointStickyOn>edd8387c-2118-4e8a-9171-4b6f8538884c</EndpointStickyOn>
@@ -4476,9 +4566,9 @@
             </Nodes>
             <Connections>
               <Connection id="1edeefb5-1cdb-46dc-8398-247074210d78">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
-                <Description>System default.</Description>
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
@@ -4496,7 +4586,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#00647F</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>ddd4a0bf-e150-459c-aca1-47c763de5943</StartpointStickyOn>
                 <EndpointStickyOn>31148582-f8b7-427a-9949-c982da98a149</EndpointStickyOn>
@@ -4593,9 +4683,9 @@
             </Nodes>
             <Connections>
               <Connection id="2c427c05-97e8-4903-943f-b7306f3bb369">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
-                <Description>System default.</Description>
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
@@ -4613,7 +4703,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#00647F</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>dc518c77-08f8-4994-bd85-aab07f6f3bfc</StartpointStickyOn>
                 <EndpointStickyOn>edd8387c-2118-4e8a-9171-4b6f8538884c</EndpointStickyOn>
@@ -4701,9 +4791,9 @@
             </Nodes>
             <Connections>
               <Connection id="1edeefb5-1cdb-46dc-8398-247074210d78">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
-                <Description>System default.</Description>
+                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
+                <Name>window</Name>
+                <Description>Window</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
@@ -4721,7 +4811,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#00647F</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>ddd4a0bf-e150-459c-aca1-47c763de5943</StartpointStickyOn>
                 <EndpointStickyOn>31148582-f8b7-427a-9949-c982da98a149</EndpointStickyOn>
@@ -4822,8 +4912,8 @@
             </Nodes>
             <Connections>
               <Connection id="6eb6a2ec-da2b-4e91-b938-3fb6db6e0fec">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -4842,12 +4932,12 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>1332d67b-af11-4b48-9c79-89344f838fb0</StartpointStickyOn>
                 <EndpointStickyOn>fc29d507-fc1a-4025-9d6e-cf8368588ea0</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
-                <EndSelected>True</EndSelected>
+                <EndSelected>False</EndSelected>
               </Connection>
             </Connections>
           </MissionGraph>
@@ -5004,8 +5094,8 @@
             </Nodes>
             <Connections>
               <Connection id="986b3b9a-0beb-42ce-b1f2-d4499b3e3888">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -5024,7 +5114,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>24c10018-0875-4a80-a63d-e098b4214179</StartpointStickyOn>
                 <EndpointStickyOn>36fcb0a6-aa16-4842-aa32-2e05a8c0cfda</EndpointStickyOn>
@@ -5032,8 +5122,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="7c5f7758-22a1-4a56-8c67-aad0eb75c41a">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -5052,7 +5142,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>36fcb0a6-aa16-4842-aa32-2e05a8c0cfda</StartpointStickyOn>
                 <EndpointStickyOn>cc620023-54e7-42fb-bc52-4a19f8bb358e</EndpointStickyOn>
@@ -5060,8 +5150,8 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="29c405c1-bd40-4e7c-a3e7-48d6e89e3616">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
@@ -5080,7 +5170,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>cc620023-54e7-42fb-bc52-4a19f8bb358e</StartpointStickyOn>
                 <EndpointStickyOn>9dbb1ec1-48c5-4dc7-ac8a-6155502b45be</EndpointStickyOn>
@@ -5247,10 +5337,10 @@
               </Connection>
               <Connection id="530870cd-f62f-428b-9d2a-352bfbabefcf">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>101.874352</X>
@@ -5266,7 +5356,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</StartpointStickyOn>
                 <EndpointStickyOn>912bd524-29b9-4823-8007-837a2485d337</EndpointStickyOn>
@@ -5284,24 +5374,24 @@
                 <Ordering>4</Ordering>
                 <Name>frameworkARoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>123</Description>
+                <Description>A房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>80.5</X>
-                    <Y>15.5</Y>
+                    <X>154.5</X>
+                    <Y>16.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>82.5</X>
-                    <Y>17.5</Y>
+                    <X>156.5</X>
+                    <Y>18.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>77.5</X>
-                    <Y>18</Y>
+                    <X>151.5</X>
+                    <Y>19</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -5312,8 +5402,8 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>8717ec62-26dc-44c3-967f-f6c3f07b1197</ConnectionID>
                   <ConnectionID>c82ae190-2310-46ef-b5f1-8fde99de9ed1</ConnectionID>
+                  <ConnectionID>d7feb7cb-b0ab-4e29-8f4d-5f015ea40abf</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
@@ -5361,20 +5451,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>152.5</X>
-                    <Y>23.5</Y>
+                    <X>226.5</X>
+                    <Y>16.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>154.5</X>
-                    <Y>25.5</Y>
+                    <X>228.5</X>
+                    <Y>18.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>149.5</X>
-                    <Y>26</Y>
+                    <X>223.5</X>
+                    <Y>19</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -5425,58 +5515,95 @@
                   <ConnectionID>eaafe165-b916-4d8b-a111-6e2aa736e285</ConnectionID>
                 </StickiedConnections>
               </Node>
+              <Node id="e174052f-aad9-4cf0-81a9-d9cb8fe801dc">
+                <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
+                <Ordering>5</Ordering>
+                <Name>frameworkARoomA</Name>
+                <Abbreviation>faa</Abbreviation>
+                <Description>A房間A</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>86.5</X>
+                    <Y>20.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>88.5</X>
+                    <Y>22.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>83.5</X>
+                    <Y>23</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FF7E7E</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>8717ec62-26dc-44c3-967f-f6c3f07b1197</ConnectionID>
+                  <ConnectionID>d7feb7cb-b0ab-4e29-8f4d-5f015ea40abf</ConnectionID>
+                </StickiedConnections>
+              </Node>
             </Nodes>
             <Connections>
               <Connection id="8717ec62-26dc-44c3-967f-f6c3f07b1197">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>50.9415054</X>
-                    <Y>33.07037</Y>
+                    <X>51</X>
+                    <Y>34.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>77.0584946</X>
-                    <Y>30.9296341</Y>
+                    <X>83</X>
+                    <Y>34.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</StartpointStickyOn>
-                <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
+                <EndpointStickyOn>e174052f-aad9-4cf0-81a9-d9cb8fe801dc</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="c82ae190-2310-46ef-b5f1-8fde99de9ed1">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>111.892967</X>
-                    <Y>31.4325523</Y>
+                    <X>186</X>
+                    <Y>30.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>149.10704</X>
-                    <Y>35.5674477</Y>
+                    <X>223</X>
+                    <Y>30.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
                 <EndpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</EndpointStickyOn>
@@ -5485,31 +5612,59 @@
               </Connection>
               <Connection id="eaafe165-b916-4d8b-a111-6e2aa736e285">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>180.47818</X>
-                    <Y>48.0290222</Y>
+                    <X>241.306824</X>
+                    <Y>47.98139</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>229.52182</X>
-                    <Y>84.97098</Y>
+                    <X>242.693161</X>
+                    <Y>78.01861</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</StartpointStickyOn>
                 <EndpointStickyOn>1b35bf3c-37f1-4fbf-be39-63196a7c3515</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="d7feb7cb-b0ab-4e29-8f4d-5f015ea40abf">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>main</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Double</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>117.9698</X>
+                    <Y>33.4723663</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>151.0302</X>
+                    <Y>31.5276375</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#4E4E4E</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>e174052f-aad9-4cf0-81a9-d9cb8fe801dc</StartpointStickyOn>
+                <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>True</EndSelected>
               </Connection>
             </Connections>
           </MissionGraph>
@@ -5667,10 +5822,10 @@
               </Connection>
               <Connection id="b7977c0c-ab2d-41e5-9eae-d2c6215aa9fa">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>88.9768</X>
@@ -5686,7 +5841,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>ae4b88b8-2273-4609-9b1d-b81950d868b1</StartpointStickyOn>
                 <EndpointStickyOn>a0611534-08d3-41e6-af46-65a6e913ef50</EndpointStickyOn>
@@ -5708,20 +5863,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>176.5</X>
-                    <Y>48.5</Y>
+                    <X>217.5</X>
+                    <Y>36.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>178.5</X>
-                    <Y>50.5</Y>
+                    <X>219.5</X>
+                    <Y>38.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>173.5</X>
-                    <Y>51</Y>
+                    <X>214.5</X>
+                    <Y>39</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -5781,20 +5936,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>95.5</X>
-                    <Y>117.5</Y>
+                    <X>149.5</X>
+                    <Y>121.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>97.5</X>
-                    <Y>119.5</Y>
+                    <X>151.5</X>
+                    <Y>123.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>92.5</X>
-                    <Y>120</Y>
+                    <X>146.5</X>
+                    <Y>124</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -5849,24 +6004,24 @@
                 <Ordering>4</Ordering>
                 <Name>frameworkARoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>123</Description>
+                <Description>A房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>86.5</X>
-                    <Y>44.5</Y>
+                    <X>145.5</X>
+                    <Y>40.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>88.5</X>
-                    <Y>46.5</Y>
+                    <X>147.5</X>
+                    <Y>42.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>83.5</X>
-                    <Y>47</Y>
+                    <X>142.5</X>
+                    <Y>43</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -5878,8 +6033,45 @@
                 </SymbolColor>
                 <StickiedConnections>
                   <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
-                  <ConnectionID>474f6d78-9d3d-46c2-a0f6-36caee9f0a18</ConnectionID>
                   <ConnectionID>39dfbc2b-099a-4fd9-943e-62350e72cdd9</ConnectionID>
+                  <ConnectionID>d8d80942-f7cc-4070-b822-8992d80a4a33</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="40d55e94-65dd-49a5-aa46-5a374fb2cfff">
+                <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
+                <Ordering>6</Ordering>
+                <Name>frameworkARoomA</Name>
+                <Abbreviation>faa</Abbreviation>
+                <Description>A房間A</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>84.5</X>
+                    <Y>47.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>86.5</X>
+                    <Y>49.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>81.5</X>
+                    <Y>50</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FF7E7E</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>474f6d78-9d3d-46c2-a0f6-36caee9f0a18</ConnectionID>
+                  <ConnectionID>d8d80942-f7cc-4070-b822-8992d80a4a33</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
@@ -5892,14 +6084,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>102.641319</X>
-                    <Y>75.8685</Y>
+                    <X>160.363144</X>
+                    <Y>71.9787</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>107.358681</X>
-                    <Y>114.1315</Y>
+                    <X>162.636856</X>
+                    <Y>118.0213</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -5914,26 +6106,26 @@
               </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>207.88623</X>
-                    <Y>60.5078278</Y>
+                    <X>248.9971</X>
+                    <Y>50.81813</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>269.11377</X>
-                    <Y>53.4921722</Y>
+                    <X>269.0029</X>
+                    <Y>51.18187</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</StartpointStickyOn>
                 <EndpointStickyOn>8ebc7887-c13f-4dcc-9d04-c07bb9439457</EndpointStickyOn>
@@ -5942,59 +6134,87 @@
               </Connection>
               <Connection id="474f6d78-9d3d-46c2-a0f6-36caee9f0a18">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>53.8962555</X>
-                    <Y>63.5972824</Y>
+                    <X>53.96369</X>
+                    <Y>64.37331</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>83.1037445</X>
-                    <Y>60.4027176</Y>
+                    <X>81.03631</X>
+                    <Y>62.6266861</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</StartpointStickyOn>
-                <EndpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</EndpointStickyOn>
+                <EndpointStickyOn>40d55e94-65dd-49a5-aa46-5a374fb2cfff</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="39dfbc2b-099a-4fd9-943e-62350e72cdd9">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>117.982742</X>
-                    <Y>59.2770081</Y>
+                    <X>176.973053</X>
+                    <Y>53.529274</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>173.017258</X>
-                    <Y>61.7229919</Y>
+                    <X>214.026947</X>
+                    <Y>51.470726</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</StartpointStickyOn>
                 <EndpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="d8d80942-f7cc-4070-b822-8992d80a4a33">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>main</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Double</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>115.8859</X>
+                    <Y>59.5048981</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>142.1141</X>
+                    <Y>56.4951057</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#4E4E4E</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>40d55e94-65dd-49a5-aa46-5a374fb2cfff</StartpointStickyOn>
+                <EndpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>True</EndSelected>
               </Connection>
             </Connections>
           </MissionGraph>
@@ -6021,19 +6241,19 @@
                 <Scope>
                   <Outline>
                     <X>31.5</X>
-                    <Y>39.5</Y>
+                    <Y>48.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
                     <X>33.5</X>
-                    <Y>41.5</Y>
+                    <Y>50.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
                     <X>28.5</X>
-                    <Y>42</Y>
+                    <Y>51</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6049,35 +6269,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="23df85c4-f3be-495a-a501-efd20f00a8a6">
-                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>specialRoom</Name>
-                <Abbreviation>s</Abbreviation>
-                <Description>特殊房</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>37.5</X>
-                    <Y>117.5</Y>
+                    <X>43.5</X>
+                    <Y>120.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>39.5</X>
-                    <Y>119.5</Y>
+                    <X>45.5</X>
+                    <Y>122.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>34.5</X>
-                    <Y>120</Y>
+                    <X>40.5</X>
+                    <Y>123</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FFC578</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -6089,23 +6309,96 @@
                 <Ordering>3</Ordering>
                 <Name>frameworkARoomB</Name>
                 <Abbreviation>fab</Abbreviation>
+                <Description>A房間B</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>203.5</X>
+                    <Y>44.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>205.5</X>
+                    <Y>46.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>200.5</X>
+                    <Y>47</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FF7E7E</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>02752644-bd65-4342-aabd-e7f47f45e208</ConnectionID>
+                  <ConnectionID>4f1ed28d-5ec7-481f-a79c-5b3d0900f18f</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="51060b0d-05d9-4da1-b295-4262165dbca5">
+                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+                <Ordering>4</Ordering>
+                <Name>frameworkARoomC</Name>
+                <Abbreviation>fac</Abbreviation>
                 <Description>123</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>112.5</X>
+                    <X>287.5</X>
+                    <Y>44.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>289.5</X>
+                    <Y>46.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>284.5</X>
+                    <Y>47</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FF7E7E</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>02752644-bd65-4342-aabd-e7f47f45e208</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="11b04f70-f9be-450e-a493-67df04444313">
+                <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
+                <Ordering>5</Ordering>
+                <Name>frameworkARoomA</Name>
+                <Abbreviation>faa</Abbreviation>
+                <Description>A房間A</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>119.5</X>
                     <Y>42.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>114.5</X>
+                    <X>121.5</X>
                     <Y>44.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>109.5</X>
+                    <X>116.5</X>
                     <Y>45</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -6118,69 +6411,33 @@
                 </SymbolColor>
                 <StickiedConnections>
                   <ConnectionID>9c4c21a7-ef89-41be-9f14-b9605775fd8f</ConnectionID>
-                  <ConnectionID>02752644-bd65-4342-aabd-e7f47f45e208</ConnectionID>
-                </StickiedConnections>
-              </Node>
-              <Node id="51060b0d-05d9-4da1-b295-4262165dbca5">
-                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
-                <Ordering>4</Ordering>
-                <Name>frameworkARoomC</Name>
-                <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
-                <Terminal>Terminal</Terminal>
-                <Scope>
-                  <Outline>
-                    <X>190.5</X>
-                    <Y>43.5</Y>
-                    <Width>39</Width>
-                    <Height>39</Height>
-                  </Outline>
-                  <Filled>
-                    <X>192.5</X>
-                    <Y>45.5</Y>
-                    <Width>35</Width>
-                    <Height>35</Height>
-                  </Filled>
-                  <Text>
-                    <X>187.5</X>
-                    <Y>46</Y>
-                    <Width>45</Width>
-                    <Height>34</Height>
-                  </Text>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
-                  <Text>#000000</Text>
-                </SymbolColor>
-                <StickiedConnections>
-                  <ConnectionID>02752644-bd65-4342-aabd-e7f47f45e208</ConnectionID>
+                  <ConnectionID>4f1ed28d-5ec7-481f-a79c-5b3d0900f18f</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
             <Connections>
               <Connection id="486fea61-ffa4-42d1-8c8f-59147dc4e2a4">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>46.84219</X>
-                    <Y>70.9484558</Y>
+                    <X>48.3769836</X>
+                    <Y>79.7618942</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>50.15781</X>
-                    <Y>114.051544</Y>
+                    <X>54.6230164</X>
+                    <Y>117.238106</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>2f8afa5f-a823-4fec-bfa1-fdb522ea4df7</StartpointStickyOn>
                 <EndpointStickyOn>23df85c4-f3be-495a-a501-efd20f00a8a6</EndpointStickyOn>
@@ -6189,57 +6446,85 @@
               </Connection>
               <Connection id="9c4c21a7-ef89-41be-9f14-b9605775fd8f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>62.9880066</X>
-                    <Y>54.1477051</Y>
+                    <X>62.959465</X>
+                    <Y>61.3095856</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>109.011993</X>
-                    <Y>55.8522949</Y>
+                    <X>116.040535</X>
+                    <Y>57.69042</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>2f8afa5f-a823-4fec-bfa1-fdb522ea4df7</StartpointStickyOn>
-                <EndpointStickyOn>bf9b76d5-5997-4b54-9a1f-550a8b6aace8</EndpointStickyOn>
+                <EndpointStickyOn>11b04f70-f9be-450e-a493-67df04444313</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="02752644-bd65-4342-aabd-e7f47f45e208">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>143.998566</X>
-                    <Y>56.7243423</Y>
+                    <X>235</X>
+                    <Y>58.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>187.001434</X>
-                    <Y>57.27566</Y>
+                    <X>284</X>
+                    <Y>58.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>bf9b76d5-5997-4b54-9a1f-550a8b6aace8</StartpointStickyOn>
                 <EndpointStickyOn>51060b0d-05d9-4da1-b295-4262165dbca5</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="4f1ed28d-5ec7-481f-a79c-5b3d0900f18f">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>main</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Double</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>150.995041</X>
+                    <Y>56.91655</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>200.004959</X>
+                    <Y>58.08345</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#4E4E4E</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>11b04f70-f9be-450e-a493-67df04444313</StartpointStickyOn>
+                <EndpointStickyOn>bf9b76d5-5997-4b54-9a1f-550a8b6aace8</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
@@ -6249,7 +6534,7 @@
         <ReplacementRule>
           <MissionGraph>
             <Nodes>
-              <Node id="dbc77add-099d-41f3-a821-97d4bccb54b7">
+              <Node id="26d84781-9137-4446-a266-7f8af8cb756f">
                 <AlphabetID>9a07aaf7-c781-43b6-a32f-d9d287ae2971</AlphabetID>
                 <Ordering>1</Ordering>
                 <Name>entrance</Name>
@@ -6258,20 +6543,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>31.5</X>
-                    <Y>39.5</Y>
+                    <X>38.5</X>
+                    <Y>50.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>33.5</X>
-                    <Y>41.5</Y>
+                    <X>40.5</X>
+                    <Y>52.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>28.5</X>
-                    <Y>42</Y>
+                    <X>35.5</X>
+                    <Y>53</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6282,68 +6567,68 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f05a8de5-929b-453a-91c8-c227d5c6c060</ConnectionID>
+                  <ConnectionID>87db0028-5035-4ba5-b898-1c4cbb35f95a</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="6b73534f-6304-4ecf-907f-4090832cb001">
-                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+              <Node id="34fdabc5-94d6-4a97-a722-a544520916fc">
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>specialRoom</Name>
-                <Abbreviation>s</Abbreviation>
-                <Description>特殊房</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>190.5</X>
-                    <Y>118.5</Y>
+                    <X>297.5</X>
+                    <Y>120.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>192.5</X>
-                    <Y>120.5</Y>
+                    <X>299.5</X>
+                    <Y>122.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>187.5</X>
-                    <Y>121</Y>
+                    <X>294.5</X>
+                    <Y>123</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FFC578</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f4f452f8-8e33-46eb-9c8e-5b3989b35bb3</ConnectionID>
+                  <ConnectionID>3bdb12af-f877-4794-9392-2c21c4f690b6</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="9474400c-879d-42ca-8921-d2b134839624">
+              <Node id="43e056d9-062e-46e5-9b73-6f5dba79f9f8">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
                 <Ordering>3</Ordering>
                 <Name>frameworkARoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>123</Description>
+                <Description>A房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>113.5</X>
-                    <Y>39.5</Y>
+                    <X>200.5</X>
+                    <Y>46.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>115.5</X>
-                    <Y>41.5</Y>
+                    <X>202.5</X>
+                    <Y>48.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>110.5</X>
-                    <Y>42</Y>
+                    <X>197.5</X>
+                    <Y>49</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6354,11 +6639,11 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f05a8de5-929b-453a-91c8-c227d5c6c060</ConnectionID>
-                  <ConnectionID>4f71b45d-495c-4a7c-8e31-8182c57e52bf</ConnectionID>
+                  <ConnectionID>6369d3a3-552b-4d80-9fa7-2213c7955eb2</ConnectionID>
+                  <ConnectionID>d0b64698-2fb1-4e59-8376-c33cbc370c92</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="e558119a-4da5-4e81-b4a2-41660a58ad3f">
+              <Node id="47ce80af-ffa7-4687-91e5-ee20e545edfb">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
                 <Ordering>4</Ordering>
                 <Name>frameworkARoomC</Name>
@@ -6367,20 +6652,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>192.5</X>
-                    <Y>38.5</Y>
+                    <X>285.5</X>
+                    <Y>47.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>194.5</X>
-                    <Y>40.5</Y>
+                    <X>287.5</X>
+                    <Y>49.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>189.5</X>
-                    <Y>41</Y>
+                    <X>282.5</X>
+                    <Y>50</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6391,94 +6676,159 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>f4f452f8-8e33-46eb-9c8e-5b3989b35bb3</ConnectionID>
-                  <ConnectionID>4f71b45d-495c-4a7c-8e31-8182c57e52bf</ConnectionID>
+                  <ConnectionID>3bdb12af-f877-4794-9392-2c21c4f690b6</ConnectionID>
+                  <ConnectionID>6369d3a3-552b-4d80-9fa7-2213c7955eb2</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="726cca2a-7add-4422-80e0-191fe1a72f38">
+                <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
+                <Ordering>5</Ordering>
+                <Name>frameworkARoomA</Name>
+                <Abbreviation>faa</Abbreviation>
+                <Description>A房間A</Description>
+                <Terminal>Terminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>108.5</X>
+                    <Y>55.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>110.5</X>
+                    <Y>57.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>105.5</X>
+                    <Y>58</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#FF7E7E</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>87db0028-5035-4ba5-b898-1c4cbb35f95a</ConnectionID>
+                  <ConnectionID>d0b64698-2fb1-4e59-8376-c33cbc370c92</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
             <Connections>
-              <Connection id="f4f452f8-8e33-46eb-9c8e-5b3989b35bb3">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+              <Connection id="3bdb12af-f877-4794-9392-2c21c4f690b6">
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>206.062637</X>
-                    <Y>69.99454</Y>
+                    <X>302.338623</X>
+                    <Y>78.76824</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>204.937363</X>
-                    <Y>115.005463</Y>
+                    <X>308.661377</X>
+                    <Y>117.231758</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
-                <StartpointStickyOn>e558119a-4da5-4e81-b4a2-41660a58ad3f</StartpointStickyOn>
-                <EndpointStickyOn>6b73534f-6304-4ecf-907f-4090832cb001</EndpointStickyOn>
+                <StartpointStickyOn>47ce80af-ffa7-4687-91e5-ee20e545edfb</StartpointStickyOn>
+                <EndpointStickyOn>34fdabc5-94d6-4a97-a722-a544520916fc</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
-              <Connection id="f05a8de5-929b-453a-91c8-c227d5c6c060">
+              <Connection id="87db0028-5035-4ba5-b898-1c4cbb35f95a">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>63</X>
-                    <Y>53.5</Y>
+                    <X>69.95553</X>
+                    <Y>65.7468262</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>110</X>
-                    <Y>53.5</Y>
+                    <X>105.044472</X>
+                    <Y>68.2531738</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
-                <StartpointStickyOn>dbc77add-099d-41f3-a821-97d4bccb54b7</StartpointStickyOn>
-                <EndpointStickyOn>9474400c-879d-42ca-8921-d2b134839624</EndpointStickyOn>
+                <StartpointStickyOn>26d84781-9137-4446-a266-7f8af8cb756f</StartpointStickyOn>
+                <EndpointStickyOn>726cca2a-7add-4422-80e0-191fe1a72f38</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
-              <Connection id="4f71b45d-495c-4a7c-8e31-8182c57e52bf">
+              <Connection id="6369d3a3-552b-4d80-9fa7-2213c7955eb2">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>144.9986</X>
-                    <Y>53.2785</Y>
+                    <X>231.9988</X>
+                    <Y>60.70587</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>189.0014</X>
-                    <Y>52.7215</Y>
+                    <X>282.001221</X>
+                    <Y>61.294136</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
-                <StartpointStickyOn>9474400c-879d-42ca-8921-d2b134839624</StartpointStickyOn>
-                <EndpointStickyOn>e558119a-4da5-4e81-b4a2-41660a58ad3f</EndpointStickyOn>
-                <StartSelected>True</StartSelected>
+                <StartpointStickyOn>43e056d9-062e-46e5-9b73-6f5dba79f9f8</StartpointStickyOn>
+                <EndpointStickyOn>47ce80af-ffa7-4687-91e5-ee20e545edfb</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="d0b64698-2fb1-4e59-8376-c33cbc370c92">
+                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
+                <Name>main</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Double</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>139.916855</X>
+                    <Y>67.79617</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>197.083145</X>
+                    <Y>62.20382</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#4E4E4E</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>726cca2a-7add-4422-80e0-191fe1a72f38</StartpointStickyOn>
+                <EndpointStickyOn>43e056d9-062e-46e5-9b73-6f5dba79f9f8</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
             </Connections>
@@ -6678,10 +7028,10 @@
               </Connection>
               <Connection id="530870cd-f62f-428b-9d2a-352bfbabefcf">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>107.913147</X>
@@ -6697,7 +7047,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</StartpointStickyOn>
                 <EndpointStickyOn>912bd524-29b9-4823-8007-837a2485d337</EndpointStickyOn>
@@ -6706,10 +7056,10 @@
               </Connection>
               <Connection id="bdde1d66-5637-48da-bf02-7900c6e08c77">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>50.1877</X>
@@ -6725,7 +7075,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>e61b20b0-fa0c-43c9-8209-181b0bbee41e</StartpointStickyOn>
                 <EndpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</EndpointStickyOn>
@@ -6925,10 +7275,10 @@
             <Connections>
               <Connection id="8717ec62-26dc-44c3-967f-f6c3f07b1197">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>101.978874</X>
@@ -6944,7 +7294,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</StartpointStickyOn>
                 <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
@@ -6953,10 +7303,10 @@
               </Connection>
               <Connection id="c82ae190-2310-46ef-b5f1-8fde99de9ed1">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>162.997314</X>
@@ -6972,7 +7322,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
                 <EndpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</EndpointStickyOn>
@@ -6981,10 +7331,10 @@
               </Connection>
               <Connection id="eaafe165-b916-4d8b-a111-6e2aa736e285">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>219.383362</X>
@@ -7000,7 +7350,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</StartpointStickyOn>
                 <EndpointStickyOn>1b35bf3c-37f1-4fbf-be39-63196a7c3515</EndpointStickyOn>
@@ -7009,10 +7359,10 @@
               </Connection>
               <Connection id="f530e4fc-bf6f-4e08-b365-18c9d213f2f2">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>47.98801</X>
@@ -7028,7 +7378,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>0ef729c2-8acb-4465-8d75-66e777430954</StartpointStickyOn>
                 <EndpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</EndpointStickyOn>
@@ -7228,10 +7578,10 @@
               </Connection>
               <Connection id="b7977c0c-ab2d-41e5-9eae-d2c6215aa9fa">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>104.668793</X>
@@ -7247,7 +7597,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>ae4b88b8-2273-4609-9b1d-b81950d868b1</StartpointStickyOn>
                 <EndpointStickyOn>a0611534-08d3-41e6-af46-65a6e913ef50</EndpointStickyOn>
@@ -7256,10 +7606,10 @@
               </Connection>
               <Connection id="175df584-dcad-47d6-9cf2-0c809807ee25">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>46.9896049</X>
@@ -7275,7 +7625,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>2abf1957-2cf9-425a-8ea7-502987f98744</StartpointStickyOn>
                 <EndpointStickyOn>ae4b88b8-2273-4609-9b1d-b81950d868b1</EndpointStickyOn>
@@ -7540,10 +7890,10 @@
               </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>240.381973</X>
@@ -7559,7 +7909,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</StartpointStickyOn>
                 <EndpointStickyOn>8ebc7887-c13f-4dcc-9d04-c07bb9439457</EndpointStickyOn>
@@ -7568,10 +7918,10 @@
               </Connection>
               <Connection id="474f6d78-9d3d-46c2-a0f6-36caee9f0a18">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>114.97229</X>
@@ -7587,7 +7937,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</StartpointStickyOn>
                 <EndpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</EndpointStickyOn>
@@ -7596,10 +7946,10 @@
               </Connection>
               <Connection id="39dfbc2b-099a-4fd9-943e-62350e72cdd9">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>185.9909</X>
@@ -7615,7 +7965,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</StartpointStickyOn>
                 <EndpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</EndpointStickyOn>
@@ -7624,10 +7974,10 @@
               </Connection>
               <Connection id="6fdfd8d5-0cad-4600-8e2a-49039f49da02">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>46.9080048</X>
@@ -7643,7 +7993,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>adf2b8c2-3fb4-4f3a-925e-2eaba14607f3</StartpointStickyOn>
                 <EndpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</EndpointStickyOn>
@@ -7819,10 +8169,10 @@
             <Connections>
               <Connection id="530870cd-f62f-428b-9d2a-352bfbabefcf">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>148.963089</X>
@@ -7838,7 +8188,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</StartpointStickyOn>
                 <EndpointStickyOn>912bd524-29b9-4823-8007-837a2485d337</EndpointStickyOn>
@@ -7847,10 +8197,10 @@
               </Connection>
               <Connection id="bdde1d66-5637-48da-bf02-7900c6e08c77">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>64.9230042</X>
@@ -7866,7 +8216,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>e61b20b0-fa0c-43c9-8209-181b0bbee41e</StartpointStickyOn>
                 <EndpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</EndpointStickyOn>
@@ -8094,10 +8444,10 @@
             <Connections>
               <Connection id="8717ec62-26dc-44c3-967f-f6c3f07b1197">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>109.9965</X>
@@ -8113,7 +8463,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</StartpointStickyOn>
                 <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
@@ -8122,10 +8472,10 @@
               </Connection>
               <Connection id="c82ae190-2310-46ef-b5f1-8fde99de9ed1">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>159.997726</X>
@@ -8141,7 +8491,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
                 <EndpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</EndpointStickyOn>
@@ -8150,10 +8500,10 @@
               </Connection>
               <Connection id="eaafe165-b916-4d8b-a111-6e2aa736e285">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>220.748337</X>
@@ -8169,7 +8519,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</StartpointStickyOn>
                 <EndpointStickyOn>1b35bf3c-37f1-4fbf-be39-63196a7c3515</EndpointStickyOn>
@@ -8178,10 +8528,10 @@
               </Connection>
               <Connection id="f530e4fc-bf6f-4e08-b365-18c9d213f2f2">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>50.8781166</X>
@@ -8197,7 +8547,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>0ef729c2-8acb-4465-8d75-66e777430954</StartpointStickyOn>
                 <EndpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</EndpointStickyOn>
@@ -8397,10 +8747,10 @@
               </Connection>
               <Connection id="b7977c0c-ab2d-41e5-9eae-d2c6215aa9fa">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>108.317947</X>
@@ -8416,7 +8766,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>ae4b88b8-2273-4609-9b1d-b81950d868b1</StartpointStickyOn>
                 <EndpointStickyOn>a0611534-08d3-41e6-af46-65a6e913ef50</EndpointStickyOn>
@@ -8425,10 +8775,10 @@
               </Connection>
               <Connection id="175df584-dcad-47d6-9cf2-0c809807ee25">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>48.9612427</X>
@@ -8444,7 +8794,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>2abf1957-2cf9-425a-8ea7-502987f98744</StartpointStickyOn>
                 <EndpointStickyOn>ae4b88b8-2273-4609-9b1d-b81950d868b1</EndpointStickyOn>
@@ -8709,10 +9059,10 @@
               </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>242.81752</X>
@@ -8728,7 +9078,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</StartpointStickyOn>
                 <EndpointStickyOn>8ebc7887-c13f-4dcc-9d04-c07bb9439457</EndpointStickyOn>
@@ -8737,10 +9087,10 @@
               </Connection>
               <Connection id="474f6d78-9d3d-46c2-a0f6-36caee9f0a18">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>109.97229</X>
@@ -8756,7 +9106,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</StartpointStickyOn>
                 <EndpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</EndpointStickyOn>
@@ -8765,10 +9115,10 @@
               </Connection>
               <Connection id="39dfbc2b-099a-4fd9-943e-62350e72cdd9">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>180.799271</X>
@@ -8784,7 +9134,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</StartpointStickyOn>
                 <EndpointStickyOn>cc047040-aad7-497c-8f5f-49ffa6cd9ea4</EndpointStickyOn>
@@ -8793,10 +9143,10 @@
               </Connection>
               <Connection id="6fdfd8d5-0cad-4600-8e2a-49039f49da02">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>36.68679</X>
@@ -8812,7 +9162,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>adf2b8c2-3fb4-4f3a-925e-2eaba14607f3</StartpointStickyOn>
                 <EndpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</EndpointStickyOn>
@@ -8951,10 +9301,10 @@
             <Connections>
               <Connection id="530870cd-f62f-428b-9d2a-352bfbabefcf">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>119.857925</X>
@@ -8970,7 +9320,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</StartpointStickyOn>
                 <EndpointStickyOn>912bd524-29b9-4823-8007-837a2485d337</EndpointStickyOn>
@@ -8979,10 +9329,10 @@
               </Connection>
               <Connection id="bdde1d66-5637-48da-bf02-7900c6e08c77">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
                     <X>48.07846</X>
@@ -8998,7 +9348,7 @@
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>e61b20b0-fa0c-43c9-8209-181b0bbee41e</StartpointStickyOn>
                 <EndpointStickyOn>09545631-1173-40fa-9025-edd9173ff6e3</EndpointStickyOn>
@@ -9020,20 +9370,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>129.5</X>
-                    <Y>48.5</Y>
+                    <X>146.5</X>
+                    <Y>78.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>131.5</X>
-                    <Y>50.5</Y>
+                    <X>148.5</X>
+                    <Y>80.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>126.5</X>
-                    <Y>51</Y>
+                    <X>143.5</X>
+                    <Y>81</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9058,20 +9408,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>72.5</X>
-                    <Y>48.5</Y>
+                    <X>62.5</X>
+                    <Y>76.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>74.5</X>
-                    <Y>50.5</Y>
+                    <X>64.5</X>
+                    <Y>78.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>69.5</X>
-                    <Y>51</Y>
+                    <X>59.5</X>
+                    <Y>79</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9095,20 +9445,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>197.5</X>
-                    <Y>64.5</Y>
+                    <X>217.5</X>
+                    <Y>77.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>199.5</X>
-                    <Y>66.5</Y>
+                    <X>219.5</X>
+                    <Y>79.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>194.5</X>
-                    <Y>67</Y>
+                    <X>214.5</X>
+                    <Y>80</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9132,20 +9482,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>79.5</X>
-                    <Y>102.5</Y>
+                    <X>153.5</X>
+                    <Y>140.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>81.5</X>
-                    <Y>104.5</Y>
+                    <X>155.5</X>
+                    <Y>142.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>76.5</X>
-                    <Y>105</Y>
+                    <X>150.5</X>
+                    <Y>143</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9205,20 +9555,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>147.5</X>
-                    <Y>118.5</Y>
+                    <X>239.5</X>
+                    <Y>140.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>149.5</X>
-                    <Y>120.5</Y>
+                    <X>241.5</X>
+                    <Y>142.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>144.5</X>
-                    <Y>121</Y>
+                    <X>236.5</X>
+                    <Y>143</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9242,20 +9592,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>219.5</X>
-                    <Y>122.5</Y>
+                    <X>323.5</X>
+                    <Y>140.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>221.5</X>
-                    <Y>124.5</Y>
+                    <X>325.5</X>
+                    <Y>142.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>216.5</X>
-                    <Y>125</Y>
+                    <X>320.5</X>
+                    <Y>143</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9270,28 +9620,65 @@
                 </StickiedConnections>
               </Node>
               <Node id="ff5ff796-1444-4cdd-b215-5888cb52811f">
-                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+                <AlphabetID>4a4fe825-aa8a-41b2-9a8f-73db4ebeda69</AlphabetID>
                 <Ordering>8</Ordering>
+                <Name>Branch</Name>
+                <Abbreviation>B</Abbreviation>
+                <Description>未定義支線框架</Description>
+                <Terminal>NonTerminal</Terminal>
+                <Scope>
+                  <Outline>
+                    <X>200.5</X>
+                    <Y>17.5</Y>
+                    <Width>39</Width>
+                    <Height>39</Height>
+                  </Outline>
+                  <Filled>
+                    <X>202.5</X>
+                    <Y>19.5</Y>
+                    <Width>35</Width>
+                    <Height>35</Height>
+                  </Filled>
+                  <Text>
+                    <X>197.5</X>
+                    <Y>20</Y>
+                    <Width>45</Width>
+                    <Height>34</Height>
+                  </Text>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#000000</Outline>
+                  <Filled>#AB9472</Filled>
+                  <Text>#000000</Text>
+                </SymbolColor>
+                <StickiedConnections>
+                  <ConnectionID>4ab6a06f-cd87-4594-9dc9-ca999e64f834</ConnectionID>
+                  <ConnectionID>bc0a4660-cfe1-454c-84cc-20d504fe8142</ConnectionID>
+                </StickiedConnections>
+              </Node>
+              <Node id="0c3fff47-ccd5-45d5-97e7-182122ac3d40">
+                <AlphabetID>6a5396fe-af08-4c84-a13a-11e80658eb6f</AlphabetID>
+                <Ordering>9</Ordering>
                 <Name>specialRoom</Name>
                 <Abbreviation>s</Abbreviation>
                 <Description>特殊房</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>180.5</X>
-                    <Y>6.5</Y>
+                    <X>289.5</X>
+                    <Y>16.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>182.5</X>
-                    <Y>8.5</Y>
+                    <X>291.5</X>
+                    <Y>18.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>177.5</X>
-                    <Y>9</Y>
+                    <X>286.5</X>
+                    <Y>19</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -9302,33 +9689,33 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>4ab6a06f-cd87-4594-9dc9-ca999e64f834</ConnectionID>
+                  <ConnectionID>bc0a4660-cfe1-454c-84cc-20d504fe8142</ConnectionID>
                 </StickiedConnections>
               </Node>
             </Nodes>
             <Connections>
               <Connection id="8717ec62-26dc-44c3-967f-f6c3f07b1197">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>104</X>
-                    <Y>62.5</Y>
+                    <X>93.99504</X>
+                    <Y>90.91655</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>126</X>
-                    <Y>62.5</Y>
+                    <X>143.004959</X>
+                    <Y>92.08345</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</StartpointStickyOn>
                 <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
@@ -9337,26 +9724,26 @@
               </Connection>
               <Connection id="c82ae190-2310-46ef-b5f1-8fde99de9ed1">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>160.5348</X>
-                    <Y>66.50819</Y>
+                    <X>177.99826</X>
+                    <Y>92.25355</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>194.4652</X>
-                    <Y>74.49181</Y>
+                    <X>214.00174</X>
+                    <Y>91.74645</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
                 <EndpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</EndpointStickyOn>
@@ -9365,26 +9752,26 @@
               </Connection>
               <Connection id="eaafe165-b916-4d8b-a111-6e2aa736e285">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>194.842438</X>
-                    <Y>83.864296</Y>
+                    <X>219.02858</X>
+                    <Y>103.77655</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>110.157562</X>
-                    <Y>111.135704</Y>
+                    <X>179.97142</X>
+                    <Y>142.22345</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</StartpointStickyOn>
                 <EndpointStickyOn>1b35bf3c-37f1-4fbf-be39-63196a7c3515</EndpointStickyOn>
@@ -9393,26 +9780,26 @@
               </Connection>
               <Connection id="f530e4fc-bf6f-4e08-b365-18c9d213f2f2">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>55.3037</X>
-                    <Y>42.8327675</Y>
+                    <X>49.84488</X>
+                    <Y>48.2960548</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>71.6963043</X>
-                    <Y>53.1672363</Y>
+                    <X>67.15512</X>
+                    <Y>75.70394</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>0ef729c2-8acb-4465-8d75-66e777430954</StartpointStickyOn>
                 <EndpointStickyOn>3912c1df-95a8-46ca-b1b0-0c157e11a4a2</EndpointStickyOn>
@@ -9421,26 +9808,26 @@
               </Connection>
               <Connection id="7c2a5b4d-608c-41e4-8958-9396b3e8323b">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>110.5348</X>
-                    <Y>120.508194</Y>
+                    <X>185</X>
+                    <Y>154.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>144.4652</X>
-                    <Y>128.491821</Y>
+                    <X>236</X>
+                    <Y>154.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>1b35bf3c-37f1-4fbf-be39-63196a7c3515</StartpointStickyOn>
                 <EndpointStickyOn>18988a46-1215-40cf-a605-56ab56f75810</EndpointStickyOn>
@@ -9449,26 +9836,26 @@
               </Connection>
               <Connection id="d0823101-1a68-4c45-aaf5-015575381d04">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <Name>main</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
+                <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>178.973053</X>
-                    <Y>133.470718</Y>
+                    <X>271</X>
+                    <Y>154.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>216.026947</X>
-                    <Y>135.529266</Y>
+                    <X>320</X>
+                    <Y>154.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#4E4E4E</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>18988a46-1215-40cf-a605-56ab56f75810</StartpointStickyOn>
                 <EndpointStickyOn>7bd7a07d-d65f-4232-bee5-3d31c663dfe2</EndpointStickyOn>
@@ -9476,30 +9863,58 @@
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="4ab6a06f-cd87-4594-9dc9-ca999e64f834">
-                <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
-                <Name>Weak requirement</Name>
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
                 <Description>System default.</Description>
                 <Requirement>WeakRequirement</Requirement>
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>157.008774</X>
-                    <Y>51.3751221</Y>
+                    <X>172.09967</X>
+                    <Y>79.39666</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>180.991226</X>
-                    <Y>31.6248779</Y>
+                    <X>202.90033</X>
+                    <Y>44.60334</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
                 </Scope>
                 <SymbolColor>
-                  <Outline>#000000</Outline>
+                  <Outline>#858585</Outline>
                 </SymbolColor>
                 <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
                 <EndpointStickyOn>ff5ff796-1444-4cdd-b215-5888cb52811f</EndpointStickyOn>
+                <StartSelected>False</StartSelected>
+                <EndSelected>False</EndSelected>
+              </Connection>
+              <Connection id="bc0a4660-cfe1-454c-84cc-20d504fe8142">
+                <AlphabetID>d7c7aa68-6b4b-436a-983c-545dab2965f8</AlphabetID>
+                <Name>branch</Name>
+                <Description>System default.</Description>
+                <Requirement>WeakRequirement</Requirement>
+                <ArrowType>Normal</ArrowType>
+                <Scope>
+                  <Startpoint>
+                    <X>231.9989</X>
+                    <Y>31.3033829</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Startpoint>
+                  <Endpoint>
+                    <X>286.0011</X>
+                    <Y>30.6966171</Y>
+                    <Width>11</Width>
+                    <Height>11</Height>
+                  </Endpoint>
+                </Scope>
+                <SymbolColor>
+                  <Outline>#858585</Outline>
+                </SymbolColor>
+                <StartpointStickyOn>ff5ff796-1444-4cdd-b215-5888cb52811f</StartpointStickyOn>
+                <EndpointStickyOn>0c3fff47-ccd5-45d5-97e7-182122ac3d40</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
