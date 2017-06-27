@@ -125,7 +125,7 @@ namespace CrevoxExtend {
 			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs.ToArray()) {
 				// Count.
 				int vdataCount = state.ResultVolumeDatas.Count(v => v.volumeData.name == vdataAndmaxv.vData.name);
-				if(vdataCount >= vdataAndmaxv.maxVData) {
+				if(vdataAndmaxv.maxVData != -1 && vdataCount >= vdataAndmaxv.maxVData) {
 					feasibleVDataAndMaxVs.Remove(vdataAndmaxv);
 					//Debug.Log(vdataAndmaxv.vData.name + " Over");
 				}
