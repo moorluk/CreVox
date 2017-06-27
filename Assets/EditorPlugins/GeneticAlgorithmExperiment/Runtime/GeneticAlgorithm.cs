@@ -115,7 +115,7 @@ namespace CrevoxExtend {
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				// Run specific room only.
-				if (volume.name != roomName) { continue; }
+				if (volume.vd.name != roomName) { continue; }
 				
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
 

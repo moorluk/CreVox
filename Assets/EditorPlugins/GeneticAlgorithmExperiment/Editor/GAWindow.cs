@@ -29,13 +29,13 @@ namespace CrevoxExtend {
 		void UpdateExperiments() {
 			var volumes = GameObject.Find("VolumeManager(Generated)").GetComponentsInChildren<Volume>();
 			foreach (var vdata in volumes) {
-				if(!RoomPattern.ContainsKey(vdata.name)) {
-					RoomPattern.Add(vdata.name, new RoomPattern(vdata.name));
+				if(!RoomPattern.ContainsKey(vdata.vd.name)) {
+					RoomPattern.Add(vdata.vd.name, new RoomPattern(vdata.vd.name));
 				}
 			}
 			foreach (var roomPatternName in new List<string>(RoomPattern.Keys)) {
 				List<Volume> volumeList = new List<Volume>(volumes);
-				if (volumeList.FindIndex(x => x.name == roomPatternName) == -1)  {
+				if (volumeList.FindIndex(x => x.vd.name == roomPatternName) == -1)  {
 					RoomPattern.Remove(roomPatternName);
 				}
 			}
