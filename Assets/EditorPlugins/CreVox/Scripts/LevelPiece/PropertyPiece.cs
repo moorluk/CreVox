@@ -9,11 +9,14 @@ namespace CreVox
 	{
 		Unused = 0,
 		Unknown = 1,
-		AddLootActor = 2,
-		EnemySpawner = 3,
 		DefaultEventRange = 4,
 		ActorKeyString = 5,
-		TriggerKeyString = 6
+		TriggerKeyString = 6,
+		AddLootActor = 2,
+		MessageActor = 7,
+		AreaTipActor = 9,
+		CounterActor = 8,
+		EnemySpawner = 3,
 	}
 
 	public class PropertyPiece : LevelPiece 
@@ -64,6 +67,33 @@ namespace CreVox
 								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
 								ala.m_keyString = _code [1];
 								ala.m_lootID = int.Parse (_code [2]);
+							}
+							break;
+
+						case "CounterActor":
+							if (obj != null && obj is CounterActor && _code.Length == 3) {
+								CounterActor ca = (CounterActor)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								ca.m_keyString = _code [1];
+								ca.m_activeCount = int.Parse (_code [2]);
+							}
+							break;
+
+						case "MessageActor":
+							if (obj != null && obj is MessageActor && _code.Length == 3) {
+								MessageActor ma = (MessageActor)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								ma.m_keyString = _code [1];
+								ma.m_message = _code [2];
+							}
+							break;
+
+						case "AreaTipActor":
+							if (obj != null && obj is AreaTipActor && _code.Length == 3) {
+								AreaTipActor ma = (AreaTipActor)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								ma.m_keyString = _code [1];
+								ma.m_stringKey = _code [2];
 							}
 							break;
 
