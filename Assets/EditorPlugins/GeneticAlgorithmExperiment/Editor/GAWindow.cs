@@ -50,7 +50,7 @@ namespace CrevoxExtend {
 			buttonStyle.fontSize = 18;
 			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
 
-			if (GUILayout.Button("跑跑GA+Bake", buttonStyle, GUILayout.Height(30))) {
+			if (GUILayout.Button("運行 GA 設置遊戲物件", buttonStyle, GUILayout.Height(30))) {
 				// Run GA.
 				CreVoxGA.Initialize();
 				foreach (var roomPatternName in RoomPattern.Keys) {
