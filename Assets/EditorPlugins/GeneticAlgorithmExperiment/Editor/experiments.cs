@@ -119,7 +119,7 @@ namespace CrevoxExtend {
 					// Generation count and population count.
 					experiment.ExperimentCount = Math.Max(1, EditorGUILayout.IntField("實驗次數", experiment.ExperimentCount, textFieldStyle));
 					experiment.GenerationCount = Math.Max(1, EditorGUILayout.IntField("世代數量", experiment.GenerationCount, textFieldStyle));
-					experiment.PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", experiment.PopulationCount, textFieldStyle));
+					experiment.PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", experiment.PopulationCount%2 == 0? experiment.PopulationCount: experiment.PopulationCount+1, textFieldStyle));
 					// Fitness weights (-10 ~ 10).
 					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
 					weights["block"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"],     textFieldStyle)));
