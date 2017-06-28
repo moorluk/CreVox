@@ -16,11 +16,10 @@ def main(root, experiments):
     # Number of file.
     numRun = 1
     # Num of generation.
-    numGeneration = 2
+    numGeneration = 1
     # Count of chromosome each generation.
     chromosomeCount = 6
     # The path of dataset.
-    nameOfRun = ["Block_100_100", "Graud_100_100"]
     inputFolderRoot  = root + "./datasets/"
     outputFolderRoot = root + "./Exports/BestChromosome/"
 
@@ -32,56 +31,44 @@ def main(root, experiments):
 
     for experiment in experiments:
         inputFolder = inputFolderRoot + experiment + "/"
-        exportTheBestChromosome(experiment, numRun, numGeneration, chromosomeCount, inputFolder, outputFolderRoot)
+        exportTheBestChromosome(experiment, inputFolder, outputFolderRoot)
         # plotGenerations(outputFolderRoot)
-    # ...
-    # dataA = pd.read_csv(outputFolderRoot + "bestChromosome_Block_100_100.csv")
-    # dataB = pd.read_csv(outputFolderRoot + "bestChromosome_Graud_100_100.csv")
-    # plotGenerationsWithSD([dataA, dataB], numRun, numGeneration, outputFolderRoot)
+        # ...
+        # dataA = pd.read_csv(outputFolderRoot + "bestChromosome_"+experiment+".csv")
+        # plotGenerationsWithSD(dataA, numRun, numGeneration, outputFolderRoot)
 
 # Export the best chromosomes table (single fitness score / all / run / class).
-def exportTheBestChromosome(label, numRun, numGeneration, chromosomeCount, inputFolder, outputFolder):
+def exportTheBestChromosome(label, inputFolder, outputFolder):
     run = DataFrame(columns =  ["Run no.","Gen no.","Chm no.",'label','score','volume'])
+    # Read file.
+    data = pd.read_csv(inputFolder + "experiment_1.csv")
+    numRun = data['run'].max()
+    numGeneration = data['generation'].max()
+    chromosomeCount = data['chromosome'].max()
     # Get input file
     for i in range(1, numRun + 1, 1):
-        # Read file.
-        fitnessScores = pd.read_csv(inputFolder + "experiment_" + str(i) + ".csv")
+        # get all of label in this csv file.
         fitnessNames = set()
-        for name in fitnessScores.label.values:
+        for name in data.label.values:
             had = name in fitnessNames
             if(had):
                 break
             fitnessNames.add(name)
-
-        # for ng in range(0, numGeneration, 1):
-        #     locals()['fitnessScores_run' + str(i) + '_gen' + str(ng + 1)] = fitnessScores[ng * chromosomeCount : ng * chromosomeCount + chromosomeCount]
-        # Create table that stores the best chromosome each generation.
-        # newColumns = list(fitnessScores)[0 : len(fitnessScores.columns)]
-        # newColumns.extend(['run'])
-        # bestChromosomes = DataFrame(columns = newColumns)
-        # Get the max value from every Generations.
-        # e.g. 100 numGeneration has 100 best chromosome each generation.
-        # for ng in range(0, numGeneration, 1):
-        #     #Copy the fitnessScores each generation
-        #     fitnessScoresInOneGeneration = locals()['fitnessScores_run' + str(i) + '_gen' + str(ng + 1)]
-        #     #Get the index of max value from fitnessScores each generation
-        #     indexOfMaxValue = fitnessScoresInOneGeneration['score'].argmax() # % chromosomeCount
-        #     bestChromosome = fitnessScoresInOneGeneration.loc[[indexOfMaxValue]]
-        #     bestChromosome['run'] = i
-        #     bestChromosomes = bestChromosomes.append(bestChromosome)
-        # run = pd.concat([run, bestChromosomes])
-
+        #
         for ng in range(1,numGeneration+1):
+            #calculate all of chromosome score.
             chromosomes = []
             for chromosomeNumber in range(1,chromosomeCount+1):
-                chromosomeScore = fitnessScores[(fitnessScores.generation == ng) & (fitnessScores.chromosome == chromosomeNumber)].score.sum()
+                chromosomeScore = data[(data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
                 chromosomes.append(chromosomeScore)
+            #find index of the best score chromosome.
             chromosomeID = chromosomes.index(max(chromosomes))
             for fitnessName in fitnessNames:
-                info = [i,ng,chromosomeID+1,fitnessName,max(chromosomes),'volume A']
+                info = [i,ng,chromosomeID+1,fitnessName,max(chromosomes),'']
+                # add info to the last.
                 run.loc[-1] = info
-                run.index = run.index + 1  # shifting index
- 
+                # shifting index
+                run.index = run.index + 1
 
     # output result table
     run.to_csv(outputFolder + "bestChromosome_" + label + ".csv",index = False)
@@ -108,7 +95,7 @@ def plotGenerationsWithSD(dataset, numRun, numGeneration, outputFolder):
         generationMeanList = list()
         generationStdList = list()
         for i in range(1, numRun + 1):
-            generation = np.array([data.ix[j * numGeneration + i - 1, :]['all'] for j in range(numRun)])
+            generation = np.array([data.ix[j * numGeneration + i - 1, :]['score'] for j in range(numRun)])
             generationStdList.insert(i - 1, np.std(generation))
             generationMeanList.insert(i - 1, generation.mean())
         plt.errorbar(range(len(generationMeanList)), generationMeanList, generationStdList, marker = 'o', alpha = 0.3)
