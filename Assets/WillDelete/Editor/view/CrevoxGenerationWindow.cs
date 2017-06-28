@@ -147,7 +147,7 @@ namespace CrevoxExtend {
 				// Set the random seed.
 				if (! specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
 				CrevoxGeneration.InitialTable(randomSeed);
-				CrevoxGeneration.GenerateRealLevel(null,CrevoxGeneration.stage,randomSeed);
+				CrevoxGeneration.Generate(CrevoxGeneration.stage);
 				/*foreach (var vm in CrevoxGeneration.tempFeasible) {
 					Debug.Log("Feasible vData: " + vm.vData + ", maxV:" + vm.maxVData);
 				}*/
