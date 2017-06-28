@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.Collections;
@@ -59,7 +59,7 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("Bake the navigation", buttonStyle, GUILayout.Height(30))) {
 				SerializedObject settingsObject = new SerializedObject(NavMeshBuilder.navMeshSettingsObject);
 				settingsObject.FindProperty("m_BuildSettings.agentRadius").floatValue           = 0.30f;
-				settingsObject.FindProperty("m_BuildSettings.agentSlope").floatValue            = 30.0f;
+				settingsObject.FindProperty("m_BuildSettings.agentSlope").floatValue            = 50.0f;
 				// settingsObject.FindProperty("m_BuildSettings.ledgeDropHeight").floatValue       = 0f;
 				// settingsObject.FindProperty("m_BuildSettings.agentClimb").floatValue            = 0f;
 				// settingsObject.FindProperty("m_BuildSettings.maxJumpAcrossDistance").floatValue = 0.0f;
