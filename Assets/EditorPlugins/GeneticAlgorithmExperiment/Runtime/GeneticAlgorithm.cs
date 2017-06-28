@@ -91,20 +91,43 @@ namespace CrevoxExtend {
 			GenerationNumber = generationNumber;
 			// Update the StreamWriter of DatasetExport.
 			DatasetExport = sw;
-
+			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
 
 				// Populations, Generations.
-				var bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
+				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
 
 				BestChromosomeToWorldPos(bestChromosome);
-
-				// Temp for first room.
-				return bestChromosome;
 			}
 			GC.Collect();
-			return null;
+			// [Will Modify]
+			return bestChromosome;
+			//return null;
+		}
+		// Overloading. No initialize.
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, string roomName, StreamWriter sw = null) {
+			// Set the number of population and generation.
+			PopulationNumber = populationNumber;
+			GenerationNumber = generationNumber;
+			// Update the StreamWriter of DatasetExport.
+			DatasetExport = sw;
+			CreVoxChromosome bestChromosome = new CreVoxChromosome();
+			foreach (var volume in GetVolumeByVolumeManager()) {
+				// Run specific room only.
+				if (volume.vd.name != roomName) { continue; }
+				
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
+
+				// Populations, Generations.
+				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
+
+				BestChromosomeToWorldPos(bestChromosome);
+			}
+			GC.Collect();
+			// [Will Modify]
+			return bestChromosome;
+			//return null;
 		}
 
 		// Get all of volumes frin volume manager.
@@ -138,7 +161,7 @@ namespace CrevoxExtend {
 			// A-star, defines the main path.
 			var map = MakeAMap(volume.gameObject);
 			var items = volume.gameObject.transform.Find("ItemRoot");
-			Vector3 startPosition = items.Find("Starting Node").transform.position;
+			Vector3 startPosition = items.Find("Starting Node").transform.position - volume.transform.position;
 			Vector3 endPosition;
 			// Initial the main path.
 			_mainPath.Clear();
@@ -147,7 +170,7 @@ namespace CrevoxExtend {
 				// Ignore it if it is not connection.
 				if (!item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
-				endPosition = item.transform.position;
+				endPosition = item.transform.position - volume.transform.position;
 				// Execute the A-Star.
 				AStar astar = new AStar(map, startPosition, endPosition);
 				//if theShortestPath is not exist, then return null. so theShortestPath = null, then continue it.
@@ -189,7 +212,7 @@ namespace CrevoxExtend {
 			var decorationRoots = volume.transform.Find("DecorationRoot");
 			for (int tile = 0; tile < decorationRoots.childCount; ++tile) {				
 				if (decorationRoots.GetChild(tile).Find(_picecName[0]) != null) {
-					var tilePosition = decorationRoots.GetChild(tile).Find(_picecName[0]).position;
+					var tilePosition = decorationRoots.GetChild(tile).Find(_picecName[0]).position - volume.transform.position;
 					// 1 means the tile is passable. (Width: 3 x Height: 2 x Length: 3)
 					if (tilePosition != null) {
 						// Because all "decorations" are reduced 1.
