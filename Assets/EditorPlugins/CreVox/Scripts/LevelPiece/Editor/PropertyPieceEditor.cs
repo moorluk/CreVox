@@ -56,6 +56,18 @@ namespace CreVox
 						DrawInsAddLootActor (i);
 						break;
 
+					case FocalComponent.CounterActor:
+						DrawInsCounterActor (i);
+						break;
+
+					case FocalComponent.MessageActor:
+						DrawInsMessageActor (i);
+						break;
+
+					case FocalComponent.AreaTipActor:
+						DrawInsAreaTipActor (i);
+						break;
+
 					case FocalComponent.EnemySpawner:
 						DrawInsEnemySpawner (i);
 						break;
@@ -126,6 +138,57 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
+		private void DrawInsCounterActor (int _index, bool isIns = true)
+		{
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(CounterActor), true);
+			}
+			if (pp.PProperties [_index].tObject != null) {
+				CounterActor obj = (CounterActor)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")\n" +
+					"Active Count　(" + obj.m_activeCount.ToString () + ")",
+					EditorStyles.miniLabel,
+					GUILayout.Height (12 * 3));
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
+		private void DrawInsMessageActor (int _index, bool isIns = true)
+		{
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(MessageActor), true);
+			}
+			if (pp.PProperties [_index].tObject != null) {
+				MessageActor obj = (MessageActor)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")\n" +
+					"Loot ID　(" + obj.m_message + ")",
+					EditorStyles.miniLabel,
+					GUILayout.Height (12 * 3));
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
+		private void DrawInsAreaTipActor (int _index, bool isIns = true)
+		{
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(AreaTipActor), true);
+			}
+			if (pp.PProperties [_index].tObject != null) {
+				AreaTipActor obj = (AreaTipActor)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Key String　(" + obj.m_keyString + ")\n" +
+					"StringKey (" + obj.m_stringKey + ")",
+					EditorStyles.miniLabel,
+					GUILayout.Height (12 * 3));
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
 		private void DrawInsEnemySpawner (int _index, bool isIns = true)
 		{
 			if (isIns) {
@@ -176,7 +239,7 @@ namespace CreVox
 			EditorGUI.BeginChangeCheck ();
 			for (int i = 0; i < pp.PProperties.Length; i++) {
 				EditorGUI.BeginDisabledGroup (pp.PProperties [i].tComponent == FocalComponent.Unused);
-				using (var v = new EditorGUILayout.VerticalScope ("box")) {
+				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 					pp.PProperties [i].tActive = EditorGUILayout.ToggleLeft (pp.PProperties [i].tComponent.ToString (),pp.PProperties [i].tActive, EditorStyles.boldLabel);
 					if (pp.PProperties [i].tActive) {
 						pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.PProperties [i].tRange);
@@ -212,6 +275,45 @@ namespace CreVox
 								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
 								               obj.m_keyString + ";" +
 								               obj.m_lootID.ToString ();
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.CounterActor:
+							if (pp.PProperties [i].tObject != null) {
+								CounterActor obj = (CounterActor)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+								obj.m_activeCount = EditorGUILayout.IntField ("Loot ID", obj.m_activeCount);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+									obj.m_keyString + ";" +
+									obj.m_activeCount.ToString ();
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.MessageActor:
+							if (pp.PProperties [i].tObject != null) {
+								MessageActor obj = (MessageActor)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+								obj.m_message = EditorGUILayout.TextField ("Message", obj.m_message);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+									obj.m_keyString + ";" +
+									obj.m_message;
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.AreaTipActor:
+							if (pp.PProperties [i].tObject != null) {
+								AreaTipActor obj = (AreaTipActor)pp.PProperties [i].tObject;
+								obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
+								obj.m_stringKey = EditorGUILayout.TextField ("String Key(Tip ID)", obj.m_stringKey);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+									obj.m_keyString + ";" +
+									obj.m_stringKey;
 								item.attributes [i] = _code;
 							}
 							break;
@@ -267,6 +369,18 @@ namespace CreVox
 
 						case FocalComponent.AddLootActor:
 							DrawInsAddLootActor (i,false);
+							break;
+
+						case FocalComponent.CounterActor:
+							DrawInsCounterActor (i,false);
+							break;
+
+						case FocalComponent.MessageActor:
+							DrawInsMessageActor (i,false);
+							break;
+
+						case FocalComponent.AreaTipActor:
+							DrawInsAreaTipActor (i,false);
 							break;
 
 						case FocalComponent.EnemySpawner:
