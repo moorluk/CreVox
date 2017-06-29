@@ -43,10 +43,10 @@
       <Node id="b1f2c0df-061d-4e2d-a0aa-27f97705db5a">
         <AlphabetID>df9bd8e3-274c-4fa2-a116-10f356f865eb</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>none</Name>
-        <Abbreviation>none</Abbreviation>
+        <Name>None</Name>
+        <Abbreviation>NONE</Abbreviation>
         <Description>System default.</Description>
-        <Terminal>Terminal</Terminal>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -1279,10 +1279,10 @@
               <Node id="977c4c25-01f8-4595-84cd-33b450bc2969">
                 <AlphabetID>df9bd8e3-274c-4fa2-a116-10f356f865eb</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>none</Name>
-                <Abbreviation>none</Abbreviation>
+                <Name>None</Name>
+                <Abbreviation>NONE</Abbreviation>
                 <Description>System default.</Description>
-                <Terminal>Terminal</Terminal>
+                <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
                     <X>147.5</X>
@@ -1326,20 +1326,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>26.5</X>
-                    <Y>19.5</Y>
+                    <X>14.5</X>
+                    <Y>21.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>28.5</X>
-                    <Y>21.5</Y>
+                    <X>16.5</X>
+                    <Y>23.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>23.5</X>
-                    <Y>22</Y>
+                    <X>11.5</X>
+                    <Y>24</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1363,20 +1363,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>100.5</X>
-                    <Y>18.5</Y>
+                    <X>82.5</X>
+                    <Y>20.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>102.5</X>
-                    <Y>20.5</Y>
+                    <X>84.5</X>
+                    <Y>22.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>97.5</X>
-                    <Y>21</Y>
+                    <X>79.5</X>
+                    <Y>23</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1401,20 +1401,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>177.5</X>
-                    <Y>16.5</Y>
+                    <X>144.5</X>
+                    <Y>18.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>179.5</X>
-                    <Y>18.5</Y>
+                    <X>146.5</X>
+                    <Y>20.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>174.5</X>
-                    <Y>19</Y>
+                    <X>141.5</X>
+                    <Y>21</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1439,20 +1439,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>26.5</X>
-                    <Y>92.5</Y>
+                    <X>11.5</X>
+                    <Y>94.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>28.5</X>
-                    <Y>94.5</Y>
+                    <X>13.5</X>
+                    <Y>96.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>23.5</X>
-                    <Y>95</Y>
+                    <X>8.5</X>
+                    <Y>97</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1475,20 +1475,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>98.5</X>
-                    <Y>87.5</Y>
+                    <X>76.5</X>
+                    <Y>93.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>100.5</X>
-                    <Y>89.5</Y>
+                    <X>78.5</X>
+                    <Y>95.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>95.5</X>
-                    <Y>90</Y>
+                    <X>73.5</X>
+                    <Y>96</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1511,20 +1511,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>182.5</X>
-                    <Y>90.5</Y>
+                    <X>143.5</X>
+                    <Y>98.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>184.5</X>
-                    <Y>92.5</Y>
+                    <X>145.5</X>
+                    <Y>100.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>179.5</X>
-                    <Y>93</Y>
+                    <X>140.5</X>
+                    <Y>101</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1547,20 +1547,20 @@
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>244.5</X>
-                    <Y>37.5</Y>
+                    <X>208.5</X>
+                    <Y>26.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>246.5</X>
-                    <Y>39.5</Y>
+                    <X>210.5</X>
+                    <Y>28.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>241.5</X>
-                    <Y>40</Y>
+                    <X>205.5</X>
+                    <Y>29</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -1576,35 +1576,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="1b59ca88-01ed-404e-a6e6-9325622464d8">
-                <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
                 <Ordering>8</Ordering>
-                <Name>FrameworkE</Name>
-                <Abbreviation>FE</Abbreviation>
-                <Description>框架E(鬥技場)</Description>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>272.5</X>
-                    <Y>103.5</Y>
+                    <X>212.5</X>
+                    <Y>96.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>274.5</X>
-                    <Y>105.5</Y>
+                    <X>214.5</X>
+                    <Y>98.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>269.5</X>
-                    <Y>106</Y>
+                    <X>209.5</X>
+                    <Y>99</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#B25349</Filled>
+                  <Filled>#A9A9A9</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -1621,14 +1621,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>57.9984055</X>
-                    <Y>33.2635345</Y>
+                    <X>45.9981079</X>
+                    <Y>35.2426758</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>97.0015945</X>
-                    <Y>32.7364655</Y>
+                    <X>79.00189</X>
+                    <Y>34.7573242</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1649,14 +1649,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>131.9941</X>
-                    <Y>32.04561</Y>
+                    <X>113.990906</X>
+                    <Y>33.9357758</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>174.0059</X>
-                    <Y>30.9543915</Y>
+                    <X>141.0091</X>
+                    <Y>33.06422</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1677,14 +1677,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>113.992966</X>
-                    <Y>49.9926529</Y>
+                    <X>95.0664749</X>
+                    <Y>51.941185</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>113.007034</X>
-                    <Y>84.00735</Y>
+                    <X>91.9335251</X>
+                    <Y>90.058815</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1705,14 +1705,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>40.5</X>
-                    <Y>51</Y>
+                    <X>27.78143</X>
+                    <Y>52.98524</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>40.5</X>
-                    <Y>89</Y>
+                    <X>26.2185726</X>
+                    <Y>91.0147552</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1733,14 +1733,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>192.679733</X>
-                    <Y>47.96019</Y>
+                    <X>158.281265</X>
+                    <Y>49.9986343</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>195.320251</X>
-                    <Y>87.03981</Y>
+                    <X>157.718735</X>
+                    <Y>95.0013657</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1761,14 +1761,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>208.198959</X>
-                    <Y>35.734</Y>
+                    <X>175.864868</X>
+                    <Y>34.67061</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>241.801041</X>
-                    <Y>46.266</Y>
+                    <X>205.135132</X>
+                    <Y>38.32939</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -1789,14 +1789,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>265.334625</X>
-                    <Y>67.61018</Y>
+                    <X>223.498367</X>
+                    <Y>57.9714966</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>279.665375</X>
-                    <Y>101.389816</Y>
+                    <X>225.501633</X>
+                    <Y>93.0285</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -2083,35 +2083,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="29af8305-4e4e-47c4-9efc-413a4a08d1d8">
-                <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
+                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
                 <Ordering>8</Ordering>
-                <Name>FrameworkE</Name>
-                <Abbreviation>FE</Abbreviation>
-                <Description>框架E(鬥技場)</Description>
+                <Name>FrameWorkTemp</Name>
+                <Abbreviation>F</Abbreviation>
+                <Description>未定義框架</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>348.5</X>
-                    <Y>50.5</Y>
+                    <X>339.5</X>
+                    <Y>48.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>350.5</X>
-                    <Y>52.5</Y>
+                    <X>341.5</X>
+                    <Y>50.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>345.5</X>
-                    <Y>53</Y>
+                    <X>336.5</X>
+                    <Y>51</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#B25349</Filled>
+                  <Filled>#A9A9A9</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -2268,14 +2268,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>307.998322</X>
-                    <Y>63.7430344</Y>
+                    <X>307.9978</X>
+                    <Y>63.22226</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>345.001678</X>
-                    <Y>64.2569656</Y>
+                    <X>336.0022</X>
+                    <Y>62.77774</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -2834,27 +2834,27 @@
           <MissionGraph>
             <Nodes>
               <Node id="ed1e556c-1c48-4821-974d-da5583f3564d">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>35.5</X>
+                    <X>44.5</X>
                     <Y>85.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>37.5</X>
+                    <X>46.5</X>
                     <Y>87.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>32.5</X>
+                    <X>41.5</X>
                     <Y>88</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -2862,7 +2862,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -2915,14 +2915,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>66.90582</X>
-                    <Y>97.68689</Y>
+                    <X>75.88553</X>
+                    <Y>97.50166</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>128.094177</X>
-                    <Y>91.3131</Y>
+                    <X>128.114471</X>
+                    <Y>91.49834</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -2942,35 +2942,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="16b0289b-975c-47da-9d8f-b1d184e09bf1">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>44.5</X>
-                    <Y>70.5</Y>
+                    <X>47.5</X>
+                    <Y>82.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>46.5</X>
-                    <Y>72.5</Y>
+                    <X>49.5</X>
+                    <Y>84.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>41.5</X>
-                    <Y>73</Y>
+                    <X>44.5</X>
+                    <Y>85</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -3097,14 +3097,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>73.60997</X>
-                    <Y>93.32829</Y>
+                    <X>77.36762</X>
+                    <Y>103.880287</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>132.39003</X>
-                    <Y>127.671707</Y>
+                    <X>131.632385</X>
+                    <Y>129.1197</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3125,14 +3125,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>74.91766</X>
-                    <Y>78.4411</Y>
+                    <X>76.95699</X>
+                    <Y>88.29443</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>126.082336</X>
-                    <Y>59.5589</Y>
+                    <X>127.043</X>
+                    <Y>61.7055664</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3177,10 +3177,10 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>10</Weight>
-        <QuantityLimitMin>1</QuantityLimitMin>
-        <QuantityLimitMax>2</QuantityLimitMax>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>Window W &gt; c+bbs</Name>
@@ -3189,35 +3189,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="ed1e556c-1c48-4821-974d-da5583f3564d">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>35.5</X>
-                    <Y>85.5</Y>
+                    <X>43.5</X>
+                    <Y>82.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>37.5</X>
-                    <Y>87.5</Y>
+                    <X>45.5</X>
+                    <Y>84.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>32.5</X>
-                    <Y>88</Y>
+                    <X>40.5</X>
+                    <Y>85</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -3270,14 +3270,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>66.90582</X>
-                    <Y>97.68689</Y>
+                    <X>74.94489</X>
+                    <Y>95.1123352</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>128.094177</X>
-                    <Y>91.3131</Y>
+                    <X>128.0551</X>
+                    <Y>90.8876648</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3297,35 +3297,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="16b0289b-975c-47da-9d8f-b1d184e09bf1">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>15.5</X>
-                    <Y>40.5</Y>
+                    <X>5.5</X>
+                    <Y>49.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>17.5</X>
-                    <Y>42.5</Y>
+                    <X>7.5</X>
+                    <Y>51.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>12.5</X>
-                    <Y>43</Y>
+                    <X>2.5</X>
+                    <Y>52</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -3489,14 +3489,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>40.60054</X>
-                    <Y>68.0287857</Y>
+                    <X>32.2992172</X>
+                    <Y>75.4344</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>82.39946</X>
-                    <Y>118.971214</Y>
+                    <X>80.70078</X>
+                    <Y>120.5656</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3517,14 +3517,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>46.9993134</X>
-                    <Y>54.34514</Y>
+                    <X>36.94245</X>
+                    <Y>62.0819168</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>125.000687</X>
-                    <Y>53.65486</Y>
+                    <X>125.057556</X>
+                    <Y>54.918087</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3597,10 +3597,10 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>10</Weight>
-        <QuantityLimitMin>1</QuantityLimitMin>
-        <QuantityLimitMax>2</QuantityLimitMax>
+        <QuantityLimitMin>0</QuantityLimitMin>
+        <QuantityLimitMax>1</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>Window W &gt; w+bs</Name>
@@ -3609,35 +3609,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="d4a38bfc-9084-423b-8608-ad690ee4d973">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>68.5</X>
-                    <Y>68.5</Y>
+                    <X>78.5</X>
+                    <Y>77.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>70.5</X>
-                    <Y>70.5</Y>
+                    <X>80.5</X>
+                    <Y>79.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>65.5</X>
-                    <Y>71</Y>
+                    <X>75.5</X>
+                    <Y>80</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -3690,14 +3690,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>99.9938354</X>
-                    <Y>82.03556</Y>
+                    <X>109.882431</X>
+                    <Y>89.47486</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>178.006165</X>
-                    <Y>79.96444</Y>
+                    <X>178.117569</X>
+                    <Y>81.52514</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3717,35 +3717,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="a08f7cf7-ce73-401d-899d-0fd996de6a96">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>48.5</X>
-                    <Y>80.5</Y>
+                    <X>39.5</X>
+                    <Y>87.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>50.5</X>
-                    <Y>82.5</Y>
+                    <X>41.5</X>
+                    <Y>89.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>45.5</X>
-                    <Y>83</Y>
+                    <X>36.5</X>
+                    <Y>90</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -3872,14 +3872,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>79.9781647</X>
-                    <Y>93.62609</Y>
+                    <X>70.92326</X>
+                    <Y>99.862915</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>185.021835</X>
-                    <Y>88.37391</Y>
+                    <X>185.076736</X>
+                    <Y>89.137085</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3900,14 +3900,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>78.0111</X>
-                    <Y>102.602814</Y>
+                    <X>69.9210052</X>
+                    <Y>107.549843</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>113.988892</X>
-                    <Y>121.397186</Y>
+                    <X>113.078995</X>
+                    <Y>123.45015</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -3952,10 +3952,10 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>6</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
-        <QuantityLimitMax>1</QuantityLimitMax>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>Window W &gt; w+bbs</Name>
@@ -3964,35 +3964,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="d4a38bfc-9084-423b-8608-ad690ee4d973">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>68.5</X>
-                    <Y>68.5</Y>
+                    <X>76.5</X>
+                    <Y>76.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>70.5</X>
-                    <Y>70.5</Y>
+                    <X>78.5</X>
+                    <Y>78.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>65.5</X>
-                    <Y>71</Y>
+                    <X>73.5</X>
+                    <Y>79</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4045,14 +4045,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>99.9938354</X>
-                    <Y>82.03556</Y>
+                    <X>107.904755</X>
+                    <Y>88.67664</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>178.006165</X>
-                    <Y>79.96444</Y>
+                    <X>178.095245</X>
+                    <Y>81.32336</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4072,35 +4072,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="a08f7cf7-ce73-401d-899d-0fd996de6a96">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>28.5</X>
-                    <Y>41.5</Y>
+                    <X>22.5</X>
+                    <Y>40.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>30.5</X>
-                    <Y>43.5</Y>
+                    <X>24.5</X>
+                    <Y>42.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>25.5</X>
-                    <Y>44</Y>
+                    <X>19.5</X>
+                    <Y>43</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4264,14 +4264,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>59.96592</X>
-                    <Y>56.59162</Y>
+                    <X>53.9589348</X>
+                    <Y>55.6981621</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>121.034081</X>
-                    <Y>60.40838</Y>
+                    <X>121.041061</X>
+                    <Y>60.3018341</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4292,14 +4292,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>43.7927551</X>
-                    <Y>72.95219</Y>
+                    <X>39.0339851</X>
+                    <Y>71.81557</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>47.2072449</X>
-                    <Y>119.047813</Y>
+                    <X>45.9660149</X>
+                    <Y>119.184433</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4372,7 +4372,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>6</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -4384,35 +4384,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="dc518c77-08f8-4994-bd85-aab07f6f3bfc">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>41.5</X>
-                    <Y>43.5</Y>
+                    <X>56.5</X>
+                    <Y>46.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>43.5</X>
-                    <Y>45.5</Y>
+                    <X>58.5</X>
+                    <Y>48.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>38.5</X>
-                    <Y>46</Y>
+                    <X>53.5</X>
+                    <Y>49</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4465,14 +4465,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>72.99599</X>
-                    <Y>57.8749123</Y>
+                    <X>88</X>
+                    <Y>60.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>178.004013</X>
-                    <Y>60.1250839</Y>
+                    <X>178</X>
+                    <Y>60.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4492,27 +4492,27 @@
           <MissionGraph>
             <Nodes>
               <Node id="ddd4a0bf-e150-459c-aca1-47c763de5943">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>41.5</X>
+                    <X>53.5</X>
                     <Y>43.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>43.5</X>
+                    <X>55.5</X>
                     <Y>45.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>38.5</X>
+                    <X>50.5</X>
                     <Y>46</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -4520,7 +4520,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4573,14 +4573,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>72.9983139</X>
-                    <Y>57.74303</Y>
+                    <X>84.99799</X>
+                    <Y>57.76512</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>182.0017</X>
-                    <Y>59.2569656</Y>
+                    <X>182.002014</X>
+                    <Y>59.23488</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4597,10 +4597,10 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>True</Enable>
+        <Enable>False</Enable>
         <Weight>4</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
-        <QuantityLimitMax>1</QuantityLimitMax>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
       <Rule>
         <Name>Window W &gt; c</Name>
@@ -4609,35 +4609,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="dc518c77-08f8-4994-bd85-aab07f6f3bfc">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>41.5</X>
-                    <Y>43.5</Y>
+                    <X>49.5</X>
+                    <Y>48.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>43.5</X>
-                    <Y>45.5</Y>
+                    <X>51.5</X>
+                    <Y>50.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>38.5</X>
-                    <Y>46</Y>
+                    <X>46.5</X>
+                    <Y>51</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4690,14 +4690,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>72.99599</X>
-                    <Y>57.8749123</Y>
+                    <X>80.99799</X>
+                    <Y>62.23488</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>178.004013</X>
-                    <Y>60.1250839</Y>
+                    <X>178.002014</X>
+                    <Y>60.76512</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4717,35 +4717,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="ddd4a0bf-e150-459c-aca1-47c763de5943">
-                <AlphabetID>75d01cb0-6944-4232-b2cd-7c8266fcdd4c</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameWorkTemp</Name>
-                <Abbreviation>F</Abbreviation>
-                <Description>未定義框架</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>41.5</X>
-                    <Y>43.5</Y>
+                    <X>44.5</X>
+                    <Y>50.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>43.5</X>
-                    <Y>45.5</Y>
+                    <X>46.5</X>
+                    <Y>52.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>38.5</X>
-                    <Y>46</Y>
+                    <X>41.5</X>
+                    <Y>53</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A9A9A9</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -4798,14 +4798,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>72.99819</X>
-                    <Y>57.7517738</Y>
+                    <X>75.98819</X>
+                    <Y>63.857048</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>177.001816</X>
-                    <Y>59.24823</Y>
+                    <X>177.01181</X>
+                    <Y>60.1429443</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -4825,7 +4825,7 @@
         <Enable>True</Enable>
         <Weight>4</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
-        <QuantityLimitMax>1</QuantityLimitMax>
+        <QuantityLimitMax>0</QuantityLimitMax>
       </Rule>
     </RuleGroup>
     <RuleGroup>
