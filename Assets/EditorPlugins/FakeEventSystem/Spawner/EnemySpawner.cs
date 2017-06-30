@@ -10,7 +10,14 @@ public enum EnemyType
     Warrior = 1,
     Guardian = 2,
     Ranger = 3,
-    Count = 4
+	Boss1f = 4,
+	Boss2f = 5,
+	Boss3f = 6,
+	Boss4f = 7,
+	Boss5f = 8,
+	Boss6f = 9,
+	Bomber = 10,
+    Count = 11
 }
 
 [System.Serializable]
