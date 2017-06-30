@@ -168,11 +168,11 @@ namespace CreVox
 			case EditMode.VoxelLayer:
 			case EditMode.Object:
 			case EditMode.ObjectLayer:
-			case EditMode.Item:
 				Tools.current = Tool.None;
 				break;
 
 			case EditMode.View:
+			case EditMode.Item:
 			default:
 				break;
 			}
@@ -222,7 +222,6 @@ namespace CreVox
 
 			if (Event.current.type == EventType.KeyDown) {
 				HotkeyFunction (Event.current.keyCode.ToString ());
-				Event.current.Use ();
 				return;
 			} 
 
@@ -710,6 +709,7 @@ namespace CreVox
 		{
 			int _index = (int)currentEditMode;
 			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
+			bool _hotkey = (currentEditMode != EditMode.View && currentEditMode != EditMode.Item);
 
 			switch (funcKey) {
 			case "A":
@@ -729,42 +729,56 @@ namespace CreVox
 				break;
 
 			case "Q":
-				volume.pointer = !volume.pointer;
-				fixPointY = volume.pointY;
-				volume.ChangePointY (fixPointY);
+				if (_hotkey) {
+					volume.pointer = !volume.pointer;
+					fixPointY = volume.pointY;
+					volume.ChangePointY (fixPointY);
+				}
 				break;
 
 			case "W":
-				fixPointY = volume.pointY + 1;
-				volume.ChangePointY (fixPointY);
-				fixPointY = volume.pointY;
+				if (_hotkey) {
+					fixPointY = volume.pointY + 1;
+					volume.ChangePointY (fixPointY);
+					fixPointY = volume.pointY;
+				}
 				break;
 
 			case "S":
-				fixPointY = volume.pointY - 1;
-				volume.ChangePointY (fixPointY);
-				fixPointY = volume.pointY;
+				if (_hotkey) {
+					fixPointY = volume.pointY - 1;
+					volume.ChangePointY (fixPointY);
+					fixPointY = volume.pointY;
+				}
 				break;
 
 			case "E":
-				volume.cuter = !volume.cuter;
-				fixCutY = volume.cutY;
-				volume.ChangeCutY (fixCutY);
+				if (_hotkey) {
+					volume.cuter = !volume.cuter;
+					fixCutY = volume.cutY;
+					volume.ChangeCutY (fixCutY);
+				}
 				break;
 
 			case "R":
-				fixCutY = volume.cutY + 1;
-				volume.ChangeCutY (fixCutY);
-				fixCutY = volume.cutY;
+				if (_hotkey) {
+					fixCutY = volume.cutY + 1;
+					volume.ChangeCutY (fixCutY);
+					fixCutY = volume.cutY;
+				}
 				break;
 
 			case "F":
-				fixCutY = volume.cutY - 1;
-				volume.ChangeCutY (fixCutY);
-				fixCutY = volume.cutY;
+				if (_hotkey) {
+					fixCutY = volume.cutY - 1;
+					volume.ChangeCutY (fixCutY);
+					fixCutY = volume.cutY;
+				}
 				break;
 
 			}
+			if (_hotkey)
+				Event.current.Use ();
 		}
 		private void UpdateVolume()
 		{
