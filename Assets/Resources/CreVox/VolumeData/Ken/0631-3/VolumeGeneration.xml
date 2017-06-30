@@ -41,7 +41,7 @@
       <Name>specialRoom</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_02_vData</VDataName>
+          <VDataName>entrance_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -59,7 +59,7 @@
       <Name>frameworkARoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ altar_01_vData</VDataName>
+          <VDataName>battle_ altar_03_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -68,7 +68,7 @@
       <Name>frameworkARoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ altar_03_vData</VDataName>
+          <VDataName>battle_ altar_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -104,7 +104,7 @@
       <Name>frameworkCRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_01_vData</VDataName>
+          <VDataName>battle_grave_03_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -122,7 +122,7 @@
       <Name>frameworkCRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_3_vData</VDataName>
+          <VDataName>battle_grave_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -176,7 +176,7 @@
       <Name>branchA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_02_vData</VDataName>
+          <VDataName>battle_Sewer_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -185,7 +185,7 @@
       <Name>branchB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_02_vData</VDataName>
+          <VDataName>battle_Sewer_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -194,7 +194,7 @@
       <Name>branchC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_02_vData</VDataName>
+          <VDataName>battle_Sewer_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
