@@ -94,13 +94,11 @@ namespace CrevoxExtend {
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
-
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
-
 				BestChromosomeToWorldPos(bestChromosome);
-			}
-			GC.Collect();
+            }
+            GC.Collect();
 			// [Will Modify]
 			return bestChromosome;
 			//return null;
@@ -132,13 +130,9 @@ namespace CrevoxExtend {
 
 		// Get all of volumes frin volume manager.
 		public static List<Volume> GetVolumeByVolumeManager() {
-			List<Volume> volumes = new List<Volume>();
 			var VolumeManager = GameObject.Find("VolumeManager(Generated)");
-			foreach (Transform volume in VolumeManager.transform) {
-				volumes.Add(volume.GetComponent<Volume>());
-			}
-			return volumes;
-		}
+			return VolumeManager.GetComponentsInChildren<Volume>().ToList();
+        }
 
 		// use volume to get each block position.
 		public static CreVoxChromosome GetSample(string[] blockAirPieceName, Volume volume) {
