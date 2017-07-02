@@ -1,0 +1,202 @@
+fileFormatVersion: 2
+guid: 89db5667c6bf89144aef0bac12786149
+timeCreated: 1498984646
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Door
+    100002: Doorthin
+    100004: Fence
+    100006: Fence_StairL
+    100008: Fence_StairR
+    100010: FenceSeprator
+    100012: Ground
+    100014: GroundHalf
+    100016: //RootNode
+    100018: Roof.flat.tiltconvex
+    100020: Roof.flat.tiltcorner
+    100022: Roof.flat.tiltside
+    100024: Stair
+    100026: StairCorner
+    100028: StairL
+    100030: StairR
+    100032: StairT
+    100034: Voxel
+    100036: Wall
+    100038: Wall.Recessed
+    100040: WallCorner
+    100042: WallHalf
+    100044: WallSeprator
+    100046: WallSeprator175
+    100048: WindowX1.0
+    100050: WindowX2.0
+    400000: Door
+    400002: Doorthin
+    400004: Fence
+    400006: Fence_StairL
+    400008: Fence_StairR
+    400010: FenceSeprator
+    400012: Ground
+    400014: GroundHalf
+    400016: //RootNode
+    400018: Roof.flat.tiltconvex
+    400020: Roof.flat.tiltcorner
+    400022: Roof.flat.tiltside
+    400024: Stair
+    400026: StairCorner
+    400028: StairL
+    400030: StairR
+    400032: StairT
+    400034: Voxel
+    400036: Wall
+    400038: Wall.Recessed
+    400040: WallCorner
+    400042: WallHalf
+    400044: WallSeprator
+    400046: WallSeprator175
+    400048: WindowX1.0
+    400050: WindowX2.0
+    2300000: Door
+    2300002: Doorthin
+    2300004: Fence
+    2300006: Fence_StairL
+    2300008: Fence_StairR
+    2300010: FenceSeprator
+    2300012: Ground
+    2300014: GroundHalf
+    2300016: Roof.flat.tiltconvex
+    2300018: Roof.flat.tiltcorner
+    2300020: Roof.flat.tiltside
+    2300022: Stair
+    2300024: StairCorner
+    2300026: StairL
+    2300028: StairR
+    2300030: StairT
+    2300032: Voxel
+    2300034: Wall
+    2300036: Wall.Recessed
+    2300038: WallCorner
+    2300040: WallHalf
+    2300042: WallSeprator
+    2300044: WallSeprator175
+    2300046: WindowX1.0
+    2300048: WindowX2.0
+    3300000: Door
+    3300002: Doorthin
+    3300004: Fence
+    3300006: Fence_StairL
+    3300008: Fence_StairR
+    3300010: FenceSeprator
+    3300012: Ground
+    3300014: GroundHalf
+    3300016: Roof.flat.tiltconvex
+    3300018: Roof.flat.tiltcorner
+    3300020: Roof.flat.tiltside
+    3300022: Stair
+    3300024: StairCorner
+    3300026: StairL
+    3300028: StairR
+    3300030: StairT
+    3300032: Voxel
+    3300034: Wall
+    3300036: Wall.Recessed
+    3300038: WallCorner
+    3300040: WallHalf
+    3300042: WallSeprator
+    3300044: WallSeprator175
+    3300046: WindowX1.0
+    3300048: WindowX2.0
+    4300000: Stair
+    4300002: Wall
+    4300004: Fence_StairR
+    4300006: Fence_StairL
+    4300008: Fence
+    4300010: FenceSeprator
+    4300012: WallSeprator
+    4300014: StairCorner
+    4300016: WindowX1.0
+    4300018: WindowX2.0
+    4300020: Doorthin
+    4300022: StairL
+    4300024: StairR
+    4300026: WallHalf
+    4300028: WallCorner
+    4300030: Ground
+    4300032: GroundHalf
+    4300034: Voxel
+    4300036: Wall.Recessed
+    4300038: WallSeprator175
+    4300040: Roof.flat.tiltside
+    4300042: Roof.flat.tiltcorner
+    4300044: Door
+    4300046: Roof.flat.tiltconvex
+    4300048: StairT
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
