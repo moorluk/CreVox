@@ -36,6 +36,13 @@ namespace CrevoxExtend {
 			{ GeneType.Treasure , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_treasure") },
 			{ GeneType.Trap     , Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_trap") }
 		};
+		public static Dictionary<GeneType, Material> MarkerMaterials = new Dictionary<GeneType, Material>() {
+			{ GeneType.Forbidden, null },
+			{ GeneType.Empty    , null },
+			{ GeneType.Enemy    , Resources.Load<Material>(@"GeneticAlgorithmExperiment/Prefabs/markers/Materials/marker_enemy") },
+			{ GeneType.Treasure , Resources.Load<Material>(@"GeneticAlgorithmExperiment/Prefabs/markers/Materials/marker_treasure") },
+			{ GeneType.Trap     , Resources.Load<Material>(@"GeneticAlgorithmExperiment/Prefabs/markers/Materials/marker_trap") }
+		};
 
 		// Game patterns objects are expressed via Enemy, Treasure, Trap, ... etc.
 		private static GameObject GamePatternObjects {
@@ -208,16 +215,13 @@ namespace CrevoxExtend {
 
 		//make the best gene is added into world.
 		public static void BestChromosomeToWorldPos(CreVoxChromosome bestChromosome) {
-
-			Debug.Log(Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_enemy"));
-			Debug.Log(Resources.Load<GameObject>(@"GeneticAlgorithmExperiment/Prefabs/markers/marker_trap"));
-
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
 					GameObject geneWorldPosition = GameObject.Instantiate(MarkerPrefabs[gene.Type]);
 					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
 					geneWorldPosition.transform.position = gene.pos;
 					geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					geneWorldPosition.GetComponent<Renderer>().material = MarkerMaterials[gene.Type];
 				}
 			}
 		}
@@ -288,7 +292,7 @@ namespace CrevoxExtend {
 
 			public CreVoxChromosome(List<Vector3> allPossiblePosition) {
 				foreach (Vector3 pos in allPossiblePosition) {
-                    this.Genes.Add(new CreVoxGene(GeneType.Enemy, pos));
+					this.Genes.Add(new CreVoxGene(GeneType.Enemy, pos));
 				}
 			}
 
