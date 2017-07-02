@@ -31,7 +31,8 @@ def main(root, experiments):
 
     for experiment in experiments:
         inputFolder = inputFolderRoot + experiment + "/"
-        exportTheBestChromosome(experiment, inputFolder, outputFolderRoot)
+        theBestChromosome = exportTheBestChromosome(experiment, inputFolder, outputFolderRoot)
+        newPlot2(outputFolderRoot,theBestChromosome)
         # plotGenerations(outputFolderRoot)
         # ...
         # dataA = pd.read_csv(outputFolderRoot + "bestChromosome_"+experiment+".csv")
@@ -39,7 +40,7 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-    run = DataFrame(columns =  ["Run no.","Generation no.","Chromosome no.",'Label','Score','Volume'])
+    run = DataFrame(columns =  ["Run no.","Generation no.","Chromosome no.",'label','score','Volume'])
     # Read file.
     data = pd.read_csv(inputFolder + "experiment_1.csv")
     numRun = data['run'].max()
@@ -74,6 +75,27 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 
     # output result table
     run.to_csv(outputFolder + "bestChromosome_" + label + ".csv",index = False)
+    return run
+
+def newPlot2(outputFolder,data):
+    plt.figure()
+    fitnessNames = set()
+    for name in data.label.values:
+        had = name in fitnessNames
+        if(had):
+            break
+        fitnessNames.add(name)
+
+    for fitnessName in fitnessNames:
+        tt = data[data.label == fitnessName].score
+        plt.plot(range(len(tt)), tt, color=random.rand(3,1))
+
+    plt.legend(fitnessNames)
+    plt.xlabel('Generation')
+    plt.ylabel('Score')
+    plt.savefig(outputFolder + 'result.png')
+
+
 
 def plotGenerations(outputFolder):
     plt.figure()
