@@ -11,8 +11,8 @@ public class TestRealTimeRun : MonoBehaviour {
 	[Header("Test generate stage by properties")]
 	[Tooltip("我是按鈕")]
 	public bool testGenerateLevel = false;
-	public string XmlPath = @"Issac_Flat.xml";
-	public string ResourcePath = @"Assets\Resources\CreVox\VolumeData\IsaacNew";
+	public string XmlPath = @"OnlyEntrance.xml";
+	public string ResourcePath = @"OnlyEntrance";
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
@@ -32,7 +32,7 @@ public class TestRealTimeRun : MonoBehaviour {
 			if (XmlPath.Length > 0) {
 				bool succeed = false;
 				VGlobal.Stage _s = new VGlobal.Stage ();
-				_s.artPack = "B02";
+				_s.artPack = "AncientPalace";
 				_s.XmlPath = XmlPath;
 				_s.vDataPath = ResourcePath;
 				int testTime = 0;
