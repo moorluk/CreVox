@@ -39,7 +39,7 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-    run = DataFrame(columns =  ["Run no.","Gen no.","Chm no.",'label','score','volume'])
+    run = DataFrame(columns =  ["Run no.","Generation no.","Chromosome no.",'Label','Score','Volume'])
     # Read file.
     data = pd.read_csv(inputFolder + "experiment_1.csv")
     numRun = data['run'].max()
@@ -59,12 +59,14 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
             #calculate all of chromosome score.
             chromosomes = []
             for chromosomeNumber in range(1,chromosomeCount+1):
-                chromosomeScore = data[(data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+                chromosomeScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
                 chromosomes.append(chromosomeScore)
             #find index of the best score chromosome.
-            chromosomeID = chromosomes.index(max(chromosomes))
+            #+1 is fixed the index is from 0,but data is from 1.
+            chromosomeID = chromosomes.index(max(chromosomes)) +1
             for fitnessName in fitnessNames:
-                info = [i,ng,chromosomeID+1,fitnessName,max(chromosomes),'']
+                labelScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
+                info = [i,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
                 # add info to the last.
                 run.loc[-1] = info
                 # shifting index
