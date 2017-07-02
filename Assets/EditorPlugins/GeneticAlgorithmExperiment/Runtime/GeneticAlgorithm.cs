@@ -1,12 +1,13 @@
+using UnityEngine;
+using UnityEditor;
 using System.Linq;
 using System.Collections.Generic;
 using SystemRandom = System.Random;
 using StreamWriter = System.IO.StreamWriter;
-using GC = System.GC;
-using Math = System.Math;
-using UnityEngine;
-using UnityEditor;
-using Enum = System.Enum;
+using GC     = System.GC;
+using Math   = System.Math;
+using Enum   = System.Enum;
+using RegExp = System.Text.RegularExpressions;
 
 using CreVox;
 using NTUSTGA;
@@ -42,7 +43,7 @@ namespace CrevoxExtend {
 				return GameObject.Find("GamePatternObjects") ?? new GameObject("GamePatternObjects");
 			}
 		}
-		private static readonly string[] _picecName = { "Gnd.in.one" };
+		private static readonly string[] _pieceName = { "Gnd.in.one" };
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 
 		//calculate all of chromosome.
@@ -93,12 +94,12 @@ namespace CrevoxExtend {
 			DatasetExport = sw;
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
-				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceName, volume), PopulationNumber, GenerationNumber);
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
 				BestChromosomeToWorldPos(bestChromosome);
-            }
-            GC.Collect();
+			}
+			GC.Collect();
 			// [Will Modify]
 			return bestChromosome;
 			//return null;
@@ -115,7 +116,7 @@ namespace CrevoxExtend {
 				// Run specific room only.
 				if (volume.vd.name != roomName) { continue; }
 				
-				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_picecName, volume), PopulationNumber, GenerationNumber);
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceName, volume), PopulationNumber, GenerationNumber);
 
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
@@ -132,7 +133,7 @@ namespace CrevoxExtend {
 		public static List<Volume> GetVolumeByVolumeManager() {
 			var VolumeManager = GameObject.Find("VolumeManager(Generated)");
 			return VolumeManager.GetComponentsInChildren<Volume>().ToList();
-        }
+		 }
 
 		// use volume to get each block position.
 		public static CreVoxChromosome GetSample(string[] blockAirPieceName, Volume volume) {
@@ -152,32 +153,53 @@ namespace CrevoxExtend {
 				}
 			}
 
-			// A-star, defines the main path.
-			var map = MakeAMap(volume.gameObject);
 			var items = volume.gameObject.transform.Find("ItemRoot");
 			Vector3 startPosition = items.Find("Starting Node").transform.position - volume.transform.position;
 			Vector3 endPosition;
 			// Initial the main path.
 			_mainPath.Clear();
+
 			// Each item.
 			foreach (Transform item in items) {
 				// Ignore it if it is not connection.
-				if (!item.name.Contains("Connection_")) { continue; }
+				if (! item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
 				endPosition = item.transform.position - volume.transform.position;
-				// Execute the A-Star.
-				AStar astar = new AStar(map, startPosition, endPosition);
-				//if theShortestPath is not exist, then return null. so theShortestPath = null, then continue it.
-				if (astar.theShortestPath == null)
-					continue;
-				// Parse the path. Increase 1 if the position is exist; otherwise create a new one. 
-				foreach (var pos in astar.theShortestPath) {
-					if (_mainPath.ContainsKey(pos.position3)) {
-						_mainPath[pos.position3] += 1;
+
+				Astar.World world = new Astar.World(9, 9, 9);
+				for (int x = 0; x < 9; x++) {
+					for (int y = 0; y < 9; y++) {
+						for (int z = 0; z < 9; z++) {
+							world.MarkPosition(new Astar.Point3D(x, y, z), true);
+						}
 					}
-					else {
-						_mainPath.Add(pos.position3, 1);
+				}
+
+				foreach (Transform decoration in decorations) {
+					// [TODO] only one piece
+					if (decoration.Find(_pieceName[0]) == null) { continue; }
+					// Get the local position via the name of the gameObject.
+					var match = RegExp.Regex.Match(decoration.name, @"^(\d), (\d), (\d)$");
+					if (match.Success) {
+						Vector3 decPos = new Vector3(float.Parse(match.Groups[1].Value), float.Parse(match.Groups[2].Value), float.Parse(match.Groups[3].Value));
+						world.MarkPosition(new Astar.Point3D((int) decPos.x, (int) decPos.y, (int) decPos.z), false);
 					}
+				}
+
+				// Y-axis is special because the position of the conntection.
+				Astar.Point3D startPoint = new Astar.Point3D((int) startPosition.x / 3, (int) startPosition.y / 2 + 1, (int) startPosition.z / 3);
+				Astar.Point3D endPoint   = new Astar.Point3D((int) endPosition.x   / 3, (int) endPosition.y   / 2 + 1, (int) endPosition.z   / 3);
+				Astar.SearchNode pathFlow = Astar.PathFinder.FindPath(world, startPoint, endPoint);
+
+				// Parse the path. Increase 1 if the position is exist; otherwise create a new one.
+				while (pathFlow != null) {
+					var tilePos = new Vector3(pathFlow.position.X, pathFlow.position.Y, pathFlow.position.Z);
+					if (_mainPath.ContainsKey(tilePos)) {
+						_mainPath[tilePos] += 1;
+					} else {
+						_mainPath.Add(tilePos, 1);
+					}
+					pathFlow = pathFlow.next;
 				}
 			}
 
@@ -205,8 +227,8 @@ namespace CrevoxExtend {
 			int[,,] tiles = new int[9, 9, 9];
 			var decorationRoots = volume.transform.Find("DecorationRoot");
 			for (int tile = 0; tile < decorationRoots.childCount; ++tile) {				
-				if (decorationRoots.GetChild(tile).Find(_picecName[0]) != null) {
-					var tilePosition = decorationRoots.GetChild(tile).Find(_picecName[0]).position - volume.transform.position;
+				if (decorationRoots.GetChild(tile).Find(_pieceName[0]) != null) {
+					var tilePosition = decorationRoots.GetChild(tile).Find(_pieceName[0]).position - volume.transform.position;
 					// 1 means the tile is passable. (Width: 3 x Height: 2 x Length: 3)
 					if (tilePosition != null) {
 						// Because all "decorations" are reduced 1.
@@ -266,7 +288,7 @@ namespace CrevoxExtend {
 
 			public CreVoxChromosome(List<Vector3> allPossiblePosition) {
 				foreach (Vector3 pos in allPossiblePosition) {
-					this.Genes.Add(new CreVoxGene(GeneType.Enemy, pos));
+                    this.Genes.Add(new CreVoxGene(GeneType.Enemy, pos));
 				}
 			}
 
