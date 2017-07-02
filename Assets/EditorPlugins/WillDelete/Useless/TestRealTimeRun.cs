@@ -13,6 +13,7 @@ public class TestRealTimeRun : MonoBehaviour {
 	public bool testGenerateLevel = false;
 	public string XmlPath = @"OnlyEntrance.xml";
 	public string ResourcePath = @"OnlyEntrance";
+	public string ArtPack = "AncientPalace";
 
 	[Header("Test generate stage from global setting")]
 	[Tooltip("我是按鈕")]
@@ -32,7 +33,7 @@ public class TestRealTimeRun : MonoBehaviour {
 			if (XmlPath.Length > 0) {
 				bool succeed = false;
 				VGlobal.Stage _s = new VGlobal.Stage ();
-				_s.artPack = "AncientPalace";
+				_s.artPack = ArtPack;
 				_s.XmlPath = XmlPath;
 				_s.vDataPath = ResourcePath;
 				int testTime = 0;
