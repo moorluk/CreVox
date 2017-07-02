@@ -50,7 +50,7 @@ namespace CrevoxExtend {
 				return GameObject.Find("GamePatternObjects") ?? new GameObject("GamePatternObjects");
 			}
 		}
-		private static readonly string[] _pieceName = { "Gnd.in.one" };
+		private static readonly string[] _pieceList = { "Gnd.in.one", "Stair.one" };
 		private static Dictionary<Vector3, int> _mainPath = new Dictionary<Vector3, int>();
 
 		//calculate all of chromosome.
@@ -101,7 +101,7 @@ namespace CrevoxExtend {
 			DatasetExport = sw;
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
-				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceName, volume), PopulationNumber, GenerationNumber);
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceList, volume), PopulationNumber, GenerationNumber);
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
 				BestChromosomeToWorldPos(bestChromosome);
@@ -123,7 +123,7 @@ namespace CrevoxExtend {
 				// Run specific room only.
 				if (volume.vd.name != roomName) { continue; }
 				
-				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceName, volume), PopulationNumber, GenerationNumber);
+				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceList, volume), PopulationNumber, GenerationNumber);
 
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
@@ -183,8 +183,12 @@ namespace CrevoxExtend {
 				}
 
 				foreach (Transform decoration in decorations) {
-					// [TODO] only one piece
-					if (decoration.Find(_pieceName[0]) == null) { continue; }
+					// If the voxel not include the decoration piece, then skip this one.
+					bool isWalkable = false;
+					foreach (var pieceName in _pieceList) {
+						if (decoration.Find(pieceName) != null) { isWalkable = true; }
+					}
+					if (! isWalkable) { continue; }
 					// Get the local position via the name of the gameObject.
 					var match = RegExp.Regex.Match(decoration.name, @"^(\d), (\d), (\d)$");
 					if (match.Success) {
@@ -224,23 +228,6 @@ namespace CrevoxExtend {
 					geneWorldPosition.GetComponent<Renderer>().material = MarkerMaterials[gene.Type];
 				}
 			}
-		}
-
-		//make current volume to a 3d int array map for A*.
-		public static int[,,] MakeAMap(GameObject volume) {
-			int[,,] tiles = new int[9, 9, 9];
-			var decorationRoots = volume.transform.Find("DecorationRoot");
-			for (int tile = 0; tile < decorationRoots.childCount; ++tile) {				
-				if (decorationRoots.GetChild(tile).Find(_pieceName[0]) != null) {
-					var tilePosition = decorationRoots.GetChild(tile).Find(_pieceName[0]).position - volume.transform.position;
-					// 1 means the tile is passable. (Width: 3 x Height: 2 x Length: 3)
-					if (tilePosition != null) {
-						// Because all "decorations" are reduced 1.
-						tiles[(int)tilePosition.x / 3, (int)(tilePosition.y + 1) / 2, (int)tilePosition.z / 3] = 1;
-					}
-				}
-			}
-			return tiles;
 		}
 
 		public class CreVoxGAA : NTUSTGeneticAlgorithm {
