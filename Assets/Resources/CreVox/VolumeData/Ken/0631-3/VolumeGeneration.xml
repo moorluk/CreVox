@@ -104,7 +104,7 @@
       <Name>frameworkCRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_03_vData</VDataName>
+          <VDataName>battle_grave_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -122,7 +122,7 @@
       <Name>frameworkCRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_01_vData</VDataName>
+          <VDataName>battle_grave_03_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>

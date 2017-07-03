@@ -3177,7 +3177,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>10</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>0</QuantityLimitMax>
@@ -3597,7 +3597,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>10</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -3952,7 +3952,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>6</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>0</QuantityLimitMax>
@@ -4372,7 +4372,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>6</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -4597,7 +4597,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>4</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>0</QuantityLimitMax>
@@ -5856,7 +5856,7 @@
             <Nodes>
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
-                <Ordering>5</Ordering>
+                <Ordering>4</Ordering>
                 <Name>frameworkARoomC</Name>
                 <Abbreviation>fac</Abbreviation>
                 <Description>123</Description>
@@ -5927,42 +5927,6 @@
                   <ConnectionID>5613289b-b154-4d23-afcf-a8a6edfb109f</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="c7a4b76c-bf14-4299-b596-7a8dafcf0b3d">
-                <AlphabetID>4d90dedb-377d-41c0-a518-a7e6ff38959c</AlphabetID>
-                <Ordering>3</Ordering>
-                <Name>window</Name>
-                <Abbreviation>w</Abbreviation>
-                <Description>框架間觀測窗(不可通行)</Description>
-                <Terminal>Terminal</Terminal>
-                <Scope>
-                  <Outline>
-                    <X>149.5</X>
-                    <Y>121.5</Y>
-                    <Width>39</Width>
-                    <Height>39</Height>
-                  </Outline>
-                  <Filled>
-                    <X>151.5</X>
-                    <Y>123.5</Y>
-                    <Width>35</Width>
-                    <Height>35</Height>
-                  </Filled>
-                  <Text>
-                    <X>146.5</X>
-                    <Y>124</Y>
-                    <Width>45</Width>
-                    <Height>34</Height>
-                  </Text>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                  <Filled>#7FE4FF</Filled>
-                  <Text>#00647F</Text>
-                </SymbolColor>
-                <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
-                </StickiedConnections>
-              </Node>
               <Node id="1a6efe71-ebce-46d6-a389-6a57313b7327">
                 <AlphabetID>9a07aaf7-c781-43b6-a32f-d9d287ae2971</AlphabetID>
                 <Ordering>1</Ordering>
@@ -6001,7 +5965,7 @@
               </Node>
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
-                <Ordering>4</Ordering>
+                <Ordering>3</Ordering>
                 <Name>frameworkARoomB</Name>
                 <Abbreviation>fab</Abbreviation>
                 <Description>A房間B</Description>
@@ -6032,14 +5996,13 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
                   <ConnectionID>39dfbc2b-099a-4fd9-943e-62350e72cdd9</ConnectionID>
                   <ConnectionID>d8d80942-f7cc-4070-b822-8992d80a4a33</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="40d55e94-65dd-49a5-aa46-5a374fb2cfff">
                 <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
-                <Ordering>6</Ordering>
+                <Ordering>5</Ordering>
                 <Name>frameworkARoomA</Name>
                 <Abbreviation>faa</Abbreviation>
                 <Description>A房間A</Description>
@@ -6076,34 +6039,6 @@
               </Node>
             </Nodes>
             <Connections>
-              <Connection id="6de80433-f153-47b9-b378-1b02f3029dfd">
-                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
-                <Name>window</Name>
-                <Description>Window</Description>
-                <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
-                <Scope>
-                  <Startpoint>
-                    <X>160.363144</X>
-                    <Y>71.9787</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Startpoint>
-                  <Endpoint>
-                    <X>162.636856</X>
-                    <Y>118.0213</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Endpoint>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                </SymbolColor>
-                <StartpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</StartpointStickyOn>
-                <EndpointStickyOn>c7a4b76c-bf14-4299-b596-7a8dafcf0b3d</EndpointStickyOn>
-                <StartSelected>False</StartSelected>
-                <EndSelected>False</EndSelected>
-              </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
                 <Name>main</Name>
@@ -6214,7 +6149,7 @@
                 <StartpointStickyOn>40d55e94-65dd-49a5-aa46-5a374fb2cfff</StartpointStickyOn>
                 <EndpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
-                <EndSelected>True</EndSelected>
+                <EndSelected>False</EndSelected>
               </Connection>
             </Connections>
           </MissionGraph>
@@ -6639,6 +6574,7 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
+                  <ConnectionID>3bdb12af-f877-4794-9392-2c21c4f690b6</ConnectionID>
                   <ConnectionID>6369d3a3-552b-4d80-9fa7-2213c7955eb2</ConnectionID>
                   <ConnectionID>d0b64698-2fb1-4e59-8376-c33cbc370c92</ConnectionID>
                 </StickiedConnections>
@@ -6676,7 +6612,6 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>3bdb12af-f877-4794-9392-2c21c4f690b6</ConnectionID>
                   <ConnectionID>6369d3a3-552b-4d80-9fa7-2213c7955eb2</ConnectionID>
                 </StickiedConnections>
               </Node>
@@ -6742,9 +6677,9 @@
                 <SymbolColor>
                   <Outline>#858585</Outline>
                 </SymbolColor>
-                <StartpointStickyOn>47ce80af-ffa7-4687-91e5-ee20e545edfb</StartpointStickyOn>
+                <StartpointStickyOn>43e056d9-062e-46e5-9b73-6f5dba79f9f8</StartpointStickyOn>
                 <EndpointStickyOn>34fdabc5-94d6-4a97-a722-a544520916fc</EndpointStickyOn>
-                <StartSelected>False</StartSelected>
+                <StartSelected>True</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="87db0028-5035-4ba5-b898-1c4cbb35f95a">
@@ -7090,7 +7025,7 @@
             <Nodes>
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
-                <Ordering>2</Ordering>
+                <Ordering>4</Ordering>
                 <Name>frameworkBRoomB</Name>
                 <Abbreviation>fbb</Abbreviation>
                 <Description>123</Description>
@@ -7127,7 +7062,7 @@
               </Node>
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
                 <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
-                <Ordering>4</Ordering>
+                <Ordering>2</Ordering>
                 <Name>frameworkBRoomA</Name>
                 <Abbreviation>fba</Abbreviation>
                 <Description>123</Description>
@@ -7640,7 +7575,7 @@
             <Nodes>
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
-                <Ordering>5</Ordering>
+                <Ordering>4</Ordering>
                 <Name>frameworkBRoomC</Name>
                 <Abbreviation>fbc</Abbreviation>
                 <Description>123</Description>
@@ -7711,45 +7646,9 @@
                   <ConnectionID>5613289b-b154-4d23-afcf-a8a6edfb109f</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="c7a4b76c-bf14-4299-b596-7a8dafcf0b3d">
-                <AlphabetID>4d90dedb-377d-41c0-a518-a7e6ff38959c</AlphabetID>
-                <Ordering>4</Ordering>
-                <Name>window</Name>
-                <Abbreviation>w</Abbreviation>
-                <Description>框架間觀測窗(不可通行)</Description>
-                <Terminal>Terminal</Terminal>
-                <Scope>
-                  <Outline>
-                    <X>87.5</X>
-                    <Y>102.5</Y>
-                    <Width>39</Width>
-                    <Height>39</Height>
-                  </Outline>
-                  <Filled>
-                    <X>89.5</X>
-                    <Y>104.5</Y>
-                    <Width>35</Width>
-                    <Height>35</Height>
-                  </Filled>
-                  <Text>
-                    <X>84.5</X>
-                    <Y>105</Y>
-                    <Width>45</Width>
-                    <Height>34</Height>
-                  </Text>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                  <Filled>#7FE4FF</Filled>
-                  <Text>#00647F</Text>
-                </SymbolColor>
-                <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
-                </StickiedConnections>
-              </Node>
               <Node id="1a6efe71-ebce-46d6-a389-6a57313b7327">
                 <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
-                <Ordering>6</Ordering>
+                <Ordering>2</Ordering>
                 <Name>frameworkBRoomA</Name>
                 <Abbreviation>fba</Abbreviation>
                 <Description>123</Description>
@@ -7780,14 +7679,13 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
                   <ConnectionID>474f6d78-9d3d-46c2-a0f6-36caee9f0a18</ConnectionID>
                   <ConnectionID>6fdfd8d5-0cad-4600-8e2a-49039f49da02</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
-                <Ordering>2</Ordering>
+                <Ordering>5</Ordering>
                 <Name>frameworkBRoomB</Name>
                 <Abbreviation>fbb</Abbreviation>
                 <Description>123</Description>
@@ -7860,34 +7758,6 @@
               </Node>
             </Nodes>
             <Connections>
-              <Connection id="6de80433-f153-47b9-b378-1b02f3029dfd">
-                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
-                <Name>window</Name>
-                <Description>Window</Description>
-                <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
-                <Scope>
-                  <Startpoint>
-                    <X>98.81701</X>
-                    <Y>80.95037</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Startpoint>
-                  <Endpoint>
-                    <X>100.182991</X>
-                    <Y>99.04963</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Endpoint>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                </SymbolColor>
-                <StartpointStickyOn>1a6efe71-ebce-46d6-a389-6a57313b7327</StartpointStickyOn>
-                <EndpointStickyOn>c7a4b76c-bf14-4299-b596-7a8dafcf0b3d</EndpointStickyOn>
-                <StartSelected>False</StartSelected>
-                <EndSelected>False</EndSelected>
-              </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
                 <Name>main</Name>
@@ -8259,7 +8129,7 @@
             <Nodes>
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
-                <Ordering>2</Ordering>
+                <Ordering>5</Ordering>
                 <Name>frameworkCRoomB</Name>
                 <Abbreviation>fcb</Abbreviation>
                 <Description>fcb</Description>
@@ -8333,7 +8203,7 @@
               </Node>
               <Node id="6e442102-30b7-46a8-8882-9dc47068d7c3">
                 <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
-                <Ordering>5</Ordering>
+                <Ordering>2</Ordering>
                 <Name>frameworkCRoomC</Name>
                 <Abbreviation>fcc</Abbreviation>
                 <Description>fcc</Description>
@@ -8809,7 +8679,7 @@
             <Nodes>
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
-                <Ordering>6</Ordering>
+                <Ordering>2</Ordering>
                 <Name>frameworkCRoomC</Name>
                 <Abbreviation>fcc</Abbreviation>
                 <Description>fcc</Description>
@@ -8880,45 +8750,9 @@
                   <ConnectionID>5613289b-b154-4d23-afcf-a8a6edfb109f</ConnectionID>
                 </StickiedConnections>
               </Node>
-              <Node id="c7a4b76c-bf14-4299-b596-7a8dafcf0b3d">
-                <AlphabetID>4d90dedb-377d-41c0-a518-a7e6ff38959c</AlphabetID>
-                <Ordering>4</Ordering>
-                <Name>window</Name>
-                <Abbreviation>w</Abbreviation>
-                <Description>框架間觀測窗(不可通行)</Description>
-                <Terminal>Terminal</Terminal>
-                <Scope>
-                  <Outline>
-                    <X>150.5</X>
-                    <Y>118.5</Y>
-                    <Width>39</Width>
-                    <Height>39</Height>
-                  </Outline>
-                  <Filled>
-                    <X>152.5</X>
-                    <Y>120.5</Y>
-                    <Width>35</Width>
-                    <Height>35</Height>
-                  </Filled>
-                  <Text>
-                    <X>147.5</X>
-                    <Y>121</Y>
-                    <Width>45</Width>
-                    <Height>34</Height>
-                  </Text>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                  <Filled>#7FE4FF</Filled>
-                  <Text>#00647F</Text>
-                </SymbolColor>
-                <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
-                </StickiedConnections>
-              </Node>
               <Node id="1a6efe71-ebce-46d6-a389-6a57313b7327">
                 <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
-                <Ordering>5</Ordering>
+                <Ordering>4</Ordering>
                 <Name>frameworkCRoomA</Name>
                 <Abbreviation>fca</Abbreviation>
                 <Description>fca</Description>
@@ -8955,7 +8789,7 @@
               </Node>
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
-                <Ordering>2</Ordering>
+                <Ordering>5</Ordering>
                 <Name>frameworkCRoomB</Name>
                 <Abbreviation>fcb</Abbreviation>
                 <Description>fcb</Description>
@@ -8986,7 +8820,6 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>6de80433-f153-47b9-b378-1b02f3029dfd</ConnectionID>
                   <ConnectionID>474f6d78-9d3d-46c2-a0f6-36caee9f0a18</ConnectionID>
                   <ConnectionID>39dfbc2b-099a-4fd9-943e-62350e72cdd9</ConnectionID>
                 </StickiedConnections>
@@ -9029,34 +8862,6 @@
               </Node>
             </Nodes>
             <Connections>
-              <Connection id="6de80433-f153-47b9-b378-1b02f3029dfd">
-                <AlphabetID>f360b4a6-1d2a-456d-b690-d8ff6a3e28f3</AlphabetID>
-                <Name>window</Name>
-                <Description>Window</Description>
-                <Requirement>WeakRequirement</Requirement>
-                <ArrowType>Normal</ArrowType>
-                <Scope>
-                  <Startpoint>
-                    <X>163.761169</X>
-                    <Y>82.99805</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Startpoint>
-                  <Endpoint>
-                    <X>164.238831</X>
-                    <Y>115.001953</Y>
-                    <Width>11</Width>
-                    <Height>11</Height>
-                  </Endpoint>
-                </Scope>
-                <SymbolColor>
-                  <Outline>#00647F</Outline>
-                </SymbolColor>
-                <StartpointStickyOn>be9920d8-c41e-4fb0-aac0-2ef96b82155f</StartpointStickyOn>
-                <EndpointStickyOn>c7a4b76c-bf14-4299-b596-7a8dafcf0b3d</EndpointStickyOn>
-                <StartSelected>False</StartSelected>
-                <EndSelected>False</EndSelected>
-              </Connection>
               <Connection id="5613289b-b154-4d23-afcf-a8a6edfb109f">
                 <AlphabetID>71f6e9ca-933c-4d12-81b9-6c98f8cf6507</AlphabetID>
                 <Name>main</Name>
@@ -9396,7 +9201,6 @@
                 <StickiedConnections>
                   <ConnectionID>8717ec62-26dc-44c3-967f-f6c3f07b1197</ConnectionID>
                   <ConnectionID>c82ae190-2310-46ef-b5f1-8fde99de9ed1</ConnectionID>
-                  <ConnectionID>4ab6a06f-cd87-4594-9dc9-ca999e64f834</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
@@ -9471,6 +9275,7 @@
                 <StickiedConnections>
                   <ConnectionID>c82ae190-2310-46ef-b5f1-8fde99de9ed1</ConnectionID>
                   <ConnectionID>eaafe165-b916-4d8b-a111-6e2aa736e285</ConnectionID>
+                  <ConnectionID>4ab6a06f-cd87-4594-9dc9-ca999e64f834</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="1b35bf3c-37f1-4fbf-be39-63196a7c3515">
@@ -9885,7 +9690,7 @@
                 <SymbolColor>
                   <Outline>#858585</Outline>
                 </SymbolColor>
-                <StartpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</StartpointStickyOn>
+                <StartpointStickyOn>6e442102-30b7-46a8-8882-9dc47068d7c3</StartpointStickyOn>
                 <EndpointStickyOn>ff5ff796-1444-4cdd-b215-5888cb52811f</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
