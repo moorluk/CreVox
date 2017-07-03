@@ -56,6 +56,7 @@ namespace CrevoxExtend {
 				Experiments.Add("實驗 H", new Experiment("實驗_H", false));
 			}
 
+			EditorGUI.BeginDisabledGroup(!(GameObject.Find("VolumeManager(Generated)").transform.childCount == 1));
 			if (GUILayout.Button("Bake the navigation", buttonStyle, GUILayout.Height(30))) {
 				SerializedObject settingsObject = new SerializedObject(NavMeshBuilder.navMeshSettingsObject);
 				settingsObject.FindProperty("m_BuildSettings.agentRadius").floatValue           = 0.30f;
@@ -99,12 +100,14 @@ namespace CrevoxExtend {
 				}
 				
 				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
-					// ExecutePythonPlot();
-					ExecutePythonPlot2(activedExperiments);
+					ExecutePythonPlot("heatmap", activedExperiments);
+					ExecutePythonPlot("fitnessComparison", activedExperiments);
 				} else {
 					Debug.LogError("Please check your system has 'python' in the environment path.");
 				}
 			}
+			EditorGUI.EndDisabledGroup();
+
 			// List of all experiments.
 			WindowScrollPosition = EditorGUILayout.BeginScrollView(WindowScrollPosition);
 			foreach (var experimentName in Experiments.Keys) {
@@ -119,7 +122,7 @@ namespace CrevoxExtend {
 					// Generation count and population count.
 					experiment.ExperimentCount = Math.Max(1, EditorGUILayout.IntField("實驗次數", experiment.ExperimentCount, textFieldStyle));
 					experiment.GenerationCount = Math.Max(1, EditorGUILayout.IntField("世代數量", experiment.GenerationCount, textFieldStyle));
-					experiment.PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", experiment.PopulationCount, textFieldStyle));
+					experiment.PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", experiment.PopulationCount%2 == 0? experiment.PopulationCount: experiment.PopulationCount+1, textFieldStyle));
 					// Fitness weights (-10 ~ 10).
 					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
 					weights["block"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"],     textFieldStyle)));
@@ -172,44 +175,20 @@ namespace CrevoxExtend {
 			}
 		}
 
-		private void ExecutePythonPlot() {
+		private void ExecutePythonPlot(string format, Dictionary<string, Experiment> experiments) {
 			var pythonPath = ExistsOnPath("python.exe") ? GetFullPath("python.exe") : GetFullPath(DEFAULT_PYTHON_EXEC_PATH);
 
 			Process process = new Process();
 			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = "/C  + pythonPath + "  + PYTHON_SRC_DIR + "maxValue.py \"" + EXPERIMENT_DIR + "\"";
-
-			process.StartInfo.CreateNoWindow = true;
-			process.StartInfo.UseShellExecute = false;
-			// Capture python log from process.StandardOutput and process.StandardError.
-			process.StartInfo.RedirectStandardOutput = true;
-			process.StartInfo.RedirectStandardError = true;
-			// // When execute the cmd fail.
-			// process.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
-			// process.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(ErrorReceived);
-			// // Process finished.
-			// process.Exited += new System.EventHandler(ProcessExited);
-			process.EnableRaisingEvents = true;
-			// Start executing.
-			Debug.Log("Subprocess is running:\n" + process.StartInfo.Arguments);
-			process.Start();
-
-			var error = process.StandardError.ReadToEnd();
-			if (error != string.Empty) {
-				Debug.LogError("Execute the python program fail:\n" + error);
-			} else {
-				Debug.Log("Done.");
+			// Switch the python source.
+			switch (format) {
+			case "heatmap":
+				process.StartInfo.Arguments = "/C " + pythonPath + " " + PYTHON_SRC_DIR + "heatmapPlot.py \"" + EXPERIMENT_DIR + "\"";
+				break;
+			case "fitnessComparison":
+				process.StartInfo.Arguments = "/C " + pythonPath + " " + PYTHON_SRC_DIR + "maxValue.py \"" + EXPERIMENT_DIR + "\"";
+				break;
 			}
-
-			process.WaitForExit();
-		}
-
-		private void ExecutePythonPlot2(Dictionary<string, Experiment> experiments) {
-			var pythonPath = ExistsOnPath("python.exe") ? GetFullPath("python.exe") : GetFullPath(DEFAULT_PYTHON_EXEC_PATH);
-
-			Process process = new Process();
-			process.StartInfo.FileName = "cmd.exe";
-			process.StartInfo.Arguments = "/C " + pythonPath + " " + PYTHON_SRC_DIR + "heatmapPlot.py \"" + EXPERIMENT_DIR + "\"";
 
 			foreach (var experimentName in experiments.Keys) {
 				process.StartInfo.Arguments += " \"" + experiments[experimentName].Name + "\" ";

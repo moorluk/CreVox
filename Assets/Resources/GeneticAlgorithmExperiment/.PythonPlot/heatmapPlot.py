@@ -33,7 +33,7 @@ def getAmountRecord(data):
 
 	for runNumber in range(1, data['run'].max() + 1):
 		for generationNumber in range(1, data['generation'].max() + 1):
-			print "Current state: run is {}, generation is {}.".format(runNumber, generationNumber)
+			print ("Current state: run is {}, generation is {}.".format(runNumber, generationNumber))
 			for chromosomeNumber in range(1, data['chromosome'].max() + 1):
 				# Get the chromosome info
 				chromosome = getChromosome(data, runNumber, generationNumber, chromosomeNumber)
