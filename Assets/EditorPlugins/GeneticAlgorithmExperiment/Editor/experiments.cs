@@ -56,6 +56,7 @@ namespace CrevoxExtend {
 				Experiments.Add("實驗 H", new Experiment("實驗_H", false));
 			}
 
+			EditorGUI.BeginDisabledGroup(!(GameObject.Find("VolumeManager(Generated)").transform.childCount == 1));
 			if (GUILayout.Button("Bake the navigation", buttonStyle, GUILayout.Height(30))) {
 				SerializedObject settingsObject = new SerializedObject(NavMeshBuilder.navMeshSettingsObject);
 				settingsObject.FindProperty("m_BuildSettings.agentRadius").floatValue           = 0.30f;
@@ -105,6 +106,8 @@ namespace CrevoxExtend {
 					Debug.LogError("Please check your system has 'python' in the environment path.");
 				}
 			}
+			EditorGUI.EndDisabledGroup();
+
 			// List of all experiments.
 			WindowScrollPosition = EditorGUILayout.BeginScrollView(WindowScrollPosition);
 			foreach (var experimentName in Experiments.Keys) {

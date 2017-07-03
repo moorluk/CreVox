@@ -64,7 +64,7 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	return run
 
 def newPlot(experimentLabel, outputFolder, data):
-	plt.figure()
+	plt.figure(figsize = (16, 9), dpi = 120)
 	numRun = max(data['run'])
 	numGeneration = max(data['generation'])
 
@@ -78,24 +78,25 @@ def newPlot(experimentLabel, outputFolder, data):
 		generationStdList.insert(generation, np.std(plotData))
 		generationMeanList.insert(generation, np.mean(plotData))
 	
-	plt.errorbar(range(len(generationMeanList)), generationMeanList, generationStdList, marker = 'o', alpha = 0.3)
-
-	plt.xlabel('Generation')
-	plt.ylabel('Score')
+	plt.errorbar(range(1,len(generationMeanList)+1), generationMeanList, generationStdList, marker = 'o', alpha = 0.3)
+	plt.xlabel('Generation', fontsize = 25)
+	plt.ylabel('Score', fontsize = 25)
+	plt.tick_params(labelsize = 25)
 	plt.savefig(outputFolder + experimentLabel +'_result.png')
 
 def newPlot2(experimentLabel, outputFolder, data):
-	plt.figure()
+	plt.figure(figsize = (16, 9), dpi = 120)
 	fitnessLabels = set(data.label.values)
 
 	color = ['r-','g-','b-','o-','y-']
 	for idx, fitnessName in enumerate(fitnessLabels):
-		tt = data[data.label == fitnessName].score
-		plt.plot(range(len(tt)), tt, color[idx])
+		fitnessScore = data[data.label == fitnessName].score
+		plt.plot(range(1,len(fitnessScore)+1), fitnessScore, color[idx])
 
-	plt.legend(fitnessLabels)
-	plt.xlabel('Generation')
-	plt.ylabel('Score')
+	plt.legend(fitnessLabels, fontsize = 25, loc = 4)
+	plt.xlabel('Generation', fontsize = 25)
+	plt.ylabel('Score', fontsize = 25)
+	plt.tick_params(labelsize = 25)
 	plt.savefig(outputFolder + experimentLabel +'_result2.png')
 
 
