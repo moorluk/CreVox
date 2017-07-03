@@ -8,6 +8,7 @@ from pandas import Series, DataFrame
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 # Our program.
 def main(root, experiments):
@@ -32,7 +33,8 @@ def main(root, experiments):
     for experiment in experiments:
         inputFolder = inputFolderRoot + experiment + "/"
         theBestChromosome = exportTheBestChromosome(experiment, inputFolder, outputFolderRoot)
-        newPlot2(outputFolderRoot,theBestChromosome)
+        newPlot(experiment,outputFolderRoot,theBestChromosome)
+        newPlot2(experiment,outputFolderRoot,theBestChromosome)
         # plotGenerations(outputFolderRoot)
         # ...
         # dataA = pd.read_csv(outputFolderRoot + "bestChromosome_"+experiment+".csv")
@@ -40,7 +42,7 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-    run = DataFrame(columns =  ["Run no.","Generation no.","Chromosome no.",'label','score','Volume'])
+    run = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
     # Read file.
     data = pd.read_csv(inputFolder + "experiment_1.csv")
     numRun = data['run'].max()
@@ -77,7 +79,28 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
     run.to_csv(outputFolder + "bestChromosome_" + label + ".csv",index = False)
     return run
 
-def newPlot2(outputFolder,data):
+def newPlot(experimentLabel,outputFolder,data):
+    plt.figure()
+    numRun = max(data['run'])
+    numGeneration = max(data['generation'])
+
+    generationMeanList = list()
+    generationStdList = list()
+    for generation in range(numGeneration):
+        plotData = []
+        for run in range(numRun):
+            generationsScore = sum(data[(data.run == run) & (data.generation == generation)].score)
+            plotData.append(generationsScore)
+        generationStdList.insert(generation, np.std(plotData))
+        generationMeanList.insert(generation, np.mean(plotData))
+    
+    plt.errorbar(range(len(generationMeanList)), generationMeanList, generationStdList, marker = 'o', alpha = 0.3)
+
+    plt.xlabel('Generation')
+    plt.ylabel('Score')
+    plt.savefig(outputFolder + experimentLabel +'_result.png')
+
+def newPlot2(experimentLabel,outputFolder,data):
     plt.figure()
     fitnessNames = set()
     for name in data.label.values:
@@ -86,16 +109,17 @@ def newPlot2(outputFolder,data):
             break
         fitnessNames.add(name)
 
+    color = ['r-','g-','b-','o-','y-']
+    i=0
     for fitnessName in fitnessNames:
         tt = data[data.label == fitnessName].score
-        plt.plot(range(len(tt)), tt, color=random.rand(3,1))
+        plt.plot(range(len(tt)), tt, color[i])
+        i+=1
 
     plt.legend(fitnessNames)
     plt.xlabel('Generation')
     plt.ylabel('Score')
-    plt.savefig(outputFolder + 'result.png')
-
-
+    plt.savefig(outputFolder + experimentLabel +'_result2.png')
 
 def plotGenerations(outputFolder):
     plt.figure()
@@ -109,7 +133,7 @@ def plotGenerations(outputFolder):
     plt.legend(['generation'])
     plt.xlabel('Generation')
     plt.ylabel('Score')
-    plt.savefig(outputFolder + 'result.png')
+    plt.savefig(outputFolder + '_result.png')
 
 def plotGenerationsWithSD(dataset, numRun, numGeneration, outputFolder):
     #setup the figure
