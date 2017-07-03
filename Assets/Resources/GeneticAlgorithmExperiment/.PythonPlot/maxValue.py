@@ -70,9 +70,9 @@ def newPlot(experimentLabel, outputFolder, data):
 
 	generationMeanList = list()
 	generationStdList = list()
-	for generation in range(numGeneration):
+	for generation in range(1,numGeneration+1):
 		plotData = []
-		for run in range(numRun):
+		for run in range(1,numRun+1):
 			generationsScore = sum(data[(data.run == run) & (data.generation == generation)].score)
 			plotData.append(generationsScore)
 		generationStdList.insert(generation, np.std(plotData))
