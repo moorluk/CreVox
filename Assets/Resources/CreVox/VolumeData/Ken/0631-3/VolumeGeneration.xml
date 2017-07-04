@@ -23,7 +23,7 @@
       <Name>window</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>close_01_vData</VDataName>
+          <VDataName>Connection_Branch_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -32,7 +32,7 @@
       <Name>closed</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>close_01_vData</VDataName>
+          <VDataName>Connection_Branch_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -47,127 +47,131 @@
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkARoomA</Name>
+      <Name>altarRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ altar_02_vData</VDataName>
+          <VDataName>Altar_A_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>Altar_A_02_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkARoomB</Name>
+      <Name>altarRoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ altar_03_vData</VDataName>
+          <VDataName>Altar_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkARoomC</Name>
+      <Name>altarRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ altar_01_vData</VDataName>
+          <VDataName>Altar_C_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkBRoomA</Name>
+      <Name>sewerRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_01_vData</VDataName>
+          <VDataName>Sewer_A_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkBRoomB</Name>
+      <Name>sewerRoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_02_vData</VDataName>
+          <VDataName>Sewer_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkBRoomC</Name>
+      <Name>sewerRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_03_vData</VDataName>
+          <VDataName>Sewer_C_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkCRoomA</Name>
+      <Name>graveRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_01_vData</VDataName>
+          <VDataName>Grave_A_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkCRoomB</Name>
+      <Name>graveRoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_02_vData</VDataName>
+          <VDataName>Grave_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkCRoomC</Name>
+      <Name>graveRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_grave_03_vData</VDataName>
+          <VDataName>Grave_C_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkDRoomA</Name>
+      <Name>prisonRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ Prison_01_vData</VDataName>
+          <VDataName>Prison_A_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkDRoomB</Name>
+      <Name>prisonRoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ Prison_02_vData</VDataName>
+          <VDataName>Prison_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkDRoomC</Name>
+      <Name>prisonRoomC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_ Prison_03_vData</VDataName>
+          <VDataName>Prison_C_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkERoomA</Name>
+      <Name>arenaRoomA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Colossenum_01_vData</VDataName>
+          <VDataName>Arena_A_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
     <Symbol>
-      <Name>frameworkERoomB</Name>
+      <Name>arenaRoomB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Colossenum_02_vData</VDataName>
+          <VDataName>Arena_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -176,7 +180,7 @@
       <Name>branchA</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_01_vData</VDataName>
+          <VDataName>Prison_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -185,7 +189,7 @@
       <Name>branchB</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_01_vData</VDataName>
+          <VDataName>Prison_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -194,11 +198,11 @@
       <Name>branchC</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>battle_Sewer_01_vData</VDataName>
+          <VDataName>Prison_B_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
     </Symbol>
   </Symbols>
-  <VDatasPath>Ken\0631-3</VDatasPath>
+  <VDatasPath />
 </VolumeGeneration>

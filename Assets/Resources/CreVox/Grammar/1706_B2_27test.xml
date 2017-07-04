@@ -315,7 +315,7 @@
       <Node id="1e0dc21f-e565-4c09-a59e-7ace7096fda0">
         <AlphabetID>56e4ac50-7d87-44eb-ae07-c9c48fb8224c</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkA</Name>
+        <Name>Altar</Name>
         <Abbreviation>FA</Abbreviation>
         <Description>框架A(祭壇)</Description>
         <Terminal>NonTerminal</Terminal>
@@ -349,9 +349,9 @@
       <Node id="fab74182-e841-44c7-9868-2899ef42a7c4">
         <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkARoomA</Name>
+        <Name>altarRoomA</Name>
         <Abbreviation>faa</Abbreviation>
-        <Description>A房間A</Description>
+        <Description>祭壇房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -383,9 +383,9 @@
       <Node id="486b2fc7-556b-4e25-b271-928f08ba1a45">
         <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkARoomB</Name>
+        <Name>altarRoomB</Name>
         <Abbreviation>fab</Abbreviation>
-        <Description>A房間B</Description>
+        <Description>祭壇房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -417,9 +417,9 @@
       <Node id="eebf3c8e-875b-44ce-b194-b0ce8a823b8a">
         <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkARoomC</Name>
+        <Name>altarRoomC</Name>
         <Abbreviation>fac</Abbreviation>
-        <Description>A房間C</Description>
+        <Description>祭壇房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -451,9 +451,9 @@
       <Node id="3491d7aa-613e-4cf5-baf6-c478bf3a7a11">
         <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkB</Name>
+        <Name>Sewer</Name>
         <Abbreviation>FB</Abbreviation>
-        <Description>框架B(墓穴)</Description>
+        <Description>框架B(水道)</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -485,9 +485,9 @@
       <Node id="1fb928a0-4a1c-49f1-bb15-0a896ed685dd">
         <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomA</Name>
+        <Name>sewerRoomA</Name>
         <Abbreviation>fba</Abbreviation>
-        <Description>B房間A</Description>
+        <Description>水道房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -519,9 +519,9 @@
       <Node id="0b409466-d7bf-410d-96e2-75a2468b0484">
         <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomB</Name>
+        <Name>sewerRoomB</Name>
         <Abbreviation>fbb</Abbreviation>
-        <Description>B房間B</Description>
+        <Description>水道房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -553,9 +553,9 @@
       <Node id="36b01166-7ff6-41b4-a361-f850b914b442">
         <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkBRoomC</Name>
+        <Name>sewerRoomC</Name>
         <Abbreviation>fbc</Abbreviation>
-        <Description>B房間C</Description>
+        <Description>水道房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -587,9 +587,9 @@
       <Node id="e95872a1-8e49-40c5-a9f1-029a2dd890f4">
         <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkC</Name>
+        <Name>Grave</Name>
         <Abbreviation>FC</Abbreviation>
-        <Description>框架C(水道)</Description>
+        <Description>框架C(墓穴)</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -621,9 +621,9 @@
       <Node id="44efb99e-3bc7-4cf1-ac9d-1ca2896a4be8">
         <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomA</Name>
+        <Name>graveRoomA</Name>
         <Abbreviation>fca</Abbreviation>
-        <Description>C房間A</Description>
+        <Description>墓地房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -655,9 +655,9 @@
       <Node id="e6ff56b7-2bdb-402f-83a0-eb57c1e269c2">
         <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomB</Name>
+        <Name>graveRoomB</Name>
         <Abbreviation>fcb</Abbreviation>
-        <Description>C房間B</Description>
+        <Description>墓地房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -689,9 +689,9 @@
       <Node id="2102e12a-1fe8-495a-82b4-5a9e372a8640">
         <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkCRoomC</Name>
+        <Name>graveRoomC</Name>
         <Abbreviation>fcc</Abbreviation>
-        <Description>C房間C</Description>
+        <Description>墓地房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -723,7 +723,7 @@
       <Node id="b714c356-d020-4409-8e5a-c96ae7bb29fc">
         <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkD</Name>
+        <Name>Prison</Name>
         <Abbreviation>FD</Abbreviation>
         <Description>框架D(地牢)</Description>
         <Terminal>NonTerminal</Terminal>
@@ -757,9 +757,9 @@
       <Node id="592d58cb-5a0d-483d-8e32-d14243d785b5">
         <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomA</Name>
+        <Name>prisonRoomA</Name>
         <Abbreviation>fda</Abbreviation>
-        <Description>D房間A</Description>
+        <Description>地牢房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -791,9 +791,9 @@
       <Node id="8f62de80-d227-4995-85d4-b5167a00ddba">
         <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomB</Name>
+        <Name>prisonRoomB</Name>
         <Abbreviation>fdb</Abbreviation>
-        <Description>D房間B</Description>
+        <Description>地牢房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -825,9 +825,9 @@
       <Node id="60a4ec85-5f90-45e6-a597-4ac46c6cc8b9">
         <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkDRoomC</Name>
+        <Name>prisonRoomC</Name>
         <Abbreviation>fdc</Abbreviation>
-        <Description>D房間C</Description>
+        <Description>地牢房間C</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -859,7 +859,7 @@
       <Node id="dad5f740-ad98-4fec-8278-46b17a74e35b">
         <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>FrameworkE</Name>
+        <Name>Arena</Name>
         <Abbreviation>FE</Abbreviation>
         <Description>框架E(鬥技場)</Description>
         <Terminal>NonTerminal</Terminal>
@@ -893,9 +893,9 @@
       <Node id="328d564b-d980-4e4a-9380-8ba8304ac955">
         <AlphabetID>bcedb862-c710-4044-b815-fcad44857ac1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkERoomA</Name>
+        <Name>arenaRoomA</Name>
         <Abbreviation>fea</Abbreviation>
-        <Description>E房間A</Description>
+        <Description>鬥技場房間A</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -927,9 +927,9 @@
       <Node id="9361ac70-865e-4eb2-a66f-e881f289679b">
         <AlphabetID>0c2dff40-c65b-4d72-8231-8e537fbeab51</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>frameworkERoomB</Name>
+        <Name>arenaRoomB</Name>
         <Abbreviation>feb</Abbreviation>
-        <Description>E房間B</Description>
+        <Description>鬥技場房間B</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -2325,7 +2325,7 @@
               <Node id="9a083c33-c6f6-4f10-849b-159478acd3cc">
                 <AlphabetID>56e4ac50-7d87-44eb-ae07-c9c48fb8224c</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameworkA</Name>
+                <Name>Altar</Name>
                 <Abbreviation>FA</Abbreviation>
                 <Description>框架A(祭壇)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -2398,9 +2398,9 @@
               <Node id="9c8b8080-c4ed-4610-8ae8-1afcb71593a5">
                 <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkB</Name>
+                <Name>Sewer</Name>
                 <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
+                <Description>框架B(水道)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2472,9 +2472,9 @@
               <Node id="9dc1924f-1fc3-4f2d-9c20-3e9ac214a5bd">
                 <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>FrameworkC</Name>
+                <Name>Grave</Name>
                 <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
+                <Description>框架C(墓穴)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2546,7 +2546,7 @@
               <Node id="8369366f-2a9e-422f-b993-9976c5d4db2d">
                 <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
                 <Ordering>7</Ordering>
-                <Name>FrameworkD</Name>
+                <Name>Prison</Name>
                 <Abbreviation>FD</Abbreviation>
                 <Description>框架D(地牢)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -2583,7 +2583,7 @@
               <Node id="b8ca3fcf-af2a-4710-9792-85c5e05fb557">
                 <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
                 <Ordering>8</Ordering>
-                <Name>FrameworkE</Name>
+                <Name>Arena</Name>
                 <Abbreviation>FE</Abbreviation>
                 <Description>框架E(鬥技場)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -5199,7 +5199,7 @@
               <Node id="09545631-1173-40fa-9025-edd9173ff6e3">
                 <AlphabetID>56e4ac50-7d87-44eb-ae07-c9c48fb8224c</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameworkA</Name>
+                <Name>Altar</Name>
                 <Abbreviation>FA</Abbreviation>
                 <Description>框架A(祭壇)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -5270,12 +5270,12 @@
                 </StickiedConnections>
               </Node>
               <Node id="912bd524-29b9-4823-8007-837a2485d337">
-                <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkB</Name>
-                <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
                     <X>153.5</X>
@@ -5298,7 +5298,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -5372,9 +5372,9 @@
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkARoomB</Name>
+                <Name>altarRoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>A房間B</Description>
+                <Description>祭壇房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5445,9 +5445,9 @@
               <Node id="6e442102-30b7-46a8-8882-9dc47068d7c3">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkARoomC</Name>
+                <Name>altarRoomC</Name>
                 <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Description>祭壇房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5480,35 +5480,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="1b35bf3c-37f1-4fbf-be39-63196a7c3515">
-                <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkB</Name>
-                <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>229.5</X>
-                    <Y>81.5</Y>
+                    <X>227.5</X>
+                    <Y>82.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>231.5</X>
-                    <Y>83.5</Y>
+                    <X>229.5</X>
+                    <Y>84.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>226.5</X>
-                    <Y>84</Y>
+                    <X>224.5</X>
+                    <Y>85</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -5518,9 +5518,9 @@
               <Node id="e174052f-aad9-4cf0-81a9-d9cb8fe801dc">
                 <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkARoomA</Name>
+                <Name>altarRoomA</Name>
                 <Abbreviation>faa</Abbreviation>
-                <Description>A房間A</Description>
+                <Description>祭壇房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5618,14 +5618,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>241.306824</X>
-                    <Y>47.98139</Y>
+                    <X>240.765121</X>
+                    <Y>47.9979935</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>242.693161</X>
-                    <Y>78.01861</Y>
+                    <X>241.234879</X>
+                    <Y>79.00201</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -5664,7 +5664,7 @@
                 <StartpointStickyOn>e174052f-aad9-4cf0-81a9-d9cb8fe801dc</StartpointStickyOn>
                 <EndpointStickyOn>803ecdc7-5f60-4f03-89a8-ed1506a86133</EndpointStickyOn>
                 <StartSelected>False</StartSelected>
-                <EndSelected>True</EndSelected>
+                <EndSelected>False</EndSelected>
               </Connection>
             </Connections>
           </MissionGraph>
@@ -5682,35 +5682,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="a0611534-08d3-41e6-af46-65a6e913ef50">
-                <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkB</Name>
-                <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>154.5</X>
-                    <Y>36.5</Y>
+                    <X>159.5</X>
+                    <Y>35.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>156.5</X>
-                    <Y>38.5</Y>
+                    <X>161.5</X>
+                    <Y>37.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>151.5</X>
-                    <Y>39</Y>
+                    <X>156.5</X>
+                    <Y>38</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -5720,7 +5720,7 @@
               <Node id="ae4b88b8-2273-4609-9b1d-b81950d868b1">
                 <AlphabetID>56e4ac50-7d87-44eb-ae07-c9c48fb8224c</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>FrameworkA</Name>
+                <Name>Altar</Name>
                 <Abbreviation>FA</Abbreviation>
                 <Description>框架A(祭壇)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -5828,14 +5828,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>88.9768</X>
-                    <Y>46.4008636</Y>
+                    <X>88.98656</X>
+                    <Y>46.18575</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>151.023209</X>
-                    <Y>49.5991325</Y>
+                    <X>156.013443</X>
+                    <Y>48.8142548</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -5857,9 +5857,9 @@
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkARoomC</Name>
+                <Name>altarRoomC</Name>
                 <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Description>祭壇房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5892,35 +5892,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="8ebc7887-c13f-4dcc-9d04-c07bb9439457">
-                <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkB</Name>
-                <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>272.5</X>
-                    <Y>37.5</Y>
+                    <X>260.5</X>
+                    <Y>36.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>274.5</X>
-                    <Y>39.5</Y>
+                    <X>262.5</X>
+                    <Y>38.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>269.5</X>
-                    <Y>40</Y>
+                    <X>257.5</X>
+                    <Y>39</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -5966,9 +5966,9 @@
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>frameworkARoomB</Name>
+                <Name>altarRoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>A房間B</Description>
+                <Description>祭壇房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6003,9 +6003,9 @@
               <Node id="40d55e94-65dd-49a5-aa46-5a374fb2cfff">
                 <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkARoomA</Name>
+                <Name>altarRoomA</Name>
                 <Abbreviation>faa</Abbreviation>
-                <Description>A房間A</Description>
+                <Description>祭壇房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6047,14 +6047,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>248.9971</X>
-                    <Y>50.81813</Y>
+                    <X>249</X>
+                    <Y>50.5000038</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>269.0029</X>
-                    <Y>51.18187</Y>
+                    <X>257</X>
+                    <Y>50.5000038</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6175,19 +6175,19 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>31.5</X>
+                    <X>8.5</X>
                     <Y>48.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>33.5</X>
+                    <X>10.5</X>
                     <Y>50.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>28.5</X>
+                    <X>5.5</X>
                     <Y>51</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -6212,20 +6212,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>43.5</X>
-                    <Y>120.5</Y>
+                    <X>11.5</X>
+                    <Y>114.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>45.5</X>
-                    <Y>122.5</Y>
+                    <X>13.5</X>
+                    <Y>116.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>40.5</X>
-                    <Y>123</Y>
+                    <X>8.5</X>
+                    <Y>117</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6242,26 +6242,26 @@
               <Node id="bf9b76d5-5997-4b54-9a1f-550a8b6aace8">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>frameworkARoomB</Name>
+                <Name>altarRoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>A房間B</Description>
+                <Description>祭壇房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>203.5</X>
-                    <Y>44.5</Y>
+                    <X>139.5</X>
+                    <Y>49.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>205.5</X>
-                    <Y>46.5</Y>
+                    <X>141.5</X>
+                    <Y>51.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>200.5</X>
-                    <Y>47</Y>
+                    <X>136.5</X>
+                    <Y>52</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6279,26 +6279,26 @@
               <Node id="51060b0d-05d9-4da1-b295-4262165dbca5">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkARoomC</Name>
+                <Name>altarRoomC</Name>
                 <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Description>祭壇房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>287.5</X>
-                    <Y>44.5</Y>
+                    <X>205.5</X>
+                    <Y>47.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>289.5</X>
-                    <Y>46.5</Y>
+                    <X>207.5</X>
+                    <Y>49.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>284.5</X>
-                    <Y>47</Y>
+                    <X>202.5</X>
+                    <Y>50</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6315,26 +6315,26 @@
               <Node id="11b04f70-f9be-450e-a493-67df04444313">
                 <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkARoomA</Name>
+                <Name>altarRoomA</Name>
                 <Abbreviation>faa</Abbreviation>
-                <Description>A房間A</Description>
+                <Description>祭壇房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>119.5</X>
-                    <Y>42.5</Y>
+                    <X>71.5</X>
+                    <Y>47.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>121.5</X>
-                    <Y>44.5</Y>
+                    <X>73.5</X>
+                    <Y>49.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>116.5</X>
-                    <Y>45</Y>
+                    <X>68.5</X>
+                    <Y>50</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6359,14 +6359,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>48.3769836</X>
-                    <Y>79.7618942</Y>
+                    <X>23.2946339</X>
+                    <Y>79.98195</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>54.6230164</X>
-                    <Y>117.238106</Y>
+                    <X>24.7053661</X>
+                    <Y>111.018051</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6387,14 +6387,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>62.959465</X>
-                    <Y>61.3095856</Y>
+                    <X>39.9977951</X>
+                    <Y>62.22226</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>116.040535</X>
-                    <Y>57.69042</Y>
+                    <X>68.0022049</X>
+                    <Y>61.77774</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6415,14 +6415,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>235</X>
-                    <Y>58.5</Y>
+                    <X>170.991974</X>
+                    <Y>62.96994</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>284</X>
-                    <Y>58.5</Y>
+                    <X>202.008026</X>
+                    <Y>62.03006</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6443,14 +6443,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>150.995041</X>
-                    <Y>56.91655</Y>
+                    <X>102.992439</X>
+                    <Y>62.01448</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>200.004959</X>
-                    <Y>58.08345</Y>
+                    <X>136.007568</X>
+                    <Y>62.98552</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6478,20 +6478,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>38.5</X>
-                    <Y>50.5</Y>
+                    <X>8.5</X>
+                    <Y>51.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>40.5</X>
-                    <Y>52.5</Y>
+                    <X>10.5</X>
+                    <Y>53.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>35.5</X>
-                    <Y>53</Y>
+                    <X>5.5</X>
+                    <Y>54</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6514,20 +6514,20 @@
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>297.5</X>
-                    <Y>120.5</Y>
+                    <X>141.5</X>
+                    <Y>117.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>299.5</X>
-                    <Y>122.5</Y>
+                    <X>143.5</X>
+                    <Y>119.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>294.5</X>
-                    <Y>123</Y>
+                    <X>138.5</X>
+                    <Y>120</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6544,26 +6544,26 @@
               <Node id="43e056d9-062e-46e5-9b73-6f5dba79f9f8">
                 <AlphabetID>7fb327a7-fbeb-49aa-b999-cca0169a93e7</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>frameworkARoomB</Name>
+                <Name>altarRoomB</Name>
                 <Abbreviation>fab</Abbreviation>
-                <Description>A房間B</Description>
+                <Description>祭壇房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>200.5</X>
-                    <Y>46.5</Y>
+                    <X>139.5</X>
+                    <Y>51.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>202.5</X>
-                    <Y>48.5</Y>
+                    <X>141.5</X>
+                    <Y>53.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>197.5</X>
-                    <Y>49</Y>
+                    <X>136.5</X>
+                    <Y>54</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6582,26 +6582,26 @@
               <Node id="47ce80af-ffa7-4687-91e5-ee20e545edfb">
                 <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkARoomC</Name>
+                <Name>altarRoomC</Name>
                 <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Description>祭壇房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>285.5</X>
-                    <Y>47.5</Y>
+                    <X>201.659027</X>
+                    <Y>51.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>287.5</X>
-                    <Y>49.5</Y>
+                    <X>203.659027</X>
+                    <Y>53.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>282.5</X>
-                    <Y>50</Y>
+                    <X>198.659027</X>
+                    <Y>54</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6618,26 +6618,26 @@
               <Node id="726cca2a-7add-4422-80e0-191fe1a72f38">
                 <AlphabetID>9d4d38e7-8e53-4c99-a12f-d13eb0492cc7</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkARoomA</Name>
+                <Name>altarRoomA</Name>
                 <Abbreviation>faa</Abbreviation>
-                <Description>A房間A</Description>
+                <Description>祭壇房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>108.5</X>
-                    <Y>55.5</Y>
+                    <X>71.5</X>
+                    <Y>50.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>110.5</X>
-                    <Y>57.5</Y>
+                    <X>73.5</X>
+                    <Y>52.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>105.5</X>
-                    <Y>58</Y>
+                    <X>68.5</X>
+                    <Y>53</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
@@ -6662,14 +6662,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>302.338623</X>
-                    <Y>78.76824</Y>
+                    <X>154.03006</X>
+                    <Y>82.9919739</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>308.661377</X>
-                    <Y>117.231758</Y>
+                    <X>154.96994</X>
+                    <Y>114.008026</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6679,7 +6679,7 @@
                 </SymbolColor>
                 <StartpointStickyOn>43e056d9-062e-46e5-9b73-6f5dba79f9f8</StartpointStickyOn>
                 <EndpointStickyOn>34fdabc5-94d6-4a97-a722-a544520916fc</EndpointStickyOn>
-                <StartSelected>True</StartSelected>
+                <StartSelected>False</StartSelected>
                 <EndSelected>False</EndSelected>
               </Connection>
               <Connection id="87db0028-5035-4ba5-b898-1c4cbb35f95a">
@@ -6690,14 +6690,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>69.95553</X>
-                    <Y>65.7468262</Y>
+                    <X>39.9977951</X>
+                    <Y>65.22226</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>105.044472</X>
-                    <Y>68.2531738</Y>
+                    <X>68.0022049</X>
+                    <Y>64.77774</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6718,14 +6718,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>231.9988</X>
-                    <Y>60.70587</Y>
+                    <X>171</X>
+                    <Y>65.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>282.001221</X>
-                    <Y>61.294136</Y>
+                    <X>198.159027</X>
+                    <Y>65.5</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6746,14 +6746,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>139.916855</X>
-                    <Y>67.79617</Y>
+                    <X>102.998108</X>
+                    <Y>64.7573242</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>197.083145</X>
-                    <Y>62.20382</Y>
+                    <X>136.001892</X>
+                    <Y>65.2426758</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6788,9 +6788,9 @@
               <Node id="09545631-1173-40fa-9025-edd9173ff6e3">
                 <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkB</Name>
+                <Name>Sewer</Name>
                 <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
+                <Description>框架B(水道)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6860,35 +6860,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="912bd524-29b9-4823-8007-837a2485d337">
-                <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkC</Name>
-                <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>166.5</X>
-                    <Y>43.5</Y>
+                    <X>165.5</X>
+                    <Y>41.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>168.5</X>
-                    <Y>45.5</Y>
+                    <X>167.5</X>
+                    <Y>43.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>163.5</X>
-                    <Y>46</Y>
+                    <X>162.5</X>
+                    <Y>44</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -6896,35 +6896,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="e61b20b0-fa0c-43c9-8209-181b0bbee41e">
-                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkARoomC</Name>
-                <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>19.5</X>
-                    <Y>16.5</Y>
+                    <X>12.5</X>
+                    <Y>18.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>21.5</X>
-                    <Y>18.5</Y>
+                    <X>14.5</X>
+                    <Y>20.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>16.5</X>
-                    <Y>19</Y>
+                    <X>9.5</X>
+                    <Y>21</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -6969,14 +6969,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>107.913147</X>
-                    <Y>50.2413139</Y>
+                    <X>107.946121</X>
+                    <Y>49.8721657</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>163.086853</X>
-                    <Y>55.7586861</Y>
+                    <X>162.053879</X>
+                    <Y>54.1278343</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -6997,14 +6997,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>50.1877</X>
-                    <Y>35.7698</Y>
+                    <X>43.4774933</X>
+                    <Y>36.7443733</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>73.8123</X>
-                    <Y>43.2302</Y>
+                    <X>73.52251</X>
+                    <Y>44.2556267</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7026,9 +7026,9 @@
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkBRoomB</Name>
+                <Name>sewerRoomB</Name>
                 <Abbreviation>fbb</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7063,9 +7063,9 @@
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
                 <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkBRoomA</Name>
+                <Name>sewerRoomA</Name>
                 <Abbreviation>fba</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7100,9 +7100,9 @@
               <Node id="6e442102-30b7-46a8-8882-9dc47068d7c3">
                 <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkBRoomC</Name>
+                <Name>sewerRoomC</Name>
                 <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7135,35 +7135,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="1b35bf3c-37f1-4fbf-be39-63196a7c3515">
-                <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkC</Name>
-                <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
                     <X>243.5</X>
-                    <Y>63.5</Y>
+                    <Y>62.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
                     <X>245.5</X>
-                    <Y>65.5</Y>
+                    <Y>64.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
                     <X>240.5</X>
-                    <Y>66</Y>
+                    <Y>65</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7171,27 +7171,27 @@
                 </StickiedConnections>
               </Node>
               <Node id="0ef729c2-8acb-4465-8d75-66e777430954">
-                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkARoomC</Name>
-                <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>16.5</X>
+                    <X>12.5</X>
                     <Y>44.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>18.5</X>
+                    <X>14.5</X>
                     <Y>46.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>13.5</X>
+                    <X>9.5</X>
                     <Y>47</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -7199,7 +7199,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7272,14 +7272,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>219.383362</X>
-                    <Y>67.10455</Y>
+                    <X>219.4592</X>
+                    <Y>66.81689</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>240.616638</X>
-                    <Y>72.89545</Y>
+                    <X>240.5408</X>
+                    <Y>72.18311</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7300,14 +7300,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>47.98801</X>
-                    <Y>59.1477051</Y>
+                    <X>43.9896049</X>
+                    <Y>59.10309</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>67.01199</X>
-                    <Y>59.8522949</Y>
+                    <X>67.01039</X>
+                    <Y>59.89691</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7336,35 +7336,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="a0611534-08d3-41e6-af46-65a6e913ef50">
-                <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkC</Name>
-                <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>149.5</X>
-                    <Y>42.5</Y>
+                    <X>142.5</X>
+                    <Y>35.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>151.5</X>
-                    <Y>44.5</Y>
+                    <X>144.5</X>
+                    <Y>37.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>146.5</X>
-                    <Y>45</Y>
+                    <X>139.5</X>
+                    <Y>38</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7374,9 +7374,9 @@
               <Node id="ae4b88b8-2273-4609-9b1d-b81950d868b1">
                 <AlphabetID>7339c950-4f88-404b-a2c8-4d7f30ad37f7</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkB</Name>
+                <Name>Sewer</Name>
                 <Abbreviation>FB</Abbreviation>
-                <Description>框架B(墓穴)</Description>
+                <Description>框架B(水道)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7446,35 +7446,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="2abf1957-2cf9-425a-8ea7-502987f98744">
-                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkARoomC</Name>
-                <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
                     <X>15.5</X>
-                    <Y>25.5</Y>
+                    <Y>24.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
                     <X>17.5</X>
-                    <Y>27.5</Y>
+                    <Y>26.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
                     <X>12.5</X>
-                    <Y>28</Y>
+                    <Y>27</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7519,14 +7519,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>104.668793</X>
-                    <Y>44.88858</Y>
+                    <X>104.883553</X>
+                    <Y>43.5154839</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>146.3312</X>
-                    <Y>53.1114235</Y>
+                    <X>139.116455</X>
+                    <Y>47.4845161</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7547,14 +7547,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>46.9896049</X>
-                    <Y>40.10309</Y>
+                    <X>46.97664</X>
+                    <Y>39.403965</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>70.01039</X>
-                    <Y>40.8969078</Y>
+                    <X>70.02336</X>
+                    <Y>40.596035</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7576,9 +7576,9 @@
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkBRoomC</Name>
+                <Name>sewerRoomC</Name>
                 <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7611,35 +7611,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="8ebc7887-c13f-4dcc-9d04-c07bb9439457">
-                <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkC</Name>
-                <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>255.5</X>
-                    <Y>100.5</Y>
+                    <X>246.5</X>
+                    <Y>107.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>257.5</X>
-                    <Y>102.5</Y>
+                    <X>248.5</X>
+                    <Y>109.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>252.5</X>
-                    <Y>103</Y>
+                    <X>243.5</X>
+                    <Y>110</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7649,9 +7649,9 @@
               <Node id="1a6efe71-ebce-46d6-a389-6a57313b7327">
                 <AlphabetID>ccfc877c-0db5-4509-a852-d27976ecac18</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkBRoomA</Name>
+                <Name>sewerRoomA</Name>
                 <Abbreviation>fba</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7686,9 +7686,9 @@
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>de20a428-87d7-474e-9528-5b4d39d07193</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkBRoomB</Name>
+                <Name>sewerRoomB</Name>
                 <Abbreviation>fbb</Abbreviation>
-                <Description>123</Description>
+                <Description>水道房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7721,27 +7721,27 @@
                 </StickiedConnections>
               </Node>
               <Node id="adf2b8c2-3fb4-4f3a-925e-2eaba14607f3">
-                <AlphabetID>41aa7443-4a98-46a7-929d-bbd068a8cbe5</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkARoomC</Name>
-                <Abbreviation>fac</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>15.5</X>
+                    <X>17.5</X>
                     <Y>56.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>17.5</X>
+                    <X>19.5</X>
                     <Y>58.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>12.5</X>
+                    <X>14.5</X>
                     <Y>59</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -7749,7 +7749,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7766,14 +7766,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>240.381973</X>
-                    <Y>71.94287</Y>
+                    <X>237.9276</X>
+                    <Y>73.34553</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>259.618042</X>
-                    <Y>100.057121</Y>
+                    <X>253.072418</X>
+                    <Y>105.654465</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7850,14 +7850,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>46.9080048</X>
-                    <Y>68.708</Y>
+                    <X>48.9023972</X>
+                    <Y>68.65429</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>80.0919952</X>
-                    <Y>65.292</Y>
+                    <X>80.0976</X>
+                    <Y>65.34571</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -7892,9 +7892,9 @@
               <Node id="09545631-1173-40fa-9025-edd9173ff6e3">
                 <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkC</Name>
+                <Name>Grave</Name>
                 <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
+                <Description>框架C(墓穴)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7928,35 +7928,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="912bd524-29b9-4823-8007-837a2485d337">
-                <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkD</Name>
-                <Abbreviation>FD</Abbreviation>
-                <Description>框架D(地牢)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>204.5</X>
-                    <Y>75.5</Y>
+                    <X>208.5</X>
+                    <Y>76.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>206.5</X>
-                    <Y>77.5</Y>
+                    <X>210.5</X>
+                    <Y>78.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>201.5</X>
-                    <Y>78</Y>
+                    <X>205.5</X>
+                    <Y>79</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#E8A4FF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -7964,35 +7964,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="e61b20b0-fa0c-43c9-8209-181b0bbee41e">
-                <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkBRoomC</Name>
-                <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>33.5</X>
-                    <Y>36.5</Y>
+                    <X>28.5</X>
+                    <Y>35.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>35.5</X>
-                    <Y>38.5</Y>
+                    <X>30.5</X>
+                    <Y>37.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>30.5</X>
-                    <Y>39</Y>
+                    <X>25.5</X>
+                    <Y>38</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8045,14 +8045,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>148.963089</X>
-                    <Y>64.43437</Y>
+                    <X>148.988754</X>
+                    <Y>64.36267</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>202.036911</X>
-                    <Y>83.56563</Y>
+                    <X>206.011246</X>
+                    <Y>84.63733</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8073,14 +8073,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>64.9230042</X>
-                    <Y>52.1398125</Y>
+                    <X>59.913147</X>
+                    <Y>51.2413139</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>115.076996</X>
-                    <Y>56.8601875</Y>
+                    <X>115.086853</X>
+                    <Y>56.7586861</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8130,9 +8130,9 @@
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkCRoomB</Name>
+                <Name>graveRoomB</Name>
                 <Abbreviation>fcb</Abbreviation>
-                <Description>fcb</Description>
+                <Description>墓地房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8167,9 +8167,9 @@
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
                 <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkCRoomA</Name>
+                <Name>graveRoomA</Name>
                 <Abbreviation>fca</Abbreviation>
-                <Description>fca</Description>
+                <Description>墓地房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8204,9 +8204,9 @@
               <Node id="6e442102-30b7-46a8-8882-9dc47068d7c3">
                 <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkCRoomC</Name>
+                <Name>graveRoomC</Name>
                 <Abbreviation>fcc</Abbreviation>
-                <Description>fcc</Description>
+                <Description>墓地房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8239,35 +8239,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="1b35bf3c-37f1-4fbf-be39-63196a7c3515">
-                <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkD</Name>
-                <Abbreviation>FD</Abbreviation>
-                <Description>框架D(地牢)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>260.5</X>
-                    <Y>77.5</Y>
+                    <X>253.5</X>
+                    <Y>84.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>262.5</X>
-                    <Y>79.5</Y>
+                    <X>255.5</X>
+                    <Y>86.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>257.5</X>
-                    <Y>80</Y>
+                    <X>250.5</X>
+                    <Y>87</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#E8A4FF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8275,35 +8275,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="0ef729c2-8acb-4465-8d75-66e777430954">
-                <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkBRoomC</Name>
-                <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>19.5</X>
-                    <Y>40.5</Y>
+                    <X>13.5</X>
+                    <Y>49.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>21.5</X>
-                    <Y>42.5</Y>
+                    <X>15.5</X>
+                    <Y>51.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>16.5</X>
-                    <Y>43</Y>
+                    <X>10.5</X>
+                    <Y>52</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8376,14 +8376,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>220.748337</X>
-                    <Y>69.99934</Y>
+                    <X>219.797745</X>
+                    <Y>71.99875</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>258.251648</X>
-                    <Y>85.00066</Y>
+                    <X>252.20224</X>
+                    <Y>90.00125</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8404,14 +8404,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>50.8781166</X>
-                    <Y>56.5618134</Y>
+                    <X>44.9917221</X>
+                    <Y>62.961792</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>75.12189</X>
-                    <Y>59.4381943</Y>
+                    <X>75.00828</X>
+                    <Y>62.038208</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8440,35 +8440,35 @@
           <MissionGraph>
             <Nodes>
               <Node id="a0611534-08d3-41e6-af46-65a6e913ef50">
-                <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkD</Name>
-                <Abbreviation>FD</Abbreviation>
-                <Description>框架D(地牢)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>150.5</X>
-                    <Y>48.5</Y>
+                    <X>155.5</X>
+                    <Y>36.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>152.5</X>
-                    <Y>50.5</Y>
+                    <X>157.5</X>
+                    <Y>38.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>147.5</X>
-                    <Y>51</Y>
+                    <X>152.5</X>
+                    <Y>39</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#E8A4FF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8478,9 +8478,9 @@
               <Node id="ae4b88b8-2273-4609-9b1d-b81950d868b1">
                 <AlphabetID>f57c7815-e32f-404f-b372-563e5f7b53d6</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkC</Name>
+                <Name>Grave</Name>
                 <Abbreviation>FC</Abbreviation>
-                <Description>框架C(水道)</Description>
+                <Description>框架C(墓穴)</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8550,35 +8550,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="2abf1957-2cf9-425a-8ea7-502987f98744">
-                <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkBRoomC</Name>
-                <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>17.5</X>
-                    <Y>23.5</Y>
+                    <X>22.5</X>
+                    <Y>28.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>19.5</X>
-                    <Y>25.5</Y>
+                    <X>24.5</X>
+                    <Y>30.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>14.5</X>
-                    <Y>26</Y>
+                    <X>19.5</X>
+                    <Y>31</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8623,14 +8623,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>108.317947</X>
-                    <Y>46.33804</Y>
+                    <X>108.884659</X>
+                    <Y>43.50592</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>147.682053</X>
-                    <Y>57.66196</Y>
+                    <X>152.115341</X>
+                    <Y>48.49408</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8651,14 +8651,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>48.9612427</X>
-                    <Y>38.66408</Y>
+                    <X>53.99711</X>
+                    <Y>42.18187</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>74.03876</X>
-                    <Y>40.33592</Y>
+                    <X>74.00289</X>
+                    <Y>41.81813</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8680,9 +8680,9 @@
               <Node id="cc047040-aad7-497c-8f5f-49ffa6cd9ea4">
                 <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkCRoomC</Name>
+                <Name>graveRoomC</Name>
                 <Abbreviation>fcc</Abbreviation>
-                <Description>fcc</Description>
+                <Description>墓地房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8715,27 +8715,27 @@
                 </StickiedConnections>
               </Node>
               <Node id="8ebc7887-c13f-4dcc-9d04-c07bb9439457">
-                <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkD</Name>
-                <Abbreviation>FD</Abbreviation>
-                <Description>框架D(地牢)</Description>
-                <Terminal>NonTerminal</Terminal>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
+                <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>250.5</X>
+                    <X>255.5</X>
                     <Y>103.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>252.5</X>
+                    <X>257.5</X>
                     <Y>105.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>247.5</X>
+                    <X>252.5</X>
                     <Y>106</Y>
                     <Width>45</Width>
                     <Height>34</Height>
@@ -8743,7 +8743,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#E8A4FF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8753,9 +8753,9 @@
               <Node id="1a6efe71-ebce-46d6-a389-6a57313b7327">
                 <AlphabetID>cef9a469-b6e7-4820-b530-b967c7a549c5</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkCRoomA</Name>
+                <Name>graveRoomA</Name>
                 <Abbreviation>fca</Abbreviation>
-                <Description>fca</Description>
+                <Description>墓地房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8790,9 +8790,9 @@
               <Node id="be9920d8-c41e-4fb0-aac0-2ef96b82155f">
                 <AlphabetID>41114700-3a9d-43c4-93c8-4714f6c80f8b</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkCRoomB</Name>
+                <Name>graveRoomB</Name>
                 <Abbreviation>fcb</Abbreviation>
-                <Description>fcb</Description>
+                <Description>墓地房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8825,35 +8825,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="adf2b8c2-3fb4-4f3a-925e-2eaba14607f3">
-                <AlphabetID>6832f366-fb1a-47c2-8f20-069a02d7cf66</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkBRoomC</Name>
-                <Abbreviation>fbc</Abbreviation>
-                <Description>123</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>5.5</X>
-                    <Y>61.5</Y>
+                    <X>4.5</X>
+                    <Y>51.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>7.5</X>
-                    <Y>63.5</Y>
+                    <X>6.5</X>
+                    <Y>53.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>2.5</X>
-                    <Y>64</Y>
+                    <X>1.5</X>
+                    <Y>54</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A7DB6F</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -8870,14 +8870,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>242.81752</X>
-                    <Y>70.39667</Y>
+                    <X>243.811325</X>
+                    <Y>69.90039</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>257.1825</X>
-                    <Y>101.603333</Y>
+                    <X>261.1887</X>
+                    <Y>102.099609</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8954,14 +8954,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>36.68679</X>
-                    <Y>72.2039</Y>
+                    <X>35.9744873</X>
+                    <Y>64.5554352</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>75.31321</X>
-                    <Y>64.7961</Y>
+                    <X>75.02551</X>
+                    <Y>62.4445648</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -8996,7 +8996,7 @@
               <Node id="09545631-1173-40fa-9025-edd9173ff6e3">
                 <AlphabetID>ec5baa24-56f1-46ab-a424-88b22cf4d299</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>FrameworkD</Name>
+                <Name>Prison</Name>
                 <Abbreviation>FD</Abbreviation>
                 <Description>框架D(地牢)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -9033,7 +9033,7 @@
               <Node id="912bd524-29b9-4823-8007-837a2485d337">
                 <AlphabetID>97877e62-f16d-4791-9ff4-f627fa0c3aad</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>FrameworkE</Name>
+                <Name>Arena</Name>
                 <Abbreviation>FE</Abbreviation>
                 <Description>框架E(鬥技場)</Description>
                 <Terminal>NonTerminal</Terminal>
@@ -9067,35 +9067,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="e61b20b0-fa0c-43c9-8209-181b0bbee41e">
-                <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkCRoomC</Name>
-                <Abbreviation>fcc</Abbreviation>
-                <Description>fcc</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
                     <X>17.5</X>
-                    <Y>15.5</Y>
+                    <Y>17.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
                     <X>19.5</X>
-                    <Y>17.5</Y>
+                    <Y>19.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
                     <X>14.5</X>
-                    <Y>18</Y>
+                    <Y>20</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -9140,14 +9140,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>48.07846</X>
-                    <Y>35.10399</Y>
+                    <X>48.21592</X>
+                    <Y>36.67958</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>85.92154</X>
-                    <Y>47.8960152</Y>
+                    <X>85.78408</X>
+                    <Y>48.32042</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -9169,9 +9169,9 @@
               <Node id="803ecdc7-5f60-4f03-89a8-ed1506a86133">
                 <AlphabetID>786637a2-2e45-47d3-9d0d-f21b7b08b5d8</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>frameworkDRoomB</Name>
+                <Name>prisonRoomB</Name>
                 <Abbreviation>fdb</Abbreviation>
-                <Description>fdb</Description>
+                <Description>地牢房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -9206,9 +9206,9 @@
               <Node id="3912c1df-95a8-46ca-b1b0-0c157e11a4a2">
                 <AlphabetID>55ee697c-151f-4b0c-9c93-2fcba4d4e451</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>frameworkDRoomA</Name>
+                <Name>prisonRoomA</Name>
                 <Abbreviation>fda</Abbreviation>
-                <Description>fda</Description>
+                <Description>地牢房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -9243,9 +9243,9 @@
               <Node id="6e442102-30b7-46a8-8882-9dc47068d7c3">
                 <AlphabetID>e4c57fad-a76c-4115-a171-715b371ba19a</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>frameworkDRoomC</Name>
+                <Name>prisonRoomC</Name>
                 <Abbreviation>fdc</Abbreviation>
-                <Description>fdc</Description>
+                <Description>地牢房間C</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -9281,9 +9281,9 @@
               <Node id="1b35bf3c-37f1-4fbf-be39-63196a7c3515">
                 <AlphabetID>bcedb862-c710-4044-b815-fcad44857ac1</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>frameworkERoomA</Name>
+                <Name>arenaRoomA</Name>
                 <Abbreviation>fea</Abbreviation>
-                <Description>fea</Description>
+                <Description>鬥技場房間A</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -9316,35 +9316,35 @@
                 </StickiedConnections>
               </Node>
               <Node id="0ef729c2-8acb-4465-8d75-66e777430954">
-                <AlphabetID>5633bf51-acb6-4b06-b5b5-bbf3f3e1d0f1</AlphabetID>
+                <AlphabetID>2517e924-cb2e-41b1-812f-52b3998271ca</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>frameworkCRoomC</Name>
-                <Abbreviation>fcc</Abbreviation>
-                <Description>fcc</Description>
+                <Name>any</Name>
+                <Abbreviation>?</Abbreviation>
+                <Description>System default.</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
-                    <X>26.5</X>
-                    <Y>19.5</Y>
+                    <X>14.5</X>
+                    <Y>21.5</Y>
                     <Width>39</Width>
                     <Height>39</Height>
                   </Outline>
                   <Filled>
-                    <X>28.5</X>
-                    <Y>21.5</Y>
+                    <X>16.5</X>
+                    <Y>23.5</Y>
                     <Width>35</Width>
                     <Height>35</Height>
                   </Filled>
                   <Text>
-                    <X>23.5</X>
-                    <Y>22</Y>
+                    <X>11.5</X>
+                    <Y>24</Y>
                     <Width>45</Width>
                     <Height>34</Height>
                   </Text>
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#839FFF</Filled>
+                  <Filled>#FFFFFF</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
@@ -9354,9 +9354,9 @@
               <Node id="18988a46-1215-40cf-a605-56ab56f75810">
                 <AlphabetID>0c2dff40-c65b-4d72-8231-8e537fbeab51</AlphabetID>
                 <Ordering>6</Ordering>
-                <Name>frameworkERoomB</Name>
+                <Name>arenaRoomB</Name>
                 <Abbreviation>feb</Abbreviation>
-                <Description>feb</Description>
+                <Description>鬥技場房間B</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -9591,14 +9591,14 @@
                 <ArrowType>Double</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>49.84488</X>
-                    <Y>48.2960548</Y>
+                    <X>40.00685</X>
+                    <Y>48.68493</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>67.15512</X>
-                    <Y>75.70394</Y>
+                    <X>64.99315</X>
+                    <Y>77.31506</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>
@@ -9675,14 +9675,14 @@
                 <ArrowType>Normal</ArrowType>
                 <Scope>
                   <Startpoint>
-                    <X>172.09967</X>
-                    <Y>79.39666</Y>
+                    <X>226.729446</X>
+                    <Y>74.66278</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Startpoint>
                   <Endpoint>
-                    <X>202.90033</X>
-                    <Y>44.60334</Y>
+                    <X>219.270538</X>
+                    <Y>48.33722</Y>
                     <Width>11</Width>
                     <Height>11</Height>
                   </Endpoint>

@@ -3,22 +3,22 @@
   <Connections>
     <Connection Type="Branch">
       <Instructions>
-        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/close_01_vData.asset</vData>
+        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/Connection_Branch_01_vData.asset</vData>
       </Instructions>
     </Connection>
     <Connection Type="Default">
       <Instructions>
-        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/close_01_vData.asset</vData>
+        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/Connection_Default_01_vData.asset</vData>
       </Instructions>
     </Connection>
     <Connection Type="Main">
       <Instructions>
-        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/close_01_vData.asset</vData>
+        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/Connection_Main_01_vData.asset</vData>
       </Instructions>
     </Connection>
     <Connection Type="Window">
       <Instructions>
-        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/close_01_vData.asset</vData>
+        <vData>Assets/Resources/CreVox/VolumeData/Ken/0631-3/Connection_Window_01_vData.asset</vData>
       </Instructions>
     </Connection>
   </Connections>
