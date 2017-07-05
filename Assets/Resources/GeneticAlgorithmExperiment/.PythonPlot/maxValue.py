@@ -31,14 +31,14 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-	run = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
+	outputDate = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
 	# Read file.
 	data = pd.read_csv(inputFolder + "experiment_1.csv")
 	numRun = data['run'].max()
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
 	# Get input file
-	for i in range(1, numRun + 1, 1):
+	for nR in range(1, numRun + 1, 1):
 		# get all of label in this csv file.
 		fitnessLabels = set(data.label.values)
 		#
@@ -46,22 +46,26 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				chromosomeScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
 			for fitnessName in fitnessLabels:
-				labelScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
-				info = [i,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
+				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
+				info = [nR,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
 				# add info to the last.
-				run.loc[-1] = info
+				outputDate.loc[-1] = info
 				# shifting index
-				run.index = run.index + 1
+				outputDate.index = outputDate.index + 1
 
+	#fixed [run,generation,chromosome] are float,not int.
+	outputDate['run'] = outputDate['run'].astype(int)
+	outputDate['generation'] = outputDate['generation'].astype(int)
+	outputDate['chromosome'] = outputDate['chromosome'].astype(int)
 	# output result table
-	run.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
-	return run
+	outputDate.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
+	return outputDate
 
 def newPlot(experimentLabel, outputFolder, data):
 	plt.figure(figsize = (16, 9), dpi = 120)
