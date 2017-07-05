@@ -31,7 +31,7 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-	run = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
+	outputDate = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
 	# Read file.
 	data = pd.read_csv(inputFolder + "experiment_1.csv")
 	numRun = data['run'].max()
@@ -53,20 +53,24 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
 			for fitnessName in fitnessLabels:
 				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
-				info = [int(nR),int(ng),int(chromosomeID),fitnessName,labelScore,data.iloc[chromosomeID].volume]
+				info = [nR,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
 				# add info to the last.
-				run.loc[-1] = info
+				outputDate.loc[-1] = info
 				# shifting index
-				run.index = run.index + 1
+				outputDate.index = outputDate.index + 1
 
+	#fixed [run,generation,chromosome] are float,not int.
+	outputDate['run'] = outputDate['run'].astype(int)
+	outputDate['generation'] = outputDate['generation'].astype(int)
+	outputDate['chromosome'] = outputDate['chromosome'].astype(int)
 	# output result table
-	run.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
-	return run
+	outputDate.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
+	return outputDate
 
 def newPlot(experimentLabel, outputFolder, data):
 	plt.figure(figsize = (16, 9), dpi = 120)
-	numRun = int(max(data['run']))
-	numGeneration = int(max(data['generation']))
+	numRun = max(data['run'])
+	numGeneration = max(data['generation'])
 
 	generationMeanList = list()
 	generationStdList = list()
