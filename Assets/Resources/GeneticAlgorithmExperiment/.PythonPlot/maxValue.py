@@ -38,7 +38,7 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
 	# Get input file
-	for i in range(1, numRun + 1, 1):
+	for nR in range(1, numRun + 1, 1):
 		# get all of label in this csv file.
 		fitnessLabels = set(data.label.values)
 		#
@@ -46,14 +46,14 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				chromosomeScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
 			for fitnessName in fitnessLabels:
-				labelScore = data[(data.run == i) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
-				info = [i,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
+				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
+				info = [int(nR),int(ng),int(chromosomeID),fitnessName,labelScore,data.iloc[chromosomeID].volume]
 				# add info to the last.
 				run.loc[-1] = info
 				# shifting index
@@ -65,8 +65,8 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 
 def newPlot(experimentLabel, outputFolder, data):
 	plt.figure(figsize = (16, 9), dpi = 120)
-	numRun = max(data['run'])
-	numGeneration = max(data['generation'])
+	numRun = int(max(data['run']))
+	numGeneration = int(max(data['generation']))
 
 	generationMeanList = list()
 	generationStdList = list()
