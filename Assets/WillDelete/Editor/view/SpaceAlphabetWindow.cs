@@ -13,19 +13,13 @@ namespace CrevoxExtend {
 		private Vector2 scrollPosition = new Vector2(0, 0);
 		private List<string> Alphabets { get; set; }
 		private bool AlphabetIsChanged { get; set; }
-		private string ArtPackPath { get; set; }
 		// Togglers of the replacement alphabet.
 		private List<bool> IsSelected { get; set; }
 
 		void Initialize() {
-			// Update the art pack path.
-			ArtPackPath = CreVox.PaletteWindow.GetLevelPiecePath();
-			SpaceAlphabet.SetPath(ArtPackPath);
 			// Load files and set Alphabets.
 			SpaceAlphabet.Load();
 			// Copy a new alphabet.
-			
-
 			Alphabets = new List<string>(SpaceAlphabet.ReplacementAlphabet);
 			AlphabetIsChanged = false;
 			// Toggler of the connections.
@@ -33,12 +27,6 @@ namespace CrevoxExtend {
 		}
 		void Awake() {
 			Initialize();
-		}
-		void OnFocus() {
-			// Initialize the window when the path is changed.
-			if (ArtPackPath != CreVox.PaletteWindow.GetLevelPiecePath()) {
-				Initialize();
-			}
 		}
 		void OnGUI() {
 			if (GUILayout.Button("Export")) {
