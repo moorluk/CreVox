@@ -104,7 +104,7 @@ namespace CrevoxExtend {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceList, volume), PopulationNumber, GenerationNumber);
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
-				BestChromosomeToWorldPos(bestChromosome);
+				BestChromosomeToWorldPos(volume, bestChromosome);
 			}
 			GC.Collect();
 			// [Will Modify]
@@ -124,11 +124,9 @@ namespace CrevoxExtend {
 				if (volume.vd.name != roomName) { continue; }
 				
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceList, volume), PopulationNumber, GenerationNumber);
-
 				// Populations, Generations.
 				bestChromosome = ntustGA.Algorithm() as CreVoxChromosome;
-
-				BestChromosomeToWorldPos(bestChromosome);
+				BestChromosomeToWorldPos(volume, bestChromosome);
 			}
 			GC.Collect();
 			// [Will Modify]
@@ -143,7 +141,7 @@ namespace CrevoxExtend {
 		 }
 
 		// use volume to get each block position.
-		public static CreVoxChromosome GetSample(string[] blockAirPieceName, Volume volume) {
+		public static CreVoxChromosome GetSample(string[] blockAirPieceList, Volume volume) {
 			List<Vector3> tiles = new List<Vector3>();
 
 			// Parse the decorations, create the passable tiles space.
@@ -151,10 +149,16 @@ namespace CrevoxExtend {
 			foreach (Transform decoration in decorations) {
 				// Select the piece from block air, then add it.
 				Transform tile = null;
-				foreach (string pieceName in blockAirPieceName) {
-					tile = decoration.Find(pieceName);
-					if (tile != null) {
-						tiles.Add(tile.position);
+
+				foreach (var pieceName in blockAirPieceList) {
+					// If find it in the list.
+					if (decoration.Find(pieceName) != null) {
+						// Get the local position via the name of the gameObject.
+						var match = RegExp.Regex.Match(decoration.name, @"^(\d), (\d), (\d)$");
+						if (match.Success) {
+							Vector3 tilePos = new Vector3(float.Parse(match.Groups[1].Value), float.Parse(match.Groups[2].Value), float.Parse(match.Groups[3].Value));
+							tiles.Add(tilePos);
+						}
 						break;
 					}
 				}
@@ -217,14 +221,26 @@ namespace CrevoxExtend {
 			return new CreVoxChromosome(tiles);
 		}
 
+		private static Transform GetPieceFromDecoration(Transform decoration) {
+			foreach (var pieceName in _pieceList) {
+				if (decoration.Find(pieceName) != null) {
+					return decoration.Find(pieceName);
+				}
+			}
+			return null;
+		}
+
 		//make the best gene is added into world.
-		public static void BestChromosomeToWorldPos(CreVoxChromosome bestChromosome) {
+		public static void BestChromosomeToWorldPos(Volume volume, CreVoxChromosome bestChromosome) {
+			var decorations = volume.transform.Find("DecorationRoot");
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
+					var decoration = decorations.Find(gene.pos.x + ", " + gene.pos.y + ", " + gene.pos.z);
+					var position   = GetPieceFromDecoration(decoration).position;
 					GameObject geneWorldPosition = GameObject.Instantiate(MarkerPrefabs[gene.Type]);
 					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
-					geneWorldPosition.transform.position = gene.pos;
-					geneWorldPosition.transform.name = gene.Type.ToString() + " " + gene.pos;
+					geneWorldPosition.transform.position = position;
+					geneWorldPosition.transform.name = gene.Type.ToString() + " " + position;
 					geneWorldPosition.GetComponent<Renderer>().material = MarkerMaterials[gene.Type];
 				}
 			}
@@ -279,7 +295,7 @@ namespace CrevoxExtend {
 
 			public CreVoxChromosome(List<Vector3> allPossiblePosition) {
 				foreach (Vector3 pos in allPossiblePosition) {
-					this.Genes.Add(new CreVoxGene(GeneType.Enemy, pos));
+					this.Genes.Add(new CreVoxGene(GeneType.Empty, pos));
 				}
 			}
 
@@ -364,6 +380,15 @@ namespace CrevoxExtend {
 				if (enemies.Count != 0) {
 					// Sum of enemy weight/count.
 					enemyWeightSum = enemies.Sum(e => (_mainPath.ContainsKey(e.pos) ? _mainPath[e.pos] : 0));
+					/*
+					Debug.Log(enemyWeightSum);
+					foreach (var enemy in enemies) {
+						Debug.Log("Enemy: " + enemy.pos);
+					}
+					foreach (var tile in _mainPath.Keys) {
+						Debug.Log("MP: " + tile + "  " + _mainPath[tile]);
+					}
+					*/
 					// Sum of the visited times in main path.
 					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
 					// Calculate the fitness score.
