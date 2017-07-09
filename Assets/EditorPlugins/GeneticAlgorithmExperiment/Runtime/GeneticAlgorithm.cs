@@ -166,7 +166,6 @@ namespace CrevoxExtend {
 
 			var items = volume.gameObject.transform.Find("ItemRoot");
 			Vector3 startPosition = AbsolutePosition(items.Find("Starting Node").transform.position - volume.transform.position, -items.eulerAngles.y);
-			Debug.Log(startPosition);
 			Vector3 endPosition;
 			// Initial the main path.
 			_mainPath.Clear();
@@ -177,7 +176,6 @@ namespace CrevoxExtend {
 				if (! item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
 				endPosition = AbsolutePosition(item.transform.position - volume.transform.position, -item.eulerAngles.y); ;
-				Debug.Log(startPosition);
 				Astar.World world = new Astar.World(9, 9, 9);
 				for (int x = 0; x < 9; x++) {
 					for (int y = 0; y < 9; y++) {
