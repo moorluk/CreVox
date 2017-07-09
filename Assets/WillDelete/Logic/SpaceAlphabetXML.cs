@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System.Collections;
 using System.Xml.Linq;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 
 namespace CrevoxExtend {
 	public static class SpaceAlphabetXML {
+#if UNITY_EDITOR
 		public static class Serialize {
 			// Static method for other class calling.
 			public static void SerializeToXml(string path) {
@@ -32,13 +32,14 @@ namespace CrevoxExtend {
 
 					XElement elementInstruction = elementConnection.Element("Instructions");
 					foreach (var vData in SpaceAlphabet.ReplacementDictionary[connectionType]) {
-						elementInstruction.Add(new XElement("vData", AssetDatabase.GetAssetPath(vData)));
+						elementInstruction.Add(new XElement("vData", UnityEditor.AssetDatabase.GetAssetPath(vData)));
 					}
 					element.Add(elementConnection);
 				}
 				return element;
 			}
 		}
+#endif
 
 		public static class Unserialize {
 			// Static method for other class calling.
@@ -80,7 +81,7 @@ namespace CrevoxExtend {
 					}
 					instructions.Add(connectionType, vDatas);
 				}
-
+				// Update spaceAlphabetWindow
 #if UNITY_EDITOR
 				List<string> newAlphabet = element.Elements("Connection").Attributes().Select(e => e.Value).ToList();
 				SpaceAlphabet.alphabetUpdate(newAlphabet);
