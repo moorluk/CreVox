@@ -165,7 +165,8 @@ namespace CrevoxExtend {
 			}
 
 			var items = volume.gameObject.transform.Find("ItemRoot");
-			Vector3 startPosition = items.Find("Starting Node").transform.position - volume.transform.position;
+			Vector3 startPosition = AbsolutePosition(items.Find("Starting Node").transform.position - volume.transform.position, -items.eulerAngles.y);
+			Debug.Log(startPosition);
 			Vector3 endPosition;
 			// Initial the main path.
 			_mainPath.Clear();
@@ -175,8 +176,8 @@ namespace CrevoxExtend {
 				// Ignore it if it is not connection.
 				if (! item.name.Contains("Connection_")) { continue; }
 				// Get the position of connection.
-				endPosition = item.transform.position - volume.transform.position;
-
+				endPosition = AbsolutePosition(item.transform.position - volume.transform.position, -item.eulerAngles.y); ;
+				Debug.Log(startPosition);
 				Astar.World world = new Astar.World(9, 9, 9);
 				for (int x = 0; x < 9; x++) {
 					for (int y = 0; y < 9; y++) {
@@ -282,6 +283,17 @@ namespace CrevoxExtend {
 					gene.Type = types[Random.Range(0, types.Length)];
 				}
 			}
+		}
+
+		private static Vector3 AbsolutePosition(Vector3 position, float degree) {
+			Vector2 aPoint = new Vector2(position.x, position.z);
+			// Set 4, 4 to be center point.
+			float rad = degree * Mathf.Deg2Rad;
+			float sin = Mathf.Sin(rad);
+			float cos = Mathf.Cos(rad);
+			return new Vector3(Mathf.Round(aPoint.x * cos + aPoint.y * sin),
+				position.y,
+				Mathf.Round(aPoint.y * cos - aPoint.x * sin));
 		}
 
 		public class CreVoxChromosome : NTUSTChromosome {
