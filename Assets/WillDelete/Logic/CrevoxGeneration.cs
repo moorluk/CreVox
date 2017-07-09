@@ -65,7 +65,6 @@ namespace CrevoxExtend {
 			RecursionGetSequence(root);
 			// Initialize state.
 			nowState = null;
-
 			// Mapping VData from root node
 			foreach (var rootVDataAndMaxV in ReferenceTableVMax[CreVoxAttach.RootNode.AlphabetID].OrderBy(x => UnityEngine.Random.value)){
 				// Initialize a state.
@@ -83,12 +82,12 @@ namespace CrevoxExtend {
 			}
 
 			if (nowState != null) {
-				Debug.Log("Completed.");
+				Debug.Log("<color=green>Completed.</color>");
 				// Transform state into gameobject.
 				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
 			} else {
 				// Keep null means failed.
-				Debug.Log("Failed.");
+				Debug.Log("<color=red>Failed.</color>");
 			}
 			Debug.Log(testStopWatch.ElapsedMilliseconds + " ms");
 			testStopWatch.Stop();
@@ -132,7 +131,7 @@ namespace CrevoxExtend {
 			}
 			// If none of VData have enough connection, return false. 
 			if (feasibleVDataAndMaxVs.Count == 0) {
-				Debug.Log ("There is no vdata that have enough connection in " + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name + ". It means this graph doesn't match with vdata.");
+				Debug.Log ("There is no vdata that have enough connection in <color=red>" + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name + "</color>. It means this graph doesn't match with vdata.");
 				return false;
 			}
 				

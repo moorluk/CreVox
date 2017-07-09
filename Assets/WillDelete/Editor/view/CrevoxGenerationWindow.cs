@@ -94,7 +94,7 @@ namespace CrevoxExtend {
 			}
 
 			// Layout for Nodes and their list of VolumeData in Window.
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - 300f));
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - (useVG? 347f:200f)));
 			GUILayout.Label("Nodes & Volume Data", EditorStyles.boldLabel);
 			float originalLabelWidth = EditorGUIUtility.labelWidth;
 			EditorGUIUtility.labelWidth = 50;
@@ -118,19 +118,31 @@ namespace CrevoxExtend {
 			}
 			EditorGUIUtility.labelWidth = originalLabelWidth;
 			EditorGUILayout.EndScrollView();
-
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				stageID = EditorGUILayout.IntSlider ("Stage", stageID, 1, vg.StageList.Count);
-				CrevoxGeneration.stage = vg.GetStageSetting(stageID);
-				EditorGUILayout.LabelField ("Level", CrevoxGeneration.stage.number.ToString());
-				EditorGUILayout.LabelField ("Xml Path", CrevoxGeneration.stage.XmlPath);
-				EditorGUILayout.LabelField ("VData Path", CrevoxGeneration.stage.vDataPath);
-				EditorGUILayout.LabelField ("VG Xml Path", CrevoxGeneration.stage.VGXmlPath);
-				EditorGUILayout.LabelField ("ArtPack", CrevoxGeneration.stage.artPack);
+			using (var vert = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				// If symbol has none of vData or if there is null vData, user cannot press Generate.
+				EditorGUI.BeginDisabledGroup(ReferenceTableVMax.Values.ToList().Exists(vs => vs.Count == 0 || vs.Exists(v => v.vData == null)));
+				// Generate level.
+				if (GUILayout.Button ("Generate")) {
+					CrevoxGeneration.ReferenceTableVMax.Clear ();
+					foreach (var node in ReferenceTableVMax.Keys) {
+						CrevoxGeneration.ReferenceTableVMax.Add (node.AlphabetID, ReferenceTableVMax [node]);
+					}
+					// Set the random seed.
+					if (!specificRandomSeed) {randomSeed = UnityEngine.Random.Range (0, int.MaxValue);}
+					CrevoxGeneration.InitialTable (randomSeed);
+					CrevoxGeneration.Generate (CrevoxGeneration.stage);
+					/*foreach (var vm in CrevoxGeneration.tempFeasible) {
+						Debug.Log("Feasible vData: " + vm.vData + ", maxV:" + vm.maxVData);
+					}*/
+				}
+				// [EDIT LATER] [Must modify the operations in "Generate" Button later (adding the max usage)]. In CrevoxGeneration.cs
+				// Replace connections.
+				if (GUILayout.Button("ReplaceConnection")) {
+					CrevoxGeneration.ReplaceConnection(CrevoxGeneration.stage);
+				}
+				EditorGUI.EndDisabledGroup();
 			}
-			// If symbol has none of vData or if there is null vData, user cannot press Generate.
-			EditorGUI.BeginDisabledGroup(ReferenceTableVMax.Values.ToList().Exists(vs => vs.Count == 0 || vs.Exists(v => v.vData == null)));
-			CrevoxGeneration.generateVolume = EditorGUILayout.Toggle("Generate Volume", CrevoxGeneration.generateVolume);
+			CrevoxGeneration.generateVolume = GUILayout.Toggle(CrevoxGeneration.generateVolume, "Generate Volume");
 			EditorGUILayout.BeginHorizontal();
 			// Random seed and its toggle.
 			specificRandomSeed = GUILayout.Toggle(specificRandomSeed, "Set Random Seed");
@@ -138,26 +150,36 @@ namespace CrevoxExtend {
 			randomSeed = EditorGUILayout.IntField(randomSeed, GUILayout.MaxWidth(Screen.width));
 			EditorGUI.EndDisabledGroup();
 			EditorGUILayout.EndHorizontal();
-			// Generate level.
-			if (GUILayout.Button("Generate")) {
-				CrevoxGeneration.ReferenceTableVMax.Clear();
-				foreach (var node in ReferenceTableVMax.Keys) {
-					CrevoxGeneration.ReferenceTableVMax.Add(node.AlphabetID, ReferenceTableVMax[node]);
+			DrawVG ();
+		}
+
+		private static bool useVG = false;
+		private static VGlobal.Stage stage;
+		void DrawVG(){
+			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+				useVG = GUILayout.Toggle (useVG, "Use Global Setting (Runtime Generate)");
+				if (useVG) {
+					vg = (VGlobal)EditorGUILayout.ObjectField ("VGlobal Setting", vg, typeof(VGlobal), false);
+					stageID = EditorGUILayout.IntSlider ("Stage", stageID, 1, vg.StageList.Count);
+					stage = vg.GetStageSetting (stageID);
+					EditorGUI.BeginChangeCheck ();
+					stage.artPack = EditorGUILayout.TextField ("ArtPack", stage.artPack);
+					stage.XmlPath = EditorGUILayout.TextField ("Mission Graph Xml", stage.XmlPath);
+					stage.vDataPath = EditorGUILayout.TextField ("VData Path", stage.vDataPath);
+					stage.SpaceXmlPath = EditorGUILayout.TextField ("Space Alphabet Xml", stage.SpaceXmlPath);
+					stage.VGXmlPath = EditorGUILayout.TextField ("VGeneration Xml", stage.VGXmlPath);
+					if (EditorGUI.EndChangeCheck ()) {
+						Predicate<VGlobal.Stage> findStage = delegate(VGlobal.Stage s) {
+							return s.number == stageID;
+						};
+						vg.StageList [vg.StageList.FindIndex (findStage)] = stage;
+					}
+					if (GUILayout.Button ("Generate")) {
+						if (!specificRandomSeed) {randomSeed = UnityEngine.Random.Range (0, int.MaxValue);}
+						vg.GenerateStage (stageID, randomSeed);
+					}
 				}
-				// Set the random seed.
-				if (! specificRandomSeed) { randomSeed = UnityEngine.Random.Range(0, int.MaxValue); }
-				CrevoxGeneration.InitialTable(randomSeed);
-				CrevoxGeneration.Generate(CrevoxGeneration.stage);
-				/*foreach (var vm in CrevoxGeneration.tempFeasible) {
-					Debug.Log("Feasible vData: " + vm.vData + ", maxV:" + vm.maxVData);
-				}*/
 			}
-			// [EDIT LATER] [Must modify the operations in "Generate" Button later (adding the max usage)]. In CrevoxGeneration.cs
-			// Replace connections.
-			if (GUILayout.Button("ReplaceConnection")) {
-				CrevoxGeneration.ReplaceConnection(CrevoxGeneration.stage);
-			}
-			EditorGUI.EndDisabledGroup();
 		}
 
 		// Save to and Load from XML

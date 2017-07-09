@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEditor;
-using MissionGrammarSystem;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 using System;
+using CreVox;
 
 namespace CrevoxExtend {
 	public class SpaceAlphabetWindow : EditorWindow {
@@ -29,6 +27,9 @@ namespace CrevoxExtend {
 			Initialize();
 		}
 		void OnGUI() {
+			if (GUILayout.Button("Initialize")) {
+				Initialize();
+			}
 			if (GUILayout.Button("Export")) {
 				string path = EditorUtility.SaveFilePanel("Export xml", "", "SpaceAlphabet.xml", "xml");
 				if (path != string.Empty) {
@@ -38,79 +39,88 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("Import")) {
 				string path = EditorUtility.OpenFilePanel("Import xml", "", "xml");
 				if (path != string.Empty) {
-					SpaceAlphabetXML.Unserialize.UnserializeFromXml(path);
 					Initialize();
+					SpaceAlphabetXML.Unserialize.UnserializeFromXml(path);
 				}
 				// Refresh another window.
 				UpdatePaletteWindow();
 			}
 			// Aphabets list.//
 			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - 150));
+			Color def = GUI.color;
 			for (int i = 0; i < Alphabets.Count; i++) {
 				// Check if this alphabet is Saved or not.
-				string currentName = Alphabets[i];
-				bool isExistInAlphabet = SpaceAlphabet.ReplacementDictionary.ContainsKey(Alphabets[i]);
+				string currentName = Alphabets [i];
+				bool isExistInAlphabet = SpaceAlphabet.ReplacementDictionary.ContainsKey (Alphabets [i]);
 
+				GUI.color = Color.gray;
+				using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 12f))) {
+					GUI.color = def;
+					currentName = EditorGUILayout.TextField (currentName, GUILayout.Width (Screen.width - 221f));
+					// If current name of alphabet symbol is change, update the name.
+					if (currentName != Alphabets [i] && !Alphabets.Exists (a => a == currentName)) {
+						Alphabets [i] = currentName;
+					}
 
+					// If alphabet not Saved, disable setting button.
+					EditorGUI.BeginDisabledGroup (!isExistInAlphabet);
+					if (GUILayout.Button ("Setting", GUILayout.Width (80f))) {
+						// Switch setting between 0/1.
+						IsSelected [i] = !IsSelected [i];
+					}
+					EditorGUI.EndDisabledGroup ();
 
-				EditorGUILayout.BeginHorizontal();
-				currentName = EditorGUILayout.TextField(currentName, GUILayout.Width(Screen.width * 0.47f), GUILayout.Height(17));
-				// If current name of alphabet symbol is change, update the name.
-				if (currentName != Alphabets[i] && ! Alphabets.Exists(a => a == currentName)) {
-					Alphabets[i] = currentName;
+					// delete button.
+					if (GUILayout.Button ("Delete Alphabet", GUILayout.Width (110f))) {
+						Alphabets.RemoveAt (i);
+						IsSelected.RemoveAt (i);
+						isExistInAlphabet = false;
+					}
 				}
-
-				// If alphabet not Saved, disable setting button.
-				EditorGUI.BeginDisabledGroup(! isExistInAlphabet);
-				if (GUILayout.Button("Setting", GUILayout.Width(Screen.width * 0.27f), GUILayout.Height(17))) {
-					// Switch setting between 0/1.
-					IsSelected[i] = ! IsSelected[i];
-				}
-				EditorGUI.EndDisabledGroup();
-
-				// delete button.
-				if (GUILayout.Button("Delete Alphabet", GUILayout.Width(Screen.width * 0.23f), GUILayout.Height(17))) {
-					Alphabets.RemoveAt(i);
-					IsSelected.RemoveAt(i);
-					isExistInAlphabet = false;
-				}
-				EditorGUILayout.EndHorizontal();
 				// If this alphabet is exist in Last Saved version, then can check if setting is clicked.
 				// If setting button is switched to true. Open the UI.
 
-
-				if (isExistInAlphabet && IsSelected[i]) {
-					var vDataList = SpaceAlphabet.ReplacementDictionary[Alphabets[i]];
+				if (isExistInAlphabet && IsSelected [i]) {
+					var vDataList = SpaceAlphabet.ReplacementDictionary [Alphabets [i]];
 					// Load the vData from the folder.
-					if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
-						// Open folder.
-						string path = EditorUtility.OpenFolderPanel("Load Folder", "", "");
-						if (path != string.Empty) {
-							// First clear all origin volumeDatas.
-							vDataList.Clear();
-							// Get the files.
-							foreach (var file in Directory.GetFiles(path)) {
-								if (Regex.IsMatch(file, @".*[\\\/].*_vData\.asset$")) {
-									vDataList.Add(CrevoxOperation.GetVolumeData(file.Replace(Environment.CurrentDirectory.Replace('\\', '/') + "/", "")));
+					using (var h = new EditorGUILayout.HorizontalScope ()) {
+						EditorGUILayout.LabelField ("", GUILayout.Width (11f));
+						if (GUILayout.Button ("Open Folder", GUILayout.Width (Screen.width - 42f))) {
+							// Open folder.
+							string path = EditorUtility.OpenFolderPanel ("Load Folder", "", "");
+							if (path != string.Empty) {
+								// First clear all origin volumeDatas.
+								vDataList.Clear ();
+								// Get the files.
+								foreach (var file in Directory.GetFiles(path)) {
+									if (Regex.IsMatch (file, @".*[\\\/].*_vData\.asset$")) {
+										vDataList.Add (CrevoxOperation.GetVolumeData (file.Replace (Environment.CurrentDirectory.Replace ('\\', '/') + "/", "")));
+									}
 								}
 							}
 						}
 					}
+					EditorGUI.indentLevel++;
 					// Buttons.
 					for (int j = 0; j < vDataList.Count; j++) {
-						EditorGUILayout.BeginHorizontal();
-						// Object field.
-						vDataList[j] = (CreVox.VolumeData)EditorGUILayout.ObjectField(vDataList[j], typeof(CreVox.VolumeData), false, GUILayout.Height(17));
-						// Button of deleting vData.
-						if (GUILayout.Button("Delete vData", GUILayout.Height(17))) {
-							vDataList.RemoveAt(j);
+						using (var h = new EditorGUILayout.HorizontalScope ()) {
+							// Object field.
+							vDataList [j] = (VolumeData)EditorGUILayout.ObjectField (vDataList [j], typeof(VolumeData), false, GUILayout.Width (Screen.width - 141f), GUILayout.Height (17));
+							// Button of deleting vData.
+							if (GUILayout.Button ("Delete vData", GUILayout.Width (110f), GUILayout.Height (17))) {
+								vDataList.RemoveAt (j);
+							}
 						}
-						EditorGUILayout.EndHorizontal();
 					}
-					// Button of adding vData.
-					if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
-						vDataList.Add(null);
+					using (var h = new EditorGUILayout.HorizontalScope ()) {
+						// Button of adding vData.
+						EditorGUILayout.LabelField ("-------->", EditorStyles.objectField, GUILayout.Width (Screen.width - 141f), GUILayout.Height (17));
+						if (GUILayout.Button ("Add New vData", GUILayout.Width (110f), GUILayout.Height (17))) {
+							vDataList.Add (null);
+						}
 					}
+					GUILayout.Space (4.0f);
+					EditorGUI.indentLevel--;
 				}
 			}
 			EditorGUILayout.EndScrollView();
@@ -144,7 +154,7 @@ namespace CrevoxExtend {
 			GUILayout.EndArea();
 		}
 		private void UpdatePaletteWindow() {
-			CreVox.PaletteWindow window = EditorWindow.GetWindow<CreVox.PaletteWindow>();
+			PaletteWindow window = EditorWindow.GetWindow<PaletteWindow>();
 			window.InitialPaletteWindow();
 		}
 	}
