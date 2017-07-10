@@ -5,7 +5,7 @@
       <Name>entrance</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>entrance_01_vData</VDataName>
+          <VDataName>Entrance_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -23,7 +23,7 @@
       <Name>window</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>Connection_Branch_01_vData</VDataName>
+          <VDataName>Connection_Window_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
@@ -41,7 +41,23 @@
       <Name>specialRoom</Name>
       <VolumeDatas>
         <VolumeData>
-          <VDataName>entrance_01_vData</VDataName>
+          <VDataName>secret_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>shop_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>ssecret_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>ssecret_02_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>treasure_01_vData</VDataName>
           <MaxVData>-1</MaxVData>
         </VolumeData>
       </VolumeDatas>
