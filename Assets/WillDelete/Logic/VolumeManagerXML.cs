@@ -34,7 +34,7 @@ namespace CrevoxExtend {
 					_volumeDataDicionary[endNode.SymbolID].Add(new XElement("Connections"));
 				}
 				XElement endNodeElementConnections = _volumeDataDicionary[endNode.SymbolID].Element("Connections");
-				endNodeElementConnections.Add(new XElement("Connection", new XAttribute("Type", connectionType), new XElement("Instructions", new XElement("vdata", startVdataName))));
+				endNodeElementConnections.Add(new XElement("Connection", new XAttribute("Type", "Starting Node"), new XElement("Instructions", new XElement("vdata", startVdataName))));
 			}
 			// Serialize to xml.
 			public static void SerializeToXml() {
