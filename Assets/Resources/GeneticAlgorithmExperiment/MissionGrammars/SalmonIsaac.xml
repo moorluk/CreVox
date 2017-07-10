@@ -210,13 +210,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="4ba4365d-aaa6-42fa-909b-3e8cbb7ef7b6">
-        <AlphabetID>f6ea8ef5-1e19-4f44-bae3-a1360e353c53</AlphabetID>
+      <Node id="37d33ad3-bfea-431b-9bb3-cf1a1a96d6cd">
+        <AlphabetID>10d4a592-ee40-4a5e-b247-958fb9dca312</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>Start</Name>
-        <Abbreviation>S</Abbreviation>
-        <Description>Start</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>shop</Name>
+        <Abbreviation>shop</Abbreviation>
+        <Description>shop</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -239,17 +239,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#0021FF</Filled>
-          <Text>#FFFFFF</Text>
+          <Filled>#FF9003</Filled>
+          <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="1ef89184-e355-48ff-a674-d079f4b99bf4">
-        <AlphabetID>436d71c4-dc1a-46ee-b6bc-bb1f0cad2e51</AlphabetID>
+      <Node id="4fb5850b-d330-4ff7-9bd3-3004747ceac2">
+        <AlphabetID>e0542929-b982-44e0-8665-c0d54729b0bb</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>normal</Name>
-        <Abbreviation>nm</Abbreviation>
-        <Description>normal</Description>
+        <Name>bomb</Name>
+        <Abbreviation>bomb</Abbreviation>
+        <Description>bomb</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -267,6 +267,210 @@
           <Text>
             <X>7.5</X>
             <Y>358</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#B2B2B2</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="38a148b8-2bf4-43dd-a91e-244db08de769">
+        <AlphabetID>ae315167-ec2f-48b8-b997-fcc90ef2cf79</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>secret</Name>
+        <Abbreviation>srt</Abbreviation>
+        <Description>secret</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>405.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>407.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>408</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#FBFF00</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="db8eb449-5c66-4a09-8001-549844b6a371">
+        <AlphabetID>d7bf0ac6-0a2b-42f8-85be-4b68519e9cb9</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>treasure</Name>
+        <Abbreviation>ts</Abbreviation>
+        <Description>treasure</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>455.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>457.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>458</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#DBBA00</Filled>
+          <Text>#000000</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="4ba4365d-aaa6-42fa-909b-3e8cbb7ef7b6">
+        <AlphabetID>f6ea8ef5-1e19-4f44-bae3-a1360e353c53</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>Start</Name>
+        <Abbreviation>S</Abbreviation>
+        <Description>Start</Description>
+        <Terminal>NonTerminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>505.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>507.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>508</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#0021FF</Filled>
+          <Text>#FFFFFF</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="fcb8cf74-707d-4d48-b98b-74350c40cff6">
+        <AlphabetID>d60a98a8-29d6-4974-bb1e-90dc072b44b7</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>Speical</Name>
+        <Abbreviation>SP</Abbreviation>
+        <Description>Special room set.</Description>
+        <Terminal>NonTerminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>555.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>557.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>558</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#FF3D3D</Filled>
+          <Text>#FFFFFF</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="01b692de-f4d2-4716-a239-7120e258214e">
+        <AlphabetID>97640bd1-8d7d-4fae-9863-69715301b951</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>lock</Name>
+        <Abbreviation>lock</Abbreviation>
+        <Description>lock</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>605.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>607.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>608</Y>
+            <Width>45</Width>
+            <Height>34</Height>
+          </Text>
+        </Scope>
+        <SymbolColor>
+          <Outline>#000000</Outline>
+          <Filled>#905600</Filled>
+          <Text>#FFFFFF</Text>
+        </SymbolColor>
+        <StickiedConnections />
+      </Node>
+      <Node id="1ef89184-e355-48ff-a674-d079f4b99bf4">
+        <AlphabetID>436d71c4-dc1a-46ee-b6bc-bb1f0cad2e51</AlphabetID>
+        <Ordering>0</Ordering>
+        <Name>normal</Name>
+        <Abbreviation>nm</Abbreviation>
+        <Description>normal</Description>
+        <Terminal>Terminal</Terminal>
+        <Scope>
+          <Outline>
+            <X>10.5</X>
+            <Y>655.5</Y>
+            <Width>39</Width>
+            <Height>39</Height>
+          </Outline>
+          <Filled>
+            <X>12.5</X>
+            <Y>657.5</Y>
+            <Width>35</Width>
+            <Height>35</Height>
+          </Filled>
+          <Text>
+            <X>7.5</X>
+            <Y>658</Y>
             <Width>45</Width>
             <Height>34</Height>
           </Text>
@@ -1588,7 +1792,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>30</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -1837,7 +2041,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>20</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>2</QuantityLimitMax>
@@ -1995,7 +2199,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>10</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -2153,7 +2357,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>10</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>1</QuantityLimitMax>
@@ -3417,7 +3621,7 @@
           </MissionGraph>
         </ReplacementRule>
         <Valid>True</Valid>
-        <Enable>False</Enable>
+        <Enable>True</Enable>
         <Weight>10</Weight>
         <QuantityLimitMin>0</QuantityLimitMin>
         <QuantityLimitMax>0</QuantityLimitMax>
