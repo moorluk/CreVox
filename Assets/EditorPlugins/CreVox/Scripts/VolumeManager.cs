@@ -28,7 +28,7 @@ namespace CreVox
 					if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
 						gameObject.AddComponent (typeof(GlobalDriver));
 					}
-					if (VGlobal.GetSetting ().FakeDeco) {
+					if (VGlobal.GetSetting ().Generation) {
 						for (int i = 0; i < v.Length; i++) {
 							GameObject.Destroy (v [i].gameObject);
 						}
@@ -52,7 +52,7 @@ namespace CreVox
 			}
 			#endif
 
-			if (VGlobal.GetSetting().FakeDeco && autoRun) {
+			if (VGlobal.GetSetting().Generation && autoRun) {
 				CreateVolumes ();
             }
 		}

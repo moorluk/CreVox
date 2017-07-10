@@ -36,7 +36,8 @@ namespace CreVox
 				itemNodes = new Dictionary<BlockItem, GameObject> ();
 			if (chunks == null)
 				chunks = new Dictionary<WorldPos, Chunk> ();
-			LoadTempWorld ();
+			if (VGlobal.GetSetting ().Generation)
+				LoadTempWorld ();
 		}
 
 		void Update ()

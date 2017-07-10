@@ -28,7 +28,7 @@ namespace CreVox
 
 		public bool saveBackup;
 		public bool volumeShowArtPack;
-		public bool FakeDeco;
+		public bool Generation;
 		public bool debugRuler;
 
 		public float editDis;

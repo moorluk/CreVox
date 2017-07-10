@@ -56,19 +56,16 @@ namespace CrevoxExtend {
 				GUI.color = Color.gray;
 				using (var h = new EditorGUILayout.HorizontalScope (EditorStyles.helpBox, GUILayout.Width (Screen.width - 12f))) {
 					GUI.color = def;
+
+					// If alphabet not Saved, disable setting button.
+					EditorGUI.BeginDisabledGroup (!isExistInAlphabet);
+					IsSelected [i] = EditorGUILayout.Foldout (isExistInAlphabet ? IsSelected [i] : false, "");
+					EditorGUI.EndDisabledGroup ();
 					currentName = EditorGUILayout.TextField (currentName, GUILayout.Width (Screen.width - 221f));
 					// If current name of alphabet symbol is change, update the name.
 					if (currentName != Alphabets [i] && !Alphabets.Exists (a => a == currentName)) {
 						Alphabets [i] = currentName;
 					}
-
-					// If alphabet not Saved, disable setting button.
-					EditorGUI.BeginDisabledGroup (!isExistInAlphabet);
-					if (GUILayout.Button ("Setting", GUILayout.Width (80f))) {
-						// Switch setting between 0/1.
-						IsSelected [i] = !IsSelected [i];
-					}
-					EditorGUI.EndDisabledGroup ();
 
 					// delete button.
 					if (GUILayout.Button ("Delete Alphabet", GUILayout.Width (110f))) {
