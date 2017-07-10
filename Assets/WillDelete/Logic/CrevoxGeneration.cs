@@ -50,6 +50,9 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
+			// Init xml.
+			VolumeManagerXML.Serialize.Init("Generation_Info.xml");
+
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
 			if (root == null) {
@@ -86,6 +89,8 @@ namespace CrevoxExtend {
 				Debug.Log("Completed.");
 				// Transform state into gameobject.
 				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
+				// Output xml.
+				VolumeManagerXML.Serialize.SerializeToXml();
 			} else {
 				// Keep null means failed.
 				Debug.Log("Failed.");
@@ -163,6 +168,9 @@ namespace CrevoxExtend {
 							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
 							// Recursion next level. 
 							if (Recursion (state, edgeIndex + 1)) {
+								// Record connection and vdata to xml.
+								VolumeManagerXML.Serialize.AddToDictionary(state, edge.start, connection.connectionName, edge.end);
+								// Success then return.
 								return true;
 							} else {
 								// If next level has problem then remove the VData that has been added before
