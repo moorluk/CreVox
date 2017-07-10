@@ -23,17 +23,17 @@ namespace CrevoxExtend {
 				// Set startNode -> endNode.
 				if (! _volumeDataDicionary.ContainsKey(startNode.SymbolID)) {
 					_volumeDataDicionary.Add(startNode.SymbolID, new XElement("VolumeData", new XAttribute("Type", startNode.AlphabetID), new XElement("Instructions", new XElement("vdata", startVdataName))));
-					_volumeDataDicionary[startNode.SymbolID].Add(new XElement("Connections"));
+					_volumeDataDicionary[startNode.SymbolID].Add(new XElement("ItemRoot"));
 				}
-				XElement startNodeElementConnections = _volumeDataDicionary[startNode.SymbolID].Element("Connections");
+				XElement startNodeElementConnections = _volumeDataDicionary[startNode.SymbolID].Element("ItemRoot");
 				startNodeElementConnections.Add(new XElement("Connection", new XAttribute("Type", connectionType), new XElement("Instructions", new XElement("vdata", endVdataName))));
 
 				// Set endNode -> startNode
 				if (!_volumeDataDicionary.ContainsKey(endNode.SymbolID)) {
 					_volumeDataDicionary.Add(endNode.SymbolID, new XElement("VolumeData", new XAttribute("Type", endNode.AlphabetID), new XElement("Instructions", new XElement("vdata", endVdataName))));
-					_volumeDataDicionary[endNode.SymbolID].Add(new XElement("Connections"));
+					_volumeDataDicionary[endNode.SymbolID].Add(new XElement("ItemRoot"));
 				}
-				XElement endNodeElementConnections = _volumeDataDicionary[endNode.SymbolID].Element("Connections");
+				XElement endNodeElementConnections = _volumeDataDicionary[endNode.SymbolID].Element("ItemRoot");
 				endNodeElementConnections.Add(new XElement("Connection", new XAttribute("Type", "Starting Node"), new XElement("Instructions", new XElement("vdata", startVdataName))));
 			}
 			// Serialize to xml.
