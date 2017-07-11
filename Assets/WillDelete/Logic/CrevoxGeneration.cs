@@ -50,9 +50,6 @@ namespace CrevoxExtend {
 		public static bool generateVolume;
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
-			// Init xml.
-			VolumeManagerXML.Serialize.Init(@"Assets\Generation_Info.xml");
-
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
 			if (root == null) {
@@ -89,8 +86,6 @@ namespace CrevoxExtend {
 				Debug.Log("Completed.");
 				// Transform state into gameobject.
 				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
-				// Output xml.
-				VolumeManagerXML.Serialize.SerializeToXml();
 			} else {
 				// Keep null means failed.
 				Debug.Log("Failed.");
@@ -145,7 +140,11 @@ namespace CrevoxExtend {
 			foreach (var mappingvdataAndmaxv in feasibleVDataAndMaxVs.OrderBy(x => UnityEngine.Random.value)) {
 				// Debug.Log("Mapping vData : " + mappingvdataAndmaxv.vData.name + " has " + mappingvdataAndmaxv.maxVData + "vData.");
 				// Set the end node.
-				state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData);
+				if (state.VolumeDatasByID.ContainsKey(edge.end.SymbolID)) {
+					state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData);
+				} else {
+					state.VolumeDatasByID.Add(edge.end.SymbolID, new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData));
+				}
 				// Get starting node from the end node.
 				ConnectionInfo startingNode = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => !x.used && x.type == ConnectionInfoType.StartingNode);
 				List<ConnectionInfo> newConnections = new List<ConnectionInfo>();
@@ -168,8 +167,9 @@ namespace CrevoxExtend {
 							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
 							// Recursion next level. 
 							if (Recursion (state, edgeIndex + 1)) {
-								// Record connection and vdata to xml.
-								VolumeManagerXML.Serialize.AddToDictionary(state, edge.start, connection.connectionName, edge.end);
+								// Save connection info.
+								state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.Find(x => x.Compare(connection)).connectedObjectGuid = edge.end.SymbolID;
+								state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => x.Compare(newConnection)).connectedObjectGuid = edge.start.SymbolID;
 								// Success then return.
 								return true;
 							} else {
