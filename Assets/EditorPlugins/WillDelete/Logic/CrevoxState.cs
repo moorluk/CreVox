@@ -77,8 +77,10 @@ namespace CrevoxExtend {
 		public bool CombineVolumeObject(VolumeDataEx originVolumeEx, VolumeDataEx newVolumeEx, ConnectionInfo originConnection, ConnectionInfo newConnection) {
 			Quaternion rotationOfVolume1 = originVolumeEx.rotation;
 			Quaternion rotationOfVolume2 = newVolumeEx.rotation;
+			// If new connection is not starting node.
+			int connectionRotationOffset = newConnection.type == ConnectionInfoType.Connection ? 180 : 0;
 			// Added vdata need to rotate for matching  origin vdata.
-			int rotateAngle = ( ( (int) ( originConnection.rotation.eulerAngles + rotationOfVolume1.eulerAngles ).y % 360 ) - (int) newConnection.rotation.eulerAngles.y );
+			int rotateAngle = ( ( (int) (( originConnection.rotation.eulerAngles + rotationOfVolume1.eulerAngles ).y + connectionRotationOffset ) % 360 ) - (int) newConnection.rotation.eulerAngles.y );
 			if (rotateAngle < 0) {
 				rotateAngle += 360;
 			}
