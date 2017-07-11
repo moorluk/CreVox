@@ -51,7 +51,7 @@ namespace CrevoxExtend {
 		// Generate
 		public static bool Generate(VGlobal.Stage _stage, CreVoxNode root = null) {
 			// Init xml.
-			VolumeManagerXML.Serialize.Init("Generation_Info.xml");
+			VolumeManagerXML.Serialize.Init(@"Assets\Generation_Info.xml");
 
 			// Check the root of mission graph.
 			root = (root != null) ? root : CreVoxAttach.RootNode;
