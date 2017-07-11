@@ -1,5 +1,4 @@
 ﻿#if UNITY_EDITOR
-using UnityEditor;
 #endif
 using UnityEngine;
 using System;
@@ -12,9 +11,9 @@ using CreVox;
 
 namespace CrevoxExtend {
 	public static class SpaceAlphabet {
-		private static readonly string _prefabRegex = @".*[\\\/]Connection_(\w+)\.prefab$";
+		private static readonly string _connectionRegex = @"Connection_(\w+)$";
 		// .
-		private static string ArtPackPath { get; set; }
+		private static readonly string _systemPath = PathCollect.pieces + "/2_System/";
 		// Connection names.
 		public static List<string> ReplacementAlphabet { get; private set; }
 		// 
@@ -22,6 +21,7 @@ namespace CrevoxExtend {
 
 		// Constructor.
 		static SpaceAlphabet() {
+			Debug.Log(_systemPath);
 			ReplacementAlphabet = new List<string>();
 			ReplacementDictionary = new Dictionary<string, List<VolumeData>>() {
 				{ "Default", new List<VolumeData>() }
@@ -29,21 +29,15 @@ namespace CrevoxExtend {
 		}
 
 #if UNITY_EDITOR
-		public static void SetPath(string path) {
-			if (ArtPackPath != path) {
-				ArtPackPath = path;
-
-			}
-		}
-		// 
+		// Load connectionType from folder
 		public static void Load() {
 			// Clear the connection name list.
 			ReplacementAlphabet.Clear();
 			// Get the file list from the artpack folder.
-			var files = Directory.GetFiles(Environment.CurrentDirectory + "/" + ArtPackPath + "/2_System/");
+			var files = Resources.LoadAll(_systemPath, typeof(GameObject));
 			// Add the connections from the specific path.
 			foreach (var file in files) {
-				var match = Regex.Match(file, _prefabRegex);
+				var match = Regex.Match(file.name, _connectionRegex);
 				if (match.Success) {
 					ReplacementAlphabet.Add(match.Groups[1].Value);
 				}
@@ -69,14 +63,14 @@ namespace CrevoxExtend {
 		}
 		// File IO
 		private static void NewPrefab(string fileName) {
-			AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", ArtPackPath + "/2_System/" + fileName + ".prefab");
+			UnityEditor.AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", @"Assets\Resources\" + _systemPath + fileName + ".prefab");
 			//File.Copy(ArtPackPath + "Connection_Default.prefab", ArtPackPath + fileName + ".prefab");
 			//AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
 			PaletteItem pt = GetPrefab(fileName).GetComponent<PaletteItem>();
 			pt.itemName = fileName;
 		}
 		private static void DeletePrefab(string fileName) {
-			AssetDatabase.DeleteAsset(ArtPackPath + "/2_System/" + fileName + ".prefab");
+			UnityEditor.AssetDatabase.DeleteAsset(@"Assets\Resources\" + _systemPath + fileName + ".prefab");
 		}
 		// Update dictionary.
 		private static void DictionaryUpdate() {
@@ -100,8 +94,7 @@ namespace CrevoxExtend {
 			// }
 		}
 		private static GameObject GetPrefab(string name) {
-			Debug.Log(ArtPackPath + "/2_System/" + name + ".prefab");
-			return (AssetDatabase.LoadAssetAtPath(ArtPackPath + "/2_System/" + name + ".prefab" ,typeof(GameObject))) as GameObject;
+			return (UnityEditor.AssetDatabase.LoadAssetAtPath(@"Assets\Resources\" + _systemPath + name + ".prefab" ,typeof(GameObject))) as GameObject;
 		}
 #endif
 

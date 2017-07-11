@@ -12,7 +12,7 @@ public class TestRealTimeRun : MonoBehaviour {
 	[Tooltip("我是按鈕")]
 	public bool testGenerateLevel = false;
 	public string XmlPath = @"Issac_Flat.xml";
-	public string SpaceXmlPath = @"SpaceAlphabet.xml";
+	public string SpaceXmlPath = @"Assets\Resources\CreVox\VolumeData\SpaceAlphabet.xml";
 	public string ResourcePath = @"Assets\Resources\CreVox\VolumeData\IsaacNew";
 	public string VGXmlPath = @"IsaacVolumeGeneration.xml";
 
