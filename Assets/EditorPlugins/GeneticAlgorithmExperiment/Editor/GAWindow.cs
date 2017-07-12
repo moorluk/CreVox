@@ -120,7 +120,8 @@ namespace CrevoxExtend {
 					weights["guard"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("守衛點權重", weights["guard"], textFieldStyle)));
 					weights["dominated"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("至高點權重", weights["dominated"], textFieldStyle)));
 					weights["support"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("支援點權重", weights["support"], textFieldStyle)));
-				}
+                    weights["emptyDensity"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("密度權重", weights["emptyDensity"], textFieldStyle)));
+                }
 			}
 			EditorGUILayout.EndScrollView();
 		}
@@ -182,7 +183,8 @@ namespace CrevoxExtend {
 					{ "patrol"   , 0 },
 					{ "guard"    , 0 },
 					{ "dominated", 0 },
-					{ "support"  , 0 }
+					{ "support"  , 0 },
+                    { "emptyDensity",0 }
 				};
 		}
 		public RoomPattern(string name) : this() {
