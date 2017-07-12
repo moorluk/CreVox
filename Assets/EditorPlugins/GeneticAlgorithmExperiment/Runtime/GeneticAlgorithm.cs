@@ -76,8 +76,9 @@ namespace CrevoxExtend {
 				{ "patrol"   , 0 },
 				{ "guard"    , 0 },
 				{ "dominated", 0 },
-				{ "support"  , 0 }
-			};
+				{ "support"  , 0 },
+                { "emptyDensity",0 }
+            };
 		}
 
 		public static void SetWeights(Dictionary<string, int> fitnessWeights) {
@@ -325,7 +326,7 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
 					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
 					+ (FitnessWeights["support"] != 0 ? FitnessSupport() * FitnessWeights["support"] : 0)
-					+ (FitnessEmptyDensity() * 0)
+					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
 				;
 
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));

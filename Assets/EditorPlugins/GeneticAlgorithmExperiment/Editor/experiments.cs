@@ -29,23 +29,36 @@ namespace CrevoxExtend {
 
 		public static Vector2 WindowScrollPosition;
 
-		void OnEnable() {
+        private static string[] ignoreOptions = new string[]
+        {
+            "是", "否"
+        };
+
+        void OnEnable() {
 			// Base on the OS environment.
 			EXPERIMENT_DIR = Application.persistentDataPath + "/Experiments/";
 			PYTHON_SRC_DIR = Application.dataPath + "/Resources/GeneticAlgorithmExperiment/.PythonPlot/";
 		}
 
 		void OnGUI() {
-			// Labels.
-			GUIStyle textFieldStyle = new GUIStyle(GUI.skin.textField);
-			textFieldStyle.fontSize = 12;
-			textFieldStyle.margin = new RectOffset(10, 10, 5, 5);
-			// Buttons.
-			GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
-			buttonStyle.fontSize = 18;
-			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
+            // TestFeilds.
+            GUIStyle textFieldStyle = new GUIStyle(GUI.skin.textField);
+            textFieldStyle.fontSize = 12;
+            textFieldStyle.margin = new RectOffset(10, 10, 5, 5);
+            // Buttons.
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.fontSize = 18;
+            buttonStyle.margin = new RectOffset(0, 0, 5, 10);
+            // Labels.
+            GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+            labelStyle.fontSize = 12;
+            labelStyle.margin = new RectOffset(10, 10, 5, 5);
+            // Popup.
+            GUIStyle popupStyle = GUI.skin.GetStyle("popup");
+            popupStyle.fontSize = 12;
+            popupStyle.margin = new RectOffset(10, 10, 5, 5);
 
-			if (Experiments.Count == 0) {
+            if (Experiments.Count == 0) {
 				Experiments.Add("實驗 A", new Experiment("實驗_A", true));
 				Experiments.Add("實驗 B", new Experiment("實驗_B", false));
 				Experiments.Add("實驗 C", new Experiment("實驗_C", false));
@@ -119,19 +132,31 @@ namespace CrevoxExtend {
 
 				if (experiment.IsFoldout) {
 					EditorGUI.BeginDisabledGroup(! experiment.IsActived);
-					// Generation count and population count.
-					experiment.ExperimentCount = Math.Max(1, EditorGUILayout.IntField("實驗次數", experiment.ExperimentCount, textFieldStyle));
+                    // Generation count and population count.
+                    experiment.ExperimentCount = Math.Max(1, EditorGUILayout.IntField("實驗次數", experiment.ExperimentCount, textFieldStyle));
 					experiment.GenerationCount = Math.Max(1, EditorGUILayout.IntField("世代數量", experiment.GenerationCount, textFieldStyle));
 					experiment.PopulationCount = Math.Max(2, EditorGUILayout.IntField("染色體數量", experiment.PopulationCount%2 == 0? experiment.PopulationCount: experiment.PopulationCount+1, textFieldStyle));
-					// Fitness weights (-10 ~ 10).
-					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
+
+                    // Ignore.
+                    experiment.Ignore = EditorGUILayout.Popup("略過演化", experiment.Ignore ? 0 : 1, ignoreOptions, popupStyle) == 0;
+                    // Enemy count limit.
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label("敵人數量限制", labelStyle);
+                    GUILayout.FlexibleSpace();
+                    experiment.EnemyCountMaximum = EditorGUILayout.IntField("上限", experiment.EnemyCountMaximum, textFieldStyle);
+                    experiment.EnemyCountMinimum = EditorGUILayout.IntField("下限", experiment.EnemyCountMinimum, textFieldStyle);
+                    EditorGUILayout.EndHorizontal();
+
+                    // Fitness weights (-10 ~ 10).
+                    weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
 					weights["block"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"],     textFieldStyle)));
 					weights["intercept"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("攔截點權重", weights["intercept"], textFieldStyle)));
 					weights["patrol"]    = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("巡邏點權重", weights["patrol"],    textFieldStyle)));
 					weights["guard"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("守衛點權重", weights["guard"],     textFieldStyle)));
 					weights["dominated"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("至高點權重", weights["dominated"], textFieldStyle)));
 					weights["support"]   = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("支援點權重", weights["support"],   textFieldStyle)));
-					EditorGUI.EndDisabledGroup();
+                    weights["emptyDensity"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("密度權重", weights["emptyDensity"], textFieldStyle)));
+                    EditorGUI.EndDisabledGroup();
 					// Is actived or not.
 					experiment.IsActived = EditorGUILayout.Toggle("多實驗模式下，是否生效", experiment.IsActived);
 				}
@@ -141,6 +166,8 @@ namespace CrevoxExtend {
 
 		// Launch a series GA experiment.
 		private void LaunchGAExperiment(Experiment experiment, bool isExportFiles) {
+            // Ignore.
+            if (experiment.Ignore) { return; }
 			string datasetPath = string.Empty;
 
 			// Delete the directory then recreator again.
@@ -248,8 +275,35 @@ namespace CrevoxExtend {
 		}
 
 		public class Experiment {
-			// Control the foldout in editor window.
-			public bool IsFoldout { get; set; }
+            // Ignore.
+            public bool Ignore { get; set; }
+            // Enemy count limit.
+            private int _enemyCountMin;
+            private int _enemyCountMax;
+            public int EnemyCountMinimum
+            {
+                get { return _enemyCountMin; }
+                set
+                {
+                    if (value >= 0 && value <= _enemyCountMax)
+                    {
+                        this._enemyCountMin = value;
+                    }
+                }
+            }
+            public int EnemyCountMaximum
+            {
+                get { return _enemyCountMax; }
+                set
+                {
+                    if (value >= _enemyCountMin)
+                    {
+                        this._enemyCountMax = value;
+                    }
+                }
+            }
+            // Control the foldout in editor window.
+            public bool IsFoldout { get; set; }
 			// Basic informations of experiment.
 			public string Name { get; set; }
 			public bool IsActived { get; set; }
@@ -273,8 +327,9 @@ namespace CrevoxExtend {
 					{ "patrol"   , 0 },
 					{ "guard"    , 0 },
 					{ "dominated", 0 },
-					{ "support"  , 0 }
-				};
+					{ "support"  , 0 },
+                    { "emptyDensity",0 }
+                };
 			}
 			public Experiment(string name, bool isActived) : this() {
 				Name = name;
