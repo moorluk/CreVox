@@ -150,7 +150,6 @@ namespace CrevoxExtend {
 				} else {
 					// If there is no starting node then find connections. 
 					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
-					Debug.Log(newConnections.Count);
 				}
 				foreach (var newConnection in newConnections) {
 					// Get connection from the start node
@@ -163,7 +162,8 @@ namespace CrevoxExtend {
 							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
 							// Recursion next level. 
 							if (Recursion (state, edgeIndex + 1)) {
-								return true;
+                                newConnection.type = ConnectionInfoType.StartingNode;
+                                return true;
 							} else {
 								// If next level has problem then remove the VData that has been added before
 								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
