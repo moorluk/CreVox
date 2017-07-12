@@ -18,7 +18,10 @@ namespace CrevoxExtend {
 		public static Vector2 WindowScrollPosition;
 		public static int GenerationCount = 20;
 		public static int PopulationCount = 250;
-
+		private static string[] ignoreOptions = new string[]
+		{
+			"是", "否"
+		};
 		void Awake() {
 			RoomPattern = new Dictionary<string, RoomPattern>();
 			UpdateExperiments();
@@ -49,6 +52,14 @@ namespace CrevoxExtend {
 			GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
 			buttonStyle.fontSize = 18;
 			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
+			// Labels.
+			GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+			labelStyle.fontSize = 12;
+			labelStyle.margin = new RectOffset(10, 10, 5, 5);
+			// Popup.
+			GUIStyle popupStyle = GUI.skin.GetStyle("popup");
+			popupStyle.fontSize = 12;
+			popupStyle.margin = new RectOffset(10, 10, 5, 5);
 
 			if (GUILayout.Button("運行 GA 設置遊戲物件", buttonStyle, GUILayout.Height(30))) {
 				// Run GA.
@@ -92,6 +103,12 @@ namespace CrevoxExtend {
 				roomPattern.IsFoldout = Foldout(roomPattern.IsFoldout, roomPatternName, true, EditorStyles.foldout);
 
 				if (roomPattern.IsFoldout) {
+					roomPattern.Ignore = EditorGUILayout.Popup("略過演化", roomPattern.Ignore? 1 : 0, ignoreOptions, popupStyle) == 0;
+					EditorGUILayout.BeginHorizontal();
+					GUILayout.Label("敵人數量限制", labelStyle);
+					roomPattern.EnemyCountMaximum = EditorGUILayout.IntField("上限", roomPattern.EnemyCountMaximum, textFieldStyle);
+					roomPattern.EnemyCountMinimum = EditorGUILayout.IntField("下限", roomPattern.EnemyCountMinimum, textFieldStyle);
+					EditorGUILayout.EndHorizontal();
 					// Fitness weights (-10 ~ 10).
 					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
 					weights["block"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"], textFieldStyle)));
@@ -123,6 +140,25 @@ namespace CrevoxExtend {
 		}
 	}
 	public class RoomPattern {
+		public bool Ignore { get; set; }
+		private int _enemyCountMin;
+		private int _enemyCountMax;
+		public int EnemyCountMinimum {
+			get { return _enemyCountMin; }
+			set {
+				if (value >= 0 && value <= _enemyCountMax) {
+					this._enemyCountMin = value;
+				}
+			}
+		}
+		public int EnemyCountMaximum {
+			get { return _enemyCountMax; }
+			set {
+				if (value >= _enemyCountMin) {
+					this._enemyCountMax = value;
+				}
+			}
+		}
 		// Control the foldout in editor window.
 		public bool IsFoldout { get; set; }
 		// Basic informations of experiment.
