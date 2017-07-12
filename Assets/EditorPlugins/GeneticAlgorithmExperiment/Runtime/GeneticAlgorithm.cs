@@ -77,8 +77,8 @@ namespace CrevoxExtend {
 				{ "guard"    , 0 },
 				{ "dominated", 0 },
 				{ "support"  , 0 },
-                { "emptyDensity",0 }
-            };
+				{ "emptyDensity",0 }
+			};
 		}
 
 		public static void SetWeights(Dictionary<string, int> fitnessWeights) {
@@ -165,9 +165,9 @@ namespace CrevoxExtend {
 				}
 			}
 
-            var startingNode = volume.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
-            Vector3 startPosition = startingNode.position.ToRealPosition();
-            Vector3 endPosition;
+			var startingNode = volume.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
+			Vector3 startPosition = startingNode.position.ToRealPosition();
+			Vector3 endPosition;
 			// Initial the main path.
 			_mainPath.Clear();
 
@@ -175,7 +175,7 @@ namespace CrevoxExtend {
 			foreach (ConnectionInfo connection in volume.ConnectionInfos.FindAll(x => x.type == ConnectionInfoType.Connection)) {
 				// Get the position of connection.
 				endPosition = connection.position.ToRealPosition();
-                Astar.World world = new Astar.World(9, 9, 9);
+				Astar.World world = new Astar.World(9, 9, 9);
 				for (int x = 0; x < 9; x++) {
 					for (int y = 0; y < 9; y++) {
 						for (int z = 0; z < 9; z++) {

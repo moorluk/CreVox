@@ -162,8 +162,8 @@ namespace CrevoxExtend {
 							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
 							// Recursion next level. 
 							if (Recursion (state, edgeIndex + 1)) {
-                                newConnection.type = ConnectionInfoType.StartingNode;
-                                return true;
+								newConnection.type = ConnectionInfoType.StartingNode;
+								return true;
 							} else {
 								// If next level has problem then remove the VData that has been added before
 								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
