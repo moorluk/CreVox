@@ -44,20 +44,20 @@ namespace CrevoxExtend {
 			}
 		}
 		void OnGUI() {
-			// Labels.
+			// TestFeilds.
 			GUIStyle textFieldStyle = new GUIStyle(GUI.skin.textField);
 			textFieldStyle.fontSize = 12;
 			textFieldStyle.margin = new RectOffset(10, 10, 5, 5);
-			// Buttons.
-			GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
+            // Buttons.
+            GUIStyle buttonStyle = new GUIStyle(GUI.skin.button);
 			buttonStyle.fontSize = 18;
 			buttonStyle.margin = new RectOffset(0, 0, 5, 10);
 			// Labels.
 			GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
 			labelStyle.fontSize = 12;
 			labelStyle.margin = new RectOffset(10, 10, 5, 5);
-			// Popup.
-			GUIStyle popupStyle = GUI.skin.GetStyle("popup");
+            // Popup.
+            GUIStyle popupStyle = GUI.skin.GetStyle("popup");
 			popupStyle.fontSize = 12;
 			popupStyle.margin = new RectOffset(10, 10, 5, 5);
 
@@ -103,9 +103,12 @@ namespace CrevoxExtend {
 				roomPattern.IsFoldout = Foldout(roomPattern.IsFoldout, roomPatternName, true, EditorStyles.foldout);
 
 				if (roomPattern.IsFoldout) {
-					roomPattern.Ignore = EditorGUILayout.Popup("略過演化", roomPattern.Ignore? 1 : 0, ignoreOptions, popupStyle) == 0;
+                    // Ignore.
+					roomPattern.Ignore = EditorGUILayout.Popup("略過演化", roomPattern.Ignore? 0 : 1, ignoreOptions, popupStyle) == 0;
+                    // Enemy count limit.
 					EditorGUILayout.BeginHorizontal();
 					GUILayout.Label("敵人數量限制", labelStyle);
+                    GUILayout.FlexibleSpace();
 					roomPattern.EnemyCountMaximum = EditorGUILayout.IntField("上限", roomPattern.EnemyCountMaximum, textFieldStyle);
 					roomPattern.EnemyCountMinimum = EditorGUILayout.IntField("下限", roomPattern.EnemyCountMinimum, textFieldStyle);
 					EditorGUILayout.EndHorizontal();
@@ -133,6 +136,8 @@ namespace CrevoxExtend {
 
 		// Launch a series GA experiment.
 		private void LaunchGAExperiment(RoomPattern roomPattern) {
+            // Ignore.
+            if (roomPattern.Ignore) { return; }
 			// Core function.
 			CreVoxGA.SetWeights(roomPattern.Weights);
 			CreVoxGA.Segmentism(PopulationCount, GenerationCount, roomPattern.Name);
@@ -140,7 +145,9 @@ namespace CrevoxExtend {
 		}
 	}
 	public class RoomPattern {
+        // Ignore.
 		public bool Ignore { get; set; }
+        // Enemy count limit.
 		private int _enemyCountMin;
 		private int _enemyCountMax;
 		public int EnemyCountMinimum {
