@@ -197,6 +197,7 @@ namespace CrevoxExtend {
 					sw.Close();
 				} else {
 					// Core function.
+					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount);
 				}
