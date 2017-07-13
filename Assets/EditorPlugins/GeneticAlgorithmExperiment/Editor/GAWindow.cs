@@ -107,10 +107,10 @@ namespace CrevoxExtend {
 					roomPattern.Ignore = EditorGUILayout.Popup("略過演化", roomPattern.Ignore? 0 : 1, ignoreOptions, popupStyle) == 0;
                     // Enemy count limit.
 					EditorGUILayout.BeginHorizontal();
-					GUILayout.Label("敵人數量限制", labelStyle);
+					GUILayout.Label("遊戲物件數量", labelStyle);
                     GUILayout.FlexibleSpace();
-					roomPattern.EnemyCountMaximum = EditorGUILayout.IntField("上限", roomPattern.EnemyCountMaximum, textFieldStyle);
-					roomPattern.EnemyCountMinimum = EditorGUILayout.IntField("下限", roomPattern.EnemyCountMinimum, textFieldStyle);
+					roomPattern.ObjectQuantityMaximum = EditorGUILayout.IntField("上限", roomPattern.ObjectQuantityMaximum, textFieldStyle);
+					roomPattern.ObjectQuantityMinimum = EditorGUILayout.IntField("下限", roomPattern.ObjectQuantityMinimum, textFieldStyle);
 					EditorGUILayout.EndHorizontal();
 					// Fitness weights (-10 ~ 10).
 					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
@@ -140,6 +140,7 @@ namespace CrevoxExtend {
             // Ignore.
             if (roomPattern.Ignore) { return; }
 			// Core function.
+			CreVoxGA.SetQuantityLimit(roomPattern.ObjectQuantityMinimum, roomPattern.ObjectQuantityMaximum);
 			CreVoxGA.SetWeights(roomPattern.Weights);
 			CreVoxGA.Segmentism(PopulationCount, GenerationCount, roomPattern.Name);
 
@@ -148,22 +149,22 @@ namespace CrevoxExtend {
 	public class RoomPattern {
         // Ignore.
 		public bool Ignore { get; set; }
-        // Enemy count limit.
-		private int _enemyCountMin;
-		private int _enemyCountMax;
-		public int EnemyCountMinimum {
-			get { return _enemyCountMin; }
+        // Game object count limit.
+		private int _objectQuantityMin;
+		private int _objectQuantityMax;
+		public int ObjectQuantityMinimum {
+			get { return _objectQuantityMin; }
 			set {
-				if (value >= 0 && value <= _enemyCountMax) {
-					this._enemyCountMin = value;
+				if (value >= 0 && value <= _objectQuantityMax) {
+					this._objectQuantityMin = value;
 				}
 			}
 		}
-		public int EnemyCountMaximum {
-			get { return _enemyCountMax; }
+		public int ObjectQuantityMaximum {
+			get { return _objectQuantityMax; }
 			set {
-				if (value >= _enemyCountMin) {
-					this._enemyCountMax = value;
+				if (value >= _objectQuantityMin) {
+					this._objectQuantityMax = value;
 				}
 			}
 		}

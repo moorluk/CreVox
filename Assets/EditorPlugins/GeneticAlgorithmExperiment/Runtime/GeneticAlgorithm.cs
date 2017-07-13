@@ -28,6 +28,8 @@ namespace CrevoxExtend {
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
 		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
+		public static int ObjectQuantityMin { get; set; }
+		public static int ObjectQuantityMax { get; set; }
 
 		public static Dictionary<GeneType, GameObject> MarkerPrefabs = new Dictionary<GeneType, GameObject>() {
 			{ GeneType.Forbidden, null },
@@ -83,6 +85,11 @@ namespace CrevoxExtend {
 
 		public static void SetWeights(Dictionary<string, int> fitnessWeights) {
 			FitnessWeights = fitnessWeights;
+		}
+
+		public static void SetQuantityLimit(int minimum, int maximum) {
+			ObjectQuantityMin = minimum;
+			ObjectQuantityMax = maximum;
 		}
 
 		public static void Initialize() {
@@ -327,6 +334,7 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
 					+ (FitnessWeights["support"] != 0 ? FitnessSupport() * FitnessWeights["support"] : 0)
 					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
+					+ (FitnessDensity() * 1)
 				;
 
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
@@ -537,6 +545,13 @@ namespace CrevoxExtend {
 				List<CreVoxGene> empties = this.Genes.Select(g => g as CreVoxGene).Where(g => g.Type == GeneType.Empty).ToList();
 
 				return 1.0f * empties.Count / this.Genes.Count;
+			}
+			public float FitnessDensity() {
+				List<CreVoxGene> gameObjects = this.Genes.Select(g => g as CreVoxGene).Where(g => g.Type != GeneType.Empty).ToList();
+				if (gameObjects.Count >= ObjectQuantityMin && gameObjects.Count <= ObjectQuantityMax) {
+					return 1;
+				}
+				return 0;
 			}
 		}
 

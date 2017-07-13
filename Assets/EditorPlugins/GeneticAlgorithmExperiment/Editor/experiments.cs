@@ -139,16 +139,16 @@ namespace CrevoxExtend {
 
                     // Ignore.
                     experiment.Ignore = EditorGUILayout.Popup("略過演化", experiment.Ignore ? 0 : 1, ignoreOptions, popupStyle) == 0;
-                    // Enemy count limit.
-                    EditorGUILayout.BeginHorizontal();
-                    GUILayout.Label("敵人數量限制", labelStyle);
-                    GUILayout.FlexibleSpace();
-                    experiment.EnemyCountMaximum = EditorGUILayout.IntField("上限", experiment.EnemyCountMaximum, textFieldStyle);
-                    experiment.EnemyCountMinimum = EditorGUILayout.IntField("下限", experiment.EnemyCountMinimum, textFieldStyle);
-                    EditorGUILayout.EndHorizontal();
+					// Enemy count limit.
+					EditorGUILayout.BeginHorizontal();
+					GUILayout.Label("遊戲物件數量", labelStyle);
+					GUILayout.FlexibleSpace();
+					experiment.ObjectQuantityMaximum = EditorGUILayout.IntField("上限", experiment.ObjectQuantityMaximum, textFieldStyle);
+					experiment.ObjectQuantityMinimum = EditorGUILayout.IntField("下限", experiment.ObjectQuantityMinimum, textFieldStyle);
+					EditorGUILayout.EndHorizontal();
 
-                    // Fitness weights (-10 ~ 10).
-                    weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
+					// Fitness weights (-10 ~ 10).
+					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
 					weights["block"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"],     textFieldStyle)));
 					weights["intercept"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("攔截點權重", weights["intercept"], textFieldStyle)));
 					weights["patrol"]    = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("巡邏點權重", weights["patrol"],    textFieldStyle)));
@@ -190,6 +190,7 @@ namespace CrevoxExtend {
 					StreamWriter sw = new StreamWriter(datasetPath + "/experiment_" + i + ".csv");
 					sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
 					// Core function.
+					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, sw);
 					// Close StreamWriter.
@@ -275,35 +276,29 @@ namespace CrevoxExtend {
 		}
 
 		public class Experiment {
-            // Ignore.
-            public bool Ignore { get; set; }
-            // Enemy count limit.
-            private int _enemyCountMin;
-            private int _enemyCountMax;
-            public int EnemyCountMinimum
-            {
-                get { return _enemyCountMin; }
-                set
-                {
-                    if (value >= 0 && value <= _enemyCountMax)
-                    {
-                        this._enemyCountMin = value;
-                    }
-                }
-            }
-            public int EnemyCountMaximum
-            {
-                get { return _enemyCountMax; }
-                set
-                {
-                    if (value >= _enemyCountMin)
-                    {
-                        this._enemyCountMax = value;
-                    }
-                }
-            }
-            // Control the foldout in editor window.
-            public bool IsFoldout { get; set; }
+			// Ignore.
+			public bool Ignore { get; set; }
+			// Game object count limit.
+			private int _objectQuantityMin;
+			private int _objectQuantityMax;
+			public int ObjectQuantityMinimum {
+				get { return _objectQuantityMin; }
+				set {
+					if (value >= 0 && value <= _objectQuantityMax) {
+						this._objectQuantityMin = value;
+					}
+				}
+			}
+			public int ObjectQuantityMaximum {
+				get { return _objectQuantityMax; }
+				set {
+					if (value >= _objectQuantityMin) {
+						this._objectQuantityMax = value;
+					}
+				}
+			}
+			// Control the foldout in editor window.
+			public bool IsFoldout { get; set; }
 			// Basic informations of experiment.
 			public string Name { get; set; }
 			public bool IsActived { get; set; }
