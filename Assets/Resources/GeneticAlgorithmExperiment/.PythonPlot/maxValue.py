@@ -37,28 +37,38 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	numRun = data['run'].max()
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
+
 	# Get input file
 	for nR in range(1, numRun + 1, 1):
 		# get all of label in this csv file.
 		fitnessLabels = set(data.label.values)
-		#
+		# Get absolute maximum for normalizing.
+		fitnessMaximum = [0,0,0,0,0]
+		for idx, fitnessName in enumerate(fitnessLabels):
+			scores = data[(data.label == fitnessName)].score.values
+			fitnessMaximum[idx] = max(abs(s) for s in scores)
+
 		for ng in range(1, numGeneration + 1):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+				scores = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.values;
+				# Only calc first score.
+				chromosomeScore = sum(scores[:len(fitnessLabels)])
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
-			for fitnessName in fitnessLabels:
-				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
+			for idx, fitnessName in enumerate(fitnessLabels):
+				# Only calc first score.
+				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.values[0]
+				# Normalize.
+				labelScore = labelScore / fitnessMaximum[idx]
 				info = [nR,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
 				# add info to the last.
 				outputDate.loc[-1] = info
 				# shifting index
 				outputDate.index = outputDate.index + 1
-
 	#fixed [run,generation,chromosome] are float,not int.
 	outputDate['run'] = outputDate['run'].astype(int)
 	outputDate['generation'] = outputDate['generation'].astype(int)

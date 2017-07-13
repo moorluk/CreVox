@@ -253,7 +253,14 @@ namespace CrevoxExtend {
 
 		public class CreVoxGAA : NTUSTGeneticAlgorithm {
 			public CreVoxGAA(float crossoverRate, float mutationRate, NTUSTChromosome sample, int countOfChromosome, int countOfGeneration) : base(crossoverRate, mutationRate, sample, countOfChromosome, countOfGeneration) {
-
+				// Init maximum.
+				CreVoxChromosome.FitnessScoreMaximum = new Dictionary<FitnessFunctionName, float>() {
+					{ FitnessFunctionName.Block    , 0.0f },
+					{ FitnessFunctionName.Intercept, 0.0f },
+					{ FitnessFunctionName.Patrol   , 0.0f },
+					{ FitnessFunctionName.Guard    , 0.0f },
+					{ FitnessFunctionName.Support  , 0.0f },
+				};
 			}
 
 			// Two-point crossover.
@@ -290,6 +297,8 @@ namespace CrevoxExtend {
 		}
 
 		public class CreVoxChromosome : NTUSTChromosome {
+			public static Dictionary<FitnessFunctionName, float> FitnessScoreMaximum;
+
 			public List<CreVoxGene> getGenes() {
 				return Genes.Select(g => g as CreVoxGene).ToList();
 			}
@@ -328,11 +337,11 @@ namespace CrevoxExtend {
 										+ (AllChromosomeCount % PopulationNumber + 1);
 
 				float scoreSum = 0.0f
-					+ (FitnessWeights["block"]  != 0 ? FitnessBlock()  * FitnessWeights["block"]  : 0)
-					+ (FitnessWeights["intercept"] != 0 ? FitnessIntercept() * FitnessWeights["intercept"] : 0)
-					+ (FitnessWeights["patrol"] != 0 ? FitnessPatrol() * FitnessWeights["patrol"] : 0)
-					+ (FitnessWeights["guard"]  != 0 ? FitnessGuard()  * FitnessWeights["guard"]  : 0)
-					+ (FitnessWeights["support"] != 0 ? FitnessSupport() * FitnessWeights["support"] : 0)
+					+ (FitnessWeights["block"]  != 0 ? GetFitnessScore(FitnessFunctionName.Block)  * FitnessWeights["block"]  : 0)
+					+ (FitnessWeights["intercept"] != 0 ? GetFitnessScore(FitnessFunctionName.Intercept) * FitnessWeights["intercept"] : 0)
+					+ (FitnessWeights["patrol"] != 0 ? GetFitnessScore(FitnessFunctionName.Patrol) * FitnessWeights["patrol"] : 0)
+					+ (FitnessWeights["guard"]  != 0 ? GetFitnessScore(FitnessFunctionName.Guard) * FitnessWeights["guard"]  : 0)
+					+ (FitnessWeights["support"] != 0 ? GetFitnessScore(FitnessFunctionName.Support) * FitnessWeights["support"] : 0)
 					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
 					+ (FitnessDensity() * 1)
 				;
@@ -345,32 +354,45 @@ namespace CrevoxExtend {
 						foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
 							// All of fitness and it's score in a gene.
 							foreach (FitnessFunctionName fitnessName in fitnessNames) {
-								DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName) + ",\"" + gene.pos + "\"," + gene.Type);
+								DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName, false) + ",\"" + gene.pos + "\"," + gene.Type);
 							}
 						}
 					}
 				}
 				// IterrateTime++ for next time.
 				AllChromosomeCount++;
-
 				return scoreSum;
 			}
 
-			public float GetFitnessScore(FitnessFunctionName functionName) {
+			public float GetFitnessScore(FitnessFunctionName functionName, bool normalize = true) {
+				float score = 0.0f;
 				switch (functionName) {
 					case FitnessFunctionName.Block:
-						return FitnessBlock();
+						score = FitnessBlock();
+						break;
 					case FitnessFunctionName.Intercept:
-						return FitnessIntercept();
+						score = FitnessIntercept();
+						break;
 					case FitnessFunctionName.Patrol:
-						return FitnessPatrol();
+						score = FitnessPatrol();
+						break;
 					case FitnessFunctionName.Guard:
-						return FitnessGuard();
+						score = FitnessGuard();
+						break;
 					case FitnessFunctionName.Support:
-						return FitnessSupport();
+						score = FitnessSupport();
+						break;
 					default:
 						return 0;
 				}
+				if (normalize) {
+					// Zero return zero.
+					if (FitnessScoreMaximum[functionName] == 0) { return 0; }
+
+					// Normalize.
+					return  score / FitnessScoreMaximum[functionName];
+				}
+				return score;
 			}
 
 			public float FitnessBlock() {
@@ -399,6 +421,10 @@ namespace CrevoxExtend {
 					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
 					// Calculate the fitness score.
 					fitnessScore = (float)Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
+				}
+				// Get maximum
+				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Block]) {
+					FitnessScoreMaximum[FitnessFunctionName.Block] = fitnessScore;
 				}
 
 				return fitnessScore;
@@ -434,6 +460,10 @@ namespace CrevoxExtend {
 					// Normalize the flexibility score to be fitness Score.
 					fitnessScore = (float)Math.Max(Math.Log(flexibilityScore, enemies.Count), -1.0);
 				}
+				// Get maximum
+				if (Mathf.Abs(fitnessScore) > FitnessScoreMaximum[FitnessFunctionName.Intercept]) {
+					FitnessScoreMaximum[FitnessFunctionName.Intercept] = Mathf.Abs(fitnessScore);
+				}
 
 				return fitnessScore;
 			}
@@ -463,6 +493,10 @@ namespace CrevoxExtend {
 							fitnessScore += (float)((1.0 / Math.Pow(2, i)) * neighborCount);
 						}
 					}
+				}
+				// Get maximum
+				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Patrol]) {
+					FitnessScoreMaximum[FitnessFunctionName.Patrol] = fitnessScore;
 				}
 
 				return fitnessScore;
@@ -504,6 +538,10 @@ namespace CrevoxExtend {
 					// Calculate the fitness score.
 					fitnessScore = objectives.Sum(o => (avgProtector - Math.Abs(neighbors[o].Count - avgProtector)) / avgProtector / objectives.Count);
 				}
+				// Get maximum
+				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Guard]) {
+					FitnessScoreMaximum[FitnessFunctionName.Guard] = fitnessScore;
+				}
 
 				return fitnessScore;
 			}
@@ -536,6 +574,12 @@ namespace CrevoxExtend {
 					}
 					// Calculate the fitness score.
 					fitnessScore = (float)(Math.Max(Math.Log((float)(Math.Max((distanceScore + (1 - FitnessIntercept())) / 2, Math.Pow(enemies.Count, -1.0))), enemies.Count), -1.0));
+				}
+				// NaN.
+				if (float.IsNaN(fitnessScore)) { fitnessScore = 0; }
+				// Get maximum
+				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Support]) {
+					FitnessScoreMaximum[FitnessFunctionName.Support] = fitnessScore;
 				}
 
 				return fitnessScore;
