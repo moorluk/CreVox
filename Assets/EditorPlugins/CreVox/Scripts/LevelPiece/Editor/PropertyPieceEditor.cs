@@ -72,6 +72,10 @@ namespace CreVox
 						DrawInsEnemySpawner (i);
 						break;
 
+					case FocalComponent.Transform:
+						DrawInsTransform (i);
+						break;
+
 					case FocalComponent.Unknown:
 						DrawInsUnknown (i);
 						break;
@@ -213,6 +217,23 @@ namespace CreVox
 				DrawInsDragFirst ();
 			}
 		}
+		private void DrawInsTransform (int _index, bool isIns = true)
+		{
+			if (isIns) {
+				pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
+					"Target", pp.PProperties [_index].tObject, typeof(GameObject), true);
+			}
+			if (pp.PProperties [_index].tObject != null) {
+				GameObject obj = (GameObject)pp.PProperties [_index].tObject;
+				EditorGUILayout.LabelField ("Modifiable Field : ",
+					"Position　(" + obj.transform.localPosition.ToString () + ")\n" +
+					"Scale   　(" + obj.transform.localScale.ToString () + ")",
+					EditorStyles.miniLabel,
+					GUILayout.Height (30));
+			} else {
+				DrawInsDragFirst ();
+			}
+		}
 		private void DrawInsUnknown (int _index, bool isIns = true)
 		{
 			if (isIns) {
@@ -336,6 +357,19 @@ namespace CreVox
 								               obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
 								               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
 								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
+								item.attributes [i] = _code;
+							}
+							break;
+
+						case FocalComponent.Transform:
+							if (pp.PProperties [i].tObject != null) {
+								GameObject obj = (GameObject)pp.PProperties [i].tObject;
+								obj.transform.localPosition = EditorGUILayout.Vector3Field ("Position", obj.transform.localPosition);
+								obj.transform.localScale = EditorGUILayout.Vector3Field ("Scale", obj.transform.localScale);
+
+								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+									obj.transform.localPosition.x + "," + obj.transform.localPosition.y  + "," + obj.transform.localPosition.z  + ";" +
+									obj.transform.localScale.x + ","  + obj.transform.localScale.y + "," + obj.transform.localScale.z ;
 								item.attributes [i] = _code;
 							}
 							break;

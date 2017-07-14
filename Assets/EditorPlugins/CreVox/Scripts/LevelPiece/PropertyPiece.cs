@@ -10,13 +10,20 @@ namespace CreVox
 		Unused = 0,
 		Unknown = 1,
 		DefaultEventRange = 4,
-		ActorKeyString = 5,
-		TriggerKeyString = 6,
-		AddLootActor = 2,
-		MessageActor = 7,
-		AreaTipActor = 9,
-		CounterActor = 8,
-		EnemySpawner = 3,
+		Transform = 5,
+//		TriggerKeyStringOld = 6,
+//		AddLootActorOld = 2,
+//		MessageActorOld = 7,
+//		AreaTipActorOld = 9,
+//		CounterActorOld = 8,
+//		EnemySpawnerOld = 3,
+		TriggerKeyString = 100,
+		ActorKeyString = 200,
+		MessageActor = 201,
+		AddLootActor = 202,
+		AreaTipActor = 203,
+		CounterActor = 204,
+		EnemySpawner = 301,
 	}
 
 	public class PropertyPiece : LevelPiece 
@@ -112,6 +119,17 @@ namespace CreVox
 							}
 							break;
 
+						case "Transform":
+							if (obj != null && obj is GameObject && _code.Length == 3) {
+								GameObject es = (GameObject)obj;
+								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+								string[] _p = _code [1].Split (new string[1]{ "," }, StringSplitOptions.None);
+								string[] _s = _code [2].Split (new string[1]{ "," }, StringSplitOptions.None);
+								es.transform.localPosition = new Vector3 (float.Parse( _p[0]),float.Parse( _p[1]),float.Parse( _p[2]));
+								es.transform.localScale = new Vector3 (float.Parse( _s[0]),float.Parse( _s[1]),float.Parse( _s[2]));
+							}
+							break;
+
 						case "Unknown":
 							if (obj != null) {
 
@@ -140,13 +158,13 @@ namespace CreVox
 				for (int i = 0; i < PProperties.Length; i++) {
 					if (PProperties [i].tObject is EventActor && Equals (a, PProperties [i].tObject) && PProperties [i].tRange != EventRange.Free) {
 						notPP = false;
-						Debug.Log ("<b>" + this.name + "</b> send <b>[" + i + "] " + PProperties [i].tObject.name + "</b>\n" +
+						Debug.Log ("<b>" + this.name + "</b> send <b>[" + i + "] " + PProperties [i].tObject.name + "</b>" +
 						"to <b>range(" + PProperties [i].tRange + ")</b>");
 						SendActorUpward (a, PProperties [i].tRange);
 					}
 				}
 				if (notPP) {
-					Debug.Log ("<b>" + this.name + "</b> send <b> " + a.name + "</b>\n" +
+					Debug.Log ("<b>" + this.name + "</b> send <b> " + a.name + "</b>" +
 					"to <b>range(" + eventRange + ")</b>");
 					SendActorUpward (a, eventRange);
 				}
