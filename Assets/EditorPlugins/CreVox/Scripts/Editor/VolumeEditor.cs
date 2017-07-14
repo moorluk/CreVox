@@ -68,6 +68,14 @@ namespace CreVox
 					volume.Init (cx, cy, cz);
 					WriteVData (volume);
 				}
+				if (GUILayout.Button ("Calculate BlockHold")) {
+					foreach (ChunkData bh in volume.vd.chunkDatas) {
+						bh.blockHolds.Clear ();
+					}
+					EditorUtility.SetDirty (volume);
+					UpdateVolume ();
+					volume.UpdateChunks ();
+				}
 			}
 
 			EditorGUI.BeginChangeCheck ();

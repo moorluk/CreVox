@@ -22,7 +22,7 @@ namespace CreVox
 			UpdateStatus ();
 		}
 		
-		float buttonW = 70;
+		float buttonW = 50;
 		float lw = 60;
 
 		public override void OnInspectorGUI ()
@@ -43,10 +43,15 @@ namespace CreVox
 				EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
 				if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
 					vm.UpdateDungeon ();
+				if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
+					vm.dungeons.Clear();
 				GUILayout.EndHorizontal ();
 
 				EditorGUIUtility.wideMode = true;
 				vm.autoRun = EditorGUILayout.ToggleLeft ("Auto Run on play", vm.autoRun);
+				if (GUILayout.Button ("Update Portal")) {
+					VolumeAdapter.UpdatePortals (vm.gameObject);
+				}
 				DrawVolumeList ();
 			}
 
