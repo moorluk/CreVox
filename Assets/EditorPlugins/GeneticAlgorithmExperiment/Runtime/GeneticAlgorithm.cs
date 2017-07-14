@@ -419,7 +419,7 @@ namespace CrevoxExtend {
 				float fitnessScore = 0.0f;
 				float mainPathWeightSum = 0.0f;
 				float distanceOfEnemyAndMainPath = 0.0f;
-				float flexibilityScore = 0.0f;
+				int EnemyOnMainPath = 0;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
@@ -438,12 +438,15 @@ namespace CrevoxExtend {
 								// Calculate the distance of enemy and mainPath.
 								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
 								// Calculate the flexibility score.
-								flexibilityScore += (float)(1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
+								fitnessScore += (float)(1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
 							}
-						}						
+						} else {
+							EnemyOnMainPath++;
+						}
 					}
-					// Normalize the flexibility score to be fitness Score.
-					fitnessScore = (float)Math.Max(Math.Log(flexibilityScore, enemies.Count), -1.0);
+					if (EnemyOnMainPath > 0) {
+						fitnessScore = 0;
+					}
 				}
 				// Get maximum
 				if (Mathf.Abs(fitnessScore) > FitnessScoreMaximum[FitnessFunctionName.Intercept]) {
