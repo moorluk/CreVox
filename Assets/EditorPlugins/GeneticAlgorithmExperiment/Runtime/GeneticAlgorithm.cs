@@ -4,13 +4,14 @@ using System.Linq;
 using System.Collections.Generic;
 using SystemRandom = System.Random;
 using StreamWriter = System.IO.StreamWriter;
-using GC     = System.GC;
-using Math   = System.Math;
-using Enum   = System.Enum;
+using GC = System.GC;
+using Math = System.Math;
+using Enum = System.Enum;
 using RegExp = System.Text.RegularExpressions;
 
 using CreVox;
 using NTUSTGA;
+using System;
 
 namespace CrevoxExtend {
 	// Enum for type of gene.
@@ -265,8 +266,8 @@ namespace CrevoxExtend {
 
 			// Two-point crossover.
 			public override void Crossover(ref NTUSTChromosome parentCopy1, ref NTUSTChromosome parentCopy2) {
-				int min = Random.Range(0, parentCopy1.Genes.Count);
-				int max = Random.Range(min, parentCopy1.Genes.Count);
+				int min = UnityEngine.Random.Range(0, parentCopy1.Genes.Count);
+				int max = UnityEngine.Random.Range(min, parentCopy1.Genes.Count);
 
 				for (int i = min; i < max; i++) {
 					NTUSTChromosome.NTUSTGene swapGene = parentCopy1.Genes[i];
@@ -281,7 +282,7 @@ namespace CrevoxExtend {
 				var random = new SystemRandom();
 				// Filtering the percent numbers for genes.
 				var genes = CreVoxChrom.getGenes();
-				var percent = (int)Math.Ceiling(Random.Range(0.05f, 0.20f) * genes.Count);
+				var percent = (int)Math.Ceiling(UnityEngine.Random.Range(0.05f, 0.20f) * genes.Count);
 				var filteredGenes = genes.OrderBy(g => random.Next()).Take(percent).ToList();
 				// Change type each gene.
 				foreach (var gene in filteredGenes) {
@@ -291,13 +292,23 @@ namespace CrevoxExtend {
 						.Where(t => t != GeneType.Forbidden && t != gene.Type)
 						.ToArray();
 
-					gene.Type = types[Random.Range(0, types.Length)];
+					gene.Type = types[UnityEngine.Random.Range(0, types.Length)];
 				}
 			}
 		}
 
 		public class CreVoxChromosome : NTUSTChromosome {
 			public static Dictionary<FitnessFunctionName, float> FitnessScoreMaximum;
+
+			public override void SetFitnessFunctionScore() {
+				FitnessScore = new Dictionary<FitnessFunctionName, float>() {
+						{ FitnessFunctionName.Block    , FitnessBlock() },
+						{ FitnessFunctionName.Intercept, FitnessGuard() },
+						{ FitnessFunctionName.Patrol   , FitnessIntercept() },
+						{ FitnessFunctionName.Guard    , FitnessPatrol() },
+						{ FitnessFunctionName.Support  , FitnessSupport() }
+					};
+			}
 
 			public List<CreVoxGene> getGenes() {
 				return Genes.Select(g => g as CreVoxGene).ToList();
@@ -365,26 +376,7 @@ namespace CrevoxExtend {
 			}
 
 			public float GetFitnessScore(FitnessFunctionName functionName, bool normalize = true) {
-				float score = 0.0f;
-				switch (functionName) {
-					case FitnessFunctionName.Block:
-						score = FitnessBlock();
-						break;
-					case FitnessFunctionName.Intercept:
-						score = FitnessIntercept();
-						break;
-					case FitnessFunctionName.Patrol:
-						score = FitnessPatrol();
-						break;
-					case FitnessFunctionName.Guard:
-						score = FitnessGuard();
-						break;
-					case FitnessFunctionName.Support:
-						score = FitnessSupport();
-						break;
-					default:
-						return 0;
-				}
+				float score = FitnessScore[functionName];
 				if (normalize) {
 					// Zero return zero.
 					if (FitnessScoreMaximum[functionName] == 0) { return 0; }
@@ -394,7 +386,6 @@ namespace CrevoxExtend {
 				}
 				return score;
 			}
-
 			public float FitnessBlock() {
 				float fitnessScore = 0.0f;
 

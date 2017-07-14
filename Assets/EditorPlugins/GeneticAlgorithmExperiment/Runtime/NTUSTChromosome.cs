@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace NTUSTGA {
 	abstract public class NTUSTChromosome {
+		public Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float> FitnessScore;
+		public abstract void SetFitnessFunctionScore();
 
 		public List<NTUSTGene> Genes = new List<NTUSTGene>();
 
