@@ -66,7 +66,6 @@ namespace CreVox
 			if (vd == null) {
 				return;
 			}
-			AddComponent ();
 			Init (vd.chunkX, vd.chunkY, vd.chunkZ);
 			foreach (Chunk c in chunks.Values) {
 				c.cData = vd.GetChunk (c.cData.ChunkPos);
@@ -75,6 +74,7 @@ namespace CreVox
 			PlacePieces ();
 			PlaceItems ();
 
+			AddComponent ();
 			UpdateChunks ();
 		}
 
@@ -412,7 +412,7 @@ namespace CreVox
 					#else
 					pObj = GameObject.Instantiate(_piece.gameObject);
 					#endif
-					pObj.transform.parent = itemRoot.transform;
+					pObj.transform.parent = (_piece is PrefabPiece)?nodeRoot.transform:itemRoot.transform;
 					pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 					pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 					if (_piece.name == "Missing") {

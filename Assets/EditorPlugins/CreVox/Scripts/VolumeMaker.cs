@@ -16,7 +16,9 @@ namespace CreVox
 		public string ArtPack = PathCollect.pieces;
 		public string vMaterial = PathCollect.defaultVoxelMaterial;
         private List<Chunk> m_cs = new List<Chunk>();
-        private List<BehaviorTree> m_bts = new List<BehaviorTree>(1024);
+		private List<BehaviorTree> m_bts = new List<BehaviorTree>(1024);
+		GameObject nodeRoot;
+		GameObject itemRoot;
 
 		#region delgate
 		private delegate void volumeAdd(GameObject volume);
@@ -31,14 +33,23 @@ namespace CreVox
         public void Build()
         {
 			int style = (int)m_style;
-			AddComponent ();
+
+			nodeRoot = new GameObject ("DecorationRoot");
+			nodeRoot.transform.parent = transform;
+			nodeRoot.transform.localPosition = Vector3.zero;
+			nodeRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+
+			itemRoot = new GameObject ("ItemRoot");
+			itemRoot.transform.parent = transform;
+			itemRoot.transform.localPosition = Vector3.zero;
+			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
             for (int ci = 0; ci < m_vd.chunkDatas.Count; ci++)
 			{
                 ChunkData cData = m_vd.chunkDatas[ci];
                 GameObject chunk = Instantiate(Resources.Load(PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler(Vector3.zero)) as GameObject;
                 chunk.name = "Chunk" + cData.ChunkPos.ToString();
-                chunk.transform.parent = this.transform;
+				chunk.transform.parent = nodeRoot.transform;
                 VGlobal vg = VGlobal.GetSetting();
                 chunk.transform.localPosition = new Vector3(cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
                 chunk.transform.localRotation = Quaternion.Euler(Vector3.zero);
@@ -73,9 +84,11 @@ namespace CreVox
 
                 if ((style & 4) > 0)
                 {
-                    CreateItems(m_vd, this.transform, itemArray);
+                    CreateItems(m_vd, itemArray);
                 }
-            }
+			}
+
+			AddComponent ();
         }
 
         public bool LoadCompeleted()
@@ -130,26 +143,26 @@ namespace CreVox
 			}
 		}
 
-		void CreateItems (VolumeData _vData, Transform _parent, PaletteItem[] itemArray)
+		void CreateItems (VolumeData _vData, PaletteItem[] itemArray)
 		{
 			for (int i = 0; i < _vData.blockItems.Count; i++) {
 				for (int k = 0; k < itemArray.Length; k++) {
 					BlockItem blockItem = _vData.blockItems [i];
 					if (blockItem.pieceName == itemArray [k].name) {
-						CreateItem (blockItem, i, itemArray [k], _parent);
+						CreateItem (blockItem, i, itemArray [k]);
 					}
 				}
 			}
 		}
 
-		void CreateItem (BlockItem blockItem, int _id, PaletteItem _piece, Transform _parent)
+		void CreateItem (BlockItem blockItem, int _id, PaletteItem _piece)
 		{
 			GameObject pObj = GameObject.Instantiate (_piece.gameObject);
-			pObj.transform.parent = _parent;
+			LevelPiece p = (LevelPiece)pObj.GetComponent<LevelPiece> ();
+			pObj.transform.parent = (p is PrefabPiece) ? nodeRoot.transform : itemRoot.transform;
 			pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
 			pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 
-			LevelPiece p = (LevelPiece)pObj.GetComponent<LevelPiece> ();
 			if (p != null) {
 				p.SetupPiece (blockItem);
 			}
