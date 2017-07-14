@@ -397,8 +397,6 @@ namespace CrevoxExtend {
 
 			public float FitnessBlock() {
 				float fitnessScore = 0.0f;
-				float enemyWeightSum = 0.0f;
-				float mainPathWeightSum = 0.0f;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
@@ -406,21 +404,8 @@ namespace CrevoxExtend {
 
 				// Must have any enemy.
 				if (enemies.Count != 0) {
-					// Sum of enemy weight/count.
-					enemyWeightSum = enemies.Sum(e => (_mainPath.ContainsKey(e.pos) ? _mainPath[e.pos] : 0));
-					/*
-					Debug.Log(enemyWeightSum);
-					foreach (var enemy in enemies) {
-						Debug.Log("Enemy: " + enemy.pos);
-					}
-					foreach (var tile in _mainPath.Keys) {
-						Debug.Log("MP: " + tile + "  " + _mainPath[tile]);
-					}
-					*/
-					// Sum of the visited times in main path.
-					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
-					// Calculate the fitness score.
-					fitnessScore = (float)Math.Max(Math.Log(enemyWeightSum, mainPathWeightSum), -1.0);
+					// Sum of enemy weight.
+					fitnessScore = enemies.Sum(e => (_mainPath.ContainsKey(e.pos) ? _mainPath[e.pos] : 0));
 				}
 				// Get maximum
 				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Block]) {
@@ -504,8 +489,6 @@ namespace CrevoxExtend {
 
 			public float FitnessGuard() {
 				float fitnessScore = 0.0f;
-				float avgProtector;
-				Dictionary<CreVoxGene, List<CreVoxGene>> neighbors;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
@@ -515,29 +498,13 @@ namespace CrevoxExtend {
 					.Select(g => g as CreVoxGene)
 					.Where(g => g.Type == GeneType.Treasure).ToList();
 
-				// Must have any enemy and objective.
-				if (enemies.Count != 0 && objectives.Count != 0) {
-					// GeneA (Objective) has own GeneB (Enemies).
-					neighbors = new Dictionary<CreVoxGene, List<CreVoxGene>>();
-					// Create the pair each objective.
-					foreach (var objective in objectives) { neighbors.Add(objective, new List<CreVoxGene>()); }
-					// How many enemies	protect per objective.
-					avgProtector = 1.0f * enemies.Count / objectives.Count;
-					// Add the minimum distance into the neighbors of objective.
-					foreach (var enemy in enemies) {
-						var protectedTarget = (
-							from objective in objectives
-							let distance = Vector3.Distance(enemy.pos, objective.pos)
-							where distance < 10
-							orderby distance
-							select objective
-						).FirstOrDefault();
-						// If not found then add this one.
-						if (protectedTarget != null) { neighbors[protectedTarget].Add(enemy); }
+				// Add the minimum distance into the neighbors of objective.
+				foreach (var enemy in enemies) {
+					foreach (var objective in objectives) {
+						fitnessScore += 1.0f / Vector3.Distance(enemy.pos, objective.pos);
 					}
-					// Calculate the fitness score.
-					fitnessScore = objectives.Sum(o => (avgProtector - Math.Abs(neighbors[o].Count - avgProtector)) / avgProtector / objectives.Count);
 				}
+
 				// Get maximum
 				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Guard]) {
 					FitnessScoreMaximum[FitnessFunctionName.Guard] = fitnessScore;
