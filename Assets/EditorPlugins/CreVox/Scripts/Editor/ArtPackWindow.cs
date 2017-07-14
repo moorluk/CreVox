@@ -399,15 +399,32 @@ namespace CreVox
 			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
 			while (pPath != PathCollect.pieces) {
 				PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
-				for (int i = 0; i < _parent.Length; i++) {
+				for (int p = 0; p < _parent.Length; p++) {
 					bool _finded = false;
-					for (int j = 0; j < _child.Length; j++) {
-						if (_child [j].name == _parent [i].name) {
-							_parent.SetValue (_child [j], i);
+					for (int c = 0; c < _child.Length; c++) {
+						if (_child [c].name == _parent [p].name) {
+							_parent.SetValue (_child [c], p);
 							_finded = true;
-						}
-						if (_finded)
 							break;
+						}
+					}
+				}
+				for (int c = 0; c < _child.Length; c++) {
+					bool _finded = false;
+					string _name = _child [c].name;
+					for (int p = 0; p < _parent.Length; p++) {
+						if (_parent [p].name == _name) {
+							_finded = true;
+							break;
+						}
+					}
+					if (!_finded) {
+						PaletteItem[] _parentTemp = _parent;
+						_parent = new PaletteItem[_parent.Length + 1];
+						_parent.SetValue (_child [c], _parent.Length - 1);
+						for (int p = 0; p < _parentTemp.Length; p++) {
+							_parent.SetValue (_parentTemp [p], p);
+						}
 					}
 				}
 				_child = _parent;
