@@ -77,6 +77,11 @@ namespace NTUSTGA {
 		void PrepareSelection() {
 			float sum = 0.0f;
 			wheel.Clear();
+			foreach (var chromosomeme in currentGeneration) {
+				if(chromosomeme.FitnessScore == null) {
+					chromosomeme.SetFitnessFunctionScore();
+				}
+			}
 			for (int i = 0; i < currentGeneration.Count; ++i) {
 				sum += currentGeneration[i].FitnessFunction();
 				wheel.Add(sum);
