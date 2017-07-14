@@ -24,7 +24,8 @@ namespace CrevoxExtend {
 	}
 
 	public class CreVoxGA {
-		private static StreamWriter DatasetExport { get; set; }
+		private static StreamWriter DatasetExportScore { get; set; }
+		private static StreamWriter DatasetExportPosition { get; set; }
 
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
@@ -100,14 +101,15 @@ namespace CrevoxExtend {
 			}
 		}
 
-		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, StreamWriter sw = null) {
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, StreamWriter sw = null, StreamWriter sw2 = null) {
 			Initialize();
 
 			// Set the number of population and generation.
 			PopulationNumber = populationNumber;
 			GenerationNumber = generationNumber;
 			// Update the StreamWriter of DatasetExport.
-			DatasetExport = sw;
+			DatasetExportScore = sw;
+			DatasetExportPosition = sw2;
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				NTUSTGeneticAlgorithm ntustGA = new CreVoxGAA(0.8f, 0.1f, GetSample(_pieceList, volume), PopulationNumber, GenerationNumber);
@@ -121,12 +123,13 @@ namespace CrevoxExtend {
 			//return null;
 		}
 		// Overloading. No initialize.
-		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, string roomName, StreamWriter sw = null) {
+		public static NTUSTChromosome Segmentism(int populationNumber, int generationNumber, string roomName, StreamWriter sw = null, StreamWriter sw2 = null) {
 			// Set the number of population and generation.
 			PopulationNumber = populationNumber;
 			GenerationNumber = generationNumber;
 			// Update the StreamWriter of DatasetExport.
-			DatasetExport = sw;
+			DatasetExportScore = sw;
+			DatasetExportPosition = sw2;
 			CreVoxChromosome bestChromosome = new CreVoxChromosome();
 			foreach (var volume in GetVolumeByVolumeManager()) {
 				// Run specific room only.
@@ -361,12 +364,16 @@ namespace CrevoxExtend {
 
 				// If DatasetExport is not null, export the data.
 				if (!csvFinished) {
-					if (DatasetExport != null) {
+					// Export the scores.
+					if (DatasetExportScore != null) {
+						foreach (FitnessFunctionName fitnessName in fitnessNames) {
+							DatasetExportScore.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName, false));
+						}
+					}
+					// Export the positions.
+					if (DatasetExportPosition != null) {
 						foreach (var gene in Genes.Select(g => g as CreVoxGene)) {
-							// All of fitness and it's score in a gene.
-							foreach (FitnessFunctionName fitnessName in fitnessNames) {
-								DatasetExport.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName, false) + ",\"" + gene.pos + "\"," + gene.Type);
-							}
+							DatasetExportPosition.WriteLine(chromosomeInfo + ",\"" + gene.pos + "\"," + gene.Type);
 						}
 					}
 				}

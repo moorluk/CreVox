@@ -104,6 +104,16 @@ namespace CrevoxExtend {
 			if (GUILayout.Button("多個實驗寫檔輸出", buttonStyle, GUILayout.Height(30))) {
 				var activedExperiments = new Dictionary<string, Experiment>();
 
+				// Clean the experiment folder.
+				DirectoryInfo datasetDirectory = new DirectoryInfo(EXPERIMENT_DIR);
+				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
+				datasetDirectory.Create();
+
+				// Open this directory in explorer.
+				EditorUtility.RevealInFinder(EXPERIMENT_DIR);
+				Debug.Log("The export of experiments in '" + EXPERIMENT_DIR + "'.");
+
+				// Export the raw dataset.
 				foreach (var experimentName in Experiments.Keys) {
 					var experiment = Experiments[experimentName];
 					if (experiment.IsActived) {
@@ -111,13 +121,22 @@ namespace CrevoxExtend {
 						LaunchGAExperiment(experiment, true);
 					}
 				}
-				
+
+				// Clone the python files.
+				string fileA = PYTHON_SRC_DIR + "heatmapPlot.py";
+				string fileB = PYTHON_SRC_DIR + "fitnessComparison.py";
+				System.IO.File.Copy(fileA, EXPERIMENT_DIR + System.IO.Path.GetFileName(fileA), true);
+				System.IO.File.Copy(fileB, EXPERIMENT_DIR + System.IO.Path.GetFileName(fileB), true);
+
+				/*
+				 * Export the ploy by python.
 				if (ExistsOnPath("python.exe") || ExistsOnPath(DEFAULT_PYTHON_EXEC_PATH)) {
 					ExecutePythonPlot("heatmap", activedExperiments);
 					ExecutePythonPlot("fitnessComparison", activedExperiments);
 				} else {
 					Debug.LogError("Please check your system has 'python' in the environment path.");
 				}
+				*/
 			}
 			EditorGUI.EndDisabledGroup();
 
@@ -176,9 +195,6 @@ namespace CrevoxExtend {
 				DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
 				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
 				datasetDirectory.Create();
-				// Open this directory in explorer.
-				EditorUtility.RevealInFinder(datasetPath);
-				Debug.Log("The export of experiment in '" + datasetPath + "'.");
 			}
 
 			// For each experiment.
@@ -187,14 +203,17 @@ namespace CrevoxExtend {
 				// Write the export or not.
 				if (isExportFiles) {
 					// Create StreamWriter.
-					StreamWriter sw = new StreamWriter(datasetPath + "/experiment_" + i + ".csv");
-					sw.WriteLine("run,generation,chromosome,label,score,position,type,volume");
+					StreamWriter swScore = new StreamWriter(datasetPath + "/score_" + i + ".csv");
+					swScore.WriteLine("run,generation,chromosome,label,score");
+					StreamWriter swPosition = new StreamWriter(datasetPath + "/position_" + i + ".csv");
+					swPosition.WriteLine("run,generation,chromosome,position,type");
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
-					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, sw);
+					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, swScore, swPosition);
 					// Close StreamWriter.
-					sw.Close();
+					swScore.Close();
+					swPosition.Close();
 				} else {
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);

@@ -15,14 +15,11 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Our program.
 def main(root, experiments):
-	# Root of folder.
-	root = os.path.dirname(root)
-
 	for experiment in experiments:
 		# Load the csv.
-		data = pd.read_csv(root + "/datasets/" + experiment + "/experiment_1.csv")
+		data = pd.read_csv(root + "/datasets/" + experiment + "/position_1.csv")
 		# Remove the useless columns and duplicated rows.
-		data = data.drop(['label', 'score'], 1)
+		# data = data.drop(['label', 'score'], 1)
 		data = data.drop_duplicates(subset=['run', 'generation', 'chromosome', 'position'], keep='first')
 		# Plot the heatmaps.
 		plotHeatmap(root, getAmountRecord(data), experiment)
@@ -108,7 +105,16 @@ def getChromosome(data, runNum, genNum, chmNum):
 	return data[(data.run == runNum) & (data.generation == genNum) & (data.chromosome == chmNum)]
 
 if __name__ == "__main__":
-	if (len(sys.argv) <= 2):
-		print ("Sorry, the number of experiment is not enough.")
-	else:
-		main(sys.argv[1], sys.argv[2:])
+	try:
+		root        = os.path.dirname(os.path.realpath(__file__))
+		datasetPath = os.path.realpath(root + "./datasets/")
+
+		main(root, os.listdir(datasetPath))
+
+		input("Press Enter to continue...")
+
+		plt.close('all')
+		sys.exit(0)
+
+	except Exception as ex:
+		print ex

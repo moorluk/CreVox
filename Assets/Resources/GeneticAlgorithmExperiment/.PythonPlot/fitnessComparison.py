@@ -13,10 +13,8 @@ import random
 
 # Our program.
 def main(root, experiments):
-	# Root of folder.
-	root = os.path.dirname(root)
-
 	for experiment in experiments:
+		print ("Current experiment {}.".format(experiment))
 		# Import and export to the file.
 		importPath = root + "/datasets/" + experiment + "/"
 		exportPath = root + "/output/" + experiment + "/fitnessComparison/"
@@ -31,9 +29,9 @@ def main(root, experiments):
 
 # Export the best chromosomes table (single fitness score / all / run / class).
 def exportTheBestChromosome(label, inputFolder, outputFolder):
-	outputDate = DataFrame(columns =  ["run","generation","chromosome",'label','score','volume'])
+	outputData = DataFrame(columns =  ["run","generation","chromosome",'label','score'])
 	# Read file.
-	data = pd.read_csv(inputFolder + "experiment_1.csv")
+	data = pd.read_csv(inputFolder + "score_1.csv")
 	numRun = data['run'].max()
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
@@ -64,18 +62,18 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.values[0]
 				# Normalize.
 				labelScore = labelScore / fitnessMaximum[idx]
-				info = [nR,ng,chromosomeID,fitnessName,labelScore,data.iloc[chromosomeID].volume]
+				info = [nR,ng,chromosomeID,fitnessName,labelScore] #,data.iloc[chromosomeID].volume]
 				# add info to the last.
-				outputDate.loc[-1] = info
+				outputData.loc[-1] = info
 				# shifting index
-				outputDate.index = outputDate.index + 1
+				outputData.index = outputData.index + 1
 	#fixed [run,generation,chromosome] are float,not int.
-	outputDate['run'] = outputDate['run'].astype(int)
-	outputDate['generation'] = outputDate['generation'].astype(int)
-	outputDate['chromosome'] = outputDate['chromosome'].astype(int)
+	outputData['run'] = outputData['run'].astype(int)
+	outputData['generation'] = outputData['generation'].astype(int)
+	outputData['chromosome'] = outputData['chromosome'].astype(int)
 	# output result table
-	outputDate.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
-	return outputDate
+	outputData.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
+	return outputData
 
 def newPlot(experimentLabel, outputFolder, data):
 	plt.figure(figsize = (16, 9), dpi = 120)
@@ -115,7 +113,14 @@ def newPlot2(experimentLabel, outputFolder, data):
 
 
 if __name__ == "__main__":
-	if (len(sys.argv) <= 2):
-		print ("Sorry, the number of experiment is not enough.")
-	else:
-		main(sys.argv[1], sys.argv[2:])
+	try:
+		root        = os.path.dirname(os.path.realpath(__file__))
+		datasetPath = os.path.realpath(root + "./datasets/")
+
+		main(root, os.listdir(datasetPath))
+
+		input("Press Enter to continue...")
+		sys.exit(0)
+
+	except Exception as ex:
+		print ex
