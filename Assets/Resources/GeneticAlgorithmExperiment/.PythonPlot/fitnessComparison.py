@@ -41,27 +41,24 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 		# get all of label in this csv file.
 		fitnessLabels = set(data.label.values)
 		# Get absolute maximum for normalizing.
-		fitnessMaximum = [0,0,0,0,0]
-		for idx, fitnessName in enumerate(fitnessLabels):
+		fitnessMaximum = []
+		for fitnessName in fitnessLabels:
 			scores = data[(data.label == fitnessName)].score.values
-			fitnessMaximum[idx] = max(abs(s) for s in scores)
+			fitnessMaximum.append(max(abs(s) for s in scores))
 
 		for ng in range(1, numGeneration + 1):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				scores = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.values;
-				# Only calc first score.
-				chromosomeScore = sum(scores[:len(fitnessLabels)])
+				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
 			for idx, fitnessName in enumerate(fitnessLabels):
-				# Only calc first score.
-				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.values[0]
+				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
 				# Normalize.
-				labelScore = labelScore / fitnessMaximum[idx]
+				labelScore = float(labelScore) / float(fitnessMaximum[idx]) 
 				info = [nR,ng,chromosomeID,fitnessName,labelScore] #,data.iloc[chromosomeID].volume]
 				# add info to the last.
 				outputData.loc[-1] = info

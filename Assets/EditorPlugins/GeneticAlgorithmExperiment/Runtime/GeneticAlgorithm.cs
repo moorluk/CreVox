@@ -262,7 +262,7 @@ namespace CrevoxExtend {
 					{ FitnessFunctionName.Intercept, 0.0f },
 					{ FitnessFunctionName.Patrol   , 0.0f },
 					{ FitnessFunctionName.Guard    , 0.0f },
-					{ FitnessFunctionName.Support  , 0.0f },
+					{ FitnessFunctionName.Support  , 0.0f },	
 				};
 			}
 
@@ -304,11 +304,11 @@ namespace CrevoxExtend {
 
 			public override void SetFitnessFunctionScore() {
 				FitnessScore = new Dictionary<FitnessFunctionName, float>() {
-						{ FitnessFunctionName.Block    , (FitnessWeights["block"]  != 0 || DatasetExportScore != null) ? FitnessBlock() : 0.0f },
-						{ FitnessFunctionName.Intercept, (FitnessWeights["intercept"] != 0 || DatasetExportScore != null) ? FitnessIntercept() : 0.0f },
-						{ FitnessFunctionName.Patrol   , (FitnessWeights["patrol"] != 0 || DatasetExportScore != null) ? FitnessPatrol() : 0.0f },
-						{ FitnessFunctionName.Guard    , (FitnessWeights["guard"] != 0 || DatasetExportScore != null) ? FitnessGuard() : 0.0f },
-						{ FitnessFunctionName.Support  , (FitnessWeights["support"] != 0 || DatasetExportScore != null) ? FitnessSupport() : 0.0f }
+						{ FitnessFunctionName.Block    , FitnessWeights["block"]  != 0 ? FitnessBlock() : 0.0f },
+						{ FitnessFunctionName.Intercept, FitnessWeights["intercept"] != 0 ? FitnessIntercept() : 0.0f },
+						{ FitnessFunctionName.Patrol   , FitnessWeights["patrol"] != 0 ? FitnessPatrol() : 0.0f },
+						{ FitnessFunctionName.Guard    , FitnessWeights["guard"] != 0 ? FitnessGuard() : 0.0f },
+						{ FitnessFunctionName.Support  , FitnessWeights["support"] != 0 ? FitnessSupport() : 0.0f }
 					};
 			}
 
@@ -366,6 +366,25 @@ namespace CrevoxExtend {
 					// Export the scores.
 					if (DatasetExportScore != null) {
 						foreach (FitnessFunctionName fitnessName in fitnessNames) {
+							switch (fitnessName) {
+							case FitnessFunctionName.Block:
+								if (FitnessWeights["block"] == 0) continue;
+								break;
+							case FitnessFunctionName.Intercept:
+								if (FitnessWeights["intercept"] == 0) continue;
+								break;
+							case FitnessFunctionName.Patrol:
+								if (FitnessWeights["patrol"] == 0) continue;
+								break;
+							case FitnessFunctionName.Guard:
+								if (FitnessWeights["guard"] == 0) continue;
+								break;
+							case FitnessFunctionName.Support:
+								if (FitnessWeights["support"] == 0) continue;
+								break;
+							default:
+								break;	
+							}
 							DatasetExportScore.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName, false));
 						}
 					}
