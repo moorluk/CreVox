@@ -11,7 +11,6 @@ using RegExp = System.Text.RegularExpressions;
 
 using CreVox;
 using NTUSTGA;
-using System;
 
 namespace CrevoxExtend {
 	// Enum for type of gene.
@@ -269,8 +268,8 @@ namespace CrevoxExtend {
 
 			// Two-point crossover.
 			public override void Crossover(ref NTUSTChromosome parentCopy1, ref NTUSTChromosome parentCopy2) {
-				int min = UnityEngine.Random.Range(0, parentCopy1.Genes.Count);
-				int max = UnityEngine.Random.Range(min, parentCopy1.Genes.Count);
+				int min = Random.Range(0, parentCopy1.Genes.Count);
+				int max = Random.Range(min, parentCopy1.Genes.Count);
 
 				for (int i = min; i < max; i++) {
 					NTUSTChromosome.NTUSTGene swapGene = parentCopy1.Genes[i];
@@ -285,7 +284,7 @@ namespace CrevoxExtend {
 				var random = new SystemRandom();
 				// Filtering the percent numbers for genes.
 				var genes = CreVoxChrom.getGenes();
-				var percent = (int)Math.Ceiling(UnityEngine.Random.Range(0.05f, 0.20f) * genes.Count);
+				var percent = (int)Math.Ceiling(Random.Range(0.05f, 0.20f) * genes.Count);
 				var filteredGenes = genes.OrderBy(g => random.Next()).Take(percent).ToList();
 				// Change type each gene.
 				foreach (var gene in filteredGenes) {
@@ -295,7 +294,7 @@ namespace CrevoxExtend {
 						.Where(t => t != GeneType.Forbidden && t != gene.Type)
 						.ToArray();
 
-					gene.Type = types[UnityEngine.Random.Range(0, types.Length)];
+					gene.Type = types[Random.Range(0, types.Length)];
 				}
 			}
 		}
@@ -305,11 +304,11 @@ namespace CrevoxExtend {
 
 			public override void SetFitnessFunctionScore() {
 				FitnessScore = new Dictionary<FitnessFunctionName, float>() {
-						{ FitnessFunctionName.Block    , FitnessBlock() },
-						{ FitnessFunctionName.Intercept, FitnessGuard() },
-						{ FitnessFunctionName.Patrol   , FitnessIntercept() },
-						{ FitnessFunctionName.Guard    , FitnessPatrol() },
-						{ FitnessFunctionName.Support  , FitnessSupport() }
+						{ FitnessFunctionName.Block    , (FitnessWeights["block"]  != 0 || DatasetExportScore != null) ? FitnessBlock() : 0.0f },
+						{ FitnessFunctionName.Intercept, (FitnessWeights["intercept"] != 0 || DatasetExportScore != null) ? FitnessIntercept() : 0.0f },
+						{ FitnessFunctionName.Patrol   , (FitnessWeights["patrol"] != 0 || DatasetExportScore != null) ? FitnessPatrol() : 0.0f },
+						{ FitnessFunctionName.Guard    , (FitnessWeights["guard"] != 0 || DatasetExportScore != null) ? FitnessGuard() : 0.0f },
+						{ FitnessFunctionName.Support  , (FitnessWeights["support"] != 0 || DatasetExportScore != null) ? FitnessSupport() : 0.0f }
 					};
 			}
 
