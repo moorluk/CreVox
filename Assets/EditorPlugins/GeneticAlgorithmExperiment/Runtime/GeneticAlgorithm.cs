@@ -65,7 +65,8 @@ namespace CrevoxExtend {
 			Intercept,
 			Patrol,
 			Guard,
-			Support
+			Support,
+			Density
 		}
 
 		// Constructor.
@@ -262,7 +263,8 @@ namespace CrevoxExtend {
 					{ FitnessFunctionName.Intercept, 0.0f },
 					{ FitnessFunctionName.Patrol   , 0.0f },
 					{ FitnessFunctionName.Guard    , 0.0f },
-					{ FitnessFunctionName.Support  , 0.0f },	
+					{ FitnessFunctionName.Support  , 0.0f },
+					{ FitnessFunctionName.Density  , 1.0f },
 				};
 			}
 
@@ -308,7 +310,8 @@ namespace CrevoxExtend {
 						{ FitnessFunctionName.Intercept, FitnessWeights["intercept"] != 0 ? FitnessIntercept() : 0.0f },
 						{ FitnessFunctionName.Patrol   , FitnessWeights["patrol"] != 0 ? FitnessPatrol() : 0.0f },
 						{ FitnessFunctionName.Guard    , FitnessWeights["guard"] != 0 ? FitnessGuard() : 0.0f },
-						{ FitnessFunctionName.Support  , FitnessWeights["support"] != 0 ? FitnessSupport() : 0.0f }
+						{ FitnessFunctionName.Support  , FitnessWeights["support"] != 0 ? FitnessSupport() : 0.0f },
+						{ FitnessFunctionName.Density  , 1 != 0 ? FitnessDensity() : 0.0f  }
 					};
 			}
 
@@ -356,7 +359,7 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["guard"]  != 0 ? GetFitnessScore(FitnessFunctionName.Guard) * FitnessWeights["guard"]  : 0)
 					+ (FitnessWeights["support"] != 0 ? GetFitnessScore(FitnessFunctionName.Support) * FitnessWeights["support"] : 0)
 					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
-					+ (FitnessDensity() * 1)
+					+ (1 != 0 ? GetFitnessScore(FitnessFunctionName.Density) * 1 : 0)
 				;
 
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
@@ -381,6 +384,9 @@ namespace CrevoxExtend {
 								break;
 							case FitnessFunctionName.Support:
 								if (FitnessWeights["support"] == 0) continue;
+								break;
+							case FitnessFunctionName.Density:
+								if (1 == 0) continue;
 								break;
 							default:
 								break;	

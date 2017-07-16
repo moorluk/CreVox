@@ -28,8 +28,9 @@ namespace CrevoxExtend {
 		public static Dictionary<string, Experiment> Experiments = new Dictionary<string, Experiment>();
 
 		public static Vector2 WindowScrollPosition;
+		public static CreVoxGA.CreVoxChromosome lastBestChromosome;
 
-        private static string[] ignoreOptions = new string[]
+		private static string[] ignoreOptions = new string[]
         {
             "是", "否"
         };
@@ -140,6 +141,37 @@ namespace CrevoxExtend {
 			}
 			EditorGUI.EndDisabledGroup();
 
+			if(lastBestChromosome != null) {
+				string fitnessScoreString = "";
+				foreach (var key in lastBestChromosome.FitnessScore.Keys) {
+					switch (key) {
+						case CreVoxGA.FitnessFunctionName.Block:
+							if (CreVoxGA.FitnessWeights["block"] == 0) continue;
+							break;
+						case CreVoxGA.FitnessFunctionName.Intercept:
+							if (CreVoxGA.FitnessWeights["intercept"] == 0) continue;
+							break;
+						case CreVoxGA.FitnessFunctionName.Patrol:
+							if (CreVoxGA.FitnessWeights["patrol"] == 0) continue;
+							break;
+						case CreVoxGA.FitnessFunctionName.Guard:
+							if (CreVoxGA.FitnessWeights["guard"] == 0) continue;
+							break;
+						case CreVoxGA.FitnessFunctionName.Support:
+							if (CreVoxGA.FitnessWeights["support"] == 0) continue;
+							break;
+						case CreVoxGA.FitnessFunctionName.Density:
+							if (1 == 0) continue;
+							break;
+						default:
+							break;
+					}
+					float score = lastBestChromosome.GetFitnessScore(key);
+					fitnessScoreString += string.Format("{0}: {1}\n", key.ToString(), score);
+				}
+				EditorGUILayout.TextArea(fitnessScoreString);
+			}
+
 			// List of all experiments.
 			WindowScrollPosition = EditorGUILayout.BeginScrollView(WindowScrollPosition);
 			foreach (var experimentName in Experiments.Keys) {
@@ -219,6 +251,7 @@ namespace CrevoxExtend {
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount);
+					lastBestChromosome = bestChromosome as CreVoxGA.CreVoxChromosome;
 				}
 			}
 		}
