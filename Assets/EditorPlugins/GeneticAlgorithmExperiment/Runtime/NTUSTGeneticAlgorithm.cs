@@ -74,7 +74,6 @@ namespace NTUSTGA {
 		List<float> wheel = new List<float>();
 
 		void PrepareSelection() {
-			float sum = 0.0f;
 			wheel.Clear();
 			// Init maximum.
 			NTUSTChromosome.FitnessScoreMaximum = new Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float>() {
@@ -92,16 +91,23 @@ namespace NTUSTGA {
 				}
 			}
 			for (int i = 0; i < currentGeneration.Count; ++i) {
-				sum = currentGeneration[i].FitnessFunction();
-				//Debug.Log(wheel.Count + ": " + sum);
-				wheel.Add(sum);
+				float score = currentGeneration[i].FitnessFunction();
+				wheel.Add(score);
 			}
 		}
 
 		int Selection() {
-			float random = Random.Range(0.0f, wheel[wheel.Count - 1]);
+			float sum = 0.0f;
+			// Wheel total.
 			for (int index = 0; index < wheel.Count; ++index) {
-				if (random <= wheel[index])
+				sum += wheel[index];
+			}
+			float random = Random.Range(0.0f, sum);
+			// Wheel selection.
+			sum = 0.0f;
+			for (int index = 0; index < wheel.Count; ++index) {
+				sum += wheel[index];
+				if (random <= sum)
 					return index;
 			}
 			return 0;
