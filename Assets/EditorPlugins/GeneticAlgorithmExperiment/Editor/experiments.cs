@@ -114,6 +114,15 @@ namespace CrevoxExtend {
 				EditorUtility.RevealInFinder(EXPERIMENT_DIR);
 				Debug.Log("The export of experiments in '" + EXPERIMENT_DIR + "'.");
 
+				// Set artpack.
+				var volumeManager = GameObject.Find("VolumeManager(Generated)");
+				var volume = volumeManager.GetComponentInChildren<CreVox.Volume>();
+				volume.ArtPack = CreVox.PathCollect.artPack + "/AncientPalace";
+				CreVox.VGlobal.GetSetting().volumeShowArtPack = true;
+				volume.LoadTempWorld();
+
+
+
 				// Export the raw dataset.
 				foreach (var experimentName in Experiments.Keys) {
 					var experiment = Experiments[experimentName];
@@ -227,6 +236,11 @@ namespace CrevoxExtend {
 				DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
 				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
 				datasetDirectory.Create();
+
+				string screenshotPath = EXPERIMENT_DIR + "Screenshot/" + experiment.Name;
+				datasetDirectory = new DirectoryInfo(screenshotPath);
+				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
+				datasetDirectory.Create();
 			}
 
 			// For each experiment.
@@ -246,6 +260,8 @@ namespace CrevoxExtend {
 					// Close StreamWriter.
 					swScore.Close();
 					swPosition.Close();
+					var volumeManager = GameObject.Find("VolumeManager(Generated)");
+					LayoutScreenshot(volumeManager, EXPERIMENT_DIR + "Screenshot/" + experiment.Name + "/"  + i.ToString() + ".png");
 				} else {
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
@@ -328,6 +344,50 @@ namespace CrevoxExtend {
 			EditorUtility.RevealInFinder(EXPERIMENT_DIR);
 		}
 
+		// Overloading.
+		private void LayoutScreenshot(GameObject volumeManager, string fileName) {
+			if (Camera.main == null) {
+				GameObject cam = new GameObject("main camera");
+				cam.AddComponent<Camera>();
+				cam.tag = "MainCamera";
+			}
+			var screenshotCarema = Camera.main;
+
+			// Get the center point of volume manager.
+			Vector3 centerPoint = default(Vector3);
+			foreach (Transform volume in volumeManager.transform) {
+				var chunk = volume.transform.Find("Chunk(0,0,0)");
+				centerPoint = volume.transform.position + chunk.GetComponent<Renderer>().bounds.center;
+				break;
+			}
+
+			// Set camera info.
+			screenshotCarema.orthographic = true;
+			screenshotCarema.orthographicSize = 15.0f;
+			screenshotCarema.transform.rotation = Quaternion.Euler(90, 0, 0);
+			screenshotCarema.transform.position = centerPoint + new Vector3(0, 20, 0);
+
+			// Select this camera.
+			Selection.objects = new GameObject[1] { screenshotCarema.gameObject };
+
+			// Record the shot.
+			EditorApplication.ExecuteMenuItem("Window/Game");
+
+			// Screenshot.
+			const int width = 800;
+			const int height = 600;
+			RenderTexture rt = new RenderTexture(width, height, 24);
+			screenshotCarema.targetTexture = rt;
+			Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+			screenshotCarema.Render();
+			RenderTexture.active = rt;
+			screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+			screenshotCarema.targetTexture = null;
+			RenderTexture.active = null; // JC: added to avoid errors
+			DestroyImmediate(rt);
+			byte[] bytes = screenShot.EncodeToPNG();
+			System.IO.File.WriteAllBytes(fileName, bytes);
+		}
 		public class Experiment {
 			// Ignore.
 			public bool Ignore { get; set; }
