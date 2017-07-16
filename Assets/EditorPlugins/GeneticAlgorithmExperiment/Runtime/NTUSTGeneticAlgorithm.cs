@@ -34,7 +34,6 @@ namespace NTUSTGA {
 			InitChromosome(countOfChromosome);
 
 			for (currentGenrationID = 0; currentGenrationID < countOfGeneration; currentGenrationID++) {
-
 				//printGeneration(chromosomes, i);
 				PrepareSelection();
 				List<NTUSTChromosome> newGeneration = new List<NTUSTChromosome>();
@@ -77,13 +76,24 @@ namespace NTUSTGA {
 		void PrepareSelection() {
 			float sum = 0.0f;
 			wheel.Clear();
+			// Init maximum.
+			NTUSTChromosome.FitnessScoreMaximum = new Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float>() {
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Block    , 0.0f },
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Intercept, 0.0f },
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Patrol   , 0.0f },
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Guard    , 0.0f },
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Support  , 0.0f },
+					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Density  , 1.0f },
+				};
+			// Set score.
 			foreach (var chromosomeme in currentGeneration) {
 				if(chromosomeme.FitnessScore == null) {
 					chromosomeme.SetFitnessFunctionScore();
 				}
 			}
 			for (int i = 0; i < currentGeneration.Count; ++i) {
-				sum += currentGeneration[i].FitnessFunction();
+				sum = currentGeneration[i].FitnessFunction();
+				//Debug.Log(wheel.Count + ": " + sum);
 				wheel.Add(sum);
 			}
 		}
@@ -98,6 +108,7 @@ namespace NTUSTGA {
 		}
 
 		protected virtual int SelectTheBestChromosomeIndex() {
+			//Debug.Log(wheel.IndexOf(wheel.Max()));
 			return wheel.IndexOf(wheel.Max());
 		}
 		#endregion

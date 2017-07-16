@@ -257,15 +257,6 @@ namespace CrevoxExtend {
 
 		public class CreVoxGAA : NTUSTGeneticAlgorithm {
 			public CreVoxGAA(float crossoverRate, float mutationRate, NTUSTChromosome sample, int countOfChromosome, int countOfGeneration) : base(crossoverRate, mutationRate, sample, countOfChromosome, countOfGeneration) {
-				// Init maximum.
-				CreVoxChromosome.FitnessScoreMaximum = new Dictionary<FitnessFunctionName, float>() {
-					{ FitnessFunctionName.Block    , 0.0f },
-					{ FitnessFunctionName.Intercept, 0.0f },
-					{ FitnessFunctionName.Patrol   , 0.0f },
-					{ FitnessFunctionName.Guard    , 0.0f },
-					{ FitnessFunctionName.Support  , 0.0f },
-					{ FitnessFunctionName.Density  , 1.0f },
-				};
 			}
 
 			// Two-point crossover.
@@ -302,7 +293,6 @@ namespace CrevoxExtend {
 		}
 
 		public class CreVoxChromosome : NTUSTChromosome {
-			public static Dictionary<FitnessFunctionName, float> FitnessScoreMaximum;
 
 			public override void SetFitnessFunctionScore() {
 				FitnessScore = new Dictionary<FitnessFunctionName, float>() {
@@ -361,7 +351,6 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
 					+ (1 != 0 ? GetFitnessScore(FitnessFunctionName.Density) * 1 : 0)
 				;
-
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
 
 				// If DatasetExport is not null, export the data.
