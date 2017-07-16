@@ -43,10 +43,12 @@ namespace CreVox
 		void Update ()
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			float x = transform.position.x - transform.position.x % vg.w;
-			float y = transform.position.y - transform.position.y % vg.h;
-			float z = transform.position.z - transform.position.z % vg.d;
-			transform.position = new Vector3 (x, y, z);
+			if (vg.snapGrid) {
+				float x = transform.position.x - transform.position.x % vg.w;
+				float y = transform.position.y - transform.position.y % vg.h;
+				float z = transform.position.z - transform.position.z % vg.d;
+				transform.position = new Vector3 (x, y, z);
+			}
 			#if UNITY_EDITOR
 			if (vg.saveBackup)
 				CompileSave ();
@@ -56,6 +58,7 @@ namespace CreVox
 		#region Chunk
 
 		private GameObject chunkPrefab;
+		GameObject chunkRoot;
 		public Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
 		public int chunkX = 1;
 		public int chunkY = 1;
@@ -97,6 +100,10 @@ namespace CreVox
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
+			chunkRoot = new GameObject ("ChunkRoot");
+			chunkRoot.transform.parent = transform;
+			chunkRoot.transform.localPosition = Vector3.zero;
+			chunkRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
             CreateChunks ();
 
 			#if UNITY_EDITOR
@@ -161,7 +168,7 @@ namespace CreVox
 				                            Quaternion.Euler (Vector3.zero)
 			                            ) as GameObject;
 			newChunkObject.name = "Chunk(" + x + "," + y + "," + z + ")";
-			newChunkObject.transform.parent = transform;
+			newChunkObject.transform.parent = chunkRoot.transform;
 			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
@@ -874,9 +881,10 @@ namespace CreVox
 			if (!EditorApplication.isPlaying && vg.debugRuler) {
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
-				DrawBlockHold ();
 				DrawBlockItem ();
 			}
+			if (vg.showBlockHold)
+				DrawBlockHold ();
 			Gizmos.matrix = oldMatrix;
 		}
 

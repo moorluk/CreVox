@@ -21,20 +21,18 @@ namespace CreVox
 		{
 			volume = (Volume)target;
 			volume.ActiveRuler (true);
-//			volume.BuildVolume ();
 			SubscribeEvents ();
 		}
 
 		private void OnDisable ()
 		{
-			if (!VGlobal.GetSetting().debugRuler)
-				volume.ActiveRuler (false);
+			volume.ActiveRuler (false);
 			UnsubscribeEvents ();
 		}
 
 		public override void OnInspectorGUI ()
 		{
-			float buttonW = 120;
+			float buttonW = 80;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
 			VGlobal vg = VGlobal.GetSetting ();
 			GUI.color = Color.white;
@@ -42,8 +40,21 @@ namespace CreVox
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUI.backgroundColor = Color.white;
 				GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
-				if (GUILayout.Button ("Refresh")) {
-					UpdateVolume ();
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					if (GUILayout.Button ("Refresh")) {
+						UpdateVolume ();
+					}
+					if (GUILayout.Button ("Calculate BlockHold")) {
+						foreach (ChunkData bh in volume.vd.chunkDatas) {
+							bh.blockHolds.Clear ();
+						}
+						string apOld = volume.ArtPack;
+						volume.ArtPack = PathCollect.pieces;
+						UpdateVolume ();
+						volume.ArtPack = apOld;
+						UpdateVolume ();
+						EditorUtility.SetDirty (volume);
+					}
 				}
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
 					EditorGUI.BeginChangeCheck ();
@@ -58,23 +69,16 @@ namespace CreVox
 				EditorGUILayout.Separator ();
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
 					EditorGUIUtility.labelWidth = 15;
-					cx = EditorGUILayout.IntField ("X", cx);
-					cy = EditorGUILayout.IntField ("Y", cy);
-					cz = EditorGUILayout.IntField ("Z", cz);
+					float w = Mathf.Ceil(Screen.width - 119) / 3;
+					cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
+					cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
+					cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
 					EditorGUIUtility.labelWidth = defLabelWidth;
-				}
-				if (GUILayout.Button ("Init")) {
-					volume.vd = null;
-					volume.Init (cx, cy, cz);
-					WriteVData (volume);
-				}
-				if (GUILayout.Button ("Calculate BlockHold")) {
-					foreach (ChunkData bh in volume.vd.chunkDatas) {
-						bh.blockHolds.Clear ();
+					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
+						volume.vd = null;
+						volume.Init (cx, cy, cz);
+						WriteVData (volume);
 					}
-					EditorUtility.SetDirty (volume);
-					UpdateVolume ();
-					volume.UpdateChunks ();
 				}
 			}
 
@@ -139,10 +143,12 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File(" + vg.saveBackup + ")", vg.saveBackup);
-				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack(" + vg.volumeShowArtPack + ")", vg.volumeShowArtPack);
-				vg.Generation = EditorGUILayout.ToggleLeft ("Runtime Generation(" + vg.Generation + ")", vg.Generation);
-				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler(" + vg.debugRuler + ")", vg.debugRuler);
+				vg.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File", vg.saveBackup);
+				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack", vg.volumeShowArtPack);
+				vg.Generation = EditorGUILayout.ToggleLeft ("Runtime Generation", vg.Generation);
+				vg.snapGrid = EditorGUILayout.ToggleLeft ("Snap Grid", vg.snapGrid);
+				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler", vg.debugRuler);
+				vg.showBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold", vg.showBlockHold);
 			}
 		}
 

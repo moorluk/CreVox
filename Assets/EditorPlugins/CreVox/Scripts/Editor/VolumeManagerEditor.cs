@@ -39,18 +39,23 @@ namespace CreVox
 			}
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				GUILayout.BeginHorizontal ();
-				EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
-				if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
-					vm.UpdateDungeon ();
-				if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
-					vm.dungeons.Clear();
-				GUILayout.EndHorizontal ();
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
+					if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
+						vm.UpdateDungeon ();
+					if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
+						vm.dungeons.Clear ();
+				}
 
 				EditorGUIUtility.wideMode = true;
 				vm.autoRun = EditorGUILayout.ToggleLeft ("Auto Run on play", vm.autoRun);
-				if (GUILayout.Button ("Update Portal")) {
-					VolumeAdapter.UpdatePortals (vm.gameObject);
+				using (var h = new EditorGUILayout.HorizontalScope ()) {
+					if (GUILayout.Button ("Refresh all Volume")) {
+						vm.BroadcastMessage ("BuildVolume");
+					}
+					if (GUILayout.Button ("Update Portal")) {
+						VolumeAdapter.UpdatePortals (vm.gameObject);
+					}
 				}
 				DrawVolumeList ();
 			}
