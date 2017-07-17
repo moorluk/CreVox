@@ -11,6 +11,7 @@ namespace CreVox
 	public class PropertyPieceEditor : LevelPieceEditor
 	{
 		PropertyPiece pp;
+//		int enemySpawnerToggleOffsetCount;
 
 		void OnEnable()
 		{
@@ -201,6 +202,7 @@ namespace CreVox
 			}
 			if (pp.PProperties [_index].tObject != null) {
 				EnemySpawner obj = (EnemySpawner)pp.PProperties [_index].tObject;
+				pp.CheckAiData (obj);
 				EditorGUILayout.LabelField ("Modifiable Field : ",
 					"Enemy Type　(" + obj.m_enemyType.ToString () + ")\n" +
 					"Spawner Data\n" +
@@ -208,9 +210,15 @@ namespace CreVox
 					"　├─ Max Live Qty　(" + obj.m_spawnerData.m_maxLiveQty.ToString () + ")\n" +
 					"　├─ Spwn Count Per Time　(" + obj.m_spawnerData.m_spwnCountPerTime.ToString () + ")\n" +
 					"　├─ Random Spawn X　(" + obj.m_spawnerData.m_randomSpawn.x.ToString () + ")\n" +
-					"　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y.ToString () + ")",
+					"　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y.ToString () + ")\n" +
+					"AI Data\n" +
+					"　├─ Toggle　(" + obj.m_AiData.toggle.ToString() + ")\n" +
+					"　├─ Eye　(" + obj.m_AiData.eye.ToString() + ")\n" +
+					"　├─ Ear　(" + obj.m_AiData.ear.ToString() + ")\n" +
+					"　└─ Toggle Offsets　(" + obj.m_AiData.toggleOffsets.Length.ToString() + ")\n" +
+					"　　　└─ Offsets　(x,y,z)",
 					EditorStyles.miniLabel,
-					GUILayout.Height (12 * 7));
+					GUILayout.Height (150));
 				if(!Application.isPlaying)
 				((EnemySpawner)pp.PProperties [_index].tObject).m_isStart = false;
 			} else {
@@ -342,6 +350,7 @@ namespace CreVox
 						case FocalComponent.EnemySpawner:
 							if (pp.PProperties [i].tObject != null) {
 								EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
+								pp.CheckAiData (obj);
 								obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
 								EditorGUILayout.LabelField ("Spawner Data");
 								EditorGUI.indentLevel++;
@@ -351,12 +360,37 @@ namespace CreVox
 								obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
 								EditorGUI.indentLevel--;
 
+								EditorGUILayout.LabelField ("AI Data");
+								EditorGUI.indentLevel++;
+								obj.m_AiData.toggle = EditorGUILayout.IntField ("Toggle", obj.m_AiData.toggle);
+								obj.m_AiData.eye = EditorGUILayout.IntField ("Eye", obj.m_AiData.eye);
+								obj.m_AiData.ear = EditorGUILayout.IntField ("Ear", obj.m_AiData.ear);
+								EditorGUI.BeginChangeCheck ();
+								int oCount = obj.m_AiData.toggleOffsets.Length;
+								oCount = Mathf.FloorToInt( EditorGUILayout.Slider ("Toggle Offsets", oCount,0f,10f));
+								if (EditorGUI.EndChangeCheck () && oCount != obj.m_AiData.toggleOffsets.Length){
+									Vector3[] newOffsets = new Vector3[oCount];
+									for (int o = 0; o < newOffsets.Length; o++) {
+										newOffsets [o] = (o < obj.m_AiData.toggleOffsets.Length) ?  obj.m_AiData.toggleOffsets [o] :new Vector3 (0.0f, 0.0f, 0.0f);
+									}
+									obj.m_AiData.toggleOffsets = newOffsets;
+								}
+								for (int o = 0; o < obj.m_AiData.toggleOffsets.Length; o++)
+									obj.m_AiData.toggleOffsets [o] = EditorGUILayout.Vector3Field (o.ToString (), obj.m_AiData.toggleOffsets [o]);
+								EditorGUI.indentLevel--;
+
 								string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
 								               obj.m_enemyType.ToString () + ";" +
 								               obj.m_spawnerData.m_totalQty.ToString () + ";" +
 								               obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
 								               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
-								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString ();
+								               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString () + ";" +
+								               obj.m_AiData.toggle.ToString () + "," + obj.m_AiData.eye.ToString () + "," + obj.m_AiData.ear.ToString () + ";";
+								for (int o = 0; o < obj.m_AiData.toggleOffsets.Length; o++){
+									Vector3 v3 = obj.m_AiData.toggleOffsets [o];
+									_code += v3.x + "_" + v3.y + "_" + v3.z + ",";
+								}
+								_code = _code.Remove (_code.Length - 1) + ";";
 								item.attributes [i] = _code;
 							}
 							break;
