@@ -258,7 +258,7 @@ namespace CrevoxExtend {
 
 					// Run GA.
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, swScore, swPosition);
-
+					lastBestChromosome = bestChromosome as CreVoxGA.CreVoxChromosome;
 					// Time's up.
 					stopwatch.Stop();
 					StreamWriter swResult = new StreamWriter(datasetPath + "/result_" + i + ".txt");
