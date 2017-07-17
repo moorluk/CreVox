@@ -301,7 +301,7 @@ namespace CrevoxExtend {
 						{ FitnessFunctionName.Patrol   , FitnessWeights["patrol"] != 0 ? FitnessPatrol() : 0.0f },
 						{ FitnessFunctionName.Guard    , FitnessWeights["guard"] != 0 ? FitnessGuard() : 0.0f },
 						{ FitnessFunctionName.Support  , FitnessWeights["support"] != 0 ? FitnessSupport() : 0.0f },
-						{ FitnessFunctionName.Density  , 1 != 0 ? FitnessDensity() : 0.0f  }
+						{ FitnessFunctionName.Density  , FitnessDensity()  }
 					};
 			}
 
@@ -348,8 +348,8 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["patrol"] != 0 ? GetFitnessScore(FitnessFunctionName.Patrol) * FitnessWeights["patrol"] : 0)
 					+ (FitnessWeights["guard"]  != 0 ? GetFitnessScore(FitnessFunctionName.Guard) * FitnessWeights["guard"]  : 0)
 					+ (FitnessWeights["support"] != 0 ? GetFitnessScore(FitnessFunctionName.Support) * FitnessWeights["support"] : 0)
-					+ (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
-					+ (1 != 0 ? GetFitnessScore(FitnessFunctionName.Density) * 1 : 0)
+					// + (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
+					+ (GetFitnessScore(FitnessFunctionName.Density) * (float) Math.Max(1.0, (double) FitnessWeights.Values.ToList().Sum(w => Math.Abs(w))))
 				;
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
 
@@ -396,13 +396,14 @@ namespace CrevoxExtend {
 			}
 
 			public float GetFitnessScore(FitnessFunctionName functionName, bool normalize = true) {
+				int c = 2;
 				float score = FitnessScore[functionName];
 				if (normalize) {
 					// Zero return zero.
 					if (FitnessScoreMaximum[functionName] == 0) { return 0; }
 
 					// Normalize.
-					return  score / FitnessScoreMaximum[functionName];
+					return (float) Math.Pow(score / FitnessScoreMaximum[functionName], 1.0 / c);
 				}
 				return score;
 			}
@@ -566,11 +567,14 @@ namespace CrevoxExtend {
 				return fitnessScore;
 			}
 
+			/*
 			public float FitnessEmptyDensity() {
 				List<CreVoxGene> empties = this.Genes.Select(g => g as CreVoxGene).Where(g => g.Type == GeneType.Empty).ToList();
 
 				return 1.0f * empties.Count / this.Genes.Count;
 			}
+			*/
+
 			public float FitnessDensity() {
 				List<CreVoxGene> gameObjects = this.Genes.Select(g => g as CreVoxGene).Where(g => g.Type != GeneType.Empty).ToList();
 				if (gameObjects.Count >= ObjectQuantityMin && gameObjects.Count <= ObjectQuantityMax) {
