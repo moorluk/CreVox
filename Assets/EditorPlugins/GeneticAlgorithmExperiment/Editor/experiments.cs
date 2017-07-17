@@ -243,6 +243,10 @@ namespace CrevoxExtend {
 				Debug.Log("Start running the experiment_" + i + " of " + experiment.Name + ".");
 				// Write the export or not.
 				if (isExportFiles) {
+					// Timer start.
+					Stopwatch stopwatch = new Stopwatch();
+					stopwatch.Start();
+
 					// Create StreamWriter.
 					StreamWriter swScore = new StreamWriter(datasetPath + "/score_" + i + ".csv");
 					swScore.WriteLine("run,generation,chromosome,label,score");
@@ -251,12 +255,28 @@ namespace CrevoxExtend {
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
+
+					// Run GA.
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount, swScore, swPosition);
+
+					// Time's up.
+					stopwatch.Stop();
+					StreamWriter swResult = new StreamWriter(datasetPath + "/result_" + i + ".txt");
+					swResult.WriteLine("Run time: {0} (ms)", stopwatch.ElapsedMilliseconds);
+					foreach (var key in bestChromosome.FitnessScore.Keys) {
+						float score = 0.0f;
+						if (CreVoxGA.FitnessWeights[key] == 0) { continue; }
+						score = (bestChromosome as CreVoxGA.CreVoxChromosome ).GetFitnessScore(key) * CreVoxGA.FitnessWeights[key];
+						swResult.WriteLine("{0}: {1}\n", key.ToString(), score);
+					}
+
 					// Close StreamWriter.
 					swScore.Close();
 					swPosition.Close();
+					swResult.Close();
 					var volumeManager = GameObject.Find("VolumeManager(Generated)");
 					LayoutScreenshot(volumeManager, EXPERIMENT_DIR + "Screenshot/" + experiment.Name + "/"  + i.ToString() + ".png");
+
 				} else {
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
