@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using CrevoxExtend;
+
 namespace NTUSTGA {
 	abstract public class NTUSTChromosome {
-		public Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float> FitnessScore;
-		public static Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float> FitnessScoreMaximum;
+		public Dictionary<FitnessFunctionName, float> FitnessScore;
+		public static Dictionary<FitnessFunctionName, float> FitnessScoreMaximum;
 		public abstract void SetFitnessFunctionScore();
 
 		public List<NTUSTGene> Genes = new List<NTUSTGene>();

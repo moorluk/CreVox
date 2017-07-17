@@ -21,14 +21,22 @@ namespace CrevoxExtend {
 		Treasure  = 2,
 		Trap      = 3
 	}
-
+	// Enum for fitness function.
+	public enum FitnessFunctionName {
+		Block,
+		Intercept,
+		Patrol,
+		Guard,
+		Support,
+		Density
+	}
 	public class CreVoxGA {
 		private static StreamWriter DatasetExportScore { get; set; }
 		private static StreamWriter DatasetExportPosition { get; set; }
 
 		public static int GenerationNumber { get; set; }
 		public static int PopulationNumber { get; set; }
-		public static Dictionary<string, int> FitnessWeights = new Dictionary<string, int>();
+		public static Dictionary<FitnessFunctionName, float> FitnessWeights = new Dictionary<FitnessFunctionName, float>();
 		public static int ObjectQuantityMin { get; set; }
 		public static int ObjectQuantityMax { get; set; }
 
@@ -59,34 +67,26 @@ namespace CrevoxExtend {
 		//calculate all of chromosome.
 		public static uint AllChromosomeCount;
 
-		//enum for fitness function.
-		public enum FitnessFunctionName {
-			Block,
-			Intercept,
-			Patrol,
-			Guard,
-			Support,
-			Density
-		}
-
 		// Constructor.
 		static CreVoxGA() {
 			GenerationNumber = 20;
 			PopulationNumber = 250;
-			FitnessWeights = new Dictionary<string, int>() {
-				{ "neglected", 0 },
-				{ "block"    , 0 },
-				{ "intercept", 0 },
-				{ "patrol"   , 0 },
-				{ "guard"    , 0 },
-				{ "dominated", 0 },
-				{ "support"  , 0 },
-				{ "emptyDensity",0 }
+			FitnessWeights = new Dictionary<FitnessFunctionName, float>() {
+				{ FitnessFunctionName.Block    , 0.0f },
+				{ FitnessFunctionName.Guard    , 0.0f },
+				{ FitnessFunctionName.Intercept, 0.0f },
+				{ FitnessFunctionName.Patrol   , 0.0f },
+				{ FitnessFunctionName.Support  , 0.0f },
+				{ FitnessFunctionName.Density  , 0.0f }
 			};
 		}
 
-		public static void SetWeights(Dictionary<string, int> fitnessWeights) {
+		public static void SetWeights(Dictionary<FitnessFunctionName, float> fitnessWeights) {
 			FitnessWeights = fitnessWeights;
+			if (!FitnessWeights.ContainsKey(FitnessFunctionName.Density)) {
+				FitnessWeights.Add(FitnessFunctionName.Density, 0.0f);
+			}
+			FitnessWeights[FitnessFunctionName.Density] = (float) Math.Max(1.0, (float) FitnessWeights.Values.ToList().Sum(w => Math.Abs(w)) - FitnessWeights[FitnessFunctionName.Density]);
 		}
 
 		public static void SetQuantityLimit(int minimum, int maximum) {
@@ -296,12 +296,12 @@ namespace CrevoxExtend {
 
 			public override void SetFitnessFunctionScore() {
 				FitnessScore = new Dictionary<FitnessFunctionName, float>() {
-						{ FitnessFunctionName.Block    , FitnessWeights["block"]  != 0 ? FitnessBlock() : 0.0f },
-						{ FitnessFunctionName.Intercept, FitnessWeights["intercept"] != 0 ? FitnessIntercept() : 0.0f },
-						{ FitnessFunctionName.Patrol   , FitnessWeights["patrol"] != 0 ? FitnessPatrol() : 0.0f },
-						{ FitnessFunctionName.Guard    , FitnessWeights["guard"] != 0 ? FitnessGuard() : 0.0f },
-						{ FitnessFunctionName.Support  , FitnessWeights["support"] != 0 ? FitnessSupport() : 0.0f },
-						{ FitnessFunctionName.Density  , FitnessDensity()  }
+						{ FitnessFunctionName.Block    , FitnessWeights[FitnessFunctionName.Block]  != 0 ? FitnessBlock() : 0.0f },
+						{ FitnessFunctionName.Intercept, FitnessWeights[FitnessFunctionName.Intercept] != 0 ? FitnessIntercept() : 0.0f },
+						{ FitnessFunctionName.Patrol   , FitnessWeights[FitnessFunctionName.Patrol] != 0 ? FitnessPatrol() : 0.0f },
+						{ FitnessFunctionName.Guard    , FitnessWeights[FitnessFunctionName.Guard] != 0 ? FitnessGuard() : 0.0f },
+						{ FitnessFunctionName.Support  , FitnessWeights[FitnessFunctionName.Support] != 0 ? FitnessSupport() : 0.0f },
+						{ FitnessFunctionName.Density  , FitnessWeights[FitnessFunctionName.Density] != 0 ? FitnessDensity() : 0.0f }
 					};
 			}
 
@@ -342,7 +342,7 @@ namespace CrevoxExtend {
 										+ (AllChromosomeCount / (PopulationNumber) % GenerationNumber + 1) + ","
 										+ (AllChromosomeCount % PopulationNumber + 1);
 
-				float scoreSum = 0.0f
+				/*float scoreSum = 0.0f
 					+ (FitnessWeights["block"]  != 0 ? GetFitnessScore(FitnessFunctionName.Block)  * FitnessWeights["block"]  : 0)
 					+ (FitnessWeights["intercept"] != 0 ? GetFitnessScore(FitnessFunctionName.Intercept) * FitnessWeights["intercept"] : 0)
 					+ (FitnessWeights["patrol"] != 0 ? GetFitnessScore(FitnessFunctionName.Patrol) * FitnessWeights["patrol"] : 0)
@@ -350,36 +350,19 @@ namespace CrevoxExtend {
 					+ (FitnessWeights["support"] != 0 ? GetFitnessScore(FitnessFunctionName.Support) * FitnessWeights["support"] : 0)
 					// + (FitnessWeights["emptyDensity"] != 0 ? FitnessEmptyDensity() * FitnessWeights["emptyDensity"] : 0)
 					+ (GetFitnessScore(FitnessFunctionName.Density) * (float) Math.Max(1.0, (double) FitnessWeights.Values.ToList().Sum(w => Math.Abs(w))))
-				;
+				;*/
 				var fitnessNames = Enum.GetValues(typeof(FitnessFunctionName));
+
+				float scoreSum = fitnessNames.OfType<FitnessFunctionName>().ToList().Sum(x => FitnessWeights[x] != 0 ? GetFitnessScore(x) * FitnessWeights[x] : 0.0f);
 
 				// If DatasetExport is not null, export the data.
 				if (!csvFinished) {
 					// Export the scores.
 					if (DatasetExportScore != null) {
 						foreach (FitnessFunctionName fitnessName in fitnessNames) {
-							switch (fitnessName) {
-							case FitnessFunctionName.Block:
-								if (FitnessWeights["block"] == 0) continue;
-								break;
-							case FitnessFunctionName.Intercept:
-								if (FitnessWeights["intercept"] == 0) continue;
-								break;
-							case FitnessFunctionName.Patrol:
-								if (FitnessWeights["patrol"] == 0) continue;
-								break;
-							case FitnessFunctionName.Guard:
-								if (FitnessWeights["guard"] == 0) continue;
-								break;
-							case FitnessFunctionName.Support:
-								if (FitnessWeights["support"] == 0) continue;
-								break;
-							case FitnessFunctionName.Density:
-								if (1 == 0) continue;
-								break;
-							default:
-								break;	
-							}
+							// Ignore when weight = 0.
+							if (FitnessWeights[fitnessName] == 0) { continue; }
+
 							DatasetExportScore.WriteLine(chromosomeInfo + "," + fitnessName + "," + GetFitnessScore(fitnessName, false));
 						}
 					}

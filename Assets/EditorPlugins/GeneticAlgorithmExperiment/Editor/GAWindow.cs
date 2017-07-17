@@ -112,16 +112,16 @@ namespace CrevoxExtend {
 					roomPattern.ObjectQuantityMaximum = EditorGUILayout.IntField("上限", roomPattern.ObjectQuantityMaximum, textFieldStyle);
 					roomPattern.ObjectQuantityMinimum = EditorGUILayout.IntField("下限", roomPattern.ObjectQuantityMinimum, textFieldStyle);
 					EditorGUILayout.EndHorizontal();
-					// Fitness weights (-10 ~ 10).
-					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
-					weights["block"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"], textFieldStyle)));
-					weights["intercept"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("攔截點權重", weights["intercept"], textFieldStyle)));
-					weights["patrol"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("巡邏點權重", weights["patrol"], textFieldStyle)));
-					weights["guard"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("守衛點權重", weights["guard"], textFieldStyle)));
-					weights["dominated"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("至高點權重", weights["dominated"], textFieldStyle)));
-					weights["support"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("支援點權重", weights["support"], textFieldStyle)));
-                    weights["emptyDensity"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("密度權重", weights["emptyDensity"], textFieldStyle)));
-                }
+					// Fitness weights (-1 ~ 1).
+					//weights["neglected"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("死角點權重", weights["neglected"], textFieldStyle)));
+					weights[FitnessFunctionName.Block] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("阻擋點權重", weights[FitnessFunctionName.Block], textFieldStyle)));
+					weights[FitnessFunctionName.Intercept] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("攔截點權重", weights[FitnessFunctionName.Intercept], textFieldStyle)));
+					weights[FitnessFunctionName.Patrol] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("巡邏點權重", weights[FitnessFunctionName.Patrol], textFieldStyle)));
+					weights[FitnessFunctionName.Guard] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("守衛點權重", weights[FitnessFunctionName.Guard], textFieldStyle)));
+					//weights["dominated"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("至高點權重", weights["dominated"], textFieldStyle)));
+					weights[FitnessFunctionName.Support] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("支援點權重", weights[FitnessFunctionName.Support], textFieldStyle)));
+					//weights["emptyDensity"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("密度權重", weights["emptyDensity"], textFieldStyle)));
+				}
 			}
 			EditorGUILayout.EndScrollView();
 		}
@@ -172,20 +172,18 @@ namespace CrevoxExtend {
 		public bool IsFoldout { get; set; }
 		// Basic informations of experiment.
 		public string Name { get; set; }
-		public Dictionary<string, int> Weights { get; private set; }
+		public Dictionary<FitnessFunctionName, float> Weights { get; private set; }
 		// Constructors.
 		public RoomPattern() {
 			IsFoldout = true;
 			Name = string.Empty;
-			Weights = new Dictionary<string, int>() {
-					{ "neglected", 0 },
-					{ "block"    , 0 },
-					{ "intercept", 0 },
-					{ "patrol"   , 0 },
-					{ "guard"    , 0 },
-					{ "dominated", 0 },
-					{ "support"  , 0 },
-                    { "emptyDensity",0 }
+			Weights = new Dictionary<FitnessFunctionName, float>() {
+					{ FitnessFunctionName.Block    , 0.0f },
+					{ FitnessFunctionName.Guard    , 0.0f },
+					{ FitnessFunctionName.Intercept, 0.0f },
+					{ FitnessFunctionName.Patrol   , 0.0f },
+					{ FitnessFunctionName.Support  , 0.0f },
+					{ FitnessFunctionName.Density  , 0.0f }
 				};
 		}
 		public RoomPattern(string name) : this() {

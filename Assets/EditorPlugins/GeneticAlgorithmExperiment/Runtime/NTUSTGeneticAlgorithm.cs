@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using CrevoxExtend;
+
 namespace NTUSTGA {
 	abstract public class NTUSTGeneticAlgorithm {
 		#region Paremters
@@ -76,13 +78,13 @@ namespace NTUSTGA {
 		void PrepareSelection() {
 			wheel.Clear();
 			// Init maximum.
-			NTUSTChromosome.FitnessScoreMaximum = new Dictionary<CrevoxExtend.CreVoxGA.FitnessFunctionName, float>() {
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Block    , 0.0f },
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Intercept, 0.0f },
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Patrol   , 0.0f },
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Guard    , 0.0f },
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Support  , 0.0f },
-					{ CrevoxExtend.CreVoxGA.FitnessFunctionName.Density  , 1.0f },
+			NTUSTChromosome.FitnessScoreMaximum = new Dictionary<FitnessFunctionName, float>() {
+					{ FitnessFunctionName.Block    , 0.0f },
+					{ FitnessFunctionName.Intercept, 0.0f },
+					{ FitnessFunctionName.Patrol   , 0.0f },
+					{ FitnessFunctionName.Guard    , 0.0f },
+					{ FitnessFunctionName.Support  , 0.0f },
+					{ FitnessFunctionName.Density  , 1.0f },
 				};
 			// Set score.
 			foreach (var chromosomeme in currentGeneration) {

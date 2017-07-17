@@ -36,6 +36,10 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
 
+	# Read setting file.
+	settingData = pd.read_csv(inputFolder + "setting.csv")
+
+
 	# Get input file
 	for nR in range(1, numRun + 1, 1):
 		# get all of label in this csv file.
@@ -50,7 +54,14 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+				chromosomeLabels = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].label.values
+				chromosomeScores = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.values
+				chromosomeScore = 0.0
+				for idx, nowlabel in enumerate(chromosomeLabels):
+					labelName = chromosomeLabels[idx]
+					weight = settingData[(settingData.label == labelName)].weight.values[0]
+					chromosomeScore += chromosomeScores[idx] * weight
+				#chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
@@ -58,7 +69,14 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 			for idx, fitnessName in enumerate(fitnessLabels):
 				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
 				# Normalize.
-				labelScore = float(labelScore) / float(fitnessMaximum[idx]) 
+				if fitnessMaximum[idx] > 0:
+					# Constant c.
+					c = 2
+					labelScore = (float(labelScore) / float(fitnessMaximum[idx])) ** (1.0 / c)
+				else:
+					labelScore = 0.0
+				weight = settingData[(settingData.label == fitnessName)].weight.values[0]
+				labelScore = labelScore * weight
 				info = [nR,ng,chromosomeID,fitnessName,labelScore] #,data.iloc[chromosomeID].volume]
 				# add info to the last.
 				outputData.loc[-1] = info

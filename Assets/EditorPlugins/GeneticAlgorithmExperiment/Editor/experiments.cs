@@ -153,29 +153,9 @@ namespace CrevoxExtend {
 			if(lastBestChromosome != null) {
 				string fitnessScoreString = "";
 				foreach (var key in lastBestChromosome.FitnessScore.Keys) {
-					switch (key) {
-						case CreVoxGA.FitnessFunctionName.Block:
-							if (CreVoxGA.FitnessWeights["block"] == 0) continue;
-							break;
-						case CreVoxGA.FitnessFunctionName.Intercept:
-							if (CreVoxGA.FitnessWeights["intercept"] == 0) continue;
-							break;
-						case CreVoxGA.FitnessFunctionName.Patrol:
-							if (CreVoxGA.FitnessWeights["patrol"] == 0) continue;
-							break;
-						case CreVoxGA.FitnessFunctionName.Guard:
-							if (CreVoxGA.FitnessWeights["guard"] == 0) continue;
-							break;
-						case CreVoxGA.FitnessFunctionName.Support:
-							if (CreVoxGA.FitnessWeights["support"] == 0) continue;
-							break;
-						case CreVoxGA.FitnessFunctionName.Density:
-							if (1 == 0) continue;
-							break;
-						default:
-							break;
-					}
-					float score = lastBestChromosome.GetFitnessScore(key);
+					float score = 0.0f;
+					if (CreVoxGA.FitnessWeights[key] == 0) { continue; }
+					score = lastBestChromosome.GetFitnessScore(key) * CreVoxGA.FitnessWeights[key];
 					fitnessScoreString += string.Format("{0}: {1}\n", key.ToString(), score);
 				}
 				EditorGUILayout.TextArea(fitnessScoreString);
@@ -207,15 +187,15 @@ namespace CrevoxExtend {
 					experiment.ObjectQuantityMinimum = EditorGUILayout.IntField("下限", experiment.ObjectQuantityMinimum, textFieldStyle);
 					EditorGUILayout.EndHorizontal();
 
-					// Fitness weights (-10 ~ 10).
-					weights["neglected"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("死角點權重", weights["neglected"], textFieldStyle)));
-					weights["block"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("阻擋點權重", weights["block"],     textFieldStyle)));
-					weights["intercept"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("攔截點權重", weights["intercept"], textFieldStyle)));
-					weights["patrol"]    = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("巡邏點權重", weights["patrol"],    textFieldStyle)));
-					weights["guard"]     = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("守衛點權重", weights["guard"],     textFieldStyle)));
-					weights["dominated"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("至高點權重", weights["dominated"], textFieldStyle)));
-					weights["support"]   = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("支援點權重", weights["support"],   textFieldStyle)));
-                    weights["emptyDensity"] = Math.Max(-10, Math.Min(10, EditorGUILayout.IntField("密度權重", weights["emptyDensity"], textFieldStyle)));
+					// Fitness weights (-1 ~ 1).
+					//weights["neglected"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("死角點權重", weights["neglected"], textFieldStyle)));
+					weights[FitnessFunctionName.Block]     = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("阻擋點權重", weights[FitnessFunctionName.Block],     textFieldStyle)));
+					weights[FitnessFunctionName.Intercept] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("攔截點權重", weights[FitnessFunctionName.Intercept], textFieldStyle)));
+					weights[FitnessFunctionName.Patrol]    = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("巡邏點權重", weights[FitnessFunctionName.Patrol],    textFieldStyle)));
+					weights[FitnessFunctionName.Guard]     = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("守衛點權重", weights[FitnessFunctionName.Guard],     textFieldStyle)));
+					//weights["dominated"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("至高點權重", weights["dominated"], textFieldStyle)));
+					weights[FitnessFunctionName.Support]   = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("支援點權重", weights[FitnessFunctionName.Support],   textFieldStyle)));
+                    //weights["emptyDensity"] = Math.Max(-1, Math.Min(1, EditorGUILayout.FloatField("密度權重", weights["emptyDensity"], textFieldStyle)));
                     EditorGUI.EndDisabledGroup();
 					// Is actived or not.
 					experiment.IsActived = EditorGUILayout.Toggle("多實驗模式下，是否生效", experiment.IsActived);
@@ -232,15 +212,30 @@ namespace CrevoxExtend {
 
 			// Delete the directory then recreator again.
 			if (isExportFiles) {
+				// Create dataset folder.
 				datasetPath = EXPERIMENT_DIR + "datasets/" + experiment.Name;
 				DirectoryInfo datasetDirectory = new DirectoryInfo(datasetPath);
 				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
 				datasetDirectory.Create();
-
+				// Create screenshot folder.
 				string screenshotPath = EXPERIMENT_DIR + "Screenshot/" + experiment.Name;
 				datasetDirectory = new DirectoryInfo(screenshotPath);
 				if (datasetDirectory.Exists) { datasetDirectory.Delete(true); }
 				datasetDirectory.Create();
+				// Output setting.csv
+				StreamWriter swSetting = new StreamWriter(datasetPath + "/setting.csv");
+				swSetting.WriteLine("label,weight,comment");
+				CreVoxGA.SetWeights(experiment.Weights);
+				foreach (FitnessFunctionName fitnessName in System.Enum.GetValues(typeof(FitnessFunctionName))) {
+					string line = string.Format("\"{0}\",{1},", fitnessName, CreVoxGA.FitnessWeights[fitnessName]);
+					if (fitnessName == FitnessFunctionName.Density) {
+						line += string.Format("\"{0},{1}\"", experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
+					} else {
+						line += "\"\"";
+					}
+					swSetting.WriteLine(line);
+				}
+				swSetting.Close();
 			}
 
 			// For each experiment.
@@ -419,7 +414,7 @@ namespace CrevoxExtend {
 			public int ExperimentCount { get; set; }
 			public int GenerationCount { get; set; }
 			public int PopulationCount { get; set; }
-			public Dictionary<string, int> Weights { get; private set; }
+			public Dictionary<FitnessFunctionName, float> Weights { get; private set; }
 			// Constructors.
 			public Experiment() {
 				IsFoldout = true;
@@ -428,16 +423,14 @@ namespace CrevoxExtend {
 				ExperimentCount = 1;
 				GenerationCount = 20;
 				PopulationCount = 250;
-				Weights = new Dictionary<string, int>() {
-					{ "neglected", 0 },
-					{ "block"    , 0 },
-					{ "intercept", 0 },
-					{ "patrol"   , 0 },
-					{ "guard"    , 0 },
-					{ "dominated", 0 },
-					{ "support"  , 0 },
-                    { "emptyDensity",0 }
-                };
+				Weights = new Dictionary<FitnessFunctionName, float>() {
+					{ FitnessFunctionName.Block    , 0.0f },
+					{ FitnessFunctionName.Guard    , 0.0f },
+					{ FitnessFunctionName.Intercept, 0.0f },
+					{ FitnessFunctionName.Patrol   , 0.0f },
+					{ FitnessFunctionName.Support  , 0.0f },
+					{ FitnessFunctionName.Density  , 0.0f }
+				};
 			}
 			public Experiment(string name, bool isActived) : this() {
 				Name = name;
