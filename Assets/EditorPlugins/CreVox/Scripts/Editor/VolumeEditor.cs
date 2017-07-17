@@ -125,9 +125,7 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ()) {
 				EditorUtility.SetDirty (vg);
 				UpdateVolume ();
-				if (!UnityEditor.EditorApplication.isPlaying) {
-					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-				}
+				volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 			}
 			if(selectedItemID != -1)
 			DrawPieceInspectedGUI ();
@@ -168,11 +166,9 @@ namespace CreVox
 
 		private void OnSceneGUI ()
 		{
-			if (!EditorApplication.isPlaying) {
-				ModeHandler ();
-				DrawModeGUI ();
-				EventHandler ();
-			}
+			ModeHandler ();
+			DrawModeGUI ();
+			EventHandler ();
 		}
 
 		private void ModeHandler ()

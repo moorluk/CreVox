@@ -107,12 +107,10 @@ namespace CreVox
             CreateChunks ();
 
 			#if UNITY_EDITOR
-			if (!EditorApplication.isPlaying) {
-				CreateRuler ();
-				CreateLevelRuler ();
-				CreateBox ();
-				ShowRuler ();
-			}
+			CreateRuler ();
+			CreateLevelRuler ();
+			CreateBox ();
+			ShowRuler ();
 			#endif
 		}
 
@@ -172,7 +170,7 @@ namespace CreVox
 			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
-			if (vertexMaterial != null/* && EditorApplication.isPlaying*/)
+			if (vertexMaterial != null)
 				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
@@ -866,7 +864,7 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			Gizmos.color = (chunks.Count == 0) ? Color.red : YColor;
 			Gizmos.matrix = transform.localToWorldMatrix;
-			if (!EditorApplication.isPlaying && mColl)
+			if (mColl)
 				Gizmos.DrawWireCube (
 					new Vector3 (
 						chunkX * vg.chunkSize * vg.hw - vg.hw,
@@ -878,7 +876,7 @@ namespace CreVox
 						chunkZ * vg.chunkSize * vg.d)
 				);
 
-			if (!EditorApplication.isPlaying && vg.debugRuler) {
+			if (vg.debugRuler) {
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
 				DrawBlockItem ();

@@ -111,10 +111,8 @@ namespace CreVox
 
 		void UpdateStatus ()
 		{
-			if (!UnityEditor.EditorApplication.isPlaying) {
-				Debug.Log ("Show Debug Ruler : " + vg.debugRuler);
-				vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-			}
+			Debug.Log ("Show Debug Ruler : " + vg.debugRuler);
+			vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 		}
 
 		#endregion
