@@ -39,44 +39,42 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	# Read setting file.
 	settingData = pd.read_csv(inputFolder + "setting.csv")
 
+	# Get all of label in this csv file.
+	fitnessLabels = set(data.label.values)
+	# Get absolute maximum for normalizing.
+	fitnessMaximum = {}
+	for fitnessName in fitnessLabels:
+		scores = data[(data.label == fitnessName)].score.values
+		fitnessMaximum[fitnessName] = (max(abs(s) for s in scores))
+
+	# Normalize and weight.
+	for idx, val in enumerate(data.values):
+		_label = val[3]
+		_score = val[4]
+		_max = fitnessMaximum[_label]
+		if _max > 0.0:
+			# Constant c.
+			c = 2
+			_score = (float(_score) / float(_max)) ** (1.0 / c)
+		else:
+			_score = 0.0
+		weight = settingData[(settingData.label == _label)].weight.values[0]
+		_score = float(_score) * float(weight)
+		data.set_value(idx,'score',_score)
 
 	# Get input file
 	for nR in range(1, numRun + 1, 1):
-		# get all of label in this csv file.
-		fitnessLabels = set(data.label.values)
-		# Get absolute maximum for normalizing.
-		fitnessMaximum = []
-		for fitnessName in fitnessLabels:
-			scores = data[(data.label == fitnessName)].score.values
-			fitnessMaximum.append(max(abs(s) for s in scores))
-
 		for ng in range(1, numGeneration + 1):
 			#calculate all of chromosome score.
 			chromosomes = []
 			for chromosomeNumber in range(1, chromosomeCount + 1):
-				chromosomeLabels = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].label.values
-				chromosomeScores = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.values
-				chromosomeScore = 0.0
-				for idx, nowlabel in enumerate(chromosomeLabels):
-					labelName = chromosomeLabels[idx]
-					weight = settingData[(settingData.label == labelName)].weight.values[0]
-					chromosomeScore += chromosomeScores[idx] * weight
-				#chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
+				chromosomeScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeNumber)].score.sum()
 				chromosomes.append(chromosomeScore)
 			#find index of the best score chromosome.
 			#+1 is fixed the index is from 0,but data is from 1.
 			chromosomeID = chromosomes.index(max(chromosomes)) + 1
 			for idx, fitnessName in enumerate(fitnessLabels):
 				labelScore = data[(data.run == nR) & (data.generation == ng) & (data.chromosome == chromosomeID) & (data.label == fitnessName)].score.sum()
-				# Normalize.
-				if fitnessMaximum[idx] > 0:
-					# Constant c.
-					c = 2
-					labelScore = (float(labelScore) / float(fitnessMaximum[idx])) ** (1.0 / c)
-				else:
-					labelScore = 0.0
-				weight = settingData[(settingData.label == fitnessName)].weight.values[0]
-				labelScore = labelScore * weight
 				info = [nR,ng,chromosomeID,fitnessName,labelScore] #,data.iloc[chromosomeID].volume]
 				# add info to the last.
 				outputData.loc[-1] = info
