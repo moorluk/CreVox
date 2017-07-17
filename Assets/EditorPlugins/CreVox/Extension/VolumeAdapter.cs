@@ -25,7 +25,13 @@ public class VolumeAdapter {
 
     }
 
-	public static void UpdatePortals (GameObject root)
+	public static void UpdatePortals(GameObject root)
+	{
+		UpdatePortalsByDis (root);
+//		UpdatePortalsByInfo (root);
+	}
+
+	private static void UpdatePortalsByDis (GameObject root)
 	{
 		List<SECTR_Portal> _portals = new List<SECTR_Portal> ();
 		Dictionary<GameObject,GameObject> _rooms = new Dictionary<GameObject, GameObject> ();
@@ -37,7 +43,7 @@ public class VolumeAdapter {
 			_rooms.Add (_p, _room);
 			_portals [i].FrontSector = _room.GetComponentInChildren<SECTR_Sector> ();
 		}
-		string log = "<b>Linked Sectr_Portal:</b>\n";
+		string log1 = "<b>Linked Sectr_Portal:</b>\n";
 		string log2 = "<b>Diasbled Sectr_Portal:</b>\n";
 		for (int i = 0; i < _portals.Count; i++) {
 			float _near = float.PositiveInfinity;
@@ -48,7 +54,7 @@ public class VolumeAdapter {
 			for (int j = 0; j < _portals.Count; j++) {
 				Vector3 _end = _portals [j].transform.parent.position;
 				float _dis = Vector3.Distance (_start, _end);
-				if (i != j && _dis < _near) {
+				if (i != j && _dis < _near && _dis < 3) {
 					_near = _dis;
 					_target = _portals [j].gameObject;
 					_targetId = j;
@@ -56,13 +62,18 @@ public class VolumeAdapter {
 			}
 			if (_target != null) {
 				_portals [i].BackSector = _rooms [_target].GetComponentInChildren<SECTR_Sector> ();
-				log += _rooms [_portals [i].gameObject].name + " -> " + _rooms [_target].name + "\n";
+				log1 += _rooms [_portals [i].gameObject].name + "<size=8>." + _portals [i].transform.parent.name
+					+ "</size> <b><size=16>→</size></b> "
+					+ _rooms [_target].name + "<size=8>." + _target.transform.parent.name + "</size>\n";
 			} else {
 				_portals [i].enabled = false;
-				log2 += "<b>" + _rooms [_portals [i].gameObject].name + ".</b>" + _portals [i].transform.parent.name + "\n";
+				log2 +=_rooms [_portals [i].gameObject].name + "<size=8>." + _portals [i].transform.parent.name + "</size>\n";
 			}
 		}
-		Debug.Log (log + "\n" + log2);
+		Debug.Log (log1 + "\n" + log2);
 	}
 
+	private static void UpdatePortalsByInfo (GameObject root)
+	{
+	}
 }
