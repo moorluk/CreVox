@@ -58,6 +58,7 @@ public class EnemySpawner : SpawnerBase
     public SpawnerData m_spawnerData;
     public bool testClear = false;
     public bool m_isStart = false;
+	public AiData m_AiData;
     
     private float m_nextSpawnTime = 0f;
     private bool m_boss = false;
