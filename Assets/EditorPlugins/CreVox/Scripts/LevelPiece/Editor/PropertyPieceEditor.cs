@@ -367,7 +367,7 @@ namespace CreVox
 								obj.m_AiData.ear = EditorGUILayout.IntField ("Ear", obj.m_AiData.ear);
 								EditorGUI.BeginChangeCheck ();
 								int oCount = obj.m_AiData.toggleOffsets.Length;
-								oCount = Mathf.FloorToInt( EditorGUILayout.Slider ("Toggle Offsets", oCount,0f,10f));
+								oCount = Mathf.FloorToInt (EditorGUILayout.Slider ("Toggle Offsets", oCount, 0f, 10f));
 								if (EditorGUI.EndChangeCheck () && oCount != obj.m_AiData.toggleOffsets.Length){
 									Vector3[] newOffsets = new Vector3[oCount];
 									for (int o = 0; o < newOffsets.Length; o++) {
@@ -390,7 +390,7 @@ namespace CreVox
 									Vector3 v3 = obj.m_AiData.toggleOffsets [o];
 									_code += v3.x + "_" + v3.y + "_" + v3.z + ",";
 								}
-								_code = _code.Remove (_code.Length - 1) + ";";
+								_code = _code.Remove (_code.Length - 1);
 								item.attributes [i] = _code;
 							}
 							break;

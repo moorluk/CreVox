@@ -105,7 +105,7 @@ namespace CreVox
 							break;
 
 						case "EnemySpawner":
-							if (obj != null && obj is EnemySpawner && _code.Length == 6) {
+							if (obj != null && obj is EnemySpawner) {
 								EnemySpawner es = (EnemySpawner)obj;
 								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
 								es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
@@ -191,8 +191,10 @@ namespace CreVox
 			if (obj.m_AiData == null) {
 				obj.m_AiData = new AiData (){
 					name = this.gameObject.GetInstanceID().ToString(),
-					toggle = 10,eye = 10,ear = 10,
-					toggleOffsets = new Vector3[0]};
+					toggle = 10,eye = 10,ear = 10};
+			}
+			if (obj.m_AiData.toggleOffsets == null) {
+				obj.m_AiData.toggleOffsets = new Vector3[0];
 			}
 		}
 	}
