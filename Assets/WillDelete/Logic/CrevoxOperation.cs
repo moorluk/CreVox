@@ -19,7 +19,6 @@ namespace CrevoxExtend {
 			foreach (var vdataEx in state.ResultVolumeDatas) {
 				CreateDungeon (vdataEx, artPack);
 				if (generateVolume) {
-					Debug.Log(vdataEx.volumeData.name);
 					transformTable.Add(vdataEx, CreateVolumeObject(vdataEx));
 				}
 			}
