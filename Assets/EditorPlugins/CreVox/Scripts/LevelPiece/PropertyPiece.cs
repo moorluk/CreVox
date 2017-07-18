@@ -117,17 +117,28 @@ namespace CreVox
 								if (_code.Length > 6) {
 									string[] _r6 = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
 									es.m_AiData = new AiData () {
-										toggle = int.Parse (_r6 [0]),
-										eye = int.Parse (_r6 [1]),
-										ear = int.Parse (_r6 [2])
+										eye = int.Parse (_r6 [0]),
+										ear = int.Parse (_r6 [1])
 									};
 								}
 								if (_code.Length > 7) {
 									string[] _r7 = _code [7].Split (new string[1]{ "," }, StringSplitOptions.None);
-									es.m_AiData.toggleOffsets = new Vector3[_r7.Length];
+									string[] v3 = _r7[0].Split (new string[1]{ "_" }, StringSplitOptions.None);
+									es.m_AiData.toggleOffset = new Vector3 (
+										float.Parse (v3 [0]),
+										float.Parse (v3 [1]),
+										float.Parse (v3 [2])
+									);
+									es.m_AiData.toggle = float.Parse (v3 [3]);
+									es.m_AiData.toggleOffsets = new Vector4[_r7.Length-1];
 									for (int o = 0; o < es.m_AiData.toggleOffsets.Length; o++) {
-										string[] v3 = _r7 [o].Split (new string[1]{ "_" }, StringSplitOptions.None);
-										es.m_AiData.toggleOffsets [o] = new Vector3 (float.Parse (v3 [0]), float.Parse (v3 [1]), float.Parse (v3 [2]));	
+										string[] v4 = _r7 [o + 1].Split (new string[1]{ "_" }, StringSplitOptions.None);
+										es.m_AiData.toggleOffsets [o] = new Vector4 (
+											float.Parse (v4 [0]),
+											float.Parse (v4 [1]),
+											float.Parse (v4 [2]),
+											float.Parse (v4 [3])
+										);	
 									}
 								}
 								if (es.m_isStart == false)
@@ -194,8 +205,35 @@ namespace CreVox
 					toggle = 10,eye = 10,ear = 10};
 			}
 			if (obj.m_AiData.toggleOffsets == null) {
-				obj.m_AiData.toggleOffsets = new Vector3[0];
+				obj.m_AiData.toggleOffsets = new Vector4[0];
 			}
+		}
+
+		void OnDrawGizmos ()
+		{
+			Matrix4x4 oldMatrix = Gizmos.matrix;
+			Gizmos.color = Color.yellow;
+			Gizmos.matrix = transform.localToWorldMatrix;
+			for (int i = 0; i < 5; i++) {
+				if (PProperties [i].tObject is EnemySpawner) {
+					AiData data = ((EnemySpawner)PProperties [i].tObject).m_AiData;
+					if (data != null) {
+						Vector3 center = data.toggleOffset;
+						float range = data.toggle;
+						Gizmos.DrawWireSphere (center, range);
+						for (int o = 0; o < data.toggleOffsets.Length; o++) {
+							center = new Vector3 (
+								data.toggleOffsets [o].x, 
+								data.toggleOffsets [o].y, 
+								data.toggleOffsets [o].z
+							);
+							range = data.toggleOffsets [o].w;
+							Gizmos.DrawWireSphere (center, range);
+						}
+					}
+				}
+			}
+			Gizmos.matrix = oldMatrix;
 		}
 	}
 }
