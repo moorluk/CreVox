@@ -199,24 +199,22 @@ namespace CrevoxExtend {
 		// Replace remaining connection.
 		public static void ReplaceConnection(VGlobal.Stage _stage) {
 			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
-			int counter = 1;
-			List<CrevoxState.VolumeDataEx> volumeList = nowState.ResultVolumeDatas;
+			int counter = 0;
 			// Find all volume.
-			for (int i = 0; i < volumeList.Count && stopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND; i++) {
+			for (int i = 0; i < nowState.ResultVolumeDatas.Count && stopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND; i++) {
 				// Find all connections that haven't used.
-				foreach (var connection in volumeList[i].ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
+				foreach (var connection in nowState.ResultVolumeDatas[i].ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
 					bool success = false;
 					// Find all vdata replaced order by random.
 					foreach (var vdata in SpaceAlphabet.ReplacementDictionary[connection.connectionName].OrderBy(x => UnityEngine.Random.value)) {
 						CrevoxState.VolumeDataEx replaceVol = new CrevoxState.VolumeDataEx(vdata);
 						ConnectionInfo replaceStartingNode = replaceVol.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
 						// Combine.
-						if (nowState.CombineVolumeObject(volumeList[i], replaceVol, connection, replaceStartingNode)) {
+						if (nowState.CombineVolumeObject(nowState.ResultVolumeDatas[i], replaceVol, connection, replaceStartingNode)) {
 							Debug.Log(connection.connectionName + " is replaced by " + vdata.name);
 							nowState.ResultVolumeDatas.Add(replaceVol);
 							connection.used = true;
 							replaceStartingNode.used = true;
-							volumeList.Add(replaceVol);
 							success = true;
 							counter++;
 							break;
@@ -224,7 +222,7 @@ namespace CrevoxExtend {
 					}
 					// If none can combined then alert.
 					if (!success) {
-						Debug.Log(volumeList[i].volumeData.name + ":" + connection.connectionName + " replace failed.");
+						Debug.Log(nowState.ResultVolumeDatas[i].volumeData.name + ":" + connection.connectionName + " replace failed.");
 					}
 				}
 			}
