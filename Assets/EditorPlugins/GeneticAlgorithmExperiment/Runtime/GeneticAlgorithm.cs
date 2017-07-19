@@ -95,7 +95,6 @@ namespace CrevoxExtend {
 		}
 
 		public static void Initialize() {
-			AllChromosomeCount = default(uint);
 			foreach (var child in GamePatternObjects.transform.Cast<Transform>().ToList()) {
 				GameObject.DestroyImmediate(child.gameObject);
 			}

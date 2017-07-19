@@ -34,6 +34,14 @@ namespace CrevoxExtend {
         {
             "是", "否"
         };
+		private static Dictionary<FitnessFunctionName, string> FitnessChinese = new Dictionary<FitnessFunctionName, string>() {
+			{ FitnessFunctionName.Block,"阻擋點" },
+			{ FitnessFunctionName.Guard,"守衛點" },
+			{ FitnessFunctionName.Intercept,"攔截點" },
+			{ FitnessFunctionName.Patrol,"巡邏點" },
+			{ FitnessFunctionName.Support,"支援點" },
+			{ FitnessFunctionName.Density,"物件數量" }
+		};
 
         void OnEnable() {
 			// Base on the OS environment.
@@ -209,7 +217,7 @@ namespace CrevoxExtend {
             // Ignore.
             if (experiment.Ignore) { return; }
 			string datasetPath = string.Empty;
-
+			StreamWriter swScore = null, swPosition = null, swResult = null;
 			// Delete the directory then recreator again.
 			if (isExportFiles) {
 				// Create dataset folder.
@@ -236,8 +244,16 @@ namespace CrevoxExtend {
 					swSetting.WriteLine(line);
 				}
 				swSetting.Close();
-			}
 
+				// Create StreamWriter.
+				swScore = new StreamWriter(datasetPath + "/score.csv");
+				swScore.WriteLine("run,generation,chromosome,label,score");
+				swPosition = new StreamWriter(datasetPath + "/position.csv");
+				swPosition.WriteLine("run,generation,chromosome,position,type");
+				swResult = new StreamWriter(datasetPath + "/result.txt");
+			}
+			// Initialize chromosome count.
+			CreVoxGA.AllChromosomeCount = default(uint);
 			// For each experiment.
 			for (int i = 1; i <= experiment.ExperimentCount; i++) {
 				Debug.Log("Start running the experiment_" + i + " of " + experiment.Name + ".");
@@ -247,11 +263,6 @@ namespace CrevoxExtend {
 					Stopwatch stopwatch = new Stopwatch();
 					stopwatch.Start();
 
-					// Create StreamWriter.
-					StreamWriter swScore = new StreamWriter(datasetPath + "/score_" + i + ".csv");
-					swScore.WriteLine("run,generation,chromosome,label,score");
-					StreamWriter swPosition = new StreamWriter(datasetPath + "/position_" + i + ".csv");
-					swPosition.WriteLine("run,generation,chromosome,position,type");
 					// Core function.
 					CreVoxGA.SetQuantityLimit(experiment.ObjectQuantityMinimum, experiment.ObjectQuantityMaximum);
 					CreVoxGA.SetWeights(experiment.Weights);
@@ -261,19 +272,35 @@ namespace CrevoxExtend {
 					lastBestChromosome = bestChromosome as CreVoxGA.CreVoxChromosome;
 					// Time's up.
 					stopwatch.Stop();
-					StreamWriter swResult = new StreamWriter(datasetPath + "/result_" + i + ".txt");
+
+					// Output result.
+					swResult.WriteLine("Run: {0}", i);
+					swResult.WriteLine("Genration: {0}", experiment.GenerationCount);
+					swResult.WriteLine("Individuals: {0}", experiment.PopulationCount);
 					swResult.WriteLine("Run time: {0} (ms)", stopwatch.ElapsedMilliseconds);
+					float sum = 0;
+					List<string> latexLines = new List<string>();
 					foreach (var key in bestChromosome.FitnessScore.Keys) {
 						float score = 0.0f;
 						if (CreVoxGA.FitnessWeights[key] == 0) { continue; }
-						score = (bestChromosome as CreVoxGA.CreVoxChromosome ).GetFitnessScore(key) * CreVoxGA.FitnessWeights[key];
-						swResult.WriteLine("{0}: {1}\n", key.ToString(), score);
+						score = (bestChromosome as CreVoxGA.CreVoxChromosome).GetFitnessScore(key) * CreVoxGA.FitnessWeights[key];
+						swResult.WriteLine("{0}: {1}\n", key.ToString(), score.ToString("0.0000"));
+						sum += score;
+						//
+						string latexString = latexLines.Count == 0 ? @"\multirow{3}{*}{$" + i + @"$}  " : "                      ";
+						latexString += string.Format("& {0} & ${1}$ & ${2}$ ", FitnessChinese[key] + string.Empty.PadRight(8 - System.Text.Encoding.Default.GetByteCount(FitnessChinese[key])),
+							score.ToString("0.0000"), CreVoxGA.FitnessWeights[key]);
+						latexString += @"\\\cline{2-4}";
+						latexLines.Add(latexString);
 					}
-
-					// Close StreamWriter.
-					swScore.Close();
-					swPosition.Close();
-					swResult.Close();
+					swResult.WriteLine("Sum: {0}\n", sum.ToString("0.0000"));
+					latexLines.Add(@"                      & \multicolumn{3}{ r| }{$" + sum.ToString("0.0000") + @"$} \\\hline");
+					foreach (var line in latexLines) {
+						swResult.WriteLine(line);
+					}
+					// End this run.
+					swResult.WriteLine("=============================================");
+					// Screenshot.
 					var volumeManager = GameObject.Find("VolumeManager(Generated)");
 					LayoutScreenshot(volumeManager, EXPERIMENT_DIR + "Screenshot/" + experiment.Name + "/"  + i.ToString() + ".png");
 
@@ -284,6 +311,12 @@ namespace CrevoxExtend {
 					var bestChromosome = CreVoxGA.Segmentism(experiment.PopulationCount, experiment.GenerationCount);
 					lastBestChromosome = bestChromosome as CreVoxGA.CreVoxChromosome;
 				}
+			}
+			if (isExportFiles) {
+				// Close StreamWriter.
+				swScore.Close();
+				swPosition.Close();
+				swResult.Close();
 			}
 		}
 

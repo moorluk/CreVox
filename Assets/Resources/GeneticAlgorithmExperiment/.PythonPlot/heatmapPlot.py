@@ -17,7 +17,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 def main(root, experiments):
 	for experiment in experiments:
 		# Load the csv.
-		data = pd.read_csv(root + "/datasets/" + experiment + "/position_1.csv")
+		data = pd.read_csv(root + "/datasets/" + experiment + "/position.csv")
 		# Remove the useless columns and duplicated rows.
 		# data = data.drop(['label', 'score'], 1)
 		data = data.drop_duplicates(subset=['run', 'generation', 'chromosome', 'position'], keep='first')

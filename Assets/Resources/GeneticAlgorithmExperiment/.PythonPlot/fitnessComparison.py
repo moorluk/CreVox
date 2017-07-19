@@ -31,7 +31,7 @@ def main(root, experiments):
 def exportTheBestChromosome(label, inputFolder, outputFolder):
 	outputData = DataFrame(columns =  ["run","generation","chromosome",'label','score'])
 	# Read file.
-	data = pd.read_csv(inputFolder + "score_1.csv")
+	data = pd.read_csv(inputFolder + "score.csv")
 	numRun = data['run'].max()
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
