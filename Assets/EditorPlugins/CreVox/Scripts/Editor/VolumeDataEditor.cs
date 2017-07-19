@@ -270,7 +270,7 @@ namespace CreVox
 					workItem.rotW = rot.w;
 
                     for(int j =0; j < workItem.attributes.Length; j++)
-                        EditorGUILayout.LabelField("Attrib" + j.ToString(), workItem.attributes[j]);
+						workItem.attributes[j] = EditorGUILayout.TextField("Attrib" + j.ToString(), workItem.attributes[j]);
                 }
 			}
 		}
