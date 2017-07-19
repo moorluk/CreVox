@@ -110,19 +110,25 @@ def newPlot(experimentLabel, outputFolder, data):
 	plt.savefig(outputFolder + experimentLabel +'_result.png')
 
 def newPlot2(experimentLabel, outputFolder, data):
-	plt.figure(figsize = (16, 9), dpi = 120)
 	fitnessLabels = set(data.label.values)
-
+	numRun = max(data['run'])
+	numGeneration = max(data['generation'])
 	color = ['r-','g-','b-','o-','y-']
-	for idx, fitnessName in enumerate(fitnessLabels):
-		fitnessScore = data[data.label == fitnessName].score
-		plt.plot(range(1,len(fitnessScore)+1), fitnessScore, color[idx])
+	for run in range(1,numRun+1):
+		plt.figure(figsize = (16, 9), dpi = 120)
+		for idx, fitnessName in enumerate(fitnessLabels):
+			#fitnessScore = data[data.label == fitnessName].score
+			#plt.plot(range(1,len(fitnessScore)+1), fitnessScore, color[idx])
+			fitnessScore = []
+			for generation in range(1,numGeneration+1):
+				fitnessScore.append(data[(data.run == run) & (data.generation == generation) & (data.label == fitnessName)].score.sum())
+			plt.plot(range(1,generation+1), fitnessScore, color[idx])
 
-	plt.legend(fitnessLabels, fontsize = 25, loc = 4)
-	plt.xlabel('Generation', fontsize = 25)
-	plt.ylabel('Score', fontsize = 25)
-	plt.tick_params(labelsize = 25)
-	plt.savefig(outputFolder + experimentLabel +'_result2.png')
+		plt.legend(fitnessLabels, fontsize = 25, loc = 4)
+		plt.xlabel('Generation', fontsize = 25)
+		plt.ylabel('Score', fontsize = 25)
+		plt.tick_params(labelsize = 25)
+		plt.savefig(outputFolder + experimentLabel + "_" + str(run) +'_result2.png')
 
 
 if __name__ == "__main__":
