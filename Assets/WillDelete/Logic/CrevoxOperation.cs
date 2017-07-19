@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using CreVox;
+using System.Linq;
 
 namespace CrevoxExtend {
 
@@ -13,22 +14,38 @@ namespace CrevoxExtend {
 			GameObject volumeMangerObject = new GameObject() { name = "VolumeManager(Generated)" };
 			resultVolumeManager = volumeMangerObject.AddComponent<VolumeManager>();
 			resultVolumeManager.dungeons = new List<Dungeon> ();
+			// Save gameObject.
+			Dictionary<CrevoxState.VolumeDataEx, Volume> transformTable = new Dictionary<CrevoxState.VolumeDataEx, Volume>();
 			foreach (var vdataEx in state.ResultVolumeDatas) {
 				CreateDungeon (vdataEx, artPack);
 				if (generateVolume) {
-					CreateVolumeObject (vdataEx);
+					transformTable.Add(vdataEx, CreateVolumeObject(vdataEx));
+				}
+			}
+			// Set gameObject's connectionInfo.
+			foreach (var vdataEx in state.ResultVolumeDatas) {
+				foreach (var connection in vdataEx.ConnectionInfos) {
+					// Get original gameObject.
+					Volume vol = transformTable[vdataEx];
+					// Get connected gameObject.
+					if (state.VolumeDatasByID.ContainsKey(connection.connectedObjectGuid)) {
+						GameObject obj = transformTable[state.VolumeDatasByID[connection.connectedObjectGuid]].gameObject;
+						// Set connected gameObject.
+						vol.ConnectionInfos.Find(x => x.Compare(connection)).connectedGameObject = obj;
+					}
 				}
 			}
 		}
 		// Create Volume object.
-		public static void CreateVolumeObject(CrevoxState.VolumeDataEx vdataEx) {
+		public static Volume CreateVolumeObject(CrevoxState.VolumeDataEx vdataEx) {
 			GameObject volumeObject = new GameObject() { name = vdataEx.volumeData.name };
 			volumeObject.transform.parent = resultVolumeManager.transform;
 			volumeObject.transform.position = vdataEx.position;
 			volumeObject.transform.rotation = vdataEx.rotation;
 			Volume volume = volumeObject.AddComponent<Volume>();
 			volume.vd = vdataEx.volumeData;
-			volume.ConnectionInfos = vdataEx.ConnectionInfos;
+			volume.ConnectionInfos = vdataEx.ConnectionInfos.Select(x => x.Clone()).ToList();
+			return volume;
 		}
 		// Create VolumeManager Dungeons.
 		public static void CreateDungeon(CrevoxState.VolumeDataEx vdataEx, string artPack) {

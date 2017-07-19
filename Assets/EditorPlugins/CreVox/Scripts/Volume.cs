@@ -1003,6 +1003,8 @@ namespace CreVox
 		public Quaternion rotation;
 		public ConnectionInfoType type;
 		public string connectionName;
+		public Guid connectedObjectGuid;
+		public GameObject connectedGameObject;
 		public bool used;
 		// Just for connection.
 		public ConnectionInfo(WorldPos position, Quaternion rotation, ConnectionInfoType type, string name = "") {
@@ -1011,6 +1013,7 @@ namespace CreVox
 			this.type = type;
 			this.connectionName = name;
 			used = false;
+			connectedGameObject = null;
 		}
 		public ConnectionInfo(ConnectionInfo clone) {
 			this.position = clone.position;
@@ -1018,12 +1021,14 @@ namespace CreVox
 			this.type = clone.type;
 			this.connectionName = clone.connectionName;
 			this.used = clone.used;
+			connectedObjectGuid = clone.connectedObjectGuid;
+			connectedGameObject = clone.connectedGameObject;
 		}
 		public ConnectionInfo Clone() {
 			return new ConnectionInfo(this);
 		}
 		public bool Compare(ConnectionInfo obj) {
-			return this.position.Compare(obj.position) && this.rotation == obj.rotation && this.type == obj.type && this.used == obj.used;
+			return this.position.Compare(obj.position) && this.rotation == obj.rotation && this.type == obj.type && this.used == obj.used && this.connectedObjectGuid == obj.connectedObjectGuid;
 		}
 		public WorldPos RelativePosition( float degree) {
 			int absoluteDegree = ((int) (degree + this.rotation.eulerAngles.y) % 360);
