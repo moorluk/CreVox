@@ -105,7 +105,7 @@ namespace CreVox
 							break;
 
 						case "EnemySpawner":
-							if (obj != null && obj is EnemySpawner) {
+							if (obj != null && obj is EnemySpawner && _code.Length > 5) {
 								EnemySpawner es = (EnemySpawner)obj;
 								PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
 								es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
@@ -116,10 +116,9 @@ namespace CreVox
 								es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r5 [0]), float.Parse (_r5 [1]));
 								if (_code.Length > 6) {
 									string[] _r6 = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
-									es.m_AiData = new AiData () {
-										eye = int.Parse (_r6 [0]),
-										ear = int.Parse (_r6 [1])
-									};
+									es.m_AiData = ScriptableObject.CreateInstance (typeof(AiData)) as AiData;
+									es.m_AiData.eye = int.Parse (_r6 [0]);
+									es.m_AiData.ear = int.Parse (_r6 [1]);
 								}
 								if (_code.Length > 7) {
 									string[] _r7 = _code [7].Split (new string[1]{ "," }, StringSplitOptions.None);
@@ -200,9 +199,11 @@ namespace CreVox
 		public void CheckAiData (EnemySpawner obj)
 		{
 			if (obj.m_AiData == null) {
-				obj.m_AiData = new AiData (){
-					name = this.gameObject.GetInstanceID().ToString(),
-					toggle = 10,eye = 10,ear = 10};
+				obj.m_AiData = ScriptableObject.CreateInstance (typeof(AiData)) as AiData;
+				obj.m_AiData.name = this.gameObject.GetInstanceID ().ToString ();
+				obj.m_AiData.toggle = 10;
+				obj.m_AiData.eye = 10;
+				obj.m_AiData.ear = 10;
 			}
 			if (obj.m_AiData.toggleOffsets == null) {
 				obj.m_AiData.toggleOffsets = new Vector4[0];
@@ -221,14 +222,16 @@ namespace CreVox
 						Vector3 center = data.toggleOffset;
 						float range = data.toggle;
 						Gizmos.DrawWireSphere (center, range);
-						for (int o = 0; o < data.toggleOffsets.Length; o++) {
-							center = new Vector3 (
-								data.toggleOffsets [o].x, 
-								data.toggleOffsets [o].y, 
-								data.toggleOffsets [o].z
-							);
-							range = data.toggleOffsets [o].w;
-							Gizmos.DrawWireSphere (center, range);
+						if (data.toggleOffsets != null) {
+							for (int o = 0; o < data.toggleOffsets.Length; o++) {
+								center = new Vector3 (
+									data.toggleOffsets [o].x, 
+									data.toggleOffsets [o].y, 
+									data.toggleOffsets [o].z
+								);
+								range = data.toggleOffsets [o].w;
+								Gizmos.DrawWireSphere (center, range);
+							}
 						}
 					}
 				}
