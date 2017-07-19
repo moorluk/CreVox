@@ -336,11 +336,6 @@ namespace CrevoxExtend {
 			}
 
 			public override float FitnessFunction() {
-				// Chromosomeinfo for csv file, the number from 1 to end.(run,generation,chromosome)
-				string chromosomeInfo = (AllChromosomeCount / (GenerationNumber * PopulationNumber) + 1) + ","
-										+ (AllChromosomeCount / (PopulationNumber) % GenerationNumber + 1) + ","
-										+ (AllChromosomeCount % PopulationNumber + 1);
-
 				/*float scoreSum = 0.0f
 					+ (FitnessWeights["block"]  != 0 ? GetFitnessScore(FitnessFunctionName.Block)  * FitnessWeights["block"]  : 0)
 					+ (FitnessWeights["intercept"] != 0 ? GetFitnessScore(FitnessFunctionName.Intercept) * FitnessWeights["intercept"] : 0)
@@ -356,6 +351,10 @@ namespace CrevoxExtend {
 
 				// If DatasetExport is not null, export the data.
 				if (!csvFinished) {
+					// Chromosomeinfo for csv file, the number from 1 to end.(run,generation,chromosome)
+					string chromosomeInfo = (AllChromosomeCount / (GenerationNumber * PopulationNumber) + 1) + ","
+											+ (AllChromosomeCount / (PopulationNumber) % GenerationNumber + 1) + ","
+											+ (AllChromosomeCount % PopulationNumber + 1);
 					// Export the scores.
 					if (DatasetExportScore != null) {
 						foreach (FitnessFunctionName fitnessName in fitnessNames) {
@@ -371,9 +370,9 @@ namespace CrevoxExtend {
 							DatasetExportPosition.WriteLine(chromosomeInfo + ",\"" + gene.pos + "\"," + gene.Type);
 						}
 					}
+					// IterrateTime++ for next time.
+					AllChromosomeCount++;
 				}
-				// IterrateTime++ for next time.
-				AllChromosomeCount++;
 				return scoreSum;
 			}
 
