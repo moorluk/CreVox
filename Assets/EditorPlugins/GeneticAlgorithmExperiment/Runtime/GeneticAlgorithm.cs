@@ -229,13 +229,22 @@ namespace CrevoxExtend {
 			return new CreVoxChromosome(tiles);
 		}
 
-		private static Transform GetPieceFromDecoration(Transform decoration) {
+		private static Vector3 GetPieceFromDecorationPosition(Transform decoration) {
 			foreach (var pieceName in _pieceList) {
-				if (decoration.Find(pieceName) != null) {
-					return decoration.Find(pieceName);
+				var target = decoration.Find(pieceName);
+				if (target != null) {
+					Vector3 targetPos = target.position;
+					switch (pieceName) {
+						case "Stair.one":
+							targetPos += new Vector3(0, 1.5f, 1.5f);
+							break;
+						default:
+							break;
+					}
+					return targetPos;
 				}
 			}
-			return null;
+			return Vector3.zero;
 		}
 
 		//make the best gene is added into world.
@@ -244,7 +253,7 @@ namespace CrevoxExtend {
 			foreach (CreVoxGene gene in bestChromosome.Genes) {
 				if (gene.Type != GeneType.Empty) {
 					var decoration = decorations.Find(gene.pos.x + ", " + gene.pos.y + ", " + gene.pos.z);
-					var position   = GetPieceFromDecoration(decoration).position;
+					var position   = GetPieceFromDecorationPosition(decoration);
 					GameObject geneWorldPosition = GameObject.Instantiate(MarkerPrefabs[gene.Type]);
 					geneWorldPosition.transform.SetParent(GamePatternObjects.transform);
 					geneWorldPosition.transform.position = position;
