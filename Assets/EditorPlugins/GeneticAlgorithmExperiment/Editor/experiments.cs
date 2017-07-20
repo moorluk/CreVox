@@ -413,7 +413,7 @@ namespace CrevoxExtend {
 			screenshotCarema.orthographic = true;
 			screenshotCarema.orthographicSize = 15.0f;
 			screenshotCarema.transform.rotation = Quaternion.Euler(90, 0, 0);
-			screenshotCarema.transform.position = centerPoint + new Vector3(0, 20, 0);
+			screenshotCarema.transform.position = centerPoint + new Vector3(12, 20, 12);
 
 			// Select this camera.
 			Selection.objects = new GameObject[1] { screenshotCarema.gameObject };
