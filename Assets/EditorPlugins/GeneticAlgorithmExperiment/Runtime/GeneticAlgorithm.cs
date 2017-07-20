@@ -419,37 +419,23 @@ namespace CrevoxExtend {
 
 			public float FitnessIntercept() {
 				float fitnessScore = 0.0f;
-				float mainPathWeightSum = 0.0f;
-				float distanceOfEnemyAndMainPath = 0.0f;
-				int EnemyOnMainPath = 0;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
 					.Where(g => g.Type == GeneType.Enemy).ToList();
 
-				// Must have any enemy.
-				if (enemies.Count != 0) {
-					// Sum of the visited times in main path.
-					mainPathWeightSum = _mainPath.Sum(mp => mp.Value);
-					// Different enemy
-					for (int i = 0; i < enemies.Count; i++) {
-						// Enemy cann't on the mathPath.
-						if (!_mainPath.ContainsKey(enemies[i].pos)) {
-							// Different point of mainPath
-							foreach (KeyValuePair<Vector3, int> pointOfMainPath in _mainPath) {
-								// Calculate the distance of enemy and mainPath.
-								distanceOfEnemyAndMainPath = Vector3.Distance(enemies[i].pos, pointOfMainPath.Key);
-								// Calculate the flexibility score.
-								fitnessScore += (float)(1 / distanceOfEnemyAndMainPath) * (pointOfMainPath.Value / mainPathWeightSum);
-							}
-						} else {
-							EnemyOnMainPath++;
+				// Different enemy
+				for (int i = 0; i < enemies.Count; i++) {
+					// Enemy cann't on the mathPath.
+					if (! _mainPath.ContainsKey(enemies[i].pos)) {
+						// Different point of mainPath
+						foreach (KeyValuePair<Vector3, int> pointOfMainPath in _mainPath) {
+							// Calculate the flexibility score.
+							fitnessScore += (float) (1.0f / Vector3.Distance(enemies[i].pos, pointOfMainPath.Key)) * pointOfMainPath.Value;
 						}
 					}
-					if (EnemyOnMainPath > 0) {
-						fitnessScore = 0;
-					}
 				}
+
 				// Get maximum
 				if (Mathf.Abs(fitnessScore) > FitnessScoreMaximum[FitnessFunctionName.Intercept]) {
 					FitnessScoreMaximum[FitnessFunctionName.Intercept] = Mathf.Abs(fitnessScore);
@@ -461,7 +447,6 @@ namespace CrevoxExtend {
 			public float FitnessPatrol() {
 				float fitnessScore = 0.0f;
 				float radius = 3.0f;
-				int neighborCount = 0;
 
 				var enemies = this.Genes
 					.Select(g => g as CreVoxGene)
@@ -471,18 +456,9 @@ namespace CrevoxExtend {
 					.Where(g => g.Type != GeneType.Forbidden).ToList();
 
 				// Must have any enemy.
-				if (enemies.Count != 0) {
-					for (int i = 0; i < enemies.Count; i++) {
-						// Calculate the amount of neighbor.
-						neighborCount = passables.Sum(passable => (Vector3.Distance(passable.pos, enemies[i].pos) <= radius ? 1 : 0));
-						// If is the last one in list or not.
-						if (i != enemies.Count - 1) {
-							fitnessScore += (float)((1.0 / Math.Pow(2, i + 1)) * neighborCount);
-						}
-						else {
-							fitnessScore += (float)((1.0 / Math.Pow(2, i)) * neighborCount);
-						}
-					}
+				for (int i = 0; i < enemies.Count; i++) {
+					// Calculate the amount of neighbor.
+					fitnessScore = passables.Sum(passable => (Vector3.Distance(passable.pos, enemies[i].pos) <= radius ? 1 : 0));
 				}
 				// Get maximum
 				if (fitnessScore > FitnessScoreMaximum[FitnessFunctionName.Patrol]) {
