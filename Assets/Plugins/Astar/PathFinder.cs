@@ -99,13 +99,17 @@ namespace Astar
             new Surr(-1,-1,-1), new Surr(0,-1,-1), new Surr(1,-1,-1)            
 			*/
             //Top slice (Y=1)
-			new Surr(0,1,0),
+            new Surr(-1,1,1), new Surr(0,1,1), new Surr(1,1,1),
+			new Surr(-1,1,0), new Surr(0,1,0), new Surr(1,1,0),
+			new Surr(-1,1,-1), new Surr(0,1,-1), new Surr(1,1,-1),
             //Middle slice (Y=0)
             new Surr(0,0,1),
 			new Surr(-1,0,0), new Surr(1,0,0), //(0,0,0) is self
             new Surr(0,0,-1),
             //Bottom slice (Y=-1)
-			new Surr(0,-1,0)
+            new Surr(-1,-1,1), new Surr(0,-1,1), new Surr(1,-1,1),
+			new Surr(-1,-1,0), new Surr(0,-1,0), new Surr(1,-1,0),
+			new Surr(-1,-1,-1), new Surr(0,-1,-1), new Surr(1,-1,-1)
 		};
     }           
 }
