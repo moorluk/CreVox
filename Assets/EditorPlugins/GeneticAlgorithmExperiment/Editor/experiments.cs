@@ -128,7 +128,7 @@ namespace CrevoxExtend {
 				volume.ArtPack = CreVox.PathCollect.artPack + "/AncientPalace";
 				CreVox.VGlobal.GetSetting().volumeShowArtPack = true;
 				volume.LoadTempWorld();
-
+				volume.transform.Find("BoxCursor(Clone)").gameObject.SetActive(false);
 
 
 				// Export the raw dataset.
