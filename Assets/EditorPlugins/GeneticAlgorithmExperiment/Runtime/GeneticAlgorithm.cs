@@ -236,8 +236,10 @@ namespace CrevoxExtend {
 					Vector3 targetPos = target.position;
 					switch (pieceName) {
 						case "Stair.one":
-							targetPos += new Vector3(0, 1.5f, 1.5f);
-							break;
+							GameObject local = new GameObject();
+							local.transform.SetParent(target);
+							local.transform.localPosition = new Vector3(0, 1.5f, 1.5f);
+							return local.transform.position;
 						default:
 							break;
 					}
