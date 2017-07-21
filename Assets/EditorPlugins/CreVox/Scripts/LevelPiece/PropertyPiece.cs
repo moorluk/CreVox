@@ -212,25 +212,27 @@ namespace CreVox
 
 		void OnDrawGizmos ()
 		{
-			Matrix4x4 oldMatrix = Gizmos.matrix;
-			Gizmos.color = Color.yellow;
-			Gizmos.matrix = transform.localToWorldMatrix;
-			for (int i = 0; i < 5; i++) {
-				if (PProperties [i].tObject is EnemySpawner) {
-					AiData data = ((EnemySpawner)PProperties [i].tObject).m_AiData;
-					if (data != null) {
-						Vector3 center = data.toggleOffset;
-						float range = data.toggle;
-						Gizmos.DrawWireSphere (center, range);
-						if (data.toggleOffsets != null) {
-							for (int o = 0; o < data.toggleOffsets.Length; o++) {
-								center = new Vector3 (
-									data.toggleOffsets [o].x, 
-									data.toggleOffsets [o].y, 
-									data.toggleOffsets [o].z
-								);
-								range = data.toggleOffsets [o].w;
-								Gizmos.DrawWireSphere (center, range);
+			if (!Application.isPlaying) {
+				Matrix4x4 oldMatrix = Gizmos.matrix;
+				Gizmos.color = Color.yellow;
+				Gizmos.matrix = transform.localToWorldMatrix;
+				for (int i = 0; i < 5; i++) {
+					if (PProperties [i].tObject is EnemySpawner) {
+						AiData data = ((EnemySpawner)PProperties [i].tObject).m_AiData;
+						if (data != null) {
+							Vector3 center = data.toggleOffset;
+							float range = data.toggle;
+							Gizmos.DrawWireSphere (center, range);
+							if (data.toggleOffsets != null) {
+								for (int o = 0; o < data.toggleOffsets.Length; o++) {
+									center = new Vector3 (
+										data.toggleOffsets [o].x, 
+										data.toggleOffsets [o].y, 
+										data.toggleOffsets [o].z
+									);
+									range = data.toggleOffsets [o].w;
+									Gizmos.DrawWireSphere (center, range);
+								}
 							}
 						}
 					}
