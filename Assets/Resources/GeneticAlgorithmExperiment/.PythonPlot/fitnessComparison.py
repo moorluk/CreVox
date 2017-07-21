@@ -109,6 +109,7 @@ def newPlot(experimentLabel, outputFolder, data):
 	plt.ylabel('Score', fontsize = 25)
 	plt.tick_params(labelsize = 25)
 	plt.savefig(outputFolder + experimentLabel +'_result.png')
+	plt.clf()
 
 def newPlot2(experimentLabel, outputFolder, data):
 	fitnessLabels = set(data.label.values)
@@ -130,7 +131,7 @@ def newPlot2(experimentLabel, outputFolder, data):
 		plt.ylabel('Score', fontsize = 25)
 		plt.tick_params(labelsize = 25)
 		plt.savefig(outputFolder + experimentLabel + "_" + str(run) +'_result2.png')
-
+		plt.clf()
 
 if __name__ == "__main__":
 	try:
