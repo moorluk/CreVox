@@ -40,7 +40,7 @@ namespace CrevoxExtend {
 			foreach (var blockItem in vdata.blockItems) {
 				if (blockItem.pieceName == "") { continue; }
 				if (blockItem.pieceName == "Starting Node") {
-					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.StartingNode));
+					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.StartingNode, "Starting Node"));
 				} else if (Regex.IsMatch(blockItem.pieceName, regex)) {
 					string connectionName = Regex.Match(blockItem.pieceName, regex).Groups[1].Value;
 					connections.Add(new ConnectionInfo(blockItem.BlockPos, new Quaternion(blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW), ConnectionInfoType.Connection, connectionName));
