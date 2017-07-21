@@ -541,12 +541,13 @@ namespace CreVox
 		#region LayerControl
 		private int fixPointY = 0;
 		private int fixCutY = 0;
-
-		private void DrawLayerModeGUI ()
+        private bool m_mappingX = false;
+        private bool m_mappingZ = false;
+        private void DrawLayerModeGUI ()
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
 			float bwidth = 70f;
-			float tile = (_pieceSelected == null) ? 2f : 3f;
+			float tile = (_pieceSelected == null) ? 3f : 4f;
 			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
 				using (var h = new GUILayout.HorizontalScope ()) {
 					GUI.color = Color.white;
@@ -571,11 +572,17 @@ namespace CreVox
 							HotkeyFunction ("R");
 						if (GUILayout.Button ("▼(F)", GUILayout.Width (45)))
 							HotkeyFunction ("F");
-						GUI.color = Color.white;
+                        GUI.color = Color.white;
 					}
 
-					DrawPieceSelectedGUI ();
-				}
+                    using (var v = new GUILayout.VerticalScope())
+                    {
+                        m_mappingX = GUILayout.Toggle(m_mappingX, "x", GUILayout.Width(bwidth));
+                        m_mappingZ = GUILayout.Toggle(m_mappingZ, "z", GUILayout.Width(bwidth));
+                    }
+
+                    DrawPieceSelectedGUI (); 
+                }
 			}
 		}
 
@@ -608,8 +615,14 @@ namespace CreVox
 				gHit.normal = volume.transform.InverseTransformDirection (gHit.normal);
 				pos = EditTerrain.GetBlockPos (gHit, isErase ? false : true);
 
-				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
-				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
+				//volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
+                VolumeHelper.MirrorPosition(volume,
+                    pos,
+                    new WorldPos(cx, cy, cz),
+                    isErase,
+                    m_mappingX,
+                    m_mappingZ);
+                Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 
 				if (chunk) {
 					if (!dirtyChunks.ContainsKey (pos))
@@ -635,7 +648,13 @@ namespace CreVox
 				gHit.point = volume.transform.InverseTransformPoint (gHit.point);
 				pos = EditTerrain.GetBlockPos (gHit, true);
 
-				volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
+				//volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
+                VolumeHelper.MirrorPosition(volume, 
+                    pos, 
+                    new WorldPos(cx, cy, cz), 
+                    isErase, 
+                    m_mappingX, 
+                    m_mappingZ);
 
 				Chunk chunk = volume.GetChunk (pos.x, pos.y, pos.z);
 				if (chunk) {
@@ -653,8 +672,6 @@ namespace CreVox
 			if (_pieceSelected == null)
 				return;
 			
-			bool canPlace = false;
-
 			RaycastHit gHit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
 			LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
@@ -669,17 +686,19 @@ namespace CreVox
 				WorldPos bPos = EditTerrain.GetBlockPos (gHit, (currentEditMode == EditMode.Object));
 				WorldPos gPos = EditTerrain.GetGridPos (gHit.point);
 				gPos.y = 0;
-				int gx = gPos.x;
-				int gz = gPos.z;
+                
+				if (CheckPlaceable(gPos.x, gPos.z, _pieceSelected.pivot)) {
 
-				if (CheckPlaceable (gx, gz, _pieceSelected.pivot)) {
-					canPlace = true;
-				}
-
-				if (canPlace) {
-					volume.PlacePiece (bPos, gPos, isErase ? null : _pieceSelected);
-					Chunk chunk = volume.GetChunk (bPos.x, bPos.y, bPos.z);
-					chunk.UpdateMeshFilter ();
+                    VolumeHelper.Mirror(volume,
+                        bPos,
+                        gPos,
+                        new WorldPos(cx, cy, cz),
+                        isErase ? null : _pieceSelected,
+                        m_mappingX,
+                        m_mappingZ);
+                    
+                    Chunk chunk = volume.GetChunk(bPos.x, bPos.y, bPos.z);
+                    chunk.UpdateMeshFilter ();
 					chunk.UpdateMeshCollider ();
 					EditorUtility.SetDirty (volume.vd);
 					SceneView.RepaintAll ();
