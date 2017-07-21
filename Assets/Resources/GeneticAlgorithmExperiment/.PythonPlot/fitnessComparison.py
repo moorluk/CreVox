@@ -32,6 +32,7 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	outputData = DataFrame(columns =  ["run","generation","chromosome",'label','score'])
 	# Read file.
 	data = pd.read_csv(inputFolder + "score.csv")
+	data['score'] = data['score'].astype(float)
 	numRun = data['run'].max()
 	numGeneration = data['generation'].max()
 	chromosomeCount = data['chromosome'].max()
@@ -122,7 +123,7 @@ def newPlot2(experimentLabel, outputFolder, data):
 			fitnessScore = []
 			for generation in range(1,numGeneration+1):
 				fitnessScore.append(data[(data.run == run) & (data.generation == generation) & (data.label == fitnessName)].score.sum())
-			plt.plot(range(1,generation+1), fitnessScore, color[idx])
+			plt.plot(range(1,numGeneration+1), fitnessScore, color[idx])
 
 		plt.legend(fitnessLabels, fontsize = 25, loc = 4)
 		plt.xlabel('Generation', fontsize = 25)
