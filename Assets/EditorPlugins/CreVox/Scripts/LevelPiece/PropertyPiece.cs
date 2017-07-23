@@ -237,8 +237,8 @@ namespace CreVox
 						}
 					}
 				}
+				Gizmos.matrix = oldMatrix;
 			}
-			Gizmos.matrix = oldMatrix;
 		}
 	}
 }
