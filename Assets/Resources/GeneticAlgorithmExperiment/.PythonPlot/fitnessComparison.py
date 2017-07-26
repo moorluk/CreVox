@@ -24,6 +24,7 @@ def main(root, experiments):
 		os.makedirs(exportPath)
 		# Calculate and plot.
 		theBestChromosome = exportTheBestChromosome(experiment, importPath, exportPath)
+		plt.figure(figsize = (16, 9), dpi = 120)
 		newPlot(experiment, exportPath, theBestChromosome)
 		newPlot2(experiment, exportPath, theBestChromosome)
 
@@ -87,10 +88,11 @@ def exportTheBestChromosome(label, inputFolder, outputFolder):
 	outputData['chromosome'] = outputData['chromosome'].astype(int)
 	# output result table
 	outputData.to_csv(outputFolder + "bestChromosome_" + label + ".csv", index = False)
+	plt.clf()
 	return outputData
 
 def newPlot(experimentLabel, outputFolder, data):
-	plt.figure(figsize = (16, 9), dpi = 120)
+	#plt.figure(figsize = (16, 9), dpi = 120)
 	numRun = max(data['run'])
 	numGeneration = max(data['generation'])
 
@@ -117,7 +119,7 @@ def newPlot2(experimentLabel, outputFolder, data):
 	numGeneration = max(data['generation'])
 	color = ['r-','g-','b-','o-','y-']
 	for run in range(1,numRun+1):
-		plt.figure(figsize = (16, 9), dpi = 120)
+		#plt.figure(figsize = (16, 9), dpi = 120)
 		for idx, fitnessName in enumerate(fitnessLabels):
 			#fitnessScore = data[data.label == fitnessName].score
 			#plt.plot(range(1,len(fitnessScore)+1), fitnessScore, color[idx])
