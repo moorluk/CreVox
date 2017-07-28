@@ -60,7 +60,7 @@ namespace CreVox
 		public void CreateVolumes ()
 		{
 			for (int vi = 0; vi < dungeons.Count; vi++) {
-				GameObject volume = new GameObject ("Volume" + dungeons [vi].volumeData.ToString());
+				GameObject volume = new GameObject (dungeons [vi].volumeData.ToString());
 				volume.transform.parent = transform;
 				volume.transform.localPosition = dungeons[vi].position;
 				volume.transform.localRotation = dungeons[vi].rotation;

@@ -460,9 +460,9 @@ namespace CreVox
 						handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
 
 						if (isItemSnap) {
-							float fixedX = Mathf.Round (handlePos.x);
+							float fixedX = Mathf.Round (handlePos.x*2)/2;
 							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
-							float fixedZ = Mathf.Round (handlePos.z);
+							float fixedZ = Mathf.Round (handlePos.z*2)/2;
 							pos = new Vector3 (fixedX, fixedY, fixedZ);
 						} else {
 							pos = handlePos;
