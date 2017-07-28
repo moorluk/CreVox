@@ -181,7 +181,7 @@
         <Ordering>0</Ordering>
         <Name>Field</Name>
         <Abbreviation>F</Abbreviation>
-        <Description>F</Description>
+        <Description>Field</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -213,9 +213,9 @@
       <Node id="fdf64688-d233-43b3-94ad-a29da5fe2254">
         <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>DifficultyA</Name>
-        <Abbreviation>DA</Abbreviation>
-        <Description>DifficultyA</Description>
+        <Name>FieldDifficultyA</Name>
+        <Abbreviation>FDA</Abbreviation>
+        <Description>FieldDifficultyA</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -247,9 +247,9 @@
       <Node id="a26792fc-05b4-47d5-8d80-7437bf2c9799">
         <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>DifficultyB</Name>
-        <Abbreviation>DB</Abbreviation>
-        <Description>DifficultyB</Description>
+        <Name>FieldDifficultyB</Name>
+        <Abbreviation>FDB</Abbreviation>
+        <Description>FieldDifficultyB</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -281,9 +281,9 @@
       <Node id="8e149e43-dafd-4a99-aac3-ab3584119615">
         <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>DifficultyC</Name>
-        <Abbreviation>DC</Abbreviation>
-        <Description>DifficultyC</Description>
+        <Name>FieldDifficultyC</Name>
+        <Abbreviation>FDC</Abbreviation>
+        <Description>FieldDifficultyC</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -315,9 +315,9 @@
       <Node id="4b20dd09-8a55-4a85-98fc-ef865bcca46f">
         <AlphabetID>33d05fa3-3de7-4cbd-83b2-060f6b315764</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>MainDffA</Name>
-        <Abbreviation>MDA</Abbreviation>
-        <Description>MainDifficultyA</Description>
+        <Name>FieldMainDA</Name>
+        <Abbreviation>FMDA</Abbreviation>
+        <Description>FieldMainDifficultyA</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -349,9 +349,9 @@
       <Node id="c0f80078-5d08-4886-91d5-07471b559f90">
         <AlphabetID>e7d1e3d9-b037-4659-99a5-24bdeb1744f5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>MainDffAwithBranch</Name>
-        <Abbreviation>MDAB</Abbreviation>
-        <Description>MDAB</Description>
+        <Name>FieldMainDAB</Name>
+        <Abbreviation>FMT</Abbreviation>
+        <Description>FieldMDAB</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -383,9 +383,9 @@
       <Node id="5e1e4f44-875f-4c81-9907-2e6608d9ac55">
         <AlphabetID>21282db8-2bf2-4599-8a46-aa96f431c4ee</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>MainDifficultyB</Name>
-        <Abbreviation>MDB</Abbreviation>
-        <Description>MainDifficultyB</Description>
+        <Name>FieldMainDB</Name>
+        <Abbreviation>FMDB</Abbreviation>
+        <Description>FieldMainDifficultyB</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -417,9 +417,9 @@
       <Node id="959f6702-4b91-43c9-8a42-b8a3bd6d6dce">
         <AlphabetID>d85c1356-00e3-4429-b4b6-f9a9aada3d67</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>MainDifficultyC</Name>
-        <Abbreviation>MDC</Abbreviation>
-        <Description>MainDifficultyC</Description>
+        <Name>FieldMainDC</Name>
+        <Abbreviation>FMDC</Abbreviation>
+        <Description>FieldMainDifficultyC</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -451,9 +451,9 @@
       <Node id="2f3c8738-7b7c-4187-8d75-26d05b6f25c6">
         <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>Branch</Name>
-        <Abbreviation>B</Abbreviation>
-        <Description>Branch</Description>
+        <Name>FieldBranch</Name>
+        <Abbreviation>FB</Abbreviation>
+        <Description>FieldBranch</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -482,13 +482,13 @@
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="aa4a1a10-95bc-4796-b310-1df37ae54bb3">
-        <AlphabetID>3a2e7db0-b40d-4c43-9476-e76c81e7f691</AlphabetID>
+      <Node id="a1cec374-72e9-46d8-a0dd-26b8a47baf0e">
+        <AlphabetID>6307172b-c92c-4b55-9810-10244f14d029</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>passageMain</Name>
-        <Abbreviation>pm</Abbreviation>
-        <Description>passageMain</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>RDA</Name>
+        <Abbreviation>RDA</Abbreviation>
+        <Description>RDA</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -511,18 +511,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#7FE4FF</Filled>
+          <Filled>#E8A4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="a6f17a72-47de-490d-8496-64b33af43c89">
-        <AlphabetID>cd5b0462-b4f4-41de-95fe-49eab46b6e0b</AlphabetID>
+      <Node id="92d1e366-f199-46eb-a4ad-b3f5b80709ce">
+        <AlphabetID>344e00ec-0e71-46af-a4de-9cc8ece6b78b</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>passageT</Name>
-        <Abbreviation>pt</Abbreviation>
-        <Description>passageT</Description>
-        <Terminal>Terminal</Terminal>
+        <Name>RDB</Name>
+        <Abbreviation>RDB</Abbreviation>
+        <Description>RDB</Description>
+        <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -545,17 +545,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#7FE4FF</Filled>
+          <Filled>#D352FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="a1cec374-72e9-46d8-a0dd-26b8a47baf0e">
-        <AlphabetID>6307172b-c92c-4b55-9810-10244f14d029</AlphabetID>
+      <Node id="4c08b4dd-9c07-48cb-96ac-6f7be1a97b31">
+        <AlphabetID>e4e88a98-be63-4c3f-b212-98ef8b9588f0</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>RDA</Name>
-        <Abbreviation>RDA</Abbreviation>
-        <Description>RDA</Description>
+        <Name>RDC</Name>
+        <Abbreviation>RDC</Abbreviation>
+        <Description>RDC</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -579,17 +579,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#E8A4FF</Filled>
+          <Filled>#9D1EC7</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="92d1e366-f199-46eb-a4ad-b3f5b80709ce">
-        <AlphabetID>344e00ec-0e71-46af-a4de-9cc8ece6b78b</AlphabetID>
+      <Node id="6d651cfa-2a2b-4eb3-b152-0c97a7c2acbd">
+        <AlphabetID>cbf331fb-bb05-4679-8f55-38ee8f1d56fd</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>RDB</Name>
-        <Abbreviation>RDB</Abbreviation>
-        <Description>RDB</Description>
+        <Name>RB</Name>
+        <Abbreviation>RB</Abbreviation>
+        <Description>RB</Description>
         <Terminal>NonTerminal</Terminal>
         <Scope>
           <Outline>
@@ -613,18 +613,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#D352FF</Filled>
+          <Filled>#9D1EC7</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="4c08b4dd-9c07-48cb-96ac-6f7be1a97b31">
-        <AlphabetID>e4e88a98-be63-4c3f-b212-98ef8b9588f0</AlphabetID>
+      <Node id="aa4a1a10-95bc-4796-b310-1df37ae54bb3">
+        <AlphabetID>3a2e7db0-b40d-4c43-9476-e76c81e7f691</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>RDC</Name>
-        <Abbreviation>RDC</Abbreviation>
-        <Description>RDC</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>mPxX</Name>
+        <Abbreviation>mp</Abbreviation>
+        <Description>mPxX</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -647,17 +647,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#9D1EC7</Filled>
+          <Filled>#7FE4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="103e80a8-74f3-458c-85a4-66da839c072a">
-        <AlphabetID>cefeb3e4-d4de-4e7e-a7d9-63c3c8f1ee88</AlphabetID>
+      <Node id="a6f17a72-47de-490d-8496-64b33af43c89">
+        <AlphabetID>cd5b0462-b4f4-41de-95fe-49eab46b6e0b</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>roomSave</Name>
-        <Abbreviation>rs</Abbreviation>
-        <Description>roomSave</Description>
+        <Name>mPtX</Name>
+        <Abbreviation>mpt</Abbreviation>
+        <Description>mPtX</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -681,17 +681,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#F4D6FF</Filled>
+          <Filled>#7FE4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="fbaba4cc-3e7f-497d-b8f9-611381da3910">
-        <AlphabetID>b473462e-57f6-4a98-b169-3a6ae6c0b519</AlphabetID>
+      <Node id="103e80a8-74f3-458c-85a4-66da839c072a">
+        <AlphabetID>cefeb3e4-d4de-4e7e-a7d9-63c3c8f1ee88</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>roomBtlDfcltA</Name>
-        <Abbreviation>rbda</Abbreviation>
-        <Description>roomBattleDifficultyA</Description>
+        <Name>mRxR</Name>
+        <Abbreviation>mr</Abbreviation>
+        <Description>mRxR</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -715,17 +715,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#E8A4FF</Filled>
+          <Filled>#F4D6FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="1a12dca9-7dfc-497b-a9b6-3a12f5978760">
-        <AlphabetID>89324ab1-fcfc-46a6-9eb7-a975e937a19e</AlphabetID>
+      <Node id="fbaba4cc-3e7f-497d-b8f9-611381da3910">
+        <AlphabetID>b473462e-57f6-4a98-b169-3a6ae6c0b519</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>customizeDifficultyB</Name>
-        <Abbreviation>cdb</Abbreviation>
-        <Description>cDifficultyb</Description>
+        <Name>mRxA</Name>
+        <Abbreviation>ma</Abbreviation>
+        <Description>mRxA</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -749,17 +749,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#FF7E7E</Filled>
+          <Filled>#E8A4FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="c45bf407-2ae3-4eb5-b575-c91cfb54065d">
-        <AlphabetID>34b1d0e4-67c6-4cea-8ade-f3ea13cd542e</AlphabetID>
+      <Node id="1a12dca9-7dfc-497b-a9b6-3a12f5978760">
+        <AlphabetID>89324ab1-fcfc-46a6-9eb7-a975e937a19e</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>roomBtlDffcltB</Name>
-        <Abbreviation>rbdb</Abbreviation>
-        <Description>roomBtlDffcltB</Description>
+        <Name>mRuB</Name>
+        <Abbreviation>mbu</Abbreviation>
+        <Description>mRuB</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -783,17 +783,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#D352FF</Filled>
+          <Filled>#A7DB6F</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="8b14d043-2b95-49a5-a7ca-aa500b1488d6">
-        <AlphabetID>adf78c3c-2116-4c70-ba61-dd5a5f2bfb32</AlphabetID>
+      <Node id="c45bf407-2ae3-4eb5-b575-c91cfb54065d">
+        <AlphabetID>34b1d0e4-67c6-4cea-8ade-f3ea13cd542e</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>customizeDifficultyC</Name>
-        <Abbreviation>cdc</Abbreviation>
-        <Description>cDifficultyc</Description>
+        <Name>mRxB</Name>
+        <Abbreviation>mb</Abbreviation>
+        <Description>mRxB</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -817,17 +817,17 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#A42A2A</Filled>
+          <Filled>#D352FF</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="3ab24b8d-4f19-4d10-ab8c-dfee7d7dda80">
-        <AlphabetID>1934c2d2-3f3c-468a-8583-e1eae3ce2fa1</AlphabetID>
+      <Node id="8b14d043-2b95-49a5-a7ca-aa500b1488d6">
+        <AlphabetID>adf78c3c-2116-4c70-ba61-dd5a5f2bfb32</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>roomBtlDffcltC</Name>
-        <Abbreviation>rbdc</Abbreviation>
-        <Description>roomBtlDffclt</Description>
+        <Name>mRuC</Name>
+        <Abbreviation>mcu</Abbreviation>
+        <Description>mRuC</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -851,18 +851,18 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#9D1EC7</Filled>
+          <Filled>#A7DB6F</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
       </Node>
-      <Node id="6d651cfa-2a2b-4eb3-b152-0c97a7c2acbd">
-        <AlphabetID>cbf331fb-bb05-4679-8f55-38ee8f1d56fd</AlphabetID>
+      <Node id="3ab24b8d-4f19-4d10-ab8c-dfee7d7dda80">
+        <AlphabetID>1934c2d2-3f3c-468a-8583-e1eae3ce2fa1</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>RB</Name>
-        <Abbreviation>RB</Abbreviation>
-        <Description>RB</Description>
-        <Terminal>NonTerminal</Terminal>
+        <Name>mRxC</Name>
+        <Abbreviation>mc</Abbreviation>
+        <Description>mRxC</Description>
+        <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
             <X>10.5</X>
@@ -893,9 +893,9 @@
       <Node id="0521cb09-0654-4c32-86fd-e00c88d56f1b">
         <AlphabetID>ca1edc23-0a54-4444-b654-0206844aa3e8</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>bbdb</Name>
-        <Abbreviation>bbdb</Abbreviation>
-        <Description>bbdb</Description>
+        <Name>bRxB</Name>
+        <Abbreviation>bb</Abbreviation>
+        <Description>bRxB</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -927,9 +927,9 @@
       <Node id="1d4ef88e-f6af-4308-b2fb-9c5c5a9facf1">
         <AlphabetID>58128698-1128-4ae9-8b10-2702a4b656f5</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>bcdc</Name>
-        <Abbreviation>bcdc</Abbreviation>
-        <Description>bcdc</Description>
+        <Name>bRuC</Name>
+        <Abbreviation>bcu</Abbreviation>
+        <Description>bRuC</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -953,7 +953,7 @@
         </Scope>
         <SymbolColor>
           <Outline>#000000</Outline>
-          <Filled>#A42A2A</Filled>
+          <Filled>#A7DB6F</Filled>
           <Text>#000000</Text>
         </SymbolColor>
         <StickiedConnections />
@@ -961,9 +961,9 @@
       <Node id="9603907b-b920-47d5-9b2d-01b4bedd291a">
         <AlphabetID>092f3281-aeea-4c0e-aff5-82a028ad5b0c</AlphabetID>
         <Ordering>0</Ordering>
-        <Name>bbdc</Name>
-        <Abbreviation>bbdc</Abbreviation>
-        <Description>bbdc</Description>
+        <Name>bRxC</Name>
+        <Abbreviation>bc</Abbreviation>
+        <Description>bRxC</Description>
         <Terminal>Terminal</Terminal>
         <Scope>
           <Outline>
@@ -1689,9 +1689,9 @@
               <Node id="31bad0c3-c242-4bfd-bfe1-7f39887ff757">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -1726,9 +1726,9 @@
               <Node id="46179a9f-c4c4-4bdd-8206-209e43329686">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -1763,9 +1763,9 @@
               <Node id="0cc4f9dc-e017-4a9f-82dc-62ec6e7dfe53">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -1800,9 +1800,9 @@
               <Node id="93e76dd4-a17f-49db-8279-c5b08f4aa4d8">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -1837,9 +1837,9 @@
               <Node id="f69a82de-8e05-4d5e-ae1c-d0f53cb56b24">
                 <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
                 <Ordering>6</Ordering>
-                <Name>DifficultyC</Name>
-                <Abbreviation>DC</Abbreviation>
-                <Description>DifficultyC</Description>
+                <Name>FieldDifficultyC</Name>
+                <Abbreviation>FDC</Abbreviation>
+                <Description>FieldDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2172,9 +2172,9 @@
               <Node id="31bad0c3-c242-4bfd-bfe1-7f39887ff757">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2209,9 +2209,9 @@
               <Node id="46179a9f-c4c4-4bdd-8206-209e43329686">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>3</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2246,9 +2246,9 @@
               <Node id="0cc4f9dc-e017-4a9f-82dc-62ec6e7dfe53">
                 <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
                 <Ordering>4</Ordering>
-                <Name>DifficultyC</Name>
-                <Abbreviation>DC</Abbreviation>
-                <Description>DifficultyC</Description>
+                <Name>FieldDifficultyC</Name>
+                <Abbreviation>FDC</Abbreviation>
+                <Description>FieldDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2283,9 +2283,9 @@
               <Node id="93e76dd4-a17f-49db-8279-c5b08f4aa4d8">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>5</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2320,9 +2320,9 @@
               <Node id="f69a82de-8e05-4d5e-ae1c-d0f53cb56b24">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>6</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2583,9 +2583,9 @@
               <Node id="6192bcc0-3aff-41bb-81a0-50d310b28926">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2674,9 +2674,9 @@
               <Node id="601fe72d-f568-4666-82ae-1c852567f8ab">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2765,9 +2765,9 @@
               <Node id="323261c9-d46a-4d5a-9826-f690b3d4a83e">
                 <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyC</Name>
-                <Abbreviation>DC</Abbreviation>
-                <Description>DifficultyC</Description>
+                <Name>FieldDifficultyC</Name>
+                <Abbreviation>FDC</Abbreviation>
+                <Description>FieldDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2819,9 +2819,9 @@
               <Node id="672b990a-118d-47d3-871f-2e171972109f">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2860,9 +2860,9 @@
               <Node id="914f271f-9b60-4b07-a1cb-ec99946b9239">
                 <AlphabetID>33d05fa3-3de7-4cbd-83b2-060f6b315764</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>MainDffA</Name>
-                <Abbreviation>MDA</Abbreviation>
-                <Description>MainDifficultyA</Description>
+                <Name>FieldMainDA</Name>
+                <Abbreviation>FMDA</Abbreviation>
+                <Description>FieldMainDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -2910,9 +2910,9 @@
               <Node id="672b990a-118d-47d3-871f-2e171972109f">
                 <AlphabetID>d264d2d3-ef6a-4284-8860-f73ecbc8736a</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>DifficultyA</Name>
-                <Abbreviation>DA</Abbreviation>
-                <Description>DifficultyA</Description>
+                <Name>FieldDifficultyA</Name>
+                <Abbreviation>FDA</Abbreviation>
+                <Description>FieldDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3119,9 +3119,9 @@
               <Node id="2272d84f-038c-43df-a94a-0860f3a05c28">
                 <AlphabetID>e7d1e3d9-b037-4659-99a5-24bdeb1744f5</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDffAwithBranch</Name>
-                <Abbreviation>MDAB</Abbreviation>
-                <Description>MDAB</Description>
+                <Name>FieldMainDAB</Name>
+                <Abbreviation>FMT</Abbreviation>
+                <Description>FieldMDAB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3265,9 +3265,9 @@
               <Node id="4abe04b8-749a-44ed-b0e5-b931d9c2ed98">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3306,9 +3306,9 @@
               <Node id="f12a0ae9-d376-4366-b56c-11a953a31502">
                 <AlphabetID>89324ab1-fcfc-46a6-9eb7-a975e937a19e</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>customizeDifficultyB</Name>
-                <Abbreviation>cdb</Abbreviation>
-                <Description>cDifficultyb</Description>
+                <Name>mRuB</Name>
+                <Abbreviation>mbu</Abbreviation>
+                <Description>mRuB</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3332,7 +3332,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#FF7E7E</Filled>
+                  <Filled>#A7DB6F</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections />
@@ -3356,9 +3356,9 @@
               <Node id="672b990a-118d-47d3-871f-2e171972109f">
                 <AlphabetID>e3613505-8db5-459a-be70-d5c2dd5fc1a4</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyB</Name>
-                <Abbreviation>DB</Abbreviation>
-                <Description>DifficultyB</Description>
+                <Name>FieldDifficultyB</Name>
+                <Abbreviation>FDB</Abbreviation>
+                <Description>FieldDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3397,9 +3397,9 @@
               <Node id="914f271f-9b60-4b07-a1cb-ec99946b9239">
                 <AlphabetID>21282db8-2bf2-4599-8a46-aa96f431c4ee</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>MainDifficultyB</Name>
-                <Abbreviation>MDB</Abbreviation>
-                <Description>MainDifficultyB</Description>
+                <Name>FieldMainDB</Name>
+                <Abbreviation>FMDB</Abbreviation>
+                <Description>FieldMainDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3447,9 +3447,9 @@
               <Node id="fd6bd4f2-4553-41cf-abd3-c98219b89a57">
                 <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyC</Name>
-                <Abbreviation>DC</Abbreviation>
-                <Description>DifficultyC</Description>
+                <Name>FieldDifficultyC</Name>
+                <Abbreviation>FDC</Abbreviation>
+                <Description>FieldDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3488,9 +3488,9 @@
               <Node id="8098903e-c7bd-45ac-8c15-551085df93d0">
                 <AlphabetID>adf78c3c-2116-4c70-ba61-dd5a5f2bfb32</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>customizeDifficultyC</Name>
-                <Abbreviation>cdc</Abbreviation>
-                <Description>cDifficultyc</Description>
+                <Name>mRuC</Name>
+                <Abbreviation>mcu</Abbreviation>
+                <Description>mRuC</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3514,7 +3514,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A42A2A</Filled>
+                  <Filled>#A7DB6F</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections />
@@ -3538,9 +3538,9 @@
               <Node id="672b990a-118d-47d3-871f-2e171972109f">
                 <AlphabetID>c9b0c77d-dbb8-4af3-8d21-bb6e2cc075a3</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>DifficultyC</Name>
-                <Abbreviation>DC</Abbreviation>
-                <Description>DifficultyC</Description>
+                <Name>FieldDifficultyC</Name>
+                <Abbreviation>FDC</Abbreviation>
+                <Description>FieldDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3579,9 +3579,9 @@
               <Node id="914f271f-9b60-4b07-a1cb-ec99946b9239">
                 <AlphabetID>d85c1356-00e3-4429-b4b6-f9a9aada3d67</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>MainDifficultyC</Name>
-                <Abbreviation>MDC</Abbreviation>
-                <Description>MainDifficultyC</Description>
+                <Name>FieldMainDC</Name>
+                <Abbreviation>FMDC</Abbreviation>
+                <Description>FieldMainDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -3633,9 +3633,9 @@
               <Node id="70cad8dc-9a37-4a3a-abf7-d98ebdad18ec">
                 <AlphabetID>33d05fa3-3de7-4cbd-83b2-060f6b315764</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDffA</Name>
-                <Abbreviation>MDA</Abbreviation>
-                <Description>MainDifficultyA</Description>
+                <Name>FieldMainDA</Name>
+                <Abbreviation>FMDA</Abbreviation>
+                <Description>FieldMainDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -4118,9 +4118,9 @@
               <Node id="efa5f3f1-ed3c-4779-88d2-6fbb5654d6d7">
                 <AlphabetID>33d05fa3-3de7-4cbd-83b2-060f6b315764</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDffA</Name>
-                <Abbreviation>MDA</Abbreviation>
-                <Description>MainDifficultyA</Description>
+                <Name>FieldMainDA</Name>
+                <Abbreviation>FMDA</Abbreviation>
+                <Description>FieldMainDifficultyA</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -4365,9 +4365,9 @@
               <Node id="842d9442-68a0-4980-af4d-f65e9e40d7c7">
                 <AlphabetID>3a2e7db0-b40d-4c43-9476-e76c81e7f691</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>passageMain</Name>
-                <Abbreviation>pm</Abbreviation>
-                <Description>passageMain</Description>
+                <Name>mPxX</Name>
+                <Abbreviation>mp</Abbreviation>
+                <Description>mPxX</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -4603,9 +4603,9 @@
               <Node id="70cad8dc-9a37-4a3a-abf7-d98ebdad18ec">
                 <AlphabetID>e7d1e3d9-b037-4659-99a5-24bdeb1744f5</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDffAwithBranch</Name>
-                <Abbreviation>MDAB</Abbreviation>
-                <Description>MDAB</Description>
+                <Name>FieldMainDAB</Name>
+                <Abbreviation>FMT</Abbreviation>
+                <Description>FieldMDAB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -4776,9 +4776,9 @@
               <Node id="46b7c1d5-ec3d-4cfb-941d-6223433471a6">
                 <AlphabetID>cd5b0462-b4f4-41de-95fe-49eab46b6e0b</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>passageToBranch</Name>
-                <Abbreviation>pt</Abbreviation>
-                <Description>passageToBranch</Description>
+                <Name>mPtX</Name>
+                <Abbreviation>mpt</Abbreviation>
+                <Description>mPtX</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -4960,9 +4960,9 @@
               <Node id="043330c0-875e-406b-9815-2bb018a9c310">
                 <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
                 <Ordering>6</Ordering>
-                <Name>Branch</Name>
-                <Abbreviation>B</Abbreviation>
-                <Description>Branch</Description>
+                <Name>FieldBranch</Name>
+                <Abbreviation>FB</Abbreviation>
+                <Description>FieldBranch</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5218,9 +5218,9 @@
               <Node id="70cad8dc-9a37-4a3a-abf7-d98ebdad18ec">
                 <AlphabetID>e7d1e3d9-b037-4659-99a5-24bdeb1744f5</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDffAwithBranch</Name>
-                <Abbreviation>MDAB</Abbreviation>
-                <Description>MDAB</Description>
+                <Name>FieldMainDAB</Name>
+                <Abbreviation>FMT</Abbreviation>
+                <Description>FieldMDAB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5391,9 +5391,9 @@
               <Node id="46b7c1d5-ec3d-4cfb-941d-6223433471a6">
                 <AlphabetID>cd5b0462-b4f4-41de-95fe-49eab46b6e0b</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>passageToBranch</Name>
-                <Abbreviation>pt</Abbreviation>
-                <Description>passageToBranch</Description>
+                <Name>mPtX</Name>
+                <Abbreviation>mpt</Abbreviation>
+                <Description>mPtX</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5575,9 +5575,9 @@
               <Node id="043330c0-875e-406b-9815-2bb018a9c310">
                 <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
                 <Ordering>6</Ordering>
-                <Name>Branch</Name>
-                <Abbreviation>B</Abbreviation>
-                <Description>Branch</Description>
+                <Name>FieldBranch</Name>
+                <Abbreviation>FB</Abbreviation>
+                <Description>FieldBranch</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5648,9 +5648,9 @@
               <Node id="0809aa2e-3ef8-4f45-baa6-cb260ca6ad18">
                 <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
                 <Ordering>8</Ordering>
-                <Name>Branch</Name>
-                <Abbreviation>B</Abbreviation>
-                <Description>Branch</Description>
+                <Name>FieldBranch</Name>
+                <Abbreviation>FB</Abbreviation>
+                <Description>FieldBranch</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -5898,9 +5898,9 @@
               <Node id="70cad8dc-9a37-4a3a-abf7-d98ebdad18ec">
                 <AlphabetID>21282db8-2bf2-4599-8a46-aa96f431c4ee</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDifficultyB</Name>
-                <Abbreviation>MDB</Abbreviation>
-                <Description>MainDifficultyB</Description>
+                <Name>FieldMainDB</Name>
+                <Abbreviation>FMDB</Abbreviation>
+                <Description>FieldMainDifficultyB</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6383,9 +6383,9 @@
               <Node id="70cad8dc-9a37-4a3a-abf7-d98ebdad18ec">
                 <AlphabetID>d85c1356-00e3-4429-b4b6-f9a9aada3d67</AlphabetID>
                 <Ordering>2</Ordering>
-                <Name>MainDifficultyC</Name>
-                <Abbreviation>MDC</Abbreviation>
-                <Description>MainDifficultyC</Description>
+                <Name>FieldMainDC</Name>
+                <Abbreviation>FMDC</Abbreviation>
+                <Description>FieldMainDifficultyC</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6868,9 +6868,9 @@
               <Node id="0dcf03f6-c719-4371-ac35-7942c09c9938">
                 <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>Branch</Name>
-                <Abbreviation>B</Abbreviation>
-                <Description>Branch</Description>
+                <Name>FieldBranch</Name>
+                <Abbreviation>FB</Abbreviation>
+                <Description>FieldBranch</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6909,9 +6909,9 @@
               <Node id="ca247027-f77c-433f-a708-0b0522020cf7">
                 <AlphabetID>58128698-1128-4ae9-8b10-2702a4b656f5</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>bcdc</Name>
-                <Abbreviation>bcdc</Abbreviation>
-                <Description>bcdc</Description>
+                <Name>bRuC</Name>
+                <Abbreviation>bcu</Abbreviation>
+                <Description>bRuC</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -6935,7 +6935,7 @@
                 </Scope>
                 <SymbolColor>
                   <Outline>#000000</Outline>
-                  <Filled>#A42A2A</Filled>
+                  <Filled>#A7DB6F</Filled>
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections />
@@ -6959,9 +6959,9 @@
               <Node id="b33d894f-a163-4db1-bff1-44cef9eea6d8">
                 <AlphabetID>0eea7613-e6ca-470b-8b81-2bd0f89ed2ef</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>Branch</Name>
-                <Abbreviation>B</Abbreviation>
-                <Description>Branch</Description>
+                <Name>FieldBranch</Name>
+                <Abbreviation>FB</Abbreviation>
+                <Description>FieldBranch</Description>
                 <Terminal>NonTerminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7133,8 +7133,8 @@
                   <Text>#000000</Text>
                 </SymbolColor>
                 <StickiedConnections>
-                  <ConnectionID>7f38f994-29da-4ca1-85df-9adae7092537</ConnectionID>
                   <ConnectionID>b2fddde0-d7f4-49d1-9a8c-451f568732ff</ConnectionID>
+                  <ConnectionID>7f38f994-29da-4ca1-85df-9adae7092537</ConnectionID>
                 </StickiedConnections>
               </Node>
               <Node id="ccdfb09a-24ba-43cd-a448-e6f97496e69e">
@@ -7359,9 +7359,9 @@
               <Node id="29fd8858-10bb-48d7-ae9c-2775a8691f16">
                 <AlphabetID>cefeb3e4-d4de-4e7e-a7d9-63c3c8f1ee88</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomSave</Name>
-                <Abbreviation>rs</Abbreviation>
-                <Description>roomSave</Description>
+                <Name>mRxR</Name>
+                <Abbreviation>mr</Abbreviation>
+                <Description>mRxR</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7450,9 +7450,9 @@
               <Node id="26339d88-f4d3-475a-be88-99328ad856bd">
                 <AlphabetID>b473462e-57f6-4a98-b169-3a6ae6c0b519</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDfcltA</Name>
-                <Abbreviation>rbda</Abbreviation>
-                <Description>roomBattleDifficultyA</Description>
+                <Name>mRxA</Name>
+                <Abbreviation>ma</Abbreviation>
+                <Description>mRxA</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7541,9 +7541,9 @@
               <Node id="705ea1c2-c109-46b2-ad1b-e75e10bbaa2a">
                 <AlphabetID>b473462e-57f6-4a98-b169-3a6ae6c0b519</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDfcltA</Name>
-                <Abbreviation>rbda</Abbreviation>
-                <Description>roomBattleDifficultyA</Description>
+                <Name>mRxA</Name>
+                <Abbreviation>ma</Abbreviation>
+                <Description>mRxA</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7632,9 +7632,9 @@
               <Node id="8a1a613f-c1ed-463a-b136-e9ba0ed93a03">
                 <AlphabetID>34b1d0e4-67c6-4cea-8ade-f3ea13cd542e</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDffcltB</Name>
-                <Abbreviation>rbdb</Abbreviation>
-                <Description>roomBtlDffcltB</Description>
+                <Name>mRxB</Name>
+                <Abbreviation>mb</Abbreviation>
+                <Description>mRxB</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7723,9 +7723,9 @@
               <Node id="d6302029-8d1f-4924-a0d0-67cf02f00914">
                 <AlphabetID>1934c2d2-3f3c-468a-8583-e1eae3ce2fa1</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDffcltC</Name>
-                <Abbreviation>rbdc</Abbreviation>
-                <Description>roomBtlDffclt</Description>
+                <Name>mRxC</Name>
+                <Abbreviation>mc</Abbreviation>
+                <Description>mRxC</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7814,9 +7814,9 @@
               <Node id="bd9a8a94-cba4-415f-a724-0b12f8740f87">
                 <AlphabetID>34b1d0e4-67c6-4cea-8ade-f3ea13cd542e</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDffcltB</Name>
-                <Abbreviation>rbdb</Abbreviation>
-                <Description>roomBtlDffcltB</Description>
+                <Name>mRxB</Name>
+                <Abbreviation>mb</Abbreviation>
+                <Description>mRxB</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7905,9 +7905,9 @@
               <Node id="d5d1a0ef-612b-450a-b1bf-e6c330da84c8">
                 <AlphabetID>1934c2d2-3f3c-468a-8583-e1eae3ce2fa1</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>roomBtlDffcltC</Name>
-                <Abbreviation>rbdc</Abbreviation>
-                <Description>roomBtlDffclt</Description>
+                <Name>mRxC</Name>
+                <Abbreviation>mc</Abbreviation>
+                <Description>mRxC</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -7996,9 +7996,9 @@
               <Node id="48ac8a76-1cc3-48e8-84d4-25af72d55b27">
                 <AlphabetID>ca1edc23-0a54-4444-b654-0206844aa3e8</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>bbdb</Name>
-                <Abbreviation>bbdb</Abbreviation>
-                <Description>bbdb</Description>
+                <Name>bRxB</Name>
+                <Abbreviation>bb</Abbreviation>
+                <Description>bRxB</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
@@ -8087,9 +8087,9 @@
               <Node id="eb47f70d-93ca-4c1f-8251-0d0923bb386a">
                 <AlphabetID>092f3281-aeea-4c0e-aff5-82a028ad5b0c</AlphabetID>
                 <Ordering>1</Ordering>
-                <Name>bbdc</Name>
-                <Abbreviation>bbdc</Abbreviation>
-                <Description>bbdc</Description>
+                <Name>bRxC</Name>
+                <Abbreviation>bc</Abbreviation>
+                <Description>bRxC</Description>
                 <Terminal>Terminal</Terminal>
                 <Scope>
                   <Outline>
