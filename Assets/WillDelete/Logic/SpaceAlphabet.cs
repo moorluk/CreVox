@@ -45,34 +45,34 @@ namespace CrevoxExtend {
 		}
 		public static void alphabetUpdate(List<string> newAlphabet) {
 			//Load();
-			foreach (string s in newAlphabet) {
-				if (!ReplacementAlphabet.Exists(e => (e == s))) {
-					NewPrefab("Connection_" + s);
-				}
-			}
-
-			for (int i = ReplacementAlphabet.Count - 1; i >= 0; i--) {
-				if (!newAlphabet.Exists(e => (e == ReplacementAlphabet[i]))) {
-					DeletePrefab("Connection_" + ReplacementAlphabet[i]);
-				}
-			}
+//			foreach (string s in newAlphabet) {
+//				if (!ReplacementAlphabet.Exists(e => (e == s))) {
+//					NewPrefab("Connection_" + s);
+//				}
+//			}
+//
+//			for (int i = ReplacementAlphabet.Count - 1; i >= 0; i--) {
+//				if (!newAlphabet.Exists(e => (e == ReplacementAlphabet[i]))) {
+//					DeletePrefab("Connection_" + ReplacementAlphabet[i]);
+//				}
+//			}
 			Load();
 		}
 		// File IO
-		private static void NewPrefab(string fileName) {
-			#if UNITY_EDITOR
-			UnityEditor.AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", @"Assets\Resources\" + _systemPath + fileName + ".prefab");
-			//File.Copy(ArtPackPath + "Connection_Default.prefab", ArtPackPath + fileName + ".prefab");
-			//AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
-			PaletteItem pt = GetPrefab(fileName).GetComponent<PaletteItem>();
-			pt.itemName = fileName;
-			#endif
-		}
-		private static void DeletePrefab(string fileName) {
-			#if UNITY_EDITOR
-			UnityEditor.AssetDatabase.DeleteAsset(@"Assets\Resources\" + _systemPath + fileName + ".prefab");
-			#endif
-		}
+//		private static void NewPrefab(string fileName) {
+//			#if UNITY_EDITOR
+//			UnityEditor.AssetDatabase.CopyAsset(@"Assets\Resources\SpaceAlphabet_DefaultConnection\Connection_Default.prefab", @"Assets\Resources\" + _systemPath + fileName + ".prefab");
+//			//File.Copy(ArtPackPath + "Connection_Default.prefab", ArtPackPath + fileName + ".prefab");
+//			//AssetDatabase.ImportAsset(@"Assets\Resources\CreVox\VolumeArtPack\LevelPieces\2_System/" + fileName + ".prefab");
+//			PaletteItem pt = GetPrefab(fileName).GetComponent<PaletteItem>();
+//			pt.itemName = fileName;
+//			#endif
+//		}
+//		private static void DeletePrefab(string fileName) {
+//			#if UNITY_EDITOR
+//			UnityEditor.AssetDatabase.DeleteAsset(@"Assets\Resources\" + _systemPath + fileName + ".prefab");
+//			#endif
+//		}
 		// Update dictionary.
 		private static void DictionaryUpdate() {
 			// 
