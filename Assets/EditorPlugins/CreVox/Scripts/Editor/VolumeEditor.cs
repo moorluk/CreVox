@@ -92,7 +92,7 @@ namespace CreVox
 						               Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
 						               ""
 					               );
-					if (vg.saveBackup)
+					if (VolumeManager.saveBackup)
 						volume.SaveTempWorld ();
 					
 					string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
@@ -141,12 +141,12 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				vg.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File", vg.saveBackup);
-				vg.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack", vg.volumeShowArtPack);
-				vg.Generation = EditorGUILayout.ToggleLeft ("Runtime Generation", vg.Generation);
-				vg.snapGrid = EditorGUILayout.ToggleLeft ("Snap Grid", vg.snapGrid);
-				vg.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler", vg.debugRuler);
-				vg.showBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold", vg.showBlockHold);
+				VolumeManager.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File", VolumeManager.saveBackup);
+				VolumeManager.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack", VolumeManager.volumeShowArtPack);
+				VolumeManager.Generation = EditorGUILayout.ToggleLeft ("Runtime Generation", VolumeManager.Generation);
+				VolumeManager.snapGrid = EditorGUILayout.ToggleLeft ("Snap Grid", VolumeManager.snapGrid);
+				VolumeManager.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler", VolumeManager.debugRuler);
+				VolumeManager.showBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold", VolumeManager.showBlockHold);
 			}
 		}
 
@@ -364,7 +364,7 @@ namespace CreVox
 				WorldPos pos = EditTerrain.GetBlockPos (hitFix, false);
 				hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
 				
-				Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.hh, 0), Quaternion.Euler (90, 0, 0), vg.hw);
+				Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.h/2, 0), Quaternion.Euler (90, 0, 0), vg.w/2);
 				Handles.DrawLine (hit.point, hitFix.point);
 				volume.useBox = true;
 				BoxCursorUtils.UpdateBox (volume.box, hitFix.point, Vector3.zero);
@@ -400,7 +400,7 @@ namespace CreVox
 				gPos.y = isNotLayer ? 0 : (int)vg.h;
 
 				float gx = pos.x * vg.w + gPos.x + ((pos.x < 0) ? 1 : -1);
-				float gy = pos.y * vg.h + gPos.y - vg.hh;
+				float gy = pos.y * vg.h + gPos.y - vg.h / 2;
 				float gz = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
                 LevelPiece.PivotType pivot = _pieceSelected.pivot;
@@ -412,7 +412,7 @@ namespace CreVox
 
 				Handles.color = Color.white;
 				Handles.lighting = true;
-				Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.hh - gPos.y, 0), Quaternion.Euler (90, 0, 0), vg.hw);
+				Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.h/2 - gPos.y, 0), Quaternion.Euler (90, 0, 0), vg.w/2);
 				Handles.DrawLine (hit.point, hitFix.point);
 
 				volume.useBox = true;
@@ -454,14 +454,14 @@ namespace CreVox
 				if (itemObj != null) {
 					Transform ItemNode = itemObj.transform;
 					Vector3 pos = ItemNode.position;
-					Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.hh, 0) : pos;
+					Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.h/2, 0) : pos;
 					// draw move & rotate handle.
 					if (selectedItemID == i) {
 						handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
 
 						if (isItemSnap) {
 							float fixedX = Mathf.Round (handlePos.x*2)/2;
-							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.hh - 0.01f);
+							float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.h/2 - 0.01f);
 							float fixedZ = Mathf.Round (handlePos.z*2)/2;
 							pos = new Vector3 (fixedX, fixedY, fixedZ);
 						} else {

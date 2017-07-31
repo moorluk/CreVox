@@ -26,13 +26,6 @@ namespace CreVox
 		}
 		public List<APItemPath> APItemPathList;
 
-		public bool saveBackup;
-		public bool volumeShowArtPack;
-		public bool Generation;
-		public bool snapGrid;
-		public bool debugRuler;
-		public bool showBlockHold;
-
 		public float editDis;
 
 		public int chunkSize = 16;
@@ -40,9 +33,6 @@ namespace CreVox
 		public float w = 3f;
 		public float h = 2f;
 		public float d = 3f;
-		public float hw = 1.5f;
-		public float hh = 1f;
-		public float hd = 1.5f;
 
 		#region Static Function
 		public static VGlobal GetSetting(string _settingPath = "")
@@ -92,7 +82,7 @@ namespace CreVox
 
 			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
 			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
-			if (volumeShowArtPack || Application.isPlaying) {
+			if (VolumeManager.volumeShowArtPack || Application.isPlaying) {
 				result = new PaletteItem[_itemPaths.Length];
 				for (int i = 0; i < _itemPaths.Length; i++) {
 					GameObject _obj = Resources.Load (_itemPaths [i])as GameObject;

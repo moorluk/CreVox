@@ -52,6 +52,7 @@ namespace CreVox
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
 					if (GUILayout.Button ("Refresh all Volume")) {
 						vm.BroadcastMessage ("BuildVolume");
+						UpdateStatus ();
 					}
 					if (GUILayout.Button ("Update Portal")) {
 						VolumeAdapter.UpdatePortals (vm.gameObject);
@@ -111,7 +112,6 @@ namespace CreVox
 
 		void UpdateStatus ()
 		{
-			Debug.Log ("Show Debug Ruler : " + vg.debugRuler);
 			vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 		}
 

@@ -16,6 +16,13 @@ namespace CreVox
 
 	public class VolumeManager : MonoBehaviour
 	{
+		public static bool saveBackup;
+		public static bool volumeShowArtPack;
+		public static bool Generation;
+		public static bool snapGrid;
+		public static bool debugRuler;
+		public static bool showBlockHold;
+
 		public List<Dungeon> dungeons;
 		public bool autoRun = true;
 
@@ -28,7 +35,7 @@ namespace CreVox
 					if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
 						gameObject.AddComponent (typeof(GlobalDriver));
 					}
-					if (VGlobal.GetSetting ().Generation) {
+					if (Generation) {
 						for (int i = 0; i < v.Length; i++) {
 							GameObject.Destroy (v [i].gameObject);
 						}
@@ -40,7 +47,7 @@ namespace CreVox
 		void Start ()
 		{
 			#if UNITY_EDITOR
-			if (!UnityEditor.EditorApplication.isPlaying && VGlobal.GetSetting ().saveBackup) {
+			if (!UnityEditor.EditorApplication.isPlaying && saveBackup) {
 				BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
 				UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
@@ -52,7 +59,7 @@ namespace CreVox
 			}
 			#endif
 
-			if (VGlobal.GetSetting().Generation && autoRun) {
+			if (Generation && autoRun) {
 				CreateVolumes ();
             }
 		}

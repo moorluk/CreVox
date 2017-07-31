@@ -36,21 +36,21 @@ namespace CreVox
 				itemNodes = new Dictionary<BlockItem, GameObject> ();
 			if (chunks == null)
 				chunks = new Dictionary<WorldPos, Chunk> ();
-			if (VGlobal.GetSetting ().Generation)
+			if (VolumeManager.Generation)
 				LoadTempWorld ();
 		}
 
 		void Update ()
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			if (vg.snapGrid) {
+			if (VolumeManager.snapGrid) {
 				float x = transform.position.x - transform.position.x % vg.w;
 				float y = transform.position.y - transform.position.y % vg.h;
 				float z = transform.position.z - transform.position.z % vg.d;
 				transform.position = new Vector3 (x, y, z);
 			}
 			#if UNITY_EDITOR
-			if (vg.saveBackup)
+			if (VolumeManager.saveBackup)
 				CompileSave ();
 			#endif
 		}
@@ -171,7 +171,7 @@ namespace CreVox
 			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
 			#if UNITY_EDITOR
 			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+				newChunkObject.GetComponent<Renderer> ().material = VolumeManager.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
 			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
 			#else
 			if (vertexMaterial != null)
@@ -650,9 +650,9 @@ namespace CreVox
 		{
 			Vector3 offset = Vector3.zero;
 			VGlobal vg = VGlobal.GetSetting ();
-			float hw = vg.hw;
-			float hh = vg.hh;
-			float hd = vg.hd;
+			float hw = vg.w/2;
+			float hh = vg.h/2;
+			float hd = vg.d/2;
 
 			if (x == 0 && z == 0)
 				return new Vector3 (-hw, -hh, -hd);
@@ -698,7 +698,7 @@ namespace CreVox
 		void CompileSave ()
 		{
 			if (EditorApplication.isCompiling && !compileSave) {
-				if (VGlobal.GetSetting ().saveBackup)
+				if (VolumeManager.saveBackup)
 					SaveTempWorld ();
 				compileSave = true;
 			}
@@ -778,9 +778,9 @@ namespace CreVox
 
 			MeshData meshData = new MeshData ();
 			VGlobal vg = VGlobal.GetSetting ();
-			float x = -vg.hw;
-			float y = -vg.hh;
-			float z = -vg.hd;
+			float x = -vg.w/2;
+			float y = -vg.h/2;
+			float z = -vg.d/2;
 			float w = chunkX * vg.chunkSize * vg.w + x;
 			float d = chunkZ * vg.chunkSize * vg.d + z;
 			meshData.useRenderDataForCol = true;
@@ -829,22 +829,22 @@ namespace CreVox
 			if (mColl) {
 				mColl.enabled = _active;
 				ruler.SetActive (_active);
-				ruler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+				ruler.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			if (bColl) {
 				bColl.enabled = _active;
 				layerRuler.SetActive (_active);
-				layerRuler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+				layerRuler.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			if (box) {
-				box.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+				box.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
 			}
 			pointer = _active;
 		}
 
 		public void ShowRuler ()
 		{
-			bool _active = EditorApplication.isPlaying ? false : VGlobal.GetSetting ().debugRuler;
+			bool _active = EditorApplication.isPlaying ? false : VolumeManager.debugRuler;
 			ActiveRuler (_active);
 		}
 		#endif
@@ -867,21 +867,21 @@ namespace CreVox
 			if (mColl)
 				Gizmos.DrawWireCube (
 					new Vector3 (
-						chunkX * vg.chunkSize * vg.hw - vg.hw,
-						chunkY * vg.chunkSize * vg.hh - vg.hh,
-						chunkZ * vg.chunkSize * vg.hd - vg.hd),
+						(chunkX * vg.chunkSize-1) * vg.w/2,
+						(chunkY * vg.chunkSize-1) * vg.h/2,
+						(chunkZ * vg.chunkSize-1) * vg.d/2),
 					new Vector3 (
 						chunkX * vg.chunkSize * vg.w,
 						chunkY * vg.chunkSize * vg.h,
 						chunkZ * vg.chunkSize * vg.d)
 				);
 
-			if (vg.debugRuler) {
+			if (VolumeManager.debugRuler) {
 				DrawGizmoBoxCursor ();
 				DrawGizmoLayer ();
 				DrawBlockItem ();
 			}
-			if (vg.showBlockHold)
+			if (VolumeManager.showBlockHold)
 				DrawBlockHold ();
 			Gizmos.matrix = oldMatrix;
 		}
@@ -967,9 +967,9 @@ namespace CreVox
 			);
 			if (bColl) {
 				bColl.center = new Vector3 (
-					chunkX * vg.chunkSize * vg.hw - vg.hw,
-					pointY * vg.h + vg.hh,
-					chunkZ * vg.chunkSize * vg.hd - vg.hd
+					(chunkX * vg.chunkSize - 1f) * vg.w/2,
+					(pointY + 0.5f) * vg.h,
+					(chunkZ * vg.chunkSize - 1f) * vg.d/2
 				);
 			}
 			if (chunks != null && chunks.Count > 0)

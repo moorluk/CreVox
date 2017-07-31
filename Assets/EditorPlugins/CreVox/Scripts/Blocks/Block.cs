@@ -137,10 +137,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataUp (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
 			meshData.uv.AddRange (FaceUVs (Direction.up));
@@ -150,10 +150,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataDown (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -164,10 +164,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataNorth (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -178,10 +178,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataSouth (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -192,10 +192,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataEast (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w + vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x + 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face
@@ -206,10 +206,10 @@ namespace CreVox
 		protected virtual MeshData FaceDataWest (Chunk chunk, int x, int y, int z, MeshData meshData)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d + vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h + vg.hh, z * vg.d - vg.hd));
-			meshData.AddVertex (new Vector3 (x * vg.w - vg.hw, y * vg.h - vg.hh, z * vg.d - vg.hd));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z + 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y + 0.5f), vg.d * (z - 0.5f)));
+			meshData.AddVertex (new Vector3 (vg.w * (x - 0.5f), vg.h * (y - 0.5f), vg.d * (z - 0.5f)));
 
 			meshData.AddQuadTriangles ();
 			//Add the following line to every FaceData function with the direction of the face

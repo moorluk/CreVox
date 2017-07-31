@@ -41,9 +41,9 @@ namespace CreVox
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			WorldPos gridPos = new WorldPos (
-				                   Mathf.RoundToInt ((int)(pos.x + vg.hw) % (int)vg.w),
-				                   Mathf.RoundToInt ((int)(pos.y + vg.hh) % (int)vg.h),
-				                   Mathf.RoundToInt ((int)(pos.z + vg.hd) % (int)vg.d)
+				                   Mathf.RoundToInt ((int)(pos.x + vg.w / 2) % (int)vg.w),
+				                   Mathf.RoundToInt ((int)(pos.y + vg.h / 2) % (int)vg.h),
+				                   Mathf.RoundToInt ((int)(pos.z + vg.d / 2) % (int)vg.d)
 			                   );
 			return gridPos;
 		}
