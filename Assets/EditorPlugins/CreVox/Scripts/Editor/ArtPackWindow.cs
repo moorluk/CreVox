@@ -301,7 +301,7 @@ namespace CreVox
 						newName = EditorGUILayout.TextField ("New Name", newName);
 					}
 					if (GUILayout.Button ("Replace")) {
-						Debug.Log (oldName + " -> " + newName);
+						string log = "<b>" + oldName + " -> " + newName + "</b>\n";
 						foreach (Dungeon d in vm.dungeons) {
 							foreach (BlockItem b in d.volumeData.blockItems) {
 								if (b.pieceName == oldName) {
@@ -316,7 +316,7 @@ namespace CreVox
 								foreach (BlockAir b in c.blockAirs) {
 									for (int i = 0; i < b.pieceNames.Length; i++) {
 										if (b.pieceNames [i] == oldName) {
-											Debug.Log (d.volumeData.name + "(" + b.BlockPos.ToString () + ")[" + i.ToString () + "]: " + b.pieceNames [i]);
+											log += d.volumeData.name + "(" + b.BlockPos.ToString () + ")[" + i.ToString () + "]: " + b.pieceNames [i] + "\n";
 											if (newName != "")
 												b.pieceNames [i] = newName;
 											else
@@ -327,7 +327,8 @@ namespace CreVox
 							}
 							EditorUtility.SetDirty (d.volumeData);
 						}
-						Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
+                        Debug.Log (log + "<b>End.</b>");
+                        Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
 						foreach (Volume vol in vols) {
 							vol.LoadTempWorld ();
 						}
