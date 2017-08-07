@@ -44,9 +44,15 @@ namespace CreVox
 			itemRoot.transform.localPosition = Vector3.zero;
 			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
-            for (int ci = 0; ci < m_vd.chunkDatas.Count; ci++)
+            List<ChunkData> cd = new List<ChunkData> ();
+            if (m_vd.useFreeChunk) {
+                cd.Add (m_vd.freeChunk);
+            } else {
+                cd = m_vd.chunkDatas;
+            }
+            for (int ci = 0; ci < cd.Count; ci++)
 			{
-                ChunkData cData = m_vd.chunkDatas[ci];
+                ChunkData cData = cd[ci];
                 GameObject chunk = Instantiate(Resources.Load(PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler(Vector3.zero)) as GameObject;
                 chunk.name = "Chunk" + cData.ChunkPos.ToString();
 				chunk.transform.parent = nodeRoot.transform;
@@ -71,8 +77,7 @@ namespace CreVox
 
             if (style > 1)
             {
-                PaletteItem[] itemArray = new PaletteItem[0];
-				itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + m_vd.subArtPack);
+                PaletteItem[] itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + m_vd.subArtPack);
 
                 if ((style & 2) > 0)
                 {

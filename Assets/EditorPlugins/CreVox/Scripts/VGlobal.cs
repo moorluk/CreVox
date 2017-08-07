@@ -60,7 +60,7 @@ namespace CreVox
 		}
 		#endregion
 
-		public PaletteItem[] GetItemArray(string _artPackPath)
+        public PaletteItem[] GetItemArray(string _artPackPath, bool _showArtPack = true)
 		{
 			String _artPackName = Path.GetFileName (_artPackPath);
 			//Check SubArtPack Exist or use parent ArtPack.
@@ -82,7 +82,7 @@ namespace CreVox
 
 			PaletteItem[] result = new PaletteItem[_itemPaths.Length];
 			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
-			if (VolumeManager.volumeShowArtPack || Application.isPlaying) {
+			if (_showArtPack || Application.isPlaying) {
 				result = new PaletteItem[_itemPaths.Length];
 				for (int i = 0; i < _itemPaths.Length; i++) {
 					GameObject _obj = Resources.Load (_itemPaths [i])as GameObject;

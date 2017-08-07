@@ -17,6 +17,7 @@ namespace CreVox
         public string ArtPack = PathCollect.pieces;
         public string vMaterial = PathCollect.defaultVoxelMaterial;
         public Material vertexMaterial;
+        public VolumeManager vm;
         public VolumeData vd;
         #region delgate
         private delegate void volumeAdd(GameObject volume);
@@ -36,21 +37,21 @@ namespace CreVox
                 itemNodes = new Dictionary<BlockItem, GameObject> ();
             if (chunks == null)
                 chunks = new Dictionary<WorldPos, Chunk> ();
-            if (VolumeManager.Generation)
+            if (vm != null ? vm.GenerationL : VolumeManager.Generation)
                 LoadTempWorld ();
         }
 
         void Update ()
         {
             VGlobal vg = VGlobal.GetSetting ();
-            if (VolumeManager.snapGrid) {
+            if (vm != null ? vm.snapGridL : VolumeManager.snapGrid) {
                 float x = transform.position.x - transform.position.x % vg.w;
                 float y = transform.position.y - transform.position.y % vg.h;
                 float z = transform.position.z - transform.position.z % vg.d;
                 transform.position = new Vector3 (x, y, z);
             }
             #if UNITY_EDITOR
-            if (VolumeManager.saveBackup)
+            if (vm != null ? vm.saveBackupL : VolumeManager.saveBackup)
                 CompileSave ();
             #endif
         }
@@ -58,6 +59,7 @@ namespace CreVox
         #region Chunk
         private GameObject chunkPrefab;
         GameObject chunkRoot;
+        Chunk freeChunk;
         public Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
         public int chunkX = 1;
         public int chunkY = 1;
@@ -69,10 +71,10 @@ namespace CreVox
                 return;
             }
             Init (vd.chunkX, vd.chunkY, vd.chunkZ);
-			foreach (Chunk c in chunks.Values) {
-				c.cData = vd.GetChunk (c.cData.ChunkPos);
+            foreach (Chunk c in GetChunks().Values) {
+                c.cData = vd.GetChunkData (c.cData.ChunkPos);
             }
-            itemArray = VGlobal.GetSetting().GetItemArray (ArtPack + vd.subArtPack);
+            itemArray = VGlobal.GetSetting().GetItemArray (ArtPack + vd.subArtPack,(vm != null ? vm.volumeShowArtPackL : VolumeManager.volumeShowArtPack));
             PlacePieces ();
             PlaceItems ();
 
@@ -82,8 +84,8 @@ namespace CreVox
 
         public void Init (int _chunkX, int _chunkY, int _chunkZ)
         {
-            Reset ();
             chunkPrefab = Resources.Load (PathCollect.chunk) as GameObject;
+            Reset ();
 
             chunkX = _chunkX;
             chunkY = _chunkY;
@@ -103,7 +105,12 @@ namespace CreVox
             chunkRoot.transform.parent = transform;
             chunkRoot.transform.localPosition = Vector3.zero;
             chunkRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+
+            if (vd.useFreeChunk) {
+                CreateFreeChunk ();
+            } else {
                 CreateChunks ();
+            }
 
             #if UNITY_EDITOR
             CreateRuler ();
@@ -115,9 +122,12 @@ namespace CreVox
 
         private void Reset ()
         {
-			if (chunks != null) {
-                DestoryChunks ();
-				chunks.Clear ();
+            if (chunkRoot) {
+                Dictionary<WorldPos,Chunk> c = GetChunks ();
+                if (c != null) {
+                    DestoryChunks ();
+                    c.Clear ();
+                }
             }
             nodes.Clear ();
             itemNodes.Clear ();
@@ -135,20 +145,36 @@ namespace CreVox
             #endif
         }
 
+        public Dictionary<WorldPos,Chunk> GetChunks ()
+        {
+            if (vd.useFreeChunk) {
+                Dictionary<WorldPos,Chunk> c = new Dictionary<WorldPos, CreVox.Chunk> ();
+                if (freeChunk == null) {
+                    CreateFreeChunk();
+                }
+                c.Add (freeChunk.cData.ChunkPos, freeChunk);
+                return c;
+            } else {
+                return chunks;
+            }
+        }
+
         public void UpdateChunks ()
         {
-			foreach (Chunk chunk in chunks.Values)
+            foreach (Chunk chunk in GetChunks().Values) {
                 chunk.UpdateChunk ();
+                UpdateChunkNodes (chunk.cData);
+            }
         }
 
         void CreateChunks ()
         {
-			int chunksize = VGlobal.GetSetting ().chunkSize;
+            if (vd.chunkSize == 0)
+                vd.chunkSize = VGlobal.GetSetting ().chunkSize;
             for (int x = 0; x < chunkX; x++) {
                 for (int y = 0; y < chunkY; y++) {
                     for (int z = 0; z < chunkZ; z++) {
-						Chunk newChunk = CreateChunk (x * chunksize, y * chunksize, z * chunksize);
-						newChunk.Init ();
+                        CreateChunk (x * vd.chunkSize, y * vd.chunkSize, z * vd.chunkSize);
                     }
                 }
             }
@@ -166,28 +192,56 @@ namespace CreVox
             newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
             #if UNITY_EDITOR
             if (vertexMaterial != null)
-                newChunkObject.GetComponent<Renderer> ().material = VolumeManager.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+                newChunkObject.GetComponent<Renderer> ().material = (vm != null ? vm.volumeShowArtPackL : VolumeManager.volumeShowArtPack) ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
             #else
             if (vertexMaterial != null)
-                newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack?vertexMaterial : Resources.Load(PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+                newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
             newChunkObject.layer = LayerMask.NameToLayer("Floor");
             #endif
             Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
             newChunk.cData.ChunkPos = chunkPos;
             newChunk.volume = this;
+            newChunk.Init ();
             chunks.Add (chunkPos, newChunk);
+        }
 
-			return newChunk;
+        void CreateFreeChunk()
+        {
+            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero)) as GameObject;
+            newChunkObject.name = "FreeChunk";
+            newChunkObject.transform.parent = chunkRoot.transform;
+            newChunkObject.transform.localPosition = Vector3.zero;
+            newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            #if UNITY_EDITOR
+            if (vertexMaterial != null)
+                newChunkObject.GetComponent<Renderer> ().material = (vm != null ? vm.volumeShowArtPackL : VolumeManager.volumeShowArtPack) ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+            newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
+            #else
+            if (vertexMaterial != null)
+            newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
+            newChunkObject.layer = LayerMask.NameToLayer("Floor");
+            #endif
+            freeChunk = newChunkObject.GetComponent<Chunk> ();
+            freeChunk.cData.ChunkPos = new WorldPos (0, 0, 0);
+            freeChunk.volume = this;
+            freeChunk.Init ();
         }
 
         void DestoryChunks ()
         {
-			int chunkSize = VGlobal.GetSetting ().chunkSize;
+            if (vd.useFreeChunk) {
+                #if UNITY_EDITOR
+                GameObject.DestroyImmediate (freeChunk.gameObject);
+                #else
+                UnityEngine.Object.Destroy(freeChunk.gameObject);
+                #endif
+            } else {
                 for (int x = 0; x < chunkX; x++) {
                     for (int y = 0; y < chunkY; y++) {
                         for (int z = 0; z < chunkZ; z++) {
-						DestroyChunk (x * chunkSize, y * chunkSize, z * chunkSize);
+                            DestroyChunk (x * vd.chunkSize, y * vd.chunkSize, z * vd.chunkSize);
+                        }
                     }
                 }
             }
@@ -196,7 +250,7 @@ namespace CreVox
         void DestroyChunk (int x, int y, int z)
         {
             WorldPos chunkPos = new WorldPos (x, y, z);
-			if (chunks.ContainsKey (chunkPos)) {
+            if (chunks.ContainsKey (chunkPos) && chunks [chunkPos]!= null) {
                 if (chunks [chunkPos].gameObject) {
                     #if UNITY_EDITOR
                     GameObject.DestroyImmediate (chunks [chunkPos].gameObject);
@@ -211,6 +265,9 @@ namespace CreVox
 
         public Chunk GetChunk (int x, int y, int z)
         {
+            if (vd.useFreeChunk) {
+                return freeChunk;
+            } else {
                 WorldPos pos = new WorldPos ();
                 pos.x = Mathf.FloorToInt (x / vd.chunkSize) * vd.chunkSize;
                 pos.y = Mathf.FloorToInt (y / vd.chunkSize) * vd.chunkSize;
@@ -218,6 +275,7 @@ namespace CreVox
 
                 return chunks.ContainsKey (pos) ? chunks [pos] : null;
             }
+        }
 
         #endregion
 
@@ -256,6 +314,39 @@ namespace CreVox
             newNode.pieces = new GameObject[9];
 
             nodes.Add (bPos, newNode);
+        }
+
+        public void UpdateChunkNodes (ChunkData cData)
+        {
+            for (int i = 0; i < cData.blockAirs.Count; i++) {
+                BlockAir bAir = cData.blockAirs [i];
+                bool isEmpty = true;
+                foreach (string p in bAir.pieceNames) {
+                    if (p != "") {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
+                    cData.blockAirs.Remove (bAir);
+                } else { 
+                    WorldPos volumePos = new WorldPos (
+                                             cData.ChunkPos.x + bAir.BlockPos.x, 
+                                             cData.ChunkPos.y + bAir.BlockPos.y, 
+                                             cData.ChunkPos.z + bAir.BlockPos.z);
+                    GameObject node = GetNode (volumePos);
+                    if (node != null) {
+                        #if UNITY_EDITOR
+                        if (!UnityEditor.EditorApplication.isPlaying && cuter && bAir.BlockPos.y + cData.ChunkPos.y > cutY)
+                            node.SetActive (false);
+                        else
+                            node.SetActive (true);
+                        #else
+                            node.SetActive (true);
+                        #endif
+                    }
+                }
+            }
         }
 
         bool RemoveNodeIfIsEmpty (WorldPos bPos)
@@ -699,8 +790,7 @@ namespace CreVox
         void CompileSave ()
         {
             if (EditorApplication.isCompiling && !compileSave) {
-                if (VolumeManager.saveBackup)
-                    SaveTempWorld ();
+                SaveTempWorld ();
                 compileSave = true;
             }
 
@@ -725,11 +815,6 @@ namespace CreVox
 
         public void SaveTempWorld ()
         {
-//            string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-//            sPath = EditorUtility.SaveFilePanel ("save vData", sPath, vd.name, "asset");
-//            if (sPath.Length < 1)
-//                return;
-//            sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
             string vdName = AssetDatabase.GetAssetPath(vd);
             vdName = vdName.Substring (vdName.LastIndexOf ("/") + 1);
             string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
@@ -782,8 +867,8 @@ namespace CreVox
             float x = -vg.w/2;
             float y = -vg.h/2;
             float z = -vg.d/2;
-			float w = chunkX * vg.chunkSize * vg.w + x;
-			float d = chunkZ * vg.chunkSize * vg.d + z;
+            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : chunkX * vd.chunkSize) * vg.w + x;
+            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d + z;
             meshData.useRenderDataForCol = true;
             meshData.AddVertex (new Vector3 (x, y, z));
             meshData.AddVertex (new Vector3 (x, y, d));
@@ -805,14 +890,16 @@ namespace CreVox
 
         void CreateLevelRuler ()
         {
+            VGlobal vg = VGlobal.GetSetting ();
+            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : chunkX * vd.chunkSize) * vg.w;
+            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d;
             layerRuler = new GameObject ("LevelRuler");
             layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
             layerRuler.transform.parent = transform;
-			layerRuler.transform.localPosition = Vector3.zero;
+            layerRuler.transform.localPosition = new Vector3 (w / 2 - vg.w / 2, 0f, d / 2 - vg.d / 2);
             layerRuler.transform.localRotation = Quaternion.Euler (Vector3.zero);
             bColl = layerRuler.AddComponent<BoxCollider> ();
-			VGlobal vg = VGlobal.GetSetting ();
-			bColl.size = new Vector3 (chunkX * vg.chunkSize * vg.w, 0f, chunkZ * vg.chunkSize * vg.d);
+            bColl.size = new Vector3 (w, 0f, d);
             ChangePointY (pointY);
         }
 
@@ -826,25 +913,26 @@ namespace CreVox
 
         public void ActiveRuler (bool _active)
         {
+            bool r = (vm != null ? vm.debugRulerL : VolumeManager.debugRuler);
             if (mColl) {
                 mColl.enabled = _active;
                 ruler.SetActive (_active);
-                ruler.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+                ruler.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
             }
             if (bColl) {
                 bColl.enabled = _active;
                 layerRuler.SetActive (_active);
-                layerRuler.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+                layerRuler.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
             }
             if (box) {
-                box.hideFlags = VolumeManager.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
+                box.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
             }
             pointer = _active;
         }
 
         public void ShowRuler ()
         {
-            bool _active = EditorApplication.isPlaying ? false : VolumeManager.debugRuler;
+            bool _active = EditorApplication.isPlaying ? false : (vm != null ? vm.debugRulerL : VolumeManager.debugRuler);
             ActiveRuler (_active);
         }
         #endif
@@ -861,27 +949,27 @@ namespace CreVox
 
         void OnDrawGizmos ()
         {
-            if (focusVolume == this && VolumeManager.debugRuler) {
+            if (focusVolume == this && (vm != null ? vm.debugRulerL : VolumeManager.debugRuler)) {
                 Matrix4x4 oldMatrix = Gizmos.matrix;
                 VGlobal vg = VGlobal.GetSetting ();
-			Gizmos.color = (chunks.Count == 0) ? Color.red : YColor;
+                Gizmos.color = (vd == null) ? Color.red : (((!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null)) ? Color.red : YColor);
                 Gizmos.matrix = transform.localToWorldMatrix;
                 if (mColl)
                     Gizmos.DrawWireCube (
                         new Vector3 (
-						(chunkX * vg.chunkSize-1) * vg.w/2,
-						(chunkY * vg.chunkSize-1) * vg.h/2,
-						(chunkZ * vg.chunkSize-1) * vg.d/2),
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.x - 1 : (chunkX * vd.chunkSize - 1)) * vg.w / 2,
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.y - 1 : (chunkY * vd.chunkSize - 1)) * vg.h / 2,
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.z - 1 : (chunkZ * vd.chunkSize - 1)) * vg.d / 2),
                         new Vector3 (
-						chunkX * vg.chunkSize * vg.w,
-						chunkY * vg.chunkSize * vg.h,
-						chunkZ * vg.chunkSize * vg.d)
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.x : chunkX * vd.chunkSize) * vg.w,
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.y : chunkY * vd.chunkSize) * vg.h,
+                            ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d)
                     );
                 
                 DrawGizmoBoxCursor ();
                 DrawGizmoLayer ();
                 DrawBlockItem ();
-                if (VolumeManager.showBlockHold)
+                if (vm != null ? vm.showBlockHoldL : VolumeManager.showBlockHold)
                     DrawBlockHold ();
                 Gizmos.matrix = oldMatrix;
             }
@@ -890,7 +978,7 @@ namespace CreVox
         void DrawBlockHold ()
         {
             VGlobal vg = VGlobal.GetSetting ();
-			foreach (Chunk chunk in chunks.Values) {
+            foreach (Chunk chunk in GetChunks().Values) {
                 if (chunk != null) {
                     for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
                         WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
@@ -932,8 +1020,8 @@ namespace CreVox
         {
             VGlobal vg = VGlobal.GetSetting ();
             if (pointer) {
-				for (int xi = 0; xi < chunkX * vg.chunkSize; xi++) {
-					for (int zi = 0; zi < chunkZ * vg.chunkSize; zi++) {
+                for (int xi = 0; xi < ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.x : (chunkX * vd.chunkSize)); xi++) {
+                    for (int zi = 0; zi < ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.z : (chunkZ * vd.chunkSize)); zi++) {
                         float cSize;
                         cSize = (GetBlock (xi, pointY, zi) == null) ? 0.3f : 1.01f;
 
@@ -958,7 +1046,7 @@ namespace CreVox
         public void ChangePointY (int _y)
         {
             VGlobal vg = VGlobal.GetSetting ();
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
+            _y = Mathf.Clamp (_y, 0, ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.y : (chunkY * vd.chunkSize)) - 1);
             pointY = _y;
             YColor = new Color (
                 (20 + (pointY % 10) * 20) / 255f,
@@ -967,11 +1055,7 @@ namespace CreVox
                 0.4f
             );
             if (bColl) {
-				bColl.center = new Vector3 (
-					(chunkX * vg.chunkSize - 1f) * vg.w/2,
-					(pointY + 0.5f) * vg.h,
-					(chunkZ * vg.chunkSize - 1f) * vg.d/2
-				);
+                bColl.center = new Vector3 (bColl.center.x, (pointY + 0.5f) * vg.h, bColl.center.z);
             }
             if (chunks != null && chunks.Count > 0)
                 UpdateChunks ();
@@ -979,8 +1063,7 @@ namespace CreVox
 
         public void ChangeCutY (int _y)
         {
-			VGlobal vg = VGlobal.GetSetting ();
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
+            _y = Mathf.Clamp (_y, 0, ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.x : (chunkX * vd.chunkSize)) - 1);
             cutY = _y;
             if (chunks != null && chunks.Count > 0)
                 UpdateChunks ();

@@ -19,14 +19,14 @@ namespace CreVox
 
 		private void OnEnable ()
 		{
-			volume = (Volume)target;
+            volume = (Volume)target;
             Volume.focusVolume = volume;
 			volume.ActiveRuler (true);
 			SubscribeEvents ();
 		}
 
 		private void OnDisable ()
-		{
+        {
             Volume.focusVolume = null;
 			volume.ActiveRuler (false);
 			UnsubscribeEvents ();
@@ -46,15 +46,7 @@ namespace CreVox
 						UpdateVolume ();
 					}
 					if (GUILayout.Button ("Calculate BlockHold")) {
-						foreach (ChunkData bh in volume.vd.chunkDatas) {
-							bh.blockHolds.Clear ();
-						}
-						string apOld = volume.ArtPack;
-						volume.ArtPack = PathCollect.pieces;
-						UpdateVolume ();
-						volume.ArtPack = apOld;
-						UpdateVolume ();
-						EditorUtility.SetDirty (volume);
+                        CalculateBlockHold ();
 					}
 				}
 				using (var h = new EditorGUILayout.HorizontalScope ()) {
@@ -69,22 +61,73 @@ namespace CreVox
 					}
 				}
 				EditorGUILayout.Separator ();
-				using (var h = new EditorGUILayout.HorizontalScope ()) {
-					EditorGUIUtility.labelWidth = 15;
-					float w = Mathf.Ceil(Screen.width - 119) / 3;
-					cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
-					cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
-					cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
-					EditorGUIUtility.labelWidth = defLabelWidth;
-					if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
-						volume.vd = null;
-						volume.Init (cx, cy, cz);
-						WriteVData (volume);
-					}
+				EditorGUI.BeginChangeCheck ();
+                if (volume.vd != null) {
+                    if (volume.vd.useFreeChunk) {
+                        ChunkData c = volume.vd.freeChunk;
+                        using (var h = new EditorGUILayout.HorizontalScope ()) {
+                            EditorGUIUtility.labelWidth = 15;
+                            float w = Mathf.Ceil (Screen.width - 119) / 3;
+                            EditorGUILayout.LabelField ("Chunk Size");
+                            c.freeChunkSize.x = EditorGUILayout.IntField ("X", c.freeChunkSize.x, GUILayout.Width (w));
+                            c.freeChunkSize.y = EditorGUILayout.IntField ("Y", c.freeChunkSize.y, GUILayout.Width (w));
+                            c.freeChunkSize.z = EditorGUILayout.IntField ("Z", c.freeChunkSize.z, GUILayout.Width (w));
+                            EditorGUIUtility.labelWidth = defLabelWidth;
+                        }
+                        if (GUILayout.Button ("Convert to Voxel Chunk")) {
+                            volume.vd.ConvertToVoxelChunk ();
+                            CalculateBlockHold ();
+                        }
+                    } else {
+                        using (var h = new EditorGUILayout.HorizontalScope ()) {
+                            EditorGUIUtility.labelWidth = 15;
+                            float w = Mathf.Ceil (Screen.width - 119) / 3;
+                            cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
+                            cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
+                            cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
+                            EditorGUIUtility.labelWidth = defLabelWidth;
+                            if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
+                                volume.vd = null;
+                                volume.Init (cx, cy, cz);
+                                WriteVData (volume);
+                            }
+                        }
+                        if (GUILayout.Button ("Convert to FreeSize Chunk")) {
+                            volume.vd.ConvertToFreeChunk ();
+                            CalculateBlockHold ();
+                        }
+                    }
+                }
+				if (EditorGUI.EndChangeCheck ()) {
+					EditorUtility.SetDirty (volume.vd);
+					EditorUtility.SetDirty (volume);
+					volume.UpdateChunks ();
 				}
 			}
 
-			EditorGUI.BeginChangeCheck ();
+			if (volume.vd != null) {
+				EditorGUI.BeginChangeCheck ();
+				DrawArtPack ();
+				EditorGUI.BeginChangeCheck ();
+                if (volume.vm) {
+                    VolumeManagerEditor.DrawVLocal (volume.vm);
+                }
+				if (EditorGUI.EndChangeCheck ()) {
+					UpdateVolume ();
+					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+				}
+				if (selectedItemID != -1)
+					DrawPieceInspectedGUI ();
+
+				if (EditorGUI.EndChangeCheck ()) {
+					EditorUtility.SetDirty (volume);
+					volume.UpdateChunks ();
+				}
+			}
+		}
+
+		void DrawArtPack ()
+		{
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUILayout.Label ("ArtPack", EditorStyles.boldLabel);
 				EditorGUILayout.HelpBox ((volume.ArtPack != null) ? (volume.ArtPack + volume.vd.subArtPack) : "(none.)", MessageType.Info, true);
@@ -94,9 +137,9 @@ namespace CreVox
 						               Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
 						               ""
 					               );
-					if (VolumeManager.saveBackup)
+                    if (volume.vm != null ? volume.vm.saveBackupL : VolumeManager.saveBackup)
 						volume.SaveTempWorld ();
-					
+
 					string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
 					if (artPackName.Length == 4) {
 						volume.vd.subArtPack = ppath.Substring (ppath.Length - 1);
@@ -105,7 +148,7 @@ namespace CreVox
 					} else {
 						volume.vd.subArtPack = "";
 					}
-					
+
 					volume.ArtPack = PathCollect.artPack + "/" + artPackName;
 					volume.vMaterial = volume.ArtPack + "/" + artPackName + "_voxel";
 					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
@@ -121,33 +164,6 @@ namespace CreVox
 					, volume.vertexMaterial
 					, typeof(Material)
 					, false);
-			}
-			EditorGUI.BeginChangeCheck ();
-			DrawVGlobal ();
-			if (EditorGUI.EndChangeCheck ()) {
-				EditorUtility.SetDirty (vg);
-				UpdateVolume ();
-				volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-			}
-			if(selectedItemID != -1)
-			DrawPieceInspectedGUI ();
-
-			if (EditorGUI.EndChangeCheck()) {
-				EditorUtility.SetDirty (volume);
-				volume.UpdateChunks ();
-			}
-		}
-
-		public static void DrawVGlobal ()
-		{
-			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-				VolumeManager.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File", VolumeManager.saveBackup);
-				VolumeManager.volumeShowArtPack = EditorGUILayout.ToggleLeft ("Volume Show ArtPack", VolumeManager.volumeShowArtPack);
-				VolumeManager.Generation = EditorGUILayout.ToggleLeft ("Runtime Generation", VolumeManager.Generation);
-				VolumeManager.snapGrid = EditorGUILayout.ToggleLeft ("Snap Grid", VolumeManager.snapGrid);
-				VolumeManager.debugRuler = EditorGUILayout.ToggleLeft ("Show Ruler", VolumeManager.debugRuler);
-				VolumeManager.showBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold", VolumeManager.showBlockHold);
 			}
 		}
 
@@ -551,7 +567,7 @@ namespace CreVox
 			float tile = (_pieceSelected == null) ? 3f : 4f;
 			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
 				using (var h = new GUILayout.HorizontalScope ()) {
-					GUI.color = Color.white;
+                    GUI.color = Color.white;
                     bool _allkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
 					using (var v = new GUILayout.VerticalScope ()) {
                         if (GUILayout.Button ("Pointer" + (_allkey ? "(Q)" : ""), GUILayout.Width (bwidth)))
@@ -573,7 +589,7 @@ namespace CreVox
                         if (GUILayout.Button ("▲" + (_allkey ? "(R)" : ""), GUILayout.Width (45)))
 							HotkeyFunction ("R");
                         if (GUILayout.Button ("▼" + (_allkey ? "(F)" : ""), GUILayout.Width (45)))
-							HotkeyFunction ("F");
+                            HotkeyFunction ("F");
                         EditorGUI.EndDisabledGroup ();
 					}
 
@@ -810,7 +826,25 @@ namespace CreVox
 			if (_hotkey)
 				Event.current.Use ();
 		}
-		private void UpdateVolume()
+
+        void CalculateBlockHold ()
+        {
+            if (volume.vd.useFreeChunk) {
+                volume.vd.freeChunk.blockHolds.Clear ();
+            } else {
+                foreach (ChunkData bh in volume.vd.chunkDatas) {
+                    bh.blockHolds.Clear ();
+                }
+            }
+            string apOld = volume.ArtPack;
+            volume.ArtPack = PathCollect.pieces;
+            UpdateVolume ();
+            volume.ArtPack = apOld;
+            UpdateVolume ();
+            EditorUtility.SetDirty (volume);
+        }
+
+        private void UpdateVolume()
 		{
 			selectedItemID = -1;
 			volume.BuildVolume ();

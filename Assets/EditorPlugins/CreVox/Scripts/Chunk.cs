@@ -5,10 +5,13 @@ using System;
 
 namespace CreVox
 {
-
 	[System.Serializable]
 	public class ChunkData
 	{
+		// free chunk
+		public bool isFreeChunk = false;
+		public WorldPos freeChunkSize = new WorldPos (9, 9, 9);
+		// ==============
 		public WorldPos ChunkPos;
 		public List<Block> blocks = new List<Block> ();
 		public List<BlockAir> blockAirs = new List<BlockAir> ();
@@ -16,6 +19,10 @@ namespace CreVox
 		// [XAOCX add]
 		public ChunkData() { }
 		public ChunkData(ChunkData clone){
+			// free chunk
+			this.isFreeChunk = clone.isFreeChunk;
+			this.freeChunkSize = clone.freeChunkSize;
+			// ==============
 			this.ChunkPos = clone.ChunkPos;
 			this.blocks = new List<Block>();
 			foreach (var block in clone.blocks) {
@@ -67,41 +74,41 @@ namespace CreVox
 		}
 
 		public void UpdateChunk ()
-		{
-
-			for (int i = 0; i < cData.blockAirs.Count; i++) {
-				BlockAir bAir = cData.blockAirs [i];
-				bool isEmpty = true;
-				foreach (string p in bAir.pieceNames) {
-					if (p != "") {
-						isEmpty = false;
-						break;
-					}
-				}
-				if (isEmpty) {
-					cData.blockAirs.Remove (bAir);
-				} else { 
-					WorldPos volumePos = new WorldPos (
-						                     cData.ChunkPos.x + bAir.BlockPos.x, 
-						                     cData.ChunkPos.y + bAir.BlockPos.y, 
-						                     cData.ChunkPos.z + bAir.BlockPos.z);
-					if (volume != null) {
-						if (volume.GetNode (volumePos) != null) {
-							#if UNITY_EDITOR
-							if (!UnityEditor.EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
-								volume.GetNode (volumePos).SetActive (false);
-							else
-								volume.GetNode (volumePos).SetActive (true);
-							#else
-						volume.GetNode (volumePos).SetActive (true);
-							#endif
-						}
-					}
-				}
-			}
-			UpdateMeshFilter ();
-			UpdateMeshCollider ();
-		}
+        {
+            for (int i = 0; i < cData.blockAirs.Count; i++) {
+                BlockAir bAir = cData.blockAirs [i];
+                bool isEmpty = true;
+                foreach (string p in bAir.pieceNames) {
+                    if (p != "") {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
+                    cData.blockAirs.Remove (bAir);
+                    i--;
+                } else { 
+                    WorldPos volumePos = new WorldPos (
+                              cData.ChunkPos.x + bAir.BlockPos.x, 
+                              cData.ChunkPos.y + bAir.BlockPos.y, 
+                              cData.ChunkPos.z + bAir.BlockPos.z);
+                    if (volume) {
+                        if (volume.GetNode (volumePos) != null) {
+                            #if UNITY_EDITOR
+                            if (!UnityEditor.EditorApplication.isPlaying && volume.cuter && bAir.BlockPos.y + cData.ChunkPos.y > volume.cutY)
+                                volume.GetNode (volumePos).SetActive (false);
+                            else
+                                volume.GetNode (volumePos).SetActive (true);
+                            #else
+                            volume.GetNode (volumePos).SetActive (true);
+                            #endif
+                        }
+                    }
+                }
+            }
+            UpdateMeshFilter ();
+            UpdateMeshCollider ();
+        }
 
 		public Block GetBlock (int x, int y, int z)
 		{
