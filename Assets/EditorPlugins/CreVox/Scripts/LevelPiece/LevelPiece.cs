@@ -39,7 +39,7 @@ namespace CreVox
 			public WorldPos offset;
 			public bool isSolid;
 		}
-
+        public Block block;
 		public PivotType pivot;
 		public bool[] isSolid = new bool[6];
 		public bool isHold = false;

@@ -36,6 +36,8 @@ namespace CreVox
 
 		public override bool IsSolid (Direction direction)
 		{
+            if (isSolid.Length < 6)
+                isSolid = new bool[6];
 			return isSolid [(int)direction];
 		}
 
