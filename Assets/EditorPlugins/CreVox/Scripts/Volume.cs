@@ -56,7 +56,6 @@ namespace CreVox
         }
 
         #region Chunk
-
         private GameObject chunkPrefab;
         GameObject chunkRoot;
         public Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
@@ -121,7 +120,6 @@ namespace CreVox
 				chunks.Clear ();
             }
             nodes.Clear ();
-//			blockItems.Clear ();
             itemNodes.Clear ();
 
             for (int i = transform.childCount; i > 0; i--)
@@ -156,15 +154,12 @@ namespace CreVox
             }
         }
 
-		Chunk CreateChunk (int x, int y, int z)
+        void CreateChunk (int x, int y, int z)
         {
             VGlobal vg = VGlobal.GetSetting ();
             WorldPos chunkPos = new WorldPos (x, y, z);
 
-			GameObject newChunkObject = Instantiate (
-				                            chunkPrefab, new Vector3 (x * vg.w, y * vg.h, z * vg.d),
-				                            Quaternion.Euler (Vector3.zero)
-			                            ) as GameObject;
+            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero)) as GameObject;
             newChunkObject.name = "Chunk(" + x + "," + y + "," + z + ")";
             newChunkObject.transform.parent = chunkRoot.transform;
             newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
@@ -179,10 +174,8 @@ namespace CreVox
             newChunkObject.layer = LayerMask.NameToLayer("Floor");
             #endif
             Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
-
             newChunk.cData.ChunkPos = chunkPos;
             newChunk.volume = this;
-
             chunks.Add (chunkPos, newChunk);
 
 			return newChunk;
@@ -219,10 +212,9 @@ namespace CreVox
         public Chunk GetChunk (int x, int y, int z)
         {
                 WorldPos pos = new WorldPos ();
-			float multiple = VGlobal.GetSetting ().chunkSize;
-			pos.x = Mathf.FloorToInt (x / multiple) * (int)multiple;
-			pos.y = Mathf.FloorToInt (y / multiple) * (int)multiple;
-			pos.z = Mathf.FloorToInt (z / multiple) * (int)multiple;
+                pos.x = Mathf.FloorToInt (x / vd.chunkSize) * vd.chunkSize;
+                pos.y = Mathf.FloorToInt (y / vd.chunkSize) * vd.chunkSize;
+                pos.z = Mathf.FloorToInt (z / vd.chunkSize) * vd.chunkSize;
 
                 return chunks.ContainsKey (pos) ? chunks [pos] : null;
             }
@@ -538,11 +530,17 @@ namespace CreVox
             }
         }
 
+        static GameObject _missing;
+        static LevelPiece _missingP;
         private void PlacePieces ()
         {
-			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
-			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
-			foreach (Chunk c in chunks.Values) {
+            if (_missing == null) {
+                _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+            }
+            if (_missingP == null) {
+                _missingP = _missing.GetComponent<LevelPiece> ();
+            }
+            foreach (Chunk c in GetChunks().Values) {
                 for (int b = 0; b < c.cData.blockAirs.Count; b++) {
                     BlockAir ba = c.cData.blockAirs [b];
                     for (int i = 0; i < ba.pieceNames.Length; i++) {
@@ -828,7 +826,6 @@ namespace CreVox
 
         public void ActiveRuler (bool _active)
         {
-			VGlobal vg = VGlobal.GetSetting ();
             if (mColl) {
                 mColl.enabled = _active;
                 ruler.SetActive (_active);

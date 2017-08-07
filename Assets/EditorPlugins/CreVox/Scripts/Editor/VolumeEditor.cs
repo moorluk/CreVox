@@ -36,8 +36,7 @@ namespace CreVox
 		{
 			float buttonW = 80;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
-			VGlobal vg = VGlobal.GetSetting ();
-			GUI.color = Color.white;
+			GUI.color = (volume.vd == null) ? Color.red : Color.white;
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUI.backgroundColor = Color.white;
@@ -63,6 +62,7 @@ namespace CreVox
 					volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
 					if (EditorGUI.EndChangeCheck ()) {
 						UpdateVolume ();
+                        volume.gameObject.name = volume.vd.name.Replace ("_vData", "");
 					}
 					if (GUILayout.Button ("Backup", GUILayout.Width (buttonW))) {
 						volume.SaveTempWorld ();
@@ -140,7 +140,6 @@ namespace CreVox
 
 		public static void DrawVGlobal ()
 		{
-			VGlobal vg = VGlobal.GetSetting ();
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
 				VolumeManager.saveBackup = EditorGUILayout.ToggleLeft ("Auto Backup File", VolumeManager.saveBackup);
@@ -701,8 +700,7 @@ namespace CreVox
                         m_mappingZ);
                     
                     Chunk chunk = volume.GetChunk(bPos.x, bPos.y, bPos.z);
-                    chunk.UpdateMeshFilter ();
-					chunk.UpdateMeshCollider ();
+                    chunk.UpdateChunk ();
 					EditorUtility.SetDirty (volume.vd);
 					SceneView.RepaintAll ();
 				}

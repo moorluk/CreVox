@@ -45,8 +45,6 @@ namespace CreVox
 			return null;
 		}
 
-
-
 		public static VolumeData GetVData (string workFile)
 		{
 			VolumeData _vData = ScriptableObject.CreateInstance<VolumeData> ();

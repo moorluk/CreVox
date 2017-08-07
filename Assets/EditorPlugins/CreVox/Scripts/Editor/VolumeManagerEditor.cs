@@ -69,7 +69,8 @@ namespace CreVox
 			Color defColor = GUI.color;
 			Color volColor = new Color (0.5f, 0.8f, 0.75f);
 			float DefaultLabelWidth = EditorGUIUtility.labelWidth;
-
+            if (vm.dungeons == null)
+                vm.UpdateDungeon ();
 			for (int i = 0; i < vm.dungeons.Count; i++) {
 				Dungeon _d = vm.dungeons [i];
 				GUI.color = volColor;
@@ -116,5 +117,5 @@ namespace CreVox
 		}
 
 		#endregion
-	}
+    }
 }
