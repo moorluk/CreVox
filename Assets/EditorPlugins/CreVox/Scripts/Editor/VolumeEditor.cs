@@ -20,12 +20,14 @@ namespace CreVox
 		private void OnEnable ()
 		{
 			volume = (Volume)target;
+            Volume.focusVolume = volume;
 			volume.ActiveRuler (true);
 			SubscribeEvents ();
 		}
 
 		private void OnDisable ()
 		{
+            Volume.focusVolume = null;
 			volume.ActiveRuler (false);
 			UnsubscribeEvents ();
 		}
@@ -231,7 +233,7 @@ namespace CreVox
 			}
 
 			if (Event.current.type == EventType.KeyDown) {
-				HotkeyFunction (Event.current.keyCode.ToString ());
+                HotkeyFunction (Event.current.keyCode.ToString (), true);
 				return;
 			} 
 
@@ -551,28 +553,29 @@ namespace CreVox
 			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
 				using (var h = new GUILayout.HorizontalScope ()) {
 					GUI.color = Color.white;
+                    bool _allkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
 					using (var v = new GUILayout.VerticalScope ()) {
-						if (GUILayout.Button ("Pointer(Q)", GUILayout.Width (bwidth)))
+                        if (GUILayout.Button ("Pointer" + (_allkey ? "(Q)" : ""), GUILayout.Width (bwidth)))
 							HotkeyFunction ("Q");
-						GUI.color = volume.pointer ? Color.white : Color.gray;
+                        EditorGUI.BeginDisabledGroup(!volume.pointer);
 						EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
-						if (GUILayout.Button ("▲(W)", GUILayout.Width (45)))
+                        if (GUILayout.Button ("▲" + (_allkey ? "(W)" : ""), GUILayout.Width (45)))
 							HotkeyFunction ("W");
-						if (GUILayout.Button ("▼(S)", GUILayout.Width (45)))
+                        if (GUILayout.Button ("▼" + (_allkey ? "(S)" : ""), GUILayout.Width (45)))
 							HotkeyFunction ("S");
-						GUI.color = Color.white;
+                        EditorGUI.EndDisabledGroup ();
 					}
 
 					using (var v = new GUILayout.VerticalScope ()) {
-						if (GUILayout.Button ("Cutter(E)", GUILayout.Width (bwidth)))
+                        if (GUILayout.Button ("Cutter" + (_allkey ? "(E)" : ""), GUILayout.Width (bwidth)))
 							HotkeyFunction ("E");
-						GUI.color = volume.cuter ? Color.white : Color.gray;
+                        EditorGUI.BeginDisabledGroup(!volume.cuter);
 						EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
-						if (GUILayout.Button ("▲(R)", GUILayout.Width (45)))
+                        if (GUILayout.Button ("▲" + (_allkey ? "(R)" : ""), GUILayout.Width (45)))
 							HotkeyFunction ("R");
-						if (GUILayout.Button ("▼(F)", GUILayout.Width (45)))
+                        if (GUILayout.Button ("▼" + (_allkey ? "(F)" : ""), GUILayout.Width (45)))
 							HotkeyFunction ("F");
-                        GUI.color = Color.white;
+                        EditorGUI.EndDisabledGroup ();
 					}
 
                     using (var v = new GUILayout.VerticalScope())
@@ -734,11 +737,11 @@ namespace CreVox
 		#endregion
 
 		#region Tools
-		private void HotkeyFunction (string funcKey = "")
+        private void HotkeyFunction (string funcKey = "", bool isKeyEvent = false)
 		{
 			int _index = (int)currentEditMode;
 			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
-			bool _hotkey = (currentEditMode != EditMode.View && currentEditMode != EditMode.Item);
+            bool _hotkey = isKeyEvent ? (currentEditMode != EditMode.View && currentEditMode != EditMode.Item) : true;
 
 			switch (funcKey) {
 			case "A":

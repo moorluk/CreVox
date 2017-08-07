@@ -855,6 +855,7 @@ namespace CreVox
 
         #region Editor Scene UI
         #if UNITY_EDITOR
+        public static Volume focusVolume = null;
         public Color YColor;
         public bool pointer;
         public int pointY;
@@ -863,6 +864,7 @@ namespace CreVox
 
         void OnDrawGizmos ()
         {
+            if (focusVolume == this && VolumeManager.debugRuler) {
                 Matrix4x4 oldMatrix = Gizmos.matrix;
                 VGlobal vg = VGlobal.GetSetting ();
 			Gizmos.color = (chunks.Count == 0) ? Color.red : YColor;
@@ -879,15 +881,14 @@ namespace CreVox
 						chunkZ * vg.chunkSize * vg.d)
                     );
                 
-			if (VolumeManager.debugRuler) {
                 DrawGizmoBoxCursor ();
                 DrawGizmoLayer ();
                 DrawBlockItem ();
-			}
                 if (VolumeManager.showBlockHold)
                     DrawBlockHold ();
                 Gizmos.matrix = oldMatrix;
             }
+        }
 
         void DrawBlockHold ()
         {
