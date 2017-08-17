@@ -472,7 +472,6 @@ namespace CreVox
 
         public void PlaceItem(int _id, LevelPiece _piece, Vector3 _position = default(Vector3))
         {
-
             BlockItem blockItem;
             if (_piece != null) {
                 if (_piece.GetComponent<PaletteItem> ().markType != PaletteItem.MarkerType.Item)

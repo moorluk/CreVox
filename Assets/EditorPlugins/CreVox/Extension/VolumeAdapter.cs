@@ -6,23 +6,37 @@ public class VolumeAdapter {
 
 	public static void AfterVolumeInit(GameObject volume)
     {
-		//event system
-		Type eventDriver = Type.GetType ("RoomDriver");
-		if (eventDriver != null && volume.GetComponent(eventDriver) == null)
-			volume.AddComponent(eventDriver);
-		//SECTR
-		Type sectr = Type.GetType ("SECTR_Sector");
-		GameObject root = (volume.transform.FindChild ("DecorationRoot")).gameObject;
-		if (sectr != null) {
-			if (root.GetComponent(sectr) == null) {
-				root.AddComponent(sectr);
-			}
-			SECTR_Sector ss = root.GetComponent(sectr) as SECTR_Sector;
-			ss.BoundsUpdateMode = SECTR_Member.BoundsUpdateModes.Static;
-//			ss.ChildCulling = SECTR_Member.ChildCullModes.Individual;
-			ss.ForceUpdate (true);
-		}
+        //event system
+        Type eventDriver = Type.GetType ("RoomDriver");
+        if (eventDriver != null && volume.GetComponent (eventDriver) == null)
+            volume.AddComponent (eventDriver);
+        //SECTR
+        Type sectr = Type.GetType ("SECTR_Sector");
+        GameObject root = (volume.transform.FindChild ("DecorationRoot")).gameObject;
+        if (sectr != null) {
+            if (root.GetComponent (sectr) == null) {
+                root.AddComponent (sectr);
+            }
+            SECTR_Sector ss = root.GetComponent (sectr) as SECTR_Sector;
+            ss.BoundsUpdateMode = SECTR_Member.BoundsUpdateModes.Static;
+//            ss.ChildCulling = SECTR_Member.ChildCullModes.Individual;
+            ss.ForceUpdate (true);
+        }
+    }
 
+    private static int useSetupDungeon = -1;
+    public static bool CheckSetupDungeon ()
+    {
+        if (useSetupDungeon < 0) {
+            Type t = Type.GetType ("SetupDungeon");
+            UnityEngine.Object gg = null;
+            if (t != null) {
+                gg =  UnityEngine.Object.FindObjectOfType(t);
+            }
+            useSetupDungeon = (t != null && gg != null) ? 1 : 0;
+        }
+
+        return (useSetupDungeon > 0) ? true : false;
     }
 
 	public static void UpdatePortals(GameObject root)

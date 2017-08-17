@@ -35,13 +35,13 @@ namespace CreVox
 
         void Awake ()
         {
+            if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
+                gameObject.AddComponent (typeof(GlobalDriver));
+            }
             if (useLocalSetting ? GenerationL : Generation) {
                 Volume[] v = transform.GetComponentsInChildren<Volume> (false);
                 if (v.Length > 0) {
                     UpdateDungeon ();
-                    if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
-                        gameObject.AddComponent (typeof(GlobalDriver));
-                    }
                     for (int i = 0; i < v.Length; i++) {
                         GameObject.Destroy (v [i].gameObject);
                     }
@@ -64,7 +64,7 @@ namespace CreVox
             }
             #endif
 
-            if (useLocalSetting ? GenerationL : Generation) {
+            if ((useLocalSetting ? GenerationL : Generation) && !VolumeAdapter.CheckSetupDungeon()) {
                 CreateVolumes ();
             }
         }
