@@ -12,7 +12,6 @@ namespace CrevoxExtend {
 	public class SpaceAlphabetWindow : EditorWindow {
 		private Vector2 scrollPosition = new Vector2(0, 0);
 		private List<string> Alphabets { get; set; }
-		private bool AlphabetIsChanged { get; set; }
 		// Togglers of the replacement alphabet.
 		private List<bool> IsSelected { get; set; }
 
@@ -20,13 +19,18 @@ namespace CrevoxExtend {
 			// Load files and set Alphabets.
 			SpaceAlphabet.Load();
 			// Copy a new alphabet.
-			Alphabets = new List<string>(SpaceAlphabet.ReplacementAlphabet);
-			AlphabetIsChanged = false;
+			Alphabets = SpaceAlphabet.ReplacementAlphabet;
 			// Toggler of the connections.
 			IsSelected = new List<bool>(new bool[Alphabets.Count]);
+			UpdatePaletteWindow();
 		}
 		void Awake() {
 			Initialize();
+		}
+		void OnFocus() {
+			if(SpaceAlphabet.alphabetUpdate(MissionGrammarSystem.Alphabet.Connections.Select(c => c.Name).ToList())) {
+				UpdatePaletteWindow();
+			}
 		}
 		void OnGUI() {
 			if (GUILayout.Button("Export")) {
@@ -41,45 +45,33 @@ namespace CrevoxExtend {
 					SpaceAlphabetXML.Unserialize.UnserializeFromXml(path);
 					Initialize();
 				}
-				// Refresh another window.
-				UpdatePaletteWindow();
 			}
 			// Aphabets list.//
-			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width), GUILayout.Height(Screen.height - 150));
+			scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
 			for (int i = 0; i < Alphabets.Count; i++) {
 				// Check if this alphabet is Saved or not.
 				string currentName = Alphabets[i];
-				bool isExistInAlphabet = SpaceAlphabet.ReplacementDictionary.ContainsKey(Alphabets[i]);
-
 
 
 				EditorGUILayout.BeginHorizontal();
-				currentName = EditorGUILayout.TextField(currentName, GUILayout.Width(Screen.width * 0.47f), GUILayout.Height(17));
+				currentName = EditorGUILayout.TextField(currentName, GUILayout.Width(Screen.width * 0.51f), GUILayout.Height(18));
 				// If current name of alphabet symbol is change, update the name.
 				if (currentName != Alphabets[i] && ! Alphabets.Exists(a => a == currentName)) {
 					Alphabets[i] = currentName;
 				}
 
 				// If alphabet not Saved, disable setting button.
-				EditorGUI.BeginDisabledGroup(! isExistInAlphabet);
-				if (GUILayout.Button("Setting", GUILayout.Width(Screen.width * 0.27f), GUILayout.Height(17))) {
+				if (GUILayout.Button("Setting", GUILayout.Width(Screen.width * 0.4f), GUILayout.Height(18))) {
 					// Switch setting between 0/1.
 					IsSelected[i] = ! IsSelected[i];
 				}
-				EditorGUI.EndDisabledGroup();
 
-				// delete button.
-				if (GUILayout.Button("Delete Alphabet", GUILayout.Width(Screen.width * 0.23f), GUILayout.Height(17))) {
-					Alphabets.RemoveAt(i);
-					IsSelected.RemoveAt(i);
-					isExistInAlphabet = false;
-				}
 				EditorGUILayout.EndHorizontal();
 				// If this alphabet is exist in Last Saved version, then can check if setting is clicked.
 				// If setting button is switched to true. Open the UI.
 
 
-				if (isExistInAlphabet && IsSelected[i]) {
+				if (IsSelected[i]) {
 					var vDataList = SpaceAlphabet.ReplacementDictionary[Alphabets[i]];
 					// Load the vData from the folder.
 					if (GUILayout.Button("Open Folder", GUILayout.Width(150), GUILayout.Height(17))) {
@@ -96,6 +88,10 @@ namespace CrevoxExtend {
 							}
 						}
 					}
+					// Button of adding vData.
+					if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))){
+						vDataList.Add(null);
+					}
 					// Buttons.
 					for (int j = 0; j < vDataList.Count; j++) {
 						EditorGUILayout.BeginHorizontal();
@@ -107,41 +103,9 @@ namespace CrevoxExtend {
 						}
 						EditorGUILayout.EndHorizontal();
 					}
-					// Button of adding vData.
-					if (GUILayout.Button("Add New vData", GUILayout.Width(150), GUILayout.Height(20))) {
-						vDataList.Add(null);
-					}
 				}
 			}
 			EditorGUILayout.EndScrollView();
-			string _msg;
-			if (!AlphabetIsChanged) {
-				AlphabetIsChanged = SpaceAlphabet.ReplacementAlphabet.Exists(a => (!Alphabets.Exists(newA => (newA == a)))) || Alphabets.Exists(newA => (!SpaceAlphabet.ReplacementAlphabet.Exists(a => (newA == a))));
-			}
-			_msg = AlphabetIsChanged ? "Space alphabet has changed press 'Save' to save your changes." : "none";
-
-			GUILayout.BeginArea(new Rect(0, Screen.height - 100, Screen.width, 30));
-			EditorGUILayout.HelpBox(_msg, MessageType.Info);
-			GUILayout.EndArea();
-			// Alphabet add button.
-			GUILayout.BeginArea(new Rect(0, Screen.height - 70, Screen.width, 60));
-			if (GUILayout.Button("Add New")) {
-				// Name Cannot be the same.
-				int Count = Alphabets.Count;
-				while (Alphabets.Exists(a => (a == ("NewConnection" + Count)))) {
-					Count++;
-				}
-				Alphabets.Add("NewConnection" + Count);
-				IsSelected.Add(false);
-			}
-			// Saving this alphabet's "types".
-			if (GUILayout.Button("Save")) {
-				AlphabetIsChanged = false;
-				// Update alphabet types.//
-				SpaceAlphabet.alphabetUpdate(Alphabets);
-				UpdatePaletteWindow();
-			}
-			GUILayout.EndArea();
 		}
 		private void UpdatePaletteWindow() {
 			CreVox.PaletteWindow window = EditorWindow.GetWindow<CreVox.PaletteWindow>();

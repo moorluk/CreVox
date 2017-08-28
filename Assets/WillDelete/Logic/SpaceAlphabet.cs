@@ -11,7 +11,7 @@ using CreVox;
 
 namespace CrevoxExtend {
 	public static class SpaceAlphabet {
-		private static readonly string _connectionRegex = @"Connection_(\w+)$";
+		private static readonly string _connectionRegex = @"Connection_([a-zA-Z0-9_ ]+)$";
 		// .
 		private static readonly string _systemPath = PathCollect.pieces + "/2_System/";
 		// Connection names.
@@ -26,6 +26,7 @@ namespace CrevoxExtend {
 			ReplacementDictionary = new Dictionary<string, List<VolumeData>>() {
 				{ "Default", new List<VolumeData>() }
 			};
+			alphabetUpdate(MissionGrammarSystem.Alphabet.Connections.Select(c => c.Name).ToList());
 		}
 
 #if UNITY_EDITOR
@@ -46,20 +47,25 @@ namespace CrevoxExtend {
 			// If already exist in the dictionary, nothing happend.
 			DictionaryUpdate();
 		}
-		public static void alphabetUpdate(List<string> newAlphabet) {
+		public static bool alphabetUpdate(List<string> newAlphabet) {
+			bool result = false;
 			//Load();
 			foreach (string s in newAlphabet) {
 				if (!ReplacementAlphabet.Exists(e => (e == s))) {
 					NewPrefab("Connection_" + s);
-				}
+					result = true;
+                }
 			}
 
 			for (int i = ReplacementAlphabet.Count - 1; i >= 0; i--) {
 				if (!newAlphabet.Exists(e => (e == ReplacementAlphabet[i]))) {
 					DeletePrefab("Connection_" + ReplacementAlphabet[i]);
+					result = true;
 				}
 			}
 			Load();
+
+			return result;
 		}
 		// File IO
 		private static void NewPrefab(string fileName) {
