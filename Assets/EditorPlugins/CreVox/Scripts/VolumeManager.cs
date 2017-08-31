@@ -64,18 +64,16 @@ namespace CreVox
             }
             #endif
 
-            if ((useLocalSetting ? GenerationL : Generation) && !VolumeAdapter.CheckSetupDungeon()) {
-                CreateVolumes ();
-            }
+            CreateVolumes ();
         }
 
         public void CreateVolumes ()
         {
             for (int vi = 0; vi < dungeons.Count; vi++) {
-                GameObject volume = new GameObject (dungeons [vi].volumeData.ToString());
+                GameObject volume = new GameObject (dungeons [vi].volumeData.ToString ());
                 volume.transform.parent = transform;
-                volume.transform.localPosition = dungeons[vi].position;
-                volume.transform.localRotation = dungeons[vi].rotation;
+                volume.transform.localPosition = dungeons [vi].position;
+                volume.transform.localRotation = dungeons [vi].rotation;
                 volume.SetActive (false);
                 VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
                 vm.enabled = false;
@@ -84,7 +82,9 @@ namespace CreVox
                 vm.ArtPack = dungeons [vi].ArtPack;
                 vm.vMaterial = dungeons [vi].vMaterial;
                 volume.SetActive (true);
-                vm.Build ();
+                if ((useLocalSetting ? GenerationL : Generation) && !VolumeAdapter.CheckSetupDungeon ()) {
+                    vm.Build ();
+                }
             }
         }
 
