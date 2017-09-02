@@ -6,15 +6,13 @@ using System;
 namespace CreVox
 {
     [CustomPropertyDrawer(typeof(Node))]
-    public class DecoNodeDrawer:PropertyDrawer
+    public class NodeDrawer:PropertyDrawer
     {
-        static int showTab;
-
-        static float row = 16;
-        static float row2 = 20;
-        static float iconSize = 68;
-        static float labelW = 16;
-        static float labelWdef = EditorGUIUtility.labelWidth;
+        const float row = 16;
+        const float row2 = 19;
+        const float iconSize = 68;
+        const float labelW = 16;
+        float labelWdef = EditorGUIUtility.labelWidth;
 
         static string[] tName = new string[3]{"offset", "rotate", "scale"};
 
@@ -46,6 +44,7 @@ namespace CreVox
             var sclRX = property.FindPropertyRelative ("sclR").FindPropertyRelative ("x");
             var sclRY = property.FindPropertyRelative ("sclR").FindPropertyRelative ("y");
             var sclRZ = property.FindPropertyRelative ("sclR").FindPropertyRelative ("z");
+            var prob = property.FindPropertyRelative ("probability");
 
             EditorGUIUtility.labelWidth = 35;
             // Prefab preview
@@ -57,9 +56,9 @@ namespace CreVox
 
             // transform tab
             Rect tabRect = new Rect (p.x + iconSize + 3, p.y, p.width - iconSize - 3, row);
-            showTab = GUI.SelectionGrid (tabRect, showTab, tName, 3, "ButtonMid");
+            DecoPieceEditor.showTab = GUI.SelectionGrid (tabRect, DecoPieceEditor.showTab, tName, 3, "ButtonMid");
             tabRect.y += row2;
-            switch (showTab) {
+            switch (DecoPieceEditor.showTab) {
             case 0:
                 DrawTransform (tabRect, posX, posY, posZ, posRX, posRY, posRZ);
                 break;
@@ -70,9 +69,12 @@ namespace CreVox
                 DrawTransform (tabRect, sclX, sclY, sclZ, sclRX, sclRY, sclRZ);
                 break;
             }
-            // Set how many side can turn
+            // Set Probability & how many side can turn
             tabRect.y += row2 * 1.7f;
+            tabRect.width = tabRect.width / 2;
             EditorGUIUtility.labelWidth = 35;
+            EditorGUI.Slider (tabRect, prob, 0f, 1.0f, "Prob:");
+            tabRect.x += tabRect.width;
             rotS.intValue = EditorGUI.Popup (tabRect, "Side:", rotS.intValue, Enum.GetNames (typeof(turnSide)));
 
             EditorGUI.EndProperty ();
