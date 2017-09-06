@@ -1,18 +1,16 @@
 ﻿using UnityEngine;
-//using System.Collections;
-using System;
 using System.Collections.Generic;
+using System;
 
 namespace CreVox
 {
     [ExecuteInEditMode]
+    [Serializable]
     public class DecoPiece : LevelPiece
     {
-        public List<Decoration> decos = new List<Decoration> ();
-        public Dictionary<Decoration,List<Decoration>> trees = new Dictionary<Decoration, List<Decoration>> ();
-        public Dictionary<Decoration,List<Decoration>> randomOnes = new Dictionary<Decoration, List<Decoration>> ();
-        public Dictionary<Decoration,List<Decoration>> randomAlls = new Dictionary<Decoration, List<Decoration>> ();
-        public GameObject root = null;
+        public List<TreeElement> tree = new List<TreeElement> ();
+
+        public bool useTree = false;
 
         void Start ()
         {
@@ -21,16 +19,13 @@ namespace CreVox
 
         public override void SetupPiece(BlockItem item)
         {
-            if (root) GameObject.DestroyImmediate (root);
-            root = new GameObject ("Decoration Root");
-            root.transform.parent = transform;
-            root.transform.localPosition = Vector3.zero;
-            root.transform.localRotation = Quaternion.Euler (Vector3.zero);
-            root.transform.localScale = Vector3.one;
-
-            for (int i = 0; i < decos.Count; i++) {
-                decos [i].Generate (root);
+            if (tree.Count > 0) {
+                GameObject root = tree [0].self.instance;
+                if (root != null)
+                    GameObject.DestroyImmediate (root);
+                tree [0].Generate (gameObject, this);
             }
         }
+
     }
 }

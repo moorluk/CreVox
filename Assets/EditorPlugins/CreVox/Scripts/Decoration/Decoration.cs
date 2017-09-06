@@ -2,7 +2,6 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
-using BehaviorDesigner.Runtime.Tasks.Basic.UnityVector2;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,7 +13,8 @@ namespace CreVox
     {
         Node,
         Tree,
-        RandomOne
+        RandomOne,
+        RandomAll
     }
 
     public enum turnSide
@@ -25,31 +25,49 @@ namespace CreVox
     }
 
     [Serializable]
-    public class Decoration
+    public class TreeElement
     {
         #if UNITY_EDITOR
         public bool showNode = true;
         #endif
 
-        public int type = 0;
+        public Node parent = new Node();
+        public Node self = new Node ();
+        public List<Node> childs = new List<Node>();
 
-        public Node node = new Node ();
-        public List<Decoration> treeNodes = new List<Decoration> ();
-        public List<Decoration> selectNodes = new List<Decoration> ();
-
-        public void Generate (GameObject parent)
+        public void Generate (GameObject parent, DecoPiece rootObject)
         {
-            switch (type) {
+            switch (self.type) {
             case (int)DecoType.Node:
-                node.Generate (parent);
+                self.Generate (parent);
                 break;
             case (int)DecoType.Tree:
-                GameObject r = node.Generate (parent);
-                foreach (Decoration d in treeNodes) {
-                    d.Generate (r);
+                GameObject r = self.Generate (parent);
+                foreach (Node d in childs) {
+//                    rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (r, rootObject);
+                    rootObject.tree[d.treeIndex].Generate (r, rootObject);
                 }
                 break;
             case (int)DecoType.RandomOne:
+                foreach (Node d in childs) {
+                    float p = UnityEngine.Random.Range (0f, 1f);
+                    if (d.probability >= p) {
+//                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
+                        rootObject.tree[d.treeIndex].Generate (parent, rootObject);
+                        break;
+                    }
+                }
+                break;
+            case (int)DecoType.RandomAll:
+                int c = childs.Count;
+                for (int i = 0; i < c; i++) {
+                    Node d = childs [i] as Node;
+                    float p = UnityEngine.Random.Range (0f, 1f);
+                    if ((d.probability * (c - i) / c) >= p) {
+//                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
+                        rootObject.tree[d.treeIndex].Generate (parent, rootObject);
+                    }
+                }
                 break;
             }
         }
@@ -58,46 +76,83 @@ namespace CreVox
     [Serializable]
     public class Node
     {
-        public Node ()
-        {
-        }
+        public int id = -1;
+        public int treeIndex = -1;
 
+        public int type = 0;
         public GameObject source;
         public GameObject instance;
-
         public Vector3 pos = Vector3.zero;
         public Vector3 posR = Vector3.zero;
         public Vector3 rot = Vector3.zero;
         public Vector3 rotR = Vector3.zero;
         public Vector3 scl = Vector3.one;
         public Vector3 sclR = Vector3.zero;
-
         public turnSide rotS = turnSide.one;
-
         public float probability = 1.0f;
+
+        public void Init()
+        {
+            id = 0;
+            treeIndex = 0;
+            type = 1;
+            pos = Vector3.zero;
+            posR = Vector3.zero;
+            rot = Vector3.zero;
+            rotR = Vector3.zero;
+            scl = Vector3.one;
+            sclR = Vector3.zero;
+            rotS = turnSide.one;
+            probability = 1.0f;
+        }
+
+        public int FindListByNode(List<TreeElement> _list)
+        {
+            Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
+                return obj.self.id.Equals(this.id);
+            };
+            return _list.FindIndex(1,checkNode);
+        }
 
         public GameObject Generate (GameObject root)
         {
-            #if UNITY_EDITOR
-            instance = PrefabUtility.InstantiatePrefab (source) as GameObject;
-            #else
-            instance = GameObject.Instantiate(source);
-            #endif
+            if (source != null) {
+                #if UNITY_EDITOR
+                instance = PrefabUtility.InstantiatePrefab (source) as GameObject;
+                #else
+                instance = GameObject.Instantiate(source); 
+                #endif
+            } else {
+                instance = new GameObject (root.name + ".child");
+            }
             instance.transform.parent = root.transform;
             instance.transform.localPosition = CalculateV3 (pos, posR);
-            instance.transform.localRotation = Quaternion.Euler (CalculateV3 (rot, rotR));
+            instance.transform.localRotation = Quaternion.Euler (CalculateV3 (rot, rotR, true));
             instance.transform.localScale = CalculateV3 (scl, sclR);
 
             return instance;
         }
 
-        public Vector3 CalculateV3 (Vector3 _base, Vector3 _random)
+        private Vector3 CalculateV3 (Vector3 _base, Vector3 _random, bool _rotation = false)
         {
+            float _turn = 0;
+            if (_rotation) {
+                switch (rotS) {
+                case turnSide.two:
+                    _turn = 180 * Mathf.Floor (UnityEngine.Random.value * 2);
+                    break;
+                case turnSide.four:
+                    _turn = 90 * Mathf.Floor (UnityEngine.Random.value * 4);
+                    break;
+                default:
+                    break;
+                }
+            }
             UnityEngine.Random.InitState (System.Guid.NewGuid ().GetHashCode ());
             Vector3 v = new Vector3 (
-                _base.x + UnityEngine.Random.Range (-_random.x, _random.x),
-                _base.y + UnityEngine.Random.Range (-_random.y, _random.y),
-                _base.z + UnityEngine.Random.Range (-_random.z, _random.z)
+                            _base.x + UnityEngine.Random.Range (-_random.x, _random.x),
+                            _base.y + UnityEngine.Random.Range (-_random.y, _random.y) + _turn,
+                            _base.z + UnityEngine.Random.Range (-_random.z, _random.z)
                         );
             return v;
         }

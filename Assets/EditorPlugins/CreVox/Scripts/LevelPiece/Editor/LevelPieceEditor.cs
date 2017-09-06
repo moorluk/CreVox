@@ -63,6 +63,7 @@ namespace CreVox
                     EditorGUI.EndDisabledGroup ();
                 }
             }
+            EditorGUILayout.Separator ();
 		}
 
         public virtual void OnEditorGUI(ref BlockItem item)

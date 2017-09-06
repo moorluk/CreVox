@@ -401,11 +401,9 @@ namespace CreVox
 			while (pPath != PathCollect.pieces) {
 				PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
 				for (int p = 0; p < _parent.Length; p++) {
-					bool _finded = false;
 					for (int c = 0; c < _child.Length; c++) {
 						if (_child [c].name == _parent [p].name) {
 							_parent.SetValue (_child [c], p);
-							_finded = true;
 							break;
 						}
 					}

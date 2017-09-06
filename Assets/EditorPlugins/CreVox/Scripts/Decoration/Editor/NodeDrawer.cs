@@ -8,13 +8,14 @@ namespace CreVox
     [CustomPropertyDrawer(typeof(Node))]
     public class NodeDrawer:PropertyDrawer
     {
+        static int showTab;
+        static string[] tName = new string[3]{"offset", "rotate", "scale"};
+
         const float row = 16;
         const float row2 = 19;
         const float iconSize = 68;
         const float labelW = 16;
         float labelWdef = EditorGUIUtility.labelWidth;
-
-        static string[] tName = new string[3]{"offset", "rotate", "scale"};
 
         public override void OnGUI (Rect position, SerializedProperty property, GUIContent label)
         {
@@ -56,9 +57,9 @@ namespace CreVox
 
             // transform tab
             Rect tabRect = new Rect (p.x + iconSize + 3, p.y, p.width - iconSize - 3, row);
-            DecoPieceEditor.showTab = GUI.SelectionGrid (tabRect, DecoPieceEditor.showTab, tName, 3, "ButtonMid");
+            showTab = GUI.SelectionGrid (tabRect, showTab, tName, 3, "ButtonMid");
             tabRect.y += row2;
-            switch (DecoPieceEditor.showTab) {
+            switch (showTab) {
             case 0:
                 DrawTransform (tabRect, posX, posY, posZ, posRX, posRY, posRZ);
                 break;

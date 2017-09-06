@@ -1,15 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System.IO;
-using UnityEditorInternal;
-using System.ComponentModel;
 using System;
-using System.Runtime.Remoting;
-using BehaviorDesigner.Runtime.Tasks.Basic.UnityCapsuleCollider;
-using BehaviorDesigner.Runtime.Tasks.Basic.UnityDebug;
-using TreeEditor;
-using EditorExtend;
-using UnityEditor.Graphs;
+using System.Collections.Generic;
 
 namespace CreVox
 {
@@ -20,177 +12,204 @@ namespace CreVox
         DecoPiece dp;
         GameObject tempObjold;
         SerializedProperty decos;
-        //ReorderableList
-        private ReorderableList list_Nodes;
+        SerializedProperty tree;
 
         void OnEnable ()
         {
             dp = (DecoPiece)target;
-            decos = serializedObject.FindProperty ("decos");
-            //ReorderableList
-            list_Nodes = GenerateList (serializedObject, decos, "Decoration");
+            tree = serializedObject.FindProperty ("tree");
+            ClearTree ();
         }
 
         public override void OnInspectorGUI ()
         {
-            serializedObject.Update ();
             EditorGUI.BeginChangeCheck ();
+            serializedObject.Update ();
             DrawInspector ();
 
-            EditorGUILayout.Separator ();
-            EditorGUILayout.LabelField ("Decoration Object", EditorStyles.boldLabel);
+            using (var h = new EditorGUILayout.HorizontalScope ()) {
+                EditorGUILayout.LabelField ("Decoration Object", EditorStyles.boldLabel,GUILayout.Width (Screen.width - 120));
+                if (GUILayout.Button ("Test")) {
+                    dp.SetupPiece (null);
+                }
+                if (GUILayout.Button ("Clear")) {
+                    ClearTree ();
+                }
+            }
 
-            DrawList (decos);
+            // trees
+            if (GUILayout.Button ("Init")) {
+                InitTree();
+            }
+            if (dp.tree.Count > 0) {
+                DrawTree (dp.tree [0], tree.GetArrayElementAtIndex (0).FindPropertyRelative ("childs"));
+            }
 
-            //ReorderableList
-//            EditorGUILayout.Space();
-//            list_Nodes.DoLayoutList();
-
+            serializedObject.ApplyModifiedProperties ();
             if (EditorGUI.EndChangeCheck ()) {
+                UpdateTreeIndex ();
                 EditorUtility.SetDirty (dp);
             }
-            serializedObject.ApplyModifiedProperties ();
         }
 
-        private void DrawList(SerializedProperty list)
+        private void DrawTree(TreeElement _te,SerializedProperty _childs)
         {
-            EditorGUI.indentLevel++;
             int indentTemp = EditorGUI.indentLevel;
-            using (var v = new EditorGUILayout.VerticalScope ("RL Background", GUILayout.Height(16))) {
-                for (int i = 0; i < list.arraySize; i++) {
-                    var d = list.GetArrayElementAtIndex (i); 
-                    var type = d.FindPropertyRelative ("type");
-                    var showNode = d.FindPropertyRelative ("showNode");
-                    var source = d.FindPropertyRelative ("node.source");
-
-                    //Draw First Line of ListMember
-                    EditorGUI.indentLevel = 0;
-                    using (var h = new EditorGUILayout.HorizontalScope ()) {
-                        showNode.boolValue = EditorGUILayout.Toggle (showNode.boolValue, "foldout", GUILayout.Width (12));
-                        EditorGUILayout.PropertyField (source, GUIContent.none);
-                        type.intValue = EditorGUILayout.Popup (type.intValue, Enum.GetNames (typeof(DecoType)), GUILayout.Width (80));
+            using (var v = new EditorGUILayout.VerticalScope ("RL Background", GUILayout.Height (16))) {
+                for (int i = 0; i < _te.childs.Count; i++) {
+                    //search Tree to get TreeElement & index
+                    int tIndex = _te.childs [i].FindListByNode (dp.tree);
+                    if (tIndex < 0) {
+                        Debug.LogError (i.ToString () + " : " + _te.childs [i].treeIndex);
+                        return;
                     }
 
-                    //Draw Content of ListMember
-                    EditorGUI.indentLevel ++;
-                    bool useNode = false, useTree = false, useROne = false;
+                    var c = tree.GetArrayElementAtIndex (tIndex);
+                    var showNode = c.FindPropertyRelative ("showNode");
+                    var treeIndex = c.FindPropertyRelative ("self.treeIndex");
+                    var type = c.FindPropertyRelative ("self.type");
+                    var source = c.FindPropertyRelative ("self.source");
+                    var instance = c.FindPropertyRelative ("self.instance");
+
+                    //Draw First Line of TreeElement
+                    using (var h = new EditorGUILayout.HorizontalScope ()) {
+                        showNode.boolValue = EditorGUILayout.Toggle (showNode.boolValue, "foldout", GUILayout.Width (12));
+                        int indentTemp2 = EditorGUI.indentLevel;
+                        EditorGUI.indentLevel = 0;
+                        treeIndex.intValue = tIndex;
+                        GUILayout.Label (treeIndex.intValue.ToString (), GUILayout.Width (12));
+                        switch (type.intValue) {
+                        default:
+                            Color _color = GUI.color;
+                            if (instance.objectReferenceValue != null)
+                                GUI.color = Color.green;
+                            EditorGUILayout.PropertyField (source, GUIContent.none);
+                            GUI.color = _color;
+                            break;
+                        case (int)DecoType.RandomOne:
+                        case (int)DecoType.RandomAll:
+                            GUILayout.Label ("   ▼  ▼  ▼", EditorStyles.objectField);
+                            break;
+                        }
+                        type.intValue = EditorGUILayout.Popup (type.intValue, Enum.GetNames (typeof(DecoType)), GUILayout.Width (80));
+                        EditorGUI.indentLevel = indentTemp2;
+                    }
+
+                    //Draw Content of TreeElement
+                    bool sub = false, useNode = false;
                     if (showNode.boolValue) {
                         switch (type.intValue) {
                         case (int)DecoType.Node:
                             useNode = true;
                             break;
-
                         case (int)DecoType.Tree:
                             useNode = true;
-                            useTree = true;
+                            sub = true;
                             break;
-
                         case (int)DecoType.RandomOne:
-                            useROne = true;
+                        case (int)DecoType.RandomAll:
+                            sub = true;
                             break;
-
                         default:
                             break;
                         }
 
-                        if (useNode)
-                            EditorGUILayout.PropertyField (d.FindPropertyRelative ("node"));
                         EditorGUILayout.BeginHorizontal ();
-                        if (useTree || useROne)
-                            EditorGUILayout.LabelField (GUIContent.none, GUILayout.Width (EditorGUI.indentLevel * 12));
-                        EditorGUILayout.BeginVertical ();
-                        if (useTree)
-                            DrawList (d.FindPropertyRelative ("treeNodes"));
-                        if (useROne)
-                            DrawList (d.FindPropertyRelative ("selectNodes"));
-                        EditorGUILayout.EndVertical ();
+                        float indentW = (EditorGUI.indentLevel + 1) * 15 + 5;
+                        using (var v2_1 = new EditorGUILayout.VerticalScope (GUILayout.Width (indentW))) {
+                            GUILayout.Space(3);
+                            EditorGUI.BeginDisabledGroup (i == 0);
+                            if (GUILayout.Button ("▲", "ButtonMid", GUILayout.Width (indentW))) {
+                                _te.childs.Reverse (i - 1, 2);
+                            }
+                            EditorGUI.EndDisabledGroup ();
+                            EditorGUI.BeginDisabledGroup (i == _te.childs.Count - 1);
+                            if (GUILayout.Button ("▼", "ButtonMid", GUILayout.Width (indentW))) {
+                                _te.childs.Reverse (i, 2);
+                            }
+                            EditorGUI.EndDisabledGroup ();
+                        }
+                        using (var v2_2 = new EditorGUILayout.VerticalScope (GUILayout.Height (5))) {
+                            if (useNode) {
+                                EditorGUILayout.PropertyField (c.FindPropertyRelative ("self"));
+                            }
+                            if (sub) {
+                                TreeElement t = dp.tree [tIndex];
+                                DrawTree (t, c.FindPropertyRelative ("childs"));
+                            }
+                        }
                         EditorGUILayout.EndHorizontal ();
                     }
-                    EditorGUI.indentLevel = 1;
 
                     //Draw End of ListMember
-                    EditorGUILayout.LabelField (GUIContent.none, "WindowBottomResize", GUILayout.Height (12));
+                    EditorGUILayout.LabelField (GUIContent.none, "WindowBottomResize", GUILayout.Height (10));
                 }
-                EditorGUILayout.Space ();
+                GUILayout.Space (5);
             }
 
             //Draw List Footer
-            int _arrayEnd = (list.arraySize < 1) ? 0 : list.arraySize - 1;
-            EditorGUI.indentLevel = 0;
-            EditorGUILayout.LabelField (GUIContent.none, GUILayout.Height (-8), GUILayout.Width(60));
-            Rect r = EditorGUILayout.GetControlRect (false);
-            r = new Rect (r.x, r.y + 4, 60, 8);
-            GUI.Label (r, GUIContent.none, "RL Footer");
-            r = new Rect (r.x + 7, r.y - 4, 30, 16);
-            if (GUI.Button (r, GUIContent.none, "OL Plus"))
-                list.InsertArrayElementAtIndex (_arrayEnd);
-            r.x += r.width;
-            if (GUI.Button (r, GUIContent.none, "OL Minus"))
-                list.DeleteArrayElementAtIndex (_arrayEnd);
+            using (var v = new EditorGUILayout.VerticalScope (GUILayout.Height (0))) {
+                Rect r = EditorGUI.IndentedRect (EditorGUILayout.GetControlRect ());
+                r = new Rect (r.x - 4, r.y - 2, 60, 8);
+                GUI.Label (r, GUIContent.none, "RL Footer");
+                r = new Rect (r.x + 7, r.y - 3, 16, 16);
+                if (GUI.Button (r, GUIContent.none, "OL Plus")) {
+                    TreeElement newT = new TreeElement ();
+                    newT.parent = _te.self;
+                    newT.self.id = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+                    dp.tree.Add (newT);
+                    _te.childs.Add (newT.self);
+                }
+                r.x += 30;
+                if (GUI.Button (r, GUIContent.none, "OL Minus") && _childs.arraySize > 0) {
+                    RemoveElement (_te.childs, _childs);
+                    return;
+                }
+            }
             EditorGUI.indentLevel = indentTemp;
         }
 
-        //ReorderableList
-        public ReorderableList GenerateList(SerializedObject so,SerializedProperty sp, string header)
+        private void UpdateTreeIndex()
         {
-            ReorderableList list = new ReorderableList (so, sp,true,true,true,true);
-
-            list.drawHeaderCallback = (Rect rect) => {EditorGUI.LabelField (rect, header);};
-
-            list.elementHeightCallback = (int index) => {
-                var d = sp.GetArrayElementAtIndex (index);
-                var type = d.FindPropertyRelative ("type");
-
-                var showNode = d.FindPropertyRelative ("showNode");
-                float h = 45.0f + (showNode.boolValue ? 65.0f : 0f);
-
-                switch (type.intValue) {
-                case (int)DecoType.Tree:
-                    float h_t = 0f;
-                    for (int i = 0; i < sp.arraySize; i++){
-                    
-                    }
-                    h += h_t;
-                    break;
-                case (int)DecoType.    RandomOne:
-                    float h_rs = 0f;
-                    h += h_rs;
-                    break;
-                default:
-                    break;
-                }
-                return h;
-            };
-
-            list.drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => {
-                SerializedProperty d = sp.GetArrayElementAtIndex (index);
-                SerializedProperty type = d.FindPropertyRelative ("type");
-
-                var showNode = d.FindPropertyRelative ("showNode");
-                float h = 20.0f + (showNode.boolValue ? 65.0f : 0f);
-
-                //EditorGUI.PropertyField (rect, type, GUIContent.none);
-                type.intValue = (int)EditorGUI.Popup(new Rect(rect.x, rect.y, rect.width,16), type.intValue, Enum.GetNames (typeof(DecoType)));
-                rect.y += 16;
-                switch (type.intValue) {
-                case (int)DecoType.Node:
-                    EditorGUI.PropertyField (rect, d.FindPropertyRelative ("node"));
-                    break;
-                case (int)DecoType.Tree:
-                    EditorGUI.PropertyField (rect, d.FindPropertyRelative ("node"));
-                    rect.y += h;
-                    SerializedProperty tree_sp = d.FindPropertyRelative ("treeNodes");
-                    SerializedObject tree_so = tree_sp.serializedObject;
-                    ReorderableList rootList = GenerateList(tree_so, tree_sp, header +"(" + index + ")/");
-                    rootList.DoLayoutList();
-                    //rootList.DoList(EditorGUI.IndentedRect(rect));
-                    break;
-                case (int)DecoType.    RandomOne:
-                    EditorGUI.PropertyField (rect, d.FindPropertyRelative ("node"));
-                    break;
-                }
-            };
-            return list;
+            for (int i = 0; i < dp.tree.Count; i++) {
+                dp.tree [i].self.treeIndex = i;
+            }
         }
+
+        private void InitTree()
+        {
+            dp.tree.Clear ();
+            dp.tree.Add (new TreeElement ());
+            dp.tree [0].self.Init ();
+            serializedObject.Update ();
+        }
+
+        private void ClearTree()
+        {
+            if (dp.tree [0].self.instance)
+                GameObject.DestroyImmediate (dp.tree [0].self.instance);
+            foreach (TreeElement te in dp.tree) {
+                te.self.instance = null;
+            }
+        }
+
+        private void RemoveElement(List<Node> _childs, SerializedProperty _childsProp)
+        {
+            if (_childs.Count == 0)
+                return;
+            int workingtreeIndex = _childs [_childs.Count - 1].FindListByNode (dp.tree);
+            List<Node> _eChilds = dp.tree [workingtreeIndex].childs;
+            SerializedProperty _eChildsProp = tree.GetArrayElementAtIndex (workingtreeIndex).FindPropertyRelative ("childs");
+            while (_eChilds.Count > 0) {
+                RemoveElement (_eChilds, _eChildsProp);
+            }
+            Debug.Log ("Remove tree : " + workingtreeIndex);
+            dp.tree.RemoveAt(workingtreeIndex);
+            _childs.RemoveAt (_childs.Count - 1);
+            serializedObject.ApplyModifiedProperties ();
+        }
+
+
     }
+
 }
