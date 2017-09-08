@@ -153,13 +153,13 @@ namespace CrevoxExtend {
 				} else {
 					// If there is no starting node then find connections. 
 					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
-					Debug.Log(newConnections.Count);
 				}
-				foreach (var newConnection in newConnections) {
+				foreach (var newConnection in newConnections.OrderBy(c => UnityEngine.Random.value)) {
 					// Get connection from the start node
 					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
 						// Ignore used or type-error connection. 
 						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
+						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name != connection.connectionName) { continue; }
 						// Combine.
 						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
 							// If Success, add this VData to the state
