@@ -35,6 +35,7 @@ namespace CreVox
 		public MarkerType markType = MarkerType.Item;
 		public string itemName = "";
         public LevelPiece inspectedScript;
+        public string assetPath;
 
         // Use this for initialization
         //		void Start()

@@ -17,6 +17,18 @@ namespace CreVox
 
 		WorldPos workpos;
 
+        public struct TranslatedGo
+        {
+            public GameObject go;
+            public WorldPos gPos;
+        }
+
+        public struct SelectedBlock
+        {
+            public Vector3 pos;
+            public Block block;
+        }
+
 		private void OnEnable ()
 		{
             volume = (Volume)target;
@@ -184,7 +196,9 @@ namespace CreVox
 		private void OnSceneGUI ()
 		{
 			ModeHandler ();
+            DrawSelected();
 			DrawModeGUI ();
+
 			EventHandler ();
 		}
 
@@ -208,7 +222,28 @@ namespace CreVox
 				_itemInspected = null;
 				Repaint ();
 			}
-		}
+        }
+
+        void DrawSelected()
+        {
+            Color old = Handles.color;
+            Handles.color = selectedColor;
+            VGlobal vg = VGlobal.GetSetting ();
+            float width = vg.w;
+            float height = vg.h;
+            float depth = vg.d;
+
+            int count = m_selectedBlocks.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                float x = m_selectedBlocks[i].x * width;
+                float y = m_selectedBlocks[i].y * height;
+                float z = m_selectedBlocks[i].z * depth;
+                Handles.DrawWireCube (new Vector3(x, y, z), new Vector3 (width, height, depth));
+            }
+
+            Handles.color = old;
+        }
 
 		private void DrawModeGUI ()
 		{
@@ -238,6 +273,7 @@ namespace CreVox
 			GUILayout.EndArea ();
 			
 			DrawLayerModeGUI ();
+            DrawSelectedGUI();
 			Handles.EndGUI ();
 		}
 
@@ -560,6 +596,11 @@ namespace CreVox
 		private int fixCutY = 0;
         private bool m_mappingX = false;
         private bool m_mappingZ = false;
+        private Vector3 m_selectedMin;
+        private Vector3 m_selectedMax;
+        private Color selectedColor = Color.red;
+        private List<Vector3> m_selectedBlocks = new List<Vector3>();
+        private Vector3 m_translate;
         private void DrawLayerModeGUI ()
 		{
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
@@ -603,6 +644,37 @@ namespace CreVox
                 }
 			}
 		}
+
+        private void DrawSelectedGUI ()
+        {
+            GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
+
+            float bwidth = 70f;
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 155f, 250f, 150f), "", EditorStyles.textArea)) {
+                GUI.color = Color.white;
+                using (var h = new GUILayout.VerticalScope ()) {
+                    m_selectedMin = EditorGUILayout.Vector3Field("min", m_selectedMin);
+                    m_selectedMax = EditorGUILayout.Vector3Field("max", m_selectedMax);
+
+                    GUI.color = selectedColor;
+                    using (var v = new GUILayout.HorizontalScope ()) {
+                        if ( GUILayout.Button ("Add", GUILayout.Width (45)) )
+                            HotkeyFunction ("Add");
+                        if ( GUILayout.Button ("Remove", GUILayout.Width (60)) )
+                            HotkeyFunction ("Remove");
+                    }
+                    GUI.color = Color.white;
+
+                    m_translate = EditorGUILayout.Vector3Field("translate", m_translate);
+                    using (var v = new GUILayout.HorizontalScope ()) {
+                        if (GUILayout.Button("Translate", GUILayout.Width(70)))
+                            HotkeyFunction("Translate");
+                        if (GUILayout.Button("Copy", GUILayout.Width(70)))
+                            HotkeyFunction("Copy");
+                    }
+                }
+            }
+        }
 
 		private PaletteItem _itemSelected;
 		private Texture2D _itemPreview;
@@ -820,11 +892,37 @@ namespace CreVox
 					volume.ChangeCutY (fixCutY);
 					fixCutY = volume.cutY;
 				}
-				break;
+                break;
 
-			}
+            case "Add":
+                if (_hotkey) {
+                    VolumeHelper.SelectedAdd(ref m_selectedBlocks, m_selectedMin, m_selectedMax);
+                }
+                break;
+
+            case "Remove":
+                if (_hotkey) {
+                    VolumeHelper.SelectedRemove(ref m_selectedBlocks, m_selectedMin, m_selectedMax);
+                }
+                break;
+            
+            case "Translate":
+                if (_hotkey) {
+                    Translate();
+                    EditorUtility.SetDirty (volume.vd);
+                }
+                break;
+
+            case "Copy":
+                if (_hotkey) {
+                    Translate(false);
+                    EditorUtility.SetDirty (volume.vd);
+                }
+                break;
+
 			if (_hotkey)
 				Event.current.Use ();
+            }
 		}
 
         void CalculateBlockHold ()
@@ -911,6 +1009,239 @@ namespace CreVox
 				_chunk.cData = newChunkData;
 			}
 		}
+
+        public void Translate(bool a_cut = true)
+        {
+            List<SelectedBlock> translatedBlocks = new List<SelectedBlock> ();
+            List<TranslatedGo> translatedObjects = new List<TranslatedGo> ();
+
+            CopyObjectAndBlock(ref translatedObjects, ref translatedBlocks, a_cut);
+
+            TranslateBlock(translatedBlocks);
+            TranslateObject(translatedObjects);
+        }
+
+        void CopyObjectAndBlock(ref List<TranslatedGo> a_objects, ref  List<SelectedBlock> a_blocks, bool a_cut)
+        {
+            int count = m_selectedBlocks.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 pos = m_selectedBlocks[i];
+                SelectedBlock sb;
+                sb.pos = pos;
+
+                Block block = volume.GetBlock( (int)pos.x, (int)pos.y, (int)pos.z);
+                Chunk chunk = volume.GetChunk ( (int)pos.x, (int)pos.y, (int)pos.z);
+
+                if (chunk != null)
+                {
+                    WorldPos chunkBlockPos = new WorldPos ((int)pos.x, (int)pos.y, (int)pos.z);
+                    bool objectPlaced = false;
+                    for (int r = 0; r <= 8; ++r) {
+                        WorldPos gPos = new WorldPos (r % 3, 0, (int)(r / 3));
+                        GameObject go = volume.CopyPiece(chunkBlockPos, gPos, a_cut);
+                        if (go != null)
+                        {
+                            TranslatedGo tg;
+                            tg.go = go;
+                            tg.gPos = gPos;
+                            a_objects.Add(tg);
+
+                            objectPlaced = true;
+                        }
+                    }
+
+                    if (block != null)
+                    {
+                        if (objectPlaced == false)
+                        {
+                            sb.block = new Block (block);
+                            a_blocks.Add(sb);
+                        }
+
+                        if (a_cut)
+                        {
+                            switch (block.GetType().ToString())
+                            {
+                            case "CreVox.BlockAir":
+                                List<BlockAir> bAirs = chunk.cData.blockAirs;
+                                for (int j = bAirs.Count - 1; j > -1; j--)
+                                {
+                                    if (bAirs[j].BlockPos.Compare(chunkBlockPos))
+                                        bAirs.RemoveAt(j);
+                                }
+                                break;
+                            case "CreVox.BlockHold":
+                                List<BlockHold> bHolds = chunk.cData.blockHolds;
+                                for (int j = bHolds.Count - 1; j > -1; j--)
+                                {
+                                    if (bHolds[j].BlockPos.Compare(chunkBlockPos))
+                                        bHolds.RemoveAt(j);
+                                }
+                                break;
+                            case "CreVox.Block":
+                                List<Block> blocks = chunk.cData.blocks;
+                                for (int j = blocks.Count - 1; j > -1; j--)
+                                {
+                                    if (blocks[j].BlockPos.Compare(chunkBlockPos))
+                                        blocks.RemoveAt(j);
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+                if (block == null)
+                {
+                    sb.block = null;
+                    a_blocks.Add(sb);
+                }
+            }
+        }
+
+        void TranslateBlock(List<SelectedBlock> a_blocks)
+        {
+            int translateX = (int)m_translate.x;
+            int translateY = (int)m_translate.y;
+            int translateZ = (int)m_translate.z;
+
+            int count = a_blocks.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 pos = a_blocks[i].pos;
+                Block _block = a_blocks[i].block;
+
+                Block oldBlock = volume.GetBlock((int)pos.x + translateX, (int)pos.y + translateY, (int)pos.z + translateZ);
+                Chunk chunk = volume.GetChunk((int)pos.x + translateX, (int)pos.y + translateY, (int)pos.z + translateZ);
+                if (chunk != null)
+                {
+                    WorldPos chunkBlockPos = new WorldPos ((int)pos.x + translateX - chunk.cData.ChunkPos.x,
+                        (int)pos.y + translateY - chunk.cData.ChunkPos.y,
+                        (int)pos.z + translateZ - chunk.cData.ChunkPos.z);
+                    if (_block != null)
+                    {
+                        _block.BlockPos = chunkBlockPos;
+                        Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
+                            return b.BlockPos.Compare(chunkBlockPos);
+                        };
+                        switch (_block.GetType().ToString())
+                        {
+                        case "CreVox.BlockAir":
+                            if (!chunk.cData.blockAirs.Exists(sameBlockAir))
+                            {
+                                chunk.cData.blockAirs.Add(_block as BlockAir);
+                            }
+                            break;
+                        case "CreVox.BlockHold":
+                            Predicate<BlockHold> sameBlockHold = delegate(BlockHold b) {
+                                return b.BlockPos.Compare(chunkBlockPos);
+                            };
+                            if (!chunk.cData.blockHolds.Exists(sameBlockHold))
+                            {
+                                chunk.cData.blockHolds.Add(_block as BlockHold);
+                            }
+                            break;
+                        case "CreVox.Block":
+                            Predicate<Block> sameBlock = delegate(Block b) {
+                                return b.BlockPos.Compare(chunkBlockPos);
+                            };
+                            if (chunk.cData.blockAirs.Exists(sameBlockAir))
+                            {
+                                BlockAir ba = oldBlock as BlockAir;
+                                for (int j = 0; j < 8; j++)
+                                {
+                                    volume.PlacePiece(ba.BlockPos, new WorldPos (j % 3, 0, (int)(j / 3)), null);
+                                }
+                            }
+                            if (!chunk.cData.blocks.Exists(sameBlock))
+                            {
+                                chunk.cData.blocks.Add(_block);
+                            }
+                            break;
+                        }
+                    }
+                    else if (oldBlock != null)
+                    {
+                        switch (oldBlock.GetType().ToString())
+                        {
+                        case "CreVox.BlockAir":
+                            List<BlockAir> bAirs = chunk.cData.blockAirs;
+                            for (int j = bAirs.Count - 1; j > -1; j--)
+                            {
+                                if (bAirs[j].BlockPos.Compare(chunkBlockPos))
+                                    bAirs.RemoveAt(j);
+                            }
+                            break;
+                        case "CreVox.BlockHold":
+                            List<BlockHold> bHolds = chunk.cData.blockHolds;
+                            for (int j = bHolds.Count - 1; j > -1; j--)
+                            {
+                                if (bHolds[j].BlockPos.Compare(chunkBlockPos))
+                                    bHolds.RemoveAt(j);
+                            }
+                            break;
+                        case "CreVox.Block":
+                            List<Block> blocks = chunk.cData.blocks;
+                            for (int j = blocks.Count - 1; j > -1; j--)
+                            {
+                                if (blocks[j].BlockPos.Compare(chunkBlockPos))
+                                    blocks.RemoveAt(j);
+                            }
+                            break;
+
+                        }
+                    }
+
+                    chunk.UpdateChunk ();
+                }
+            }
+        }
+
+        void TranslateObject(List<TranslatedGo> objects)
+        {
+            int count = objects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                TranslatedGo tg = objects[i];
+
+                Vector3 goPos = tg.go.transform.position;
+                WorldPos gPos = tg.gPos;
+
+                Vector3 pos = Volume.GetPieceOffset(gPos.x, gPos.z);
+                VGlobal vg = VGlobal.GetSetting();
+
+                WorldPos bPos;
+                bPos.x = (int)((goPos.x - pos.x) / vg.w);
+                bPos.y = (int)((goPos.y - pos.y) / vg.h);
+                bPos.z = (int)((goPos.z - pos.z) / vg.d);
+
+                volume.RemoveNode (bPos);
+            }
+            for (int i = 0; i < count; ++i)
+            {
+                TranslatedGo tg = objects[i];
+                LevelPiece lp = tg.go.GetComponent<LevelPiece>();
+                if (lp != null)
+                {
+                    Vector3 goPos = tg.go.transform.position;
+                    WorldPos gPos = tg.gPos;
+
+                    Vector3 pos = Volume.GetPieceOffset(gPos.x, gPos.z);
+                    VGlobal vg = VGlobal.GetSetting();
+
+                    WorldPos bPos;
+                    bPos.x = Mathf.RoundToInt((goPos.x - pos.x) / vg.w + m_translate.x);
+                    bPos.y = Mathf.RoundToInt((goPos.y - pos.y) / vg.h + m_translate.y);
+                    bPos.z = Mathf.RoundToInt((goPos.z - pos.z) / vg.d + m_translate.z);
+                    volume.PlacePiece(bPos, gPos, lp, false);
+
+                    Chunk chunk = volume.GetChunk(bPos.x, bPos.y, bPos.z);
+                    chunk.UpdateChunk ();
+                }
+            }
+        }
 		#endregion
 
 		#region SubscribeEvents

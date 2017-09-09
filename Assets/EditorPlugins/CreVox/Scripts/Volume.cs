@@ -370,6 +370,24 @@ namespace CreVox
             return isEmpty;
         }
 
+        public void RemoveNode (WorldPos bPos)
+        {
+            for (int i = 0; i < vd.blockItems.Count; ++i)
+            {
+                BlockItem blockItem = vd.blockItems[i];
+                if ( blockItem.BlockPos.Equals(bPos) )
+                {
+                    itemNodes.Remove(blockItem);
+                    vd.blockItems.RemoveAt(i);
+
+                    if (nodes.ContainsKey (bPos)) {
+                        nodes[bPos].pieces[i] = null;
+                    }
+                    break;
+                }
+            }
+        }
+
         PaletteItem[] itemArray = new PaletteItem[0];
         GameObject itemRoot;
         Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject>();
@@ -541,7 +559,7 @@ namespace CreVox
             }
         }
 
-        public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece)
+        public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, bool isNew = true)
         {
             Block block = GetBlock (bPos.x, bPos.y, bPos.z);
             BlockAir blockAir = null;
@@ -572,7 +590,14 @@ namespace CreVox
                 }
 
                 #if UNITY_EDITOR
-                pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
+                if (isNew)
+                {
+                    pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
+                }
+                else
+                {
+                    pObj = _piece.gameObject;
+                }
                 #else
                 pObj = GameObject.Instantiate(_piece.gameObject);
                 #endif
@@ -618,6 +643,41 @@ namespace CreVox
                 if(RemoveNodeIfIsEmpty (bPos))
                     SetBlock(bPos.x, bPos.y, bPos.z, null);
             }
+        }
+
+        public GameObject CopyPiece (WorldPos bPos, WorldPos gPos, bool a_cut)
+        {
+            Block block = GetBlock (bPos.x, bPos.y, bPos.z);
+            BlockAir blockAir = null;
+            int id = gPos.z * 3 + gPos.x;
+            GameObject pObj = null;
+
+            if ( nodes.ContainsKey(bPos) && nodes [bPos].pieces.Length > id )
+            {
+                pObj = nodes [bPos].pieces [id];
+
+                if (pObj != null)
+                {
+                    Vector3 pos = pObj.transform.position;
+                    PaletteItem pi = pObj.GetComponent<PaletteItem>();
+                    if (pi != null)
+                    {
+                        GameObject asset = AssetDatabase.LoadAssetAtPath( pi.assetPath,
+                            typeof(GameObject) ) as GameObject;
+                        pObj = PrefabUtility.InstantiatePrefab(asset) as GameObject;
+                        pObj.transform.parent = nodeRoot.transform;
+                        pObj.transform.position = pos;
+                    }
+
+                    if (a_cut)
+                    {
+                        GameObject.DestroyImmediate(nodes[bPos].pieces[id]);
+                        nodes[bPos].pieces[id] = null;
+                    }
+                }
+            }
+
+            return pObj;
         }
 
         static GameObject _missing;

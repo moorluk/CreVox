@@ -1,4 +1,7 @@
-﻿
+﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace CreVox
 {
     public class VolumeHelper
@@ -63,6 +66,36 @@ namespace CreVox
             if (a_mappingX && mPos.x != a_position.x && mPos.z == a_position.z)
             {
                 a_v.SetBlock(mPos.x, mPos.y, mPos.z, a_erase ? null : new Block());
+            }
+        }
+
+        public static void SelectedAdd(ref List<Vector3> a_blocks, Vector3 a_min, Vector3 a_max)
+        {
+            List<Vector3> added = new List<Vector3> ();
+            for (int x = (int)a_min.x; x <= (int)a_max.x; ++x)
+            {
+                for (int y = (int)a_min.y; y <= (int)a_max.y; ++y)
+                {
+                    for (int z = (int)a_min.z; z <= (int)a_max.z; ++z)
+                    {
+                        added.Add( new Vector3 (x, y, z) );
+                    }
+                }
+            }
+
+            a_blocks = a_blocks.Union(added).ToList();
+        }
+
+        public static void SelectedRemove(ref List<Vector3> a_blocks, Vector3 a_min, Vector3 a_max)
+        {
+            int last = a_blocks.Count - 1;
+            for (int i = last; i >= 0; --i)
+            {
+                if (a_blocks[i].x >= (int)a_min.x && a_blocks[i].y >= (int)a_min.y && a_blocks[i].z >= (int)a_min.z &&
+                    a_blocks[i].x <= (int)a_max.x && a_blocks[i].y <= (int)a_max.y && a_blocks[i].z <= (int)a_max.z)
+                {
+                    a_blocks.RemoveAt(i);
+                }
             }
         }
     }

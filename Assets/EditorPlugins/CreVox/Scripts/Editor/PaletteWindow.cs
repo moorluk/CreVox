@@ -90,6 +90,7 @@ namespace CreVox
 			}
 			// Assign items to each category
 			foreach (PaletteItem item in _items) {
+                item.assetPath = AssetDatabase.GetAssetPath(item);
 				_categorizedItems [item.category].Add (item);
 			}
 		}
