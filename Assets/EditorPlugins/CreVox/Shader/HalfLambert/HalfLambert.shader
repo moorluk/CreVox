@@ -1,4 +1,4 @@
-﻿Shader "HalfLambert"
+﻿Shader "CreVox/HalfLambert/HalfLambert"
 {
     Properties
     {
@@ -7,7 +7,7 @@
         
         _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
 
-        _Glossiness("Smoothness", Range(0.0, 1.0)) = 0.5
+        _Glossiness("Smoothness", Range(0.01, 1.0)) = 0.5
         _GlossMapScale("Smoothness Factor", Range(0.0, 1.0)) = 1.0
         [Enum(Specular Alpha,0,Albedo Alpha,1)] _SmoothnessTextureChannel ("Smoothness texture channel", Float) = 0
 
@@ -47,7 +47,14 @@
     }
 
     CGINCLUDE
+#include "UnityShaderVariables.cginc"
+#include "UnityStandardConfig.cginc"
+#include "UnityLightingCommon.cginc"
+#include "UnityGBuffer.cginc"
+#include "UnityGlobalIllumination.cginc"
+    #include "UnityPBSLighting.cginc"
         #define UNITY_SETUP_BRDF_INPUT SpecularSetup
+        #define UNITY_BRDF_PBS fakeBRDF
     ENDCG
 
 //-------------------------------------------------------------------------------------
@@ -59,7 +66,6 @@
         CGPROGRAM
 
         #pragma surface surf Half fullforwardshadows 
-
         #pragma target 3.0
 
         fixed4 _Color;
@@ -74,70 +80,11 @@
         sampler2D _EmissionMap;
         fixed4 _EmissionColor;
 
-//-------------------------------------------------------------------------------------
-// Default BRDF to use:
-        #if !defined (UNITY_BRDF_PBS) // allow to explicitly override BRDF in custom shader
-            // still add safe net for low shader models, otherwise we might end up with shaders failing to compile
-            #if SHADER_TARGET < 30
-                #define UNITY_BRDF_PBS BRDF3_Unity_PBS
-            #elif UNITY_PBS_USE_BRDF3
-                #define UNITY_BRDF_PBS BRDF3_Unity_PBS
-            #elif UNITY_PBS_USE_BRDF2
-                #define UNITY_BRDF_PBS BRDF2_Unity_PBS
-            #elif UNITY_PBS_USE_BRDF1
-                #define UNITY_BRDF_PBS BRDF1_Unity_PBS
-            #elif defined(SHADER_TARGET_SURFACE_ANALYSIS)
-                // we do preprocess pass during shader analysis and we dont actually care about brdf as we need only inputs/outputs
-                #define UNITY_BRDF_PBS BRDF1_Unity_PBS
-            #else
-                #error something broke in auto-choosing BRDF
-            #endif
-        #endif
-
-//-------------------------------------------------------------------------------------
-
-        #if !defined (UNITY_BRDF_GI)
-            #define UNITY_BRDF_GI BRDF_Unity_Indirect
-        #endif
-
-        inline half3 BRDF_Unity_Indirect (half3 baseColor, half3 specColor, half oneMinusReflectivity, half smoothness, half3 normal, half3 viewDir, half occlusion, UnityGI gi)
-        {
-            half3 c = 0;
-            #if defined(DIRLIGHTMAP_SEPARATE)
-                gi.indirect.diffuse = 0;
-                gi.indirect.specular = 0;
-
-                #ifdef LIGHTMAP_ON
-                    c += UNITY_BRDF_PBS_LIGHTMAP_INDIRECT (baseColor, specColor, oneMinusReflectivity, smoothness, normal, viewDir, gi.light2, gi.indirect).rgb * occlusion;
-                #endif
-                #ifdef DYNAMICLIGHTMAP_ON
-                    c += UNITY_BRDF_PBS_LIGHTMAP_INDIRECT (baseColor, specColor, oneMinusReflectivity, smoothness, normal, viewDir, gi.light3, gi.indirect).rgb * occlusion;
-                #endif
-            #endif
-            return c;
-        }
-
-//-------------------------------------------------------------------------------------
-
-
-        struct SurfaceOutputHalf
-        {
-            fixed3 Albedo;        // diffuse color
-            fixed3 Specular;    // specular color
-            fixed3 Normal;        // tangent space normal, if written
-            half3 Emission;
-            half Smoothness;    // 0=rough, 1=smooth
-            half Occlusion;        // occlusion (default 1)
-            fixed Alpha;        // alpha for transparencies
-        };
-
-//-------------------------------------------------------------------------------------
-
         struct Input {
             float2 uv_MainTex;
         };
 
-        void surf (Input IN, inout SurfaceOutputHalf o) {
+        void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             o.Albedo = c.rgb;
             o.Alpha = c.a;
@@ -156,35 +103,62 @@
         }
 
 
-        half4 LightingHalf (SurfaceOutputHalf s, half3 viewDir, UnityGI gi) {
-            half NdotL = dot(s.Normal, gi.light.dir);
-            half diff = NdotL * _WrapAmount + (1 - _WrapAmount);
+        inline half4 LightingHalf (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi) {
+            half NdotL = saturate(dot(s.Normal, gi.light.dir));
+            _WrapAmount /= 2;
+            half diff = NdotL * (1 - _WrapAmount) + _WrapAmount;
+//            half diff = saturate(NdotL / (1 + _WrapAmount));
+            half3 wrap = gi.light.color * s.Albedo * diff;
 
             half3 h = normalize(gi.light.dir + viewDir);
             float nh = max(0, dot(s.Normal, h));
-            float spec = pow(nh, s.Smoothness);
+            float spec = pow(nh, s.Specular*128.0) * s.Smoothness;
 
             half4 c;
-            c.rgb = _LightColor0.rgb * (diff * s.Albedo * s.Alpha + s.Specular * spec);
+            c.rgb = wrap + gi.light.color * s.Specular * spec;
             return c;
         }
 
+		inline half4 fakeBRDF (half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness,
+			half3 normal, half3 viewDir, UnityLight light, UnityIndirect gi, half wrapAmount)
+		{
+			half3 reflDir = reflect (viewDir, normal);
 
-        half4 LightingHalf_Deferred (SurfaceOutputHalf s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
-            half NdotL = dot(s.Normal, gi.light.dir);
-            half diff = NdotL * _WrapAmount + (1 - _WrapAmount);
-            half3 wrap = _LightColor0.rgb * s.Albedo * diff;
+			half nl = dot(normal, light.dir) * (1 - _WrapAmount) + (1 - _WrapAmount);
+			half nv = saturate(dot(normal, viewDir));
 
+			// Vectorize Pow4 to save instructions
+			half2 rlPow4AndFresnelTerm = Pow4 (half2(dot(reflDir, light.dir), 1-nv));  // use R.L instead of N.H to save couple of instructions
+			half rlPow4 = rlPow4AndFresnelTerm.x; // power exponent must match kHorizontalWarpExp in NHxRoughness() function in GeneratedTextures.cpp
+			half fresnelTerm = rlPow4AndFresnelTerm.y;
+
+			half grazingTerm = saturate(smoothness + (1-oneMinusReflectivity));
+
+			half LUT_RANGE = 16.0; // must match range in NHxRoughness() function in GeneratedTextures.cpp
+			// Lookup texture to save instructions
+			half specular = tex2D(unity_NHxRoughness, half2(rlPow4, SmoothnessToPerceptualRoughness(smoothness))).UNITY_ATTEN_CHANNEL * LUT_RANGE;
+
+			half3 color = diffColor;
+			color += specular * specColor;
+			color *= light.color * nl;
+			color += BRDF3_Indirect(diffColor, specColor, gi, grazingTerm, fresnelTerm);
+
+			return half4(color, 1);
+		}
+
+        inline half4 LightingHalf_Deferred (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
             // energy conservation
-            half oneMinusReflectivity;
-            half3 al = EnergyConservationBetweenDiffuseAndSpecular (s.Albedo, s.Specular, /*out*/ oneMinusReflectivity);
+            half oneMinusReflectivity = 1 - SpecularStrength(s.Specular);
+//            s.Albedo = s.Albedo *(half3(1,1,1) - s.Specular);
 
-            half4 c = UNITY_BRDF_PBS (al, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect);
-            c.rgb = max (c.rgb, wrap) * lerp (s.Occlusion, 1, diff);
-            c.rgb += UNITY_BRDF_GI (al, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, s.Occlusion, gi);
+            half4 c;
+//            c.rgb = s.Albedo;
+            c = UNITY_BRDF_PBS (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect, _WrapAmount);
+//            c.rgb = max (c.rgb, wrap) * lerp (s.Occlusion, 1, diff);
+            c.rgb += UNITY_BRDF_GI (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, s.Occlusion, gi);
 
             UnityStandardData data;
-            data.diffuseColor    = al;
+            data.diffuseColor    = s.Albedo;
             data.occlusion       = s.Occlusion;        
             data.specularColor   = s.Specular;
             data.smoothness      = s.Smoothness;    
@@ -196,8 +170,7 @@
             return emission;
         }
 
-
-        inline void LightingHalf_GI (SurfaceOutputHalf s, UnityGIInput data, inout UnityGI gi)
+        inline void LightingHalf_GI (SurfaceOutputStandardSpecular s, UnityGIInput data, inout UnityGI gi)
         {
             #if defined(UNITY_PASS_DEFERRED) && UNITY_ENABLE_REFLECTION_BUFFERS
                 gi = UnityGlobalIllumination(data, s.Occlusion, s.Normal);
