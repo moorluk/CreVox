@@ -161,7 +161,7 @@ namespace CreVox
 						volume.vd.subArtPack = "";
 					}
 
-					volume.ArtPack = PathCollect.artPack + "/" + artPackName;
+					volume.ArtPack = PathCollect.artPack + artPackName;
 					volume.vMaterial = volume.ArtPack + "/" + artPackName + "_voxel";
 					ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
 					volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);

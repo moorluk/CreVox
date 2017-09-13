@@ -9,15 +9,15 @@ namespace CreVox
 	{
 		VolumeManager vm;
 		VGlobal vg;
-		string[] artPacks;
-		List<string> artPacksList;
+        int APIndex = 0;
+        string[] artPacks;
+        List<string> artPacksList { get{return VGlobal.GetArtPacks();}}
 
 		void OnEnable ()
 		{
 			vm = (VolumeManager)target;
 			vg = VGlobal.GetSetting ();
 			ArtPackWindow.UpdateItemArrays (vg);
-			artPacksList = VGlobal.GetArtPacks ();
 			artPacks = artPacksList.ToArray ();
 			UpdateStatus ();
 		}
@@ -44,6 +44,29 @@ namespace CreVox
                 vm.BroadcastMessage ("BuildVolume");
             }
 
+            EditorGUIUtility.wideMode = true;
+            using (var v = new EditorGUILayout.VerticalScope(EditorStyles.helpBox)) {
+                EditorGUILayout.LabelField ("Volume SetAll Function", EditorStyles.boldLabel);
+                using (var h = new EditorGUILayout.HorizontalScope()) {
+                    if (GUILayout.Button("Refresh all Volume"))
+                        vm.BroadcastMessage("BuildVolume");
+                    if (GUILayout.Button("Update Portal"))
+                        VolumeAdapter.UpdatePortals(vm.gameObject);
+                }
+                using (var h = new EditorGUILayout.HorizontalScope())
+                {
+                    APIndex = EditorGUILayout.Popup("ArtPack", APIndex, artPacks);
+                    if (GUILayout.Button("Set", GUILayout.Width (buttonW))){
+                        Volume[] volumes = vm.transform.GetComponentsInChildren<Volume>(includeInactive: false);
+                        foreach (Volume _v in volumes){
+                            _v.ArtPack = PathCollect.artPack + artPacks[APIndex];
+                        }
+                        vm.BroadcastMessage("BuildVolume");
+                        vm.UpdateDungeon ();
+                    }
+                }
+            }
+
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
@@ -51,16 +74,6 @@ namespace CreVox
                         vm.UpdateDungeon ();
                     if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
                         vm.dungeons.Clear ();
-                }
-
-                EditorGUIUtility.wideMode = true;
-                using (var h = new EditorGUILayout.HorizontalScope ()) {
-                    if (GUILayout.Button ("Refresh all Volume")) {
-                        vm.BroadcastMessage ("BuildVolume");
-                    }
-                    if (GUILayout.Button ("Update Portal")) {
-                        VolumeAdapter.UpdatePortals (vm.gameObject);
-                    }
                 }
                 DrawVolumeList ();
             }
@@ -87,7 +100,7 @@ namespace CreVox
 					EditorGUIUtility.labelWidth = 88;
 					EditorGUILayout.Vector3Field ("Position", _d.position);
 					EditorGUILayout.Vector3Field ("Rotation", _d.rotation.eulerAngles);
-					string _APName = _d.ArtPack.Replace (PathCollect.artPack + "/", "");
+					string _APName = _d.ArtPack.Replace (PathCollect.artPack, "");
 					int _APNameIndex = artPacksList.IndexOf (_APName);
 					EditorGUI.BeginChangeCheck ();
 					_APNameIndex = EditorGUILayout.Popup ("ArtPack", _APNameIndex, artPacks);
@@ -97,7 +110,7 @@ namespace CreVox
 						_APName = artPacks [_APNameIndex];
 						if (_APName.Length == 4)
 							_APName = _APName.Remove (3);
-						string _APPath = PathCollect.artPack + "/" + _APName;
+						string _APPath = PathCollect.artPack + _APName;
 						_d.ArtPack = _APPath;
 						_d.vMaterial = _APPath + "/" + _APName + "_voxel";
 						vm.dungeons [i] = _d;

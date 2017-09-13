@@ -379,7 +379,7 @@ namespace CreVox
 				VGlobal.APItemPath _n = new VGlobal.APItemPath ();
 				_n.name = artPacks [i];
 				_n.itemPath = new List<string> ();
-				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + "/" + _n.name, _vg);
+				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + _n.name, _vg);
 				for (int j = 0; j < _p.Length; j++) {
 					string _itemPath = AssetDatabase.GetAssetPath (_p [j]);
 					_itemPath = _itemPath.Substring (_itemPath.IndexOf (PathCollect.resourceSubPath)).Replace(".prefab","");
@@ -396,7 +396,7 @@ namespace CreVox
 
 			string cName = _artPackPath.Substring (_artPackPath.LastIndexOf ("/") + 1);
 			string pName = _vg.GetParentArtPack (cName);
-			string pPath = PathCollect.artPack + "/" + pName;
+			string pPath = PathCollect.artPack + pName;
 			PaletteItem[] _child = Resources.LoadAll<PaletteItem> (_artPackPath);
 			while (pPath != PathCollect.pieces) {
 				PaletteItem[] _parent = Resources.LoadAll<PaletteItem> (pPath);
@@ -429,7 +429,7 @@ namespace CreVox
 				_child = _parent;
 				cName = pName;
 				pName = _vg.GetParentArtPack (cName);
-				pPath = PathCollect.artPack + "/" + pName;
+				pPath = PathCollect.artPack + pName;
 			}
 
 			for (int i = 0; i < _final.Length; i++) {
