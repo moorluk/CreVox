@@ -31,9 +31,9 @@ namespace CreVox
         public bool showNode = true;
         #endif
 
-        public Node parent = new Node();
+        public NIndex parent = new NIndex();
         public Node self = new Node ();
-        public List<Node> childs = new List<Node>();
+        public List<NIndex> childs = new List<NIndex>();
 
         public void Generate (GameObject parent, DecoPiece rootObject)
         {
@@ -43,15 +43,17 @@ namespace CreVox
                 break;
             case (int)DecoType.Tree:
                 GameObject r = self.Generate (parent);
-                foreach (Node d in childs) {
+                foreach (NIndex d in childs) {
+                    // save but slow
 //                    rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (r, rootObject);
                     rootObject.tree[d.treeIndex].Generate (r, rootObject);
                 }
                 break;
             case (int)DecoType.RandomOne:
-                foreach (Node d in childs) {
+                foreach (NIndex d in childs) {
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if (d.probability >= p) {
+                        // save but slow
 //                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                         break;
@@ -61,9 +63,10 @@ namespace CreVox
             case (int)DecoType.RandomAll:
                 int c = childs.Count;
                 for (int i = 0; i < c; i++) {
-                    Node d = childs [i] as Node;
+                    NIndex d = childs [i];
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if ((d.probability * (c - i) / c) >= p) {
+                        // save but slow
 //                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                     }

@@ -83,7 +83,11 @@ namespace CreVox
                             Color _color = GUI.color;
                             if (instance.objectReferenceValue != null)
                                 GUI.color = Color.green;
-                            EditorGUILayout.PropertyField (source, GUIContent.none);
+                            EditorGUI.BeginChangeCheck ();
+                            GameObject newSource = source.objectReferenceValue as GameObject;
+                            newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject));
+                            if (EditorGUI.EndChangeCheck () && PrefabUtility.GetPrefabType (newSource) == PrefabType.Prefab)
+                                source.objectReferenceValue = newSource;
                             GUI.color = _color;
                             break;
                         case (int)DecoType.RandomOne:
@@ -154,15 +158,12 @@ namespace CreVox
                 GUI.Label (r, GUIContent.none, "RL Footer");
                 r = new Rect (r.x + 7, r.y - 3, 16, 16);
                 if (GUI.Button (r, GUIContent.none, "OL Plus")) {
-                    TreeElement newT = new TreeElement ();
-                    newT.parent = _te.self;
-                    newT.self.id = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
-                    dp.tree.Add (newT);
-                    _te.childs.Add (newT.self);
+                    AddElement (_te);
+                    return;
                 }
                 r.x += 30;
                 if (GUI.Button (r, GUIContent.none, "OL Minus") && _childs.arraySize > 0) {
-                    RemoveElement (_te.childs, _childs);
+                    RemoveElement (_te.childs);
                     return;
                 }
             }
@@ -193,18 +194,27 @@ namespace CreVox
             }
         }
 
-        private void RemoveElement(List<Node> _childs, SerializedProperty _childsProp)
+        private void AddElement(TreeElement _te)
+        {
+            TreeElement newT = new TreeElement ();
+            newT.parent.id = _te.self.id;
+            newT.self.id = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+            dp.tree.Add (newT);
+            _te.childs.Add (newT.self as NIndex);
+        }
+
+        private void RemoveElement(List<NIndex> _childs)
         {
             if (_childs.Count == 0)
                 return;
-            int workingtreeIndex = _childs [_childs.Count - 1].FindListByNode (dp.tree);
-            List<Node> _eChilds = dp.tree [workingtreeIndex].childs;
-            SerializedProperty _eChildsProp = tree.GetArrayElementAtIndex (workingtreeIndex).FindPropertyRelative ("childs");
+            int workingTIndex = _childs [_childs.Count - 1].FindListByNode (dp.tree);
+            List<NIndex> _eChilds = dp.tree [workingTIndex].childs;
+            SerializedProperty _eChildsProp = tree.GetArrayElementAtIndex (workingTIndex).FindPropertyRelative ("childs");
             while (_eChilds.Count > 0) {
-                RemoveElement (_eChilds, _eChildsProp);
+                RemoveElement (_eChilds);
             }
-            Debug.Log ("Remove tree : " + workingtreeIndex);
-            dp.tree.RemoveAt(workingtreeIndex);
+//            Debug.Log ("Remove tree : " + workingtreeIndex);
+            dp.tree.RemoveAt(workingTIndex);
             _childs.RemoveAt (_childs.Count - 1);
             serializedObject.ApplyModifiedProperties ();
         }

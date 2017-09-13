@@ -9,23 +9,50 @@ using UnityEditor;
 
 namespace CreVox
 {
+
     [Serializable]
-    public class Node
+    public class NIndex
     {
         public int id = -1;
         public int treeIndex = -1;
+        public float probability = 1.0f;
 
-        public int type = 0;
+        public int FindListByNode(List<TreeElement> _list)
+        {
+            Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
+                return obj.self.id.Equals(this.id);
+            };
+            return _list.FindIndex(1,checkNode);
+        }
+    }
+
+    [Serializable]
+    public class Node : NIndex
+    {
+        public int type;
         public GameObject source;
         public GameObject instance;
-        public Vector3 pos = Vector3.zero;
-        public Vector3 posR = Vector3.zero;
-        public Vector3 rot = Vector3.zero;
-        public Vector3 rotR = Vector3.zero;
-        public Vector3 scl = Vector3.one;
-        public Vector3 sclR = Vector3.zero;
-        public turnSide rotS = turnSide.one;
-        public float probability = 1.0f;
+        public Vector3 pos;
+        public Vector3 posR;
+        public Vector3 rot;
+        public Vector3 rotR;
+        public Vector3 scl;
+        public Vector3 sclR;
+        public turnSide rotS;
+
+        public Node(){
+            id = 0;
+            treeIndex = 0;
+            type = 0;
+            pos = Vector3.zero;
+            posR = Vector3.zero;
+            rot = Vector3.zero;
+            rotR = Vector3.zero;
+            scl = Vector3.one;
+            sclR = Vector3.zero;
+            rotS = turnSide.one;
+            probability = 1.0f;
+        }
 
         public void Init()
         {
@@ -40,14 +67,6 @@ namespace CreVox
             sclR = Vector3.zero;
             rotS = turnSide.one;
             probability = 1.0f;
-        }
-
-        public int FindListByNode(List<TreeElement> _list)
-        {
-            Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
-                return obj.self.id.Equals(this.id);
-            };
-            return _list.FindIndex(1,checkNode);
         }
 
         public GameObject Generate (GameObject root)

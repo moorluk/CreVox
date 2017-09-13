@@ -10,8 +10,6 @@ namespace CreVox
     {
         public List<TreeElement> tree = new List<TreeElement> ();
 
-        public bool useTree = false;
-
         void Start ()
         {
             SetupPiece (null);
