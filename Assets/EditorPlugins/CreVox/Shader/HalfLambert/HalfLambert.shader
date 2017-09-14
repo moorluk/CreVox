@@ -47,14 +47,8 @@
     }
 
     CGINCLUDE
-#include "UnityShaderVariables.cginc"
-#include "UnityStandardConfig.cginc"
-#include "UnityLightingCommon.cginc"
-#include "UnityGBuffer.cginc"
-#include "UnityGlobalIllumination.cginc"
     #include "UnityPBSLighting.cginc"
         #define UNITY_SETUP_BRDF_INPUT SpecularSetup
-        #define UNITY_BRDF_PBS fakeBRDF
     ENDCG
 
 //-------------------------------------------------------------------------------------
@@ -65,7 +59,7 @@
 
         CGPROGRAM
 
-        #pragma surface surf Half fullforwardshadows 
+        #pragma surface surf Half  
         #pragma target 3.0
 
         fixed4 _Color;
@@ -103,11 +97,10 @@
         }
 
 
-        inline half4 LightingHalf (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi) {
+        half4 LightingHalf (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi) {
             half NdotL = saturate(dot(s.Normal, gi.light.dir));
             _WrapAmount /= 2;
             half diff = NdotL * (1 - _WrapAmount) + _WrapAmount;
-//            half diff = saturate(NdotL / (1 + _WrapAmount));
             half3 wrap = gi.light.color * s.Albedo * diff;
 
             half3 h = normalize(gi.light.dir + viewDir);
@@ -119,12 +112,12 @@
             return c;
         }
 
-		inline half4 fakeBRDF (half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness,
-			half3 normal, half3 viewDir, UnityLight light, UnityIndirect gi, half wrapAmount)
+		half4 fakeBRDF (half3 diffColor, half3 specColor, half oneMinusReflectivity, half smoothness,
+			half3 normal, half3 viewDir, UnityLight light, UnityIndirect gi)
 		{
 			half3 reflDir = reflect (viewDir, normal);
 
-			half nl = dot(normal, light.dir) * (1 - _WrapAmount) + (1 - _WrapAmount);
+			half nl = dot(normal, light.dir);
 			half nv = saturate(dot(normal, viewDir));
 
 			// Vectorize Pow4 to save instructions
@@ -138,23 +131,23 @@
 			// Lookup texture to save instructions
 			half specular = tex2D(unity_NHxRoughness, half2(rlPow4, SmoothnessToPerceptualRoughness(smoothness))).UNITY_ATTEN_CHANNEL * LUT_RANGE;
 
-			half3 color = diffColor;
-			color += specular * specColor;
-			color *= light.color * nl;
+			half3 color = diffColor * light.color * nl;
+			color += specular * specColor * nl;
 			color += BRDF3_Indirect(diffColor, specColor, gi, grazingTerm, fresnelTerm);
 
 			return half4(color, 1);
 		}
 
-        inline half4 LightingHalf_Deferred (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
+        half4 LightingHalf_Deferred (SurfaceOutputStandardSpecular s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
             // energy conservation
             half oneMinusReflectivity = 1 - SpecularStrength(s.Specular);
-//            s.Albedo = s.Albedo *(half3(1,1,1) - s.Specular);
+            s.Albedo = s.Albedo *(half3(1,1,1) - s.Specular);
+
+        	_WrapAmount *= 0.5;
+        	s.Normal = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
 
             half4 c;
-//            c.rgb = s.Albedo;
-            c = UNITY_BRDF_PBS (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect, _WrapAmount);
-//            c.rgb = max (c.rgb, wrap) * lerp (s.Occlusion, 1, diff);
+            c = UNITY_BRDF_PBS (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect);
             c.rgb += UNITY_BRDF_GI (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, s.Occlusion, gi);
 
             UnityStandardData data;
@@ -170,7 +163,7 @@
             return emission;
         }
 
-        inline void LightingHalf_GI (SurfaceOutputStandardSpecular s, UnityGIInput data, inout UnityGI gi)
+        void LightingHalf_GI (SurfaceOutputStandardSpecular s, UnityGIInput data, inout UnityGI gi)
         {
             #if defined(UNITY_PASS_DEFERRED) && UNITY_ENABLE_REFLECTION_BUFFERS
                 gi = UnityGlobalIllumination(data, s.Occlusion, s.Normal);

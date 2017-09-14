@@ -1,4 +1,4 @@
-﻿Shader "Anisotropic/Aniso" {
+﻿Shader "CreVox/Anisotropic/Aniso" {
 	Properties
 	{
 		_MainTex ("Base (RGB)", 2D) = "white" {}

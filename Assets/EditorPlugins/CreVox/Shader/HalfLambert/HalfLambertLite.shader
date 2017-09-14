@@ -100,7 +100,7 @@
         }
 
 
-        inline half4 LightingHalf (SurfaceOutput s, half3 viewDir, UnityGI gi) {
+        half4 LightingHalf (SurfaceOutput s, half3 viewDir, UnityGI gi) {
 			half3 h = normalize (gi.light.dir + viewDir);
 			float nh = max (0, dot (s.Normal, h));
 			float spec = pow (nh, s.Specular * s.Gloss * 128.0) * s.Gloss;
@@ -125,22 +125,13 @@
 			return emission;
         }
 
-        inline half4 LightingHalf_Deferred (SurfaceOutput s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
-            // energy conservation
-//            half oneMinusReflectivity = 1 - SpecularStrength(s.Specular);
-//            s.Albedo = s.Albedo *(half3(1,1,1) - s.Specular);
-
+        half4 LightingHalf_Deferred (SurfaceOutput s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
         	_WrapAmount *= 0.5;
         	s.Normal = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
-
-            fixed NdotL = max (0, dot (s.Normal, gi.light.dir));
-            half diff = NdotL * (1 - _WrapAmount) * (1 - _WrapAmount) + _WrapAmount * (1 - _WrapAmount);
-            s.Albedo *= diff;
 
 			UnityStandardData data;
 			data.diffuseColor	= s.Albedo;
 			data.occlusion		= 1;
-			// PI factor come from StandardBDRF (UnityStandardBRDF.cginc:351 for explanation)
 			data.specularColor	= _SpecColor.rgb * s.Gloss * (1/UNITY_PI);
 			data.smoothness		= s.Specular;	
 			data.normalWorld	= s.Normal;
