@@ -85,7 +85,7 @@ namespace CreVox
                                 GUI.color = Color.green;
                             EditorGUI.BeginChangeCheck ();
                             GameObject newSource = source.objectReferenceValue as GameObject;
-                            newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject));
+                            newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject), false);
                             if (EditorGUI.EndChangeCheck () && PrefabUtility.GetPrefabType (newSource) == PrefabType.Prefab)
                                 source.objectReferenceValue = newSource;
                             GUI.color = _color;
@@ -209,7 +209,6 @@ namespace CreVox
                 return;
             int workingTIndex = _childs [_childs.Count - 1].FindListByNode (dp.tree);
             List<NIndex> _eChilds = dp.tree [workingTIndex].childs;
-            SerializedProperty _eChildsProp = tree.GetArrayElementAtIndex (workingTIndex).FindPropertyRelative ("childs");
             while (_eChilds.Count > 0) {
                 RemoveElement (_eChilds);
             }
