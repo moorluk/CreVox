@@ -60,7 +60,7 @@ namespace CreVox
 
 			//GetItems
 			_items = new List<Item> ();
-			List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path);
+            List<PaletteItem> itemsP = EditorUtils.GetAssetsWithScript<PaletteItem> (_path.Remove(_path.Length-1));
 			AssetPreview.SetPreviewTextureCacheSize (itemsP.Count *2);
 			foreach (PaletteItem p in itemsP) {
 				Item newItem = new Item ();
@@ -68,7 +68,7 @@ namespace CreVox
 				newItem.category = p.category;
 				newItem.itemObject = p.gameObject;
 				newItem.itemName = p.gameObject.name;
-				newItem.artPack = AssetDatabase.GetAssetPath (p.gameObject).Replace(_path + "/","");
+				newItem.artPack = AssetDatabase.GetAssetPath (p.gameObject).Replace(_path,"");
 				newItem.artPack = newItem.artPack.Remove (newItem.artPack.IndexOf ("/"));
 				newItem.preview = GetPreview (p.gameObject);
 
