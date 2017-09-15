@@ -647,8 +647,6 @@ namespace CreVox
 
         public GameObject CopyPiece (WorldPos bPos, WorldPos gPos, bool a_cut)
         {
-            Block block = GetBlock (bPos.x, bPos.y, bPos.z);
-            BlockAir blockAir = null;
             int id = gPos.z * 3 + gPos.x;
             GameObject pObj = null;
 

@@ -195,10 +195,9 @@ namespace CreVox
 
 		private void OnSceneGUI ()
 		{
-			ModeHandler ();
+            ModeHandler ();
             DrawSelected();
-			DrawModeGUI ();
-
+            DrawModeGUI ();
 			EventHandler ();
 		}
 
@@ -257,22 +256,22 @@ namespace CreVox
 
 			Handles.BeginGUI ();
 			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-			GUILayout.BeginArea (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea);
-			GUI.color = Color.white;
-			selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
-			GUILayout.BeginHorizontal ();
-			EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
-			EditorGUI.BeginChangeCheck ();
-			vg.editDis = GUILayout.HorizontalSlider (vg.editDis, 99f, 999f);
-			if (EditorGUI.EndChangeCheck ())
-				EditorUtility.SetDirty (vg);
-			EditorGUILayout.LabelField (((int)vg.editDis).ToString (), GUILayout.Width (25));
-			if (selectedEditMode == EditMode.Item)
-				isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
-			GUILayout.EndHorizontal ();
-			GUILayout.EndArea ();
-			
-			DrawLayerModeGUI ();
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea)) {
+                GUI.color = Color.white;
+                selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
+                using (var h = new EditorGUILayout.HorizontalScope ()) {
+                    EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
+                    EditorGUI.BeginChangeCheck ();
+                    vg.editDis = GUILayout.HorizontalSlider (vg.editDis, 99f, 999f);
+                    if (EditorGUI.EndChangeCheck ())
+                        EditorUtility.SetDirty (vg);
+                    EditorGUILayout.LabelField (((int)vg.editDis).ToString (), GUILayout.Width (25));
+                    if (selectedEditMode == EditMode.Item)
+                        isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
+                }
+            }
+            DrawLayerModeGUI ();
+            DrawPieceSelectedGUI (); 
             DrawSelectedGUI();
 			Handles.EndGUI ();
 		}
@@ -602,54 +601,49 @@ namespace CreVox
         private List<Vector3> m_selectedBlocks = new List<Vector3>();
         private Vector3 m_translate;
         private void DrawLayerModeGUI ()
-		{
-			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-			float bwidth = 70f;
-			float tile = (_pieceSelected == null) ? 3f : 4f;
-			using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
-				using (var h = new GUILayout.HorizontalScope ()) {
+        {
+            GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
+            float bwidth = 70f;
+            float tile = (_pieceSelected == null) ? 3f : 4f;
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
+                using (var h = new GUILayout.HorizontalScope ()) {
                     GUI.color = Color.white;
                     bool _allkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
-					using (var v = new GUILayout.VerticalScope ()) {
+                    using (var v = new GUILayout.VerticalScope ()) {
                         if (GUILayout.Button ("Pointer" + (_allkey ? "(Q)" : ""), GUILayout.Width (bwidth)))
-							HotkeyFunction ("Q");
-                        EditorGUI.BeginDisabledGroup(!volume.pointer);
-						EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
+                            HotkeyFunction ("Q");
+                        EditorGUI.BeginDisabledGroup (!volume.pointer);
+                        EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
                         if (GUILayout.Button ("▲" + (_allkey ? "(W)" : ""), GUILayout.Width (45)))
-							HotkeyFunction ("W");
+                            HotkeyFunction ("W");
                         if (GUILayout.Button ("▼" + (_allkey ? "(S)" : ""), GUILayout.Width (45)))
-							HotkeyFunction ("S");
+                            HotkeyFunction ("S");
                         EditorGUI.EndDisabledGroup ();
-					}
+                    }
 
-					using (var v = new GUILayout.VerticalScope ()) {
+                    using (var v = new GUILayout.VerticalScope ()) {
                         if (GUILayout.Button ("Cutter" + (_allkey ? "(E)" : ""), GUILayout.Width (bwidth)))
-							HotkeyFunction ("E");
-                        EditorGUI.BeginDisabledGroup(!volume.cuter);
-						EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
+                            HotkeyFunction ("E");
+                        EditorGUI.BeginDisabledGroup (!volume.cuter);
+                        EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
                         if (GUILayout.Button ("▲" + (_allkey ? "(R)" : ""), GUILayout.Width (45)))
-							HotkeyFunction ("R");
+                            HotkeyFunction ("R");
                         if (GUILayout.Button ("▼" + (_allkey ? "(F)" : ""), GUILayout.Width (45)))
                             HotkeyFunction ("F");
                         EditorGUI.EndDisabledGroup ();
-					}
-
-                    using (var v = new GUILayout.VerticalScope())
-                    {
-                        m_mappingX = GUILayout.Toggle(m_mappingX, "x", GUILayout.Width(bwidth));
-                        m_mappingZ = GUILayout.Toggle(m_mappingZ, "z", GUILayout.Width(bwidth));
                     }
 
-                    DrawPieceSelectedGUI (); 
+                    using (var v = new GUILayout.VerticalScope ()) {
+                        m_mappingX = GUILayout.Toggle (m_mappingX, "x", GUILayout.Width (bwidth));
+                        m_mappingZ = GUILayout.Toggle (m_mappingZ, "z", GUILayout.Width (bwidth));
+                    }
                 }
-			}
-		}
+            }
+        }
 
         private void DrawSelectedGUI ()
         {
             GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-
-            float bwidth = 70f;
             using (var a = new GUILayout.AreaScope (new Rect (10f, 155f, 250f, 150f), "", EditorStyles.textArea)) {
                 GUI.color = Color.white;
                 using (var h = new GUILayout.VerticalScope ()) {
@@ -824,106 +818,106 @@ namespace CreVox
 
 		#region Tools
         private void HotkeyFunction (string funcKey = "", bool isKeyEvent = false)
-		{
-			int _index = (int)currentEditMode;
-			int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
+        {
+            int _index = (int)currentEditMode;
+            int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
             bool _hotkey = isKeyEvent ? (currentEditMode != EditMode.View && currentEditMode != EditMode.Item) : true;
 
-			switch (funcKey) {
-			case "A":
-				if (_index == 0)
-					selectedEditMode = (EditMode)_count;
-				else
-					selectedEditMode = (EditMode)(_index - 1);
-				Repaint ();
-				break;
+            switch (funcKey) {
+            case "A":
+                if (_index == 0)
+                    selectedEditMode = (EditMode)_count;
+                else
+                    selectedEditMode = (EditMode)(_index - 1);
+                Repaint ();
+                break;
 
-			case "D":
-				if (_index == _count)
-					selectedEditMode = (EditMode)0;
-				else
-					selectedEditMode = (EditMode)(_index + 1);
-				Repaint ();
-				break;
+            case "D":
+                if (_index == _count)
+                    selectedEditMode = (EditMode)0;
+                else
+                    selectedEditMode = (EditMode)(_index + 1);
+                Repaint ();
+                break;
 
-			case "Q":
-				if (_hotkey) {
-					volume.pointer = !volume.pointer;
-					fixPointY = volume.pointY;
-					volume.ChangePointY (fixPointY);
-				}
-				break;
+            case "Q":
+                if (_hotkey) {
+                    volume.pointer = !volume.pointer;
+                    fixPointY = volume.pointY;
+                    volume.ChangePointY (fixPointY);
+                }
+                break;
 
-			case "W":
-				if (_hotkey) {
-					fixPointY = volume.pointY + 1;
-					volume.ChangePointY (fixPointY);
-					fixPointY = volume.pointY;
-				}
-				break;
+            case "W":
+                if (_hotkey) {
+                    fixPointY = volume.pointY + 1;
+                    volume.ChangePointY (fixPointY);
+                    fixPointY = volume.pointY;
+                }
+                break;
 
-			case "S":
-				if (_hotkey) {
-					fixPointY = volume.pointY - 1;
-					volume.ChangePointY (fixPointY);
-					fixPointY = volume.pointY;
-				}
-				break;
+            case "S":
+                if (_hotkey) {
+                    fixPointY = volume.pointY - 1;
+                    volume.ChangePointY (fixPointY);
+                    fixPointY = volume.pointY;
+                }
+                break;
 
-			case "E":
-				if (_hotkey) {
-					volume.cuter = !volume.cuter;
-					fixCutY = volume.cutY;
-					volume.ChangeCutY (fixCutY);
-				}
-				break;
+            case "E":
+                if (_hotkey) {
+                    volume.cuter = !volume.cuter;
+                    fixCutY = volume.cutY;
+                    volume.ChangeCutY (fixCutY);
+                }
+                break;
 
-			case "R":
-				if (_hotkey) {
-					fixCutY = volume.cutY + 1;
-					volume.ChangeCutY (fixCutY);
-					fixCutY = volume.cutY;
-				}
-				break;
+            case "R":
+                if (_hotkey) {
+                    fixCutY = volume.cutY + 1;
+                    volume.ChangeCutY (fixCutY);
+                    fixCutY = volume.cutY;
+                }
+                break;
 
-			case "F":
-				if (_hotkey) {
-					fixCutY = volume.cutY - 1;
-					volume.ChangeCutY (fixCutY);
-					fixCutY = volume.cutY;
-				}
+            case "F":
+                if (_hotkey) {
+                    fixCutY = volume.cutY - 1;
+                    volume.ChangeCutY (fixCutY);
+                    fixCutY = volume.cutY;
+                }
                 break;
 
             case "Add":
                 if (_hotkey) {
-                    VolumeHelper.SelectedAdd(ref m_selectedBlocks, m_selectedMin, m_selectedMax);
+                    VolumeHelper.SelectedAdd (ref m_selectedBlocks, m_selectedMin, m_selectedMax);
                 }
                 break;
 
             case "Remove":
                 if (_hotkey) {
-                    VolumeHelper.SelectedRemove(ref m_selectedBlocks, m_selectedMin, m_selectedMax);
+                    VolumeHelper.SelectedRemove (ref m_selectedBlocks, m_selectedMin, m_selectedMax);
                 }
                 break;
             
             case "Translate":
                 if (_hotkey) {
-                    Translate();
+                    Translate ();
                     EditorUtility.SetDirty (volume.vd);
                 }
                 break;
 
             case "Copy":
                 if (_hotkey) {
-                    Translate(false);
+                    Translate (false);
                     EditorUtility.SetDirty (volume.vd);
                 }
                 break;
-
-			if (_hotkey)
-				Event.current.Use ();
             }
-		}
+
+            if (_hotkey)
+                Event.current.Use ();
+        }
 
         void CalculateBlockHold ()
         {
