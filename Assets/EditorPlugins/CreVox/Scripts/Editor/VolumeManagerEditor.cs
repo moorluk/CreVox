@@ -60,6 +60,10 @@ namespace CreVox
                         Volume[] volumes = vm.transform.GetComponentsInChildren<Volume>(includeInactive: false);
                         foreach (Volume _v in volumes){
                             _v.ArtPack = PathCollect.artPack + artPacks[APIndex];
+                            _v.vMaterial = _v.ArtPack + "/" + artPacks[APIndex] + "_voxel";
+                            string ppath = PathCollect.resourcesPath + _v.vMaterial + ".mat";
+                            _v.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
+                            EditorUtility.SetDirty (_v.vd);
                         }
                         vm.BroadcastMessage("BuildVolume");
                         vm.UpdateDungeon ();
