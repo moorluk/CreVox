@@ -47,14 +47,14 @@ namespace CreVox
             EditorGUIUtility.wideMode = true;
             using (var v = new EditorGUILayout.VerticalScope(EditorStyles.helpBox)) {
                 EditorGUILayout.LabelField ("Volume SetAll Function", EditorStyles.boldLabel);
+                DrawDungeonList ();
                 using (var h = new EditorGUILayout.HorizontalScope()) {
                     if (GUILayout.Button("Refresh all Volume"))
                         vm.BroadcastMessage("BuildVolume");
                     if (GUILayout.Button("Update Portal"))
                         VolumeAdapter.UpdatePortals(vm.gameObject);
                 }
-                using (var h = new EditorGUILayout.HorizontalScope())
-                {
+                using (var h = new EditorGUILayout.HorizontalScope()) {
                     APIndex = EditorGUILayout.Popup("ArtPack", APIndex, artPacks);
                     if (GUILayout.Button("Set", GUILayout.Width (buttonW))){
                         Volume[] volumes = vm.transform.GetComponentsInChildren<Volume>(includeInactive: false);
@@ -73,7 +73,7 @@ namespace CreVox
 
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
-                    EditorGUILayout.LabelField ("Volume List", EditorStyles.boldLabel);
+                    EditorGUILayout.LabelField ("Volume List (" + vm.dungeons.Count + ")", EditorStyles.boldLabel);
                     if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
                         vm.UpdateDungeon ();
                     if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
@@ -87,7 +87,53 @@ namespace CreVox
             if (GUI.changed)
                 UpdateStatus ();
         }
-		void DrawVolumeList()
+
+        private void DrawDungeonList()
+        {
+            int workIndex = -1;
+            using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+                using (var h = new EditorGUILayout.HorizontalScope ()) {
+                    vm.useStageData = EditorGUILayout.ToggleLeft ("Use StageData", vm.useStageData);
+                    if (!vm.useStageData)
+                        return;
+                    if (GUILayout.Button ("TEST")) {
+                        vm.RandomDungeon ();
+                    }
+                }
+                vm.stageData = EditorGUILayout.ObjectField (vm.stageData, typeof(StageData), false) as StageData;
+                if (vm.stageData == null)
+                    return;
+                for (int i = 0; i < vm.stageData.stageList.Count; i++) {
+                    using (var h = new EditorGUILayout.HorizontalScope ()) {
+                        EditorGUILayout.LabelField (i.ToString () + " (" + vm.stageData.stageList [i].Dlist.Count + ")", GUILayout.Width (45));
+                        if (GUILayout.Button ("Save")) {
+                            vm.stageData.stageList [i].Dlist.Clear ();
+                            foreach (var d in vm.dungeons) {
+                                vm.stageData.stageList [i].Dlist.Add (d);
+                            }
+                        }
+                        if (GUILayout.Button ("Load")) {
+                            vm.dungeons.Clear ();
+                            foreach (Dungeon d in vm.stageData.stageList[i].Dlist) {
+                                vm.dungeons.Add (d);
+                            }
+                        }
+                        if (GUILayout.Button ("Delete")) {
+                            workIndex = i;
+                        }
+                    }
+                }
+                if (workIndex > -1) {
+                    vm.stageData.stageList.RemoveAt (workIndex);
+                }
+                if (GUILayout.Button ("Add New")) {
+                    vm.stageData.stageList.Add (new DList ());
+                }
+                EditorUtility.SetDirty (vm.stageData);
+            }
+        }
+
+		private void DrawVolumeList()
 		{
 			Color defColor = GUI.color;
 			Color volColor = new Color (0.5f, 0.8f, 0.75f);

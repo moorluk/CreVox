@@ -32,6 +32,8 @@ namespace CreVox
         public bool showBlockHoldL;
 
         public List<Dungeon> dungeons;
+        public bool useStageData = false;
+        public StageData stageData;
 
         void Awake ()
         {
@@ -41,7 +43,11 @@ namespace CreVox
             if (useLocalSetting ? GenerationL : Generation) {
                 Volume[] v = transform.GetComponentsInChildren<Volume> (false);
                 if (v.Length > 0) {
-                    UpdateDungeon ();
+                    if (useStageData) {
+                        RandomDungeon ();
+                    } else {
+                        UpdateDungeon ();
+                    }
                     for (int i = 0; i < v.Length; i++) {
                         GameObject.Destroy (v [i].gameObject);
                     }
@@ -101,6 +107,16 @@ namespace CreVox
                 newDungeon.ArtPack = v [i].ArtPack;
                 newDungeon.vMaterial = v [i].vMaterial;
                 dungeons.Add (newDungeon);
+            }
+        }
+
+        public void RandomDungeon()
+        {
+            UnityEngine.Random.InitState (System.Guid.NewGuid ().GetHashCode ());
+            int i = UnityEngine.Random.Range (0, stageData.stageList.Count);
+            dungeons.Clear ();
+            foreach (Dungeon d in stageData.stageList[i].Dlist) {
+                dungeons.Add (d);
             }
         }
     }
