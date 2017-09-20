@@ -49,8 +49,12 @@ namespace CreVox
                 EditorGUILayout.LabelField ("Volume SetAll Function", EditorStyles.boldLabel);
                 DrawDungeonList ();
                 using (var h = new EditorGUILayout.HorizontalScope()) {
-                    if (GUILayout.Button("Refresh all Volume"))
+                    if (GUILayout.Button("Refresh all"))
                         vm.BroadcastMessage("BuildVolume");
+                    if (GUILayout.Button ("Generate")) {
+                        vm.ClearVolumes (false);
+                        vm.CreateVolumes ();
+                    }
                     if (GUILayout.Button("Update Portal"))
                         VolumeAdapter.UpdatePortals(vm.gameObject);
                 }

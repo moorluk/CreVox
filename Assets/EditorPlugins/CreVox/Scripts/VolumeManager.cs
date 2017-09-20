@@ -41,17 +41,7 @@ namespace CreVox
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
             if (useLocalSetting ? GenerationL : Generation) {
-                Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-                if (v.Length > 0) {
-                    if (useStageData) {
-                        RandomDungeon ();
-                    } else {
-                        UpdateDungeon ();
-                    }
-                    for (int i = 0; i < v.Length; i++) {
-                        GameObject.Destroy (v [i].gameObject);
-                    }
-                }
+                ClearVolumes (true);
             }
         }
 
@@ -70,10 +60,43 @@ namespace CreVox
             }
             #endif
 
-            CreateVolumes ();
+            CreateVolumeMakers ();
+        }
+
+        public void ClearVolumes (bool runtime = true)
+        {
+            Volume[] v = transform.GetComponentsInChildren<Volume> (false);
+            if (v.Length > 0) {
+                if (useStageData) {
+                    RandomDungeon ();
+                } else {
+                    UpdateDungeon ();
+                }
+                for (int i = 0; i < v.Length; i++) {
+                    if (runtime)
+                        GameObject.Destroy (v [i].gameObject);
+                    else
+                        GameObject.DestroyImmediate (v [i].gameObject, false);
+                }
+            }
         }
 
         public void CreateVolumes ()
+        {
+            for (int vi = 0; vi < dungeons.Count; vi++) {
+                GameObject volume = new GameObject (dungeons [vi].volumeData.name);
+                volume.transform.parent = transform;
+                volume.transform.localPosition = dungeons [vi].position;
+                volume.transform.localRotation = dungeons [vi].rotation;
+                Volume v = volume.AddComponent<Volume> ();
+                v.vd = dungeons [vi].volumeData;
+                v.ArtPack = dungeons [vi].ArtPack;
+                v.vMaterial = dungeons [vi].vMaterial;
+            }
+            BroadcastMessage("BuildVolume",SendMessageOptions.DontRequireReceiver);
+        }
+
+        public void CreateVolumeMakers ()
         {
             for (int vi = 0; vi < dungeons.Count; vi++) {
                 GameObject volume = new GameObject (dungeons [vi].volumeData.ToString ());
