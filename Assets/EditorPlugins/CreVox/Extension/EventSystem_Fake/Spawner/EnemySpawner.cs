@@ -60,7 +60,7 @@ public class EnemySpawner : SpawnerBase
     public bool m_isStart = false;
 	public AiData m_AiData;
     
-    private float m_nextSpawnTime = 0f;
-    private bool m_boss = false;
-    private bool isClear = false;
+//    private float m_nextSpawnTime = 0f;
+//    private bool m_boss = false;
+//    private bool isClear = false;
 }
