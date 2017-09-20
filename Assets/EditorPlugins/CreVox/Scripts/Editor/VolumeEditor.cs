@@ -222,7 +222,7 @@ namespace CreVox
 			}
 			if (selectedEditMode != currentEditMode) {
 				currentEditMode = selectedEditMode;
-				_itemInspected = null;
+				volume._itemInspected = null;
 				Repaint ();
 			}
         }
@@ -974,7 +974,7 @@ namespace CreVox
 		private void UpdateInapectedItem (int id)
 		{
 			GameObject ItemNode = (id > -1) ? volume.GetItemNode (volume.vd.blockItems [id]) : null;
-			_itemInspected = (ItemNode != null) ? ItemNode.GetComponent<PaletteItem> () : null;
+            volume._itemInspected = (ItemNode != null) ? ItemNode.GetComponent<PaletteItem> () : null;
 			EditorUtility.SetDirty (volume);
 		}
 
@@ -1267,7 +1267,7 @@ namespace CreVox
 		#endregion
 
 		#region SubscribeEvents
-        private PaletteItem _itemInspected;
+//        private PaletteItem _itemInspected;
         private PaletteItem _itemSelected;
         private Texture2D _itemPreview;
         private LevelPiece _pieceSelected;
@@ -1277,16 +1277,16 @@ namespace CreVox
 			if (currentEditMode != EditMode.Item)
 				return;
 
-			if (_itemInspected != null) {
+            if (volume._itemInspected != null) {
 				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 					using (var h = new EditorGUILayout.HorizontalScope ()) {
 						string _label = "Piece Edited [" + selectedItemID + "]";
 						EditorGUILayout.LabelField (_label, EditorStyles.boldLabel, GUILayout.Width (110));
-						string _label2 = "(" + _itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") " + _itemInspected.name;
+                        string _label2 = "(" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") " + volume._itemInspected.name;
 						EditorGUILayout.LabelField (_label2,EditorStyles.miniLabel);
 					}
-					if (_itemInspected.inspectedScript != null) {
-						LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (_itemInspected.inspectedScript));
+                    if (volume._itemInspected.inspectedScript != null) {
+                        LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (volume._itemInspected.inspectedScript));
 						BlockItem item = volume.vd.blockItems [selectedItemID];
 
 						if (e != null)

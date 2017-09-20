@@ -213,6 +213,22 @@ namespace CreVox
 		void OnDrawGizmos ()
 		{
 			if (!Application.isPlaying) {
+                #if UNITY_EDITOR
+                bool drawIt = false;
+                Transform t = UnityEditor.Selection.activeTransform;
+                if (t == null)
+                    return;
+                if (!transform.IsChildOf(t))
+                    return;
+                PaletteItem p = t.GetComponent<Volume>()._itemInspected;
+                if (p == null)
+                    return; 
+                LevelPiece l = p.inspectedScript;
+                if (l == null)
+                    return; 
+                if (!l.Equals(this))
+                    return;
+                #endif
 				Matrix4x4 oldMatrix = Gizmos.matrix;
 				Gizmos.color = Color.yellow;
 				Gizmos.matrix = transform.localToWorldMatrix;
