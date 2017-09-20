@@ -1009,7 +1009,10 @@ namespace CreVox
             if (focusVolume == this && (vm != null ? vm.debugRulerL : VolumeManager.debugRuler)) {
                 Matrix4x4 oldMatrix = Gizmos.matrix;
                 VGlobal vg = VGlobal.GetSetting ();
-                Gizmos.color = (vd == null) ? Color.red : (((!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null)) ? Color.red : YColor);
+                if ((vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null))
+                    Gizmos.color = Color.red;
+                else
+                    Gizmos.color = YColor;
                 Gizmos.matrix = transform.localToWorldMatrix;
                 if (mColl)
                     Gizmos.DrawWireCube (

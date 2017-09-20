@@ -179,7 +179,21 @@ namespace CreVox
 			}
 		}
 
-		#region Scene GUI
+        #region Scene GUI
+        private void OnSceneGUI ()
+        {
+            ModeHandler ();
+
+            EventHandler ();
+
+            Handles.BeginGUI ();
+            DrawModeGUI ();
+            DrawLayerModeGUI ();
+            DrawSelectedGUI ();
+            Handles.EndGUI ();
+
+        }
+
 		public enum EditMode
 		{
 			View,
@@ -189,18 +203,8 @@ namespace CreVox
 			Object,
 			Item
 		}
-
 		private EditMode selectedEditMode;
 		private EditMode currentEditMode;
-
-		private void OnSceneGUI ()
-		{
-            ModeHandler ();
-            DrawSelected();
-            DrawModeGUI ();
-			EventHandler ();
-		}
-
 		private void ModeHandler ()
 		{
 			switch (selectedEditMode) {
@@ -223,39 +227,19 @@ namespace CreVox
 			}
         }
 
-        void DrawSelected()
+        private int fixPointY = 0;
+        private int fixCutY = 0;
+        float ButtonW = 80;
+        private void DrawModeGUI ()
         {
-            Color old = Handles.color;
-            Handles.color = selectedColor;
             VGlobal vg = VGlobal.GetSetting ();
-            float width = vg.w;
-            float height = vg.h;
-            float depth = vg.d;
-
-            int count = m_selectedBlocks.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                float x = m_selectedBlocks[i].x * width;
-                float y = m_selectedBlocks[i].y * height;
-                float z = m_selectedBlocks[i].z * depth;
-                Handles.DrawWireCube (new Vector3(x, y, z), new Vector3 (width, height, depth));
+            List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode> ();
+            List<string> modeLabels = new List<string> ();
+            foreach (EditMode mode in modes) {
+                modeLabels.Add (mode.ToString ());
             }
 
-            Handles.color = old;
-        }
-
-		private void DrawModeGUI ()
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode> ();
-			List<string> modeLabels = new List<string> ();
-			foreach (EditMode mode in modes) {
-				modeLabels.Add (mode.ToString ());
-			}
-			float ButtonW = 80;
-
-			Handles.BeginGUI ();
-			GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
+            GUI.color = volume.YColor;
             using (var a = new GUILayout.AreaScope (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea)) {
                 GUI.color = Color.white;
                 selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
@@ -270,17 +254,134 @@ namespace CreVox
                         isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
                 }
             }
-            DrawLayerModeGUI ();
-            DrawPieceSelectedGUI (); 
-            DrawSelectedGUI();
-			Handles.EndGUI ();
-		}
+        }
 
+        float blockW = 85f;
+        private void DrawLayerModeGUI ()
+        {
+            int tile = (_pieceSelected == null) ? 3 : 4;
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (blockW + 3f) * tile, 65f), "")) {
+                using (var h = new GUILayout.HorizontalScope ()) {
+                    bool _hotkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
+                    GUILayoutOption[] block = new GUILayoutOption[]{
+                        GUILayout.Width (blockW),
+//                        GUILayout.MinWidth (blockW),
+//                        GUILayout.ExpandWidth (true),
+//                        GUILayout.ExpandHeight (true)
+                    };
+
+                    GUI.color = volume.YColor;
+                    using (var v = new GUILayout.VerticalScope (EditorStyles.textArea, block)) {
+                        GUI.color = Color.white;
+                        if (GUILayout.Button ("Pointer" + (_hotkey ? "(Q)" : "")))
+                            HotkeyFunction ("Q");
+                        using (var d = new EditorGUI.DisabledGroupScope (!volume.pointer)) {
+                            using (var h2 = new GUILayout.HorizontalScope ()) {
+                                GUILayout.Label (volume.pointY.ToString(), "TL Selection H2", GUILayout.Height(0), GUILayout.Width (24));
+                                using (var v2 = new GUILayout.VerticalScope ()) {
+                                    if (GUILayout.Button ("▲" + (_hotkey ? "(W)" : ""), GUILayout.Width (45)))
+                                        HotkeyFunction ("W");
+                                    if (GUILayout.Button ("▼" + (_hotkey ? "(S)" : ""), GUILayout.Width (45)))
+                                        HotkeyFunction ("S");
+                                }
+                            }
+                        }
+                    }
+
+                    GUI.color = volume.YColor;
+                    using (var v = new GUILayout.VerticalScope (EditorStyles.textArea, block)) {
+                        GUI.color = Color.white;
+                        if (GUILayout.Button ("Cutter" + (_hotkey ? "(E)" : "")))
+                            HotkeyFunction ("E");
+                        using (var d = new EditorGUI.DisabledGroupScope (!volume.cuter)) {
+                            using (var h2 = new GUILayout.HorizontalScope ()) {
+                                GUILayout.Label (volume.cutY.ToString (), "TL Selection H2", GUILayout.Height (0), GUILayout.Width (24));
+                                using (var v2 = new GUILayout.VerticalScope ()) {
+                                    if (GUILayout.Button ("▲" + (_hotkey ? "(R)" : ""), GUILayout.Width (45)))
+                                        HotkeyFunction ("R");
+                                    if (GUILayout.Button ("▼" + (_hotkey ? "(F)" : ""), GUILayout.Width (45)))
+                                        HotkeyFunction ("F");
+                                }
+                            }
+                        }
+                    }
+
+                    if (_pieceSelected != null) {
+                        GUI.color = volume.YColor;
+                        using (var v = new GUILayout.VerticalScope (EditorStyles.textArea, block)) {
+                            GUI.color = Color.white;
+                            if (_pieceSelected != null) {
+                                GUILayout.Label (new GUIContent (_itemPreview), GUILayout.Height (63), GUILayout.Width (63));
+                                GUILayout.Space (-20);
+                                GUILayout.Label (_itemSelected.itemName, GUILayout.Width (blockW));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool m_mappingX = false;
+        private bool m_mappingZ = false;
+        private Vector3 m_selectedMin;
+        private Vector3 m_selectedMax;
+        private List<Vector3> m_selectedBlocks = new List<Vector3>();
+        private Vector3 m_translate;
+        private void DrawSelectedGUI ()
+        {
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 135f, blockW * 2 + 4, 170f), "")) {
+                EditorGUIUtility.wideMode = true;
+
+                GUI.color = volume.YColor;
+                using (var v = new GUILayout.VerticalScope (EditorStyles.textArea)) {
+                    GUI.color = Color.white;
+                    using (var h = new GUILayout.HorizontalScope ()) {
+                        EditorGUIUtility.labelWidth = 10;
+                        EditorGUILayout.LabelField ("Mirror", EditorStyles.boldLabel);
+                        m_mappingX =GUILayout.Toggle (m_mappingX, "X", GUILayout.Width (40));
+                        m_mappingZ = GUILayout.Toggle (m_mappingZ, "Z", GUILayout.Width (40));
+                    }
+                }
+
+                GUI.color = volume.YColor;
+                using (var v = new GUILayout.VerticalScope (EditorStyles.textArea)) {
+                    GUI.color = Color.white;
+                    EditorGUIUtility.labelWidth = 40;
+                    EditorGUILayout.LabelField ("Select", EditorStyles.boldLabel);
+                    m_selectedMin = EditorGUILayout.Vector3Field ("min", m_selectedMin);
+                    m_selectedMax = EditorGUILayout.Vector3Field ("max", m_selectedMax);
+                    using (var h = new GUILayout.HorizontalScope ()) {
+                        if (GUILayout.Button ("Add"))
+                            HotkeyFunction ("Add");
+                        if (GUILayout.Button ("Remove"))
+                            HotkeyFunction ("Remove");
+                    }
+                }
+
+                GUI.color = volume.YColor;
+                using (var v = new GUILayout.VerticalScope (EditorStyles.textArea)) {
+                    GUI.color = Color.white;
+                    EditorGUILayout.LabelField ("Translate", EditorStyles.boldLabel);
+                    m_translate = EditorGUILayout.Vector3Field("Offset", m_translate);
+                    using (var h = new GUILayout.HorizontalScope ()) {
+                        if (GUILayout.Button("Translate"))
+                            HotkeyFunction("Translate");
+                        if (GUILayout.Button("Copy"))
+                            HotkeyFunction("Copy");
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region Draw Marker
 		private void EventHandler ()
 		{
 			if (Event.current.alt) {
 				return;
-			}
+            }
+
+            DrawMarkerSelected();
 
 			if (Event.current.type == EventType.KeyDown) {
                 HotkeyFunction (Event.current.keyCode.ToString (), true);
@@ -330,7 +431,7 @@ namespace CreVox
 					break;
 
 				case EditMode.VoxelLayer: 
-					DrawLayerMarker ();
+                    DrawMarkerLayer ();
 
 					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
 						if (button == 0)
@@ -345,7 +446,7 @@ namespace CreVox
 
 				case EditMode.Object:
 				case EditMode.ObjectLayer:
-					DrawGridMarker ();
+                    DrawMarkerGrid ();
 
 					if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
 						if (button == 0)
@@ -365,7 +466,7 @@ namespace CreVox
 							Event.current.Use ();
 						}
 					}
-					DrawEditMarker (ref button);
+                    DrawMarkerEdit (ref button);
 					break;
 
 				default:
@@ -403,7 +504,7 @@ namespace CreVox
 			}
 		}
 
-		private void DrawLayerMarker ()
+        private void DrawMarkerLayer ()
 		{
 			RaycastHit hit;
 			Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -426,7 +527,7 @@ namespace CreVox
 			SceneView.RepaintAll ();
 		}
 
-		private void DrawGridMarker ()
+        private void DrawMarkerGrid ()
 		{
 			if (_pieceSelected == null)
 				return;
@@ -479,7 +580,7 @@ namespace CreVox
 		private int workItemId = -1; 
 		private int selectedItemID = -1;
 		private bool isItemSnap = false;
-		private void DrawEditMarker (ref int button)
+        private void DrawMarkerEdit (ref int button)
 		{
 			VGlobal vg = VGlobal.GetSetting ();
 			Matrix4x4 defMatrix = Handles.matrix;
@@ -587,101 +688,28 @@ namespace CreVox
 			if (log.Length > 0) Debug.Log (log);
 			Handles.matrix = defMatrix;
 			SceneView.RepaintAll ();
-		}
-		#endregion
-
-		#region LayerControl
-		private int fixPointY = 0;
-		private int fixCutY = 0;
-        private bool m_mappingX = false;
-        private bool m_mappingZ = false;
-        private Vector3 m_selectedMin;
-        private Vector3 m_selectedMax;
-        private Color selectedColor = Color.red;
-        private List<Vector3> m_selectedBlocks = new List<Vector3>();
-        private Vector3 m_translate;
-        private void DrawLayerModeGUI ()
-        {
-            GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-            float bwidth = 70f;
-            float tile = (_pieceSelected == null) ? 3f : 4f;
-            using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (bwidth + 5f) * tile, 85f), "", EditorStyles.textArea)) {
-                using (var h = new GUILayout.HorizontalScope ()) {
-                    GUI.color = Color.white;
-                    bool _allkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
-                    using (var v = new GUILayout.VerticalScope ()) {
-                        if (GUILayout.Button ("Pointer" + (_allkey ? "(Q)" : ""), GUILayout.Width (bwidth)))
-                            HotkeyFunction ("Q");
-                        EditorGUI.BeginDisabledGroup (!volume.pointer);
-                        EditorGUILayout.LabelField ("Y: " + volume.pointY, EditorStyles.textArea, GUILayout.Width (bwidth));
-                        if (GUILayout.Button ("▲" + (_allkey ? "(W)" : ""), GUILayout.Width (45)))
-                            HotkeyFunction ("W");
-                        if (GUILayout.Button ("▼" + (_allkey ? "(S)" : ""), GUILayout.Width (45)))
-                            HotkeyFunction ("S");
-                        EditorGUI.EndDisabledGroup ();
-                    }
-
-                    using (var v = new GUILayout.VerticalScope ()) {
-                        if (GUILayout.Button ("Cutter" + (_allkey ? "(E)" : ""), GUILayout.Width (bwidth)))
-                            HotkeyFunction ("E");
-                        EditorGUI.BeginDisabledGroup (!volume.cuter);
-                        EditorGUILayout.LabelField ("Y: " + volume.cutY, EditorStyles.textArea, GUILayout.Width (bwidth));
-                        if (GUILayout.Button ("▲" + (_allkey ? "(R)" : ""), GUILayout.Width (45)))
-                            HotkeyFunction ("R");
-                        if (GUILayout.Button ("▼" + (_allkey ? "(F)" : ""), GUILayout.Width (45)))
-                            HotkeyFunction ("F");
-                        EditorGUI.EndDisabledGroup ();
-                    }
-
-                    using (var v = new GUILayout.VerticalScope ()) {
-                        m_mappingX = GUILayout.Toggle (m_mappingX, "x", GUILayout.Width (bwidth));
-                        m_mappingZ = GUILayout.Toggle (m_mappingZ, "z", GUILayout.Width (bwidth));
-                    }
-                }
-            }
         }
 
-        private void DrawSelectedGUI ()
+        void DrawMarkerSelected()
         {
-            GUI.color = new Color (volume.YColor.r, volume.YColor.g, volume.YColor.b, 1.0f);
-            using (var a = new GUILayout.AreaScope (new Rect (10f, 155f, 250f, 150f), "", EditorStyles.textArea)) {
-                GUI.color = Color.white;
-                using (var h = new GUILayout.VerticalScope ()) {
-                    m_selectedMin = EditorGUILayout.Vector3Field("min", m_selectedMin);
-                    m_selectedMax = EditorGUILayout.Vector3Field("max", m_selectedMax);
+            Color old = Handles.color;
+            Handles.color = Color.red;
+            VGlobal vg = VGlobal.GetSetting ();
+            float width = vg.w;
+            float height = vg.h;
+            float depth = vg.d;
 
-                    GUI.color = selectedColor;
-                    using (var v = new GUILayout.HorizontalScope ()) {
-                        if ( GUILayout.Button ("Add", GUILayout.Width (45)) )
-                            HotkeyFunction ("Add");
-                        if ( GUILayout.Button ("Remove", GUILayout.Width (60)) )
-                            HotkeyFunction ("Remove");
-                    }
-                    GUI.color = Color.white;
-
-                    m_translate = EditorGUILayout.Vector3Field("translate", m_translate);
-                    using (var v = new GUILayout.HorizontalScope ()) {
-                        if (GUILayout.Button("Translate", GUILayout.Width(70)))
-                            HotkeyFunction("Translate");
-                        if (GUILayout.Button("Copy", GUILayout.Width(70)))
-                            HotkeyFunction("Copy");
-                    }
-                }
+            int count = m_selectedBlocks.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                float x = m_selectedBlocks[i].x * width;
+                float y = m_selectedBlocks[i].y * height;
+                float z = m_selectedBlocks[i].z * depth;
+                Handles.DrawWireCube (new Vector3(x, y, z), new Vector3 (width, height, depth));
             }
-        }
 
-		private PaletteItem _itemSelected;
-		private Texture2D _itemPreview;
-		private LevelPiece _pieceSelected;
-		private void DrawPieceSelectedGUI ()
-		{
-			using (var v = new EditorGUILayout.VerticalScope ()) {
-				if (_pieceSelected != null) {
-					EditorGUILayout.LabelField (new GUIContent (_itemPreview), GUILayout.Height (65));
-					EditorGUILayout.LabelField (_itemSelected.itemName);
-				}
-			}
-		}
+            Handles.color = old;
+        }
 		#endregion
 
 		#region Paint
@@ -1239,7 +1267,10 @@ namespace CreVox
 		#endregion
 
 		#region SubscribeEvents
-		private PaletteItem _itemInspected;
+        private PaletteItem _itemInspected;
+        private PaletteItem _itemSelected;
+        private Texture2D _itemPreview;
+        private LevelPiece _pieceSelected;
 
 		private void DrawPieceInspectedGUI()
 		{
