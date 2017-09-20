@@ -214,7 +214,6 @@ namespace CreVox
 		{
 			if (!Application.isPlaying) {
                 #if UNITY_EDITOR
-                bool drawIt = false;
                 Transform t = UnityEditor.Selection.activeTransform;
                 if (t == null)
                     return;
