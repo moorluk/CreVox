@@ -1012,7 +1012,7 @@ namespace CreVox
                 if ((vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null))
                     Gizmos.color = Color.red;
                 else
-                    Gizmos.color = YColor;
+                    Gizmos.color = new Color (YColor.r, YColor.g, YColor.b, 0.4f);
                 Gizmos.matrix = transform.localToWorldMatrix;
                 if (mColl)
                     Gizmos.DrawWireCube (
@@ -1111,8 +1111,7 @@ namespace CreVox
             YColor = new Color (
                 (20 + (pointY % 10) * 20) / 255f,
                 (200 - Mathf.Abs ((pointY % 10) - 5) * 20) / 255f,
-                (200 - (pointY % 10) * 20) / 255f,
-                0.4f
+                (200 - (pointY % 10) * 20) / 255f
             );
             if (bColl) {
                 bColl.center = new Vector3 (bColl.center.x, (pointY + 0.5f) * vg.h, bColl.center.z);
