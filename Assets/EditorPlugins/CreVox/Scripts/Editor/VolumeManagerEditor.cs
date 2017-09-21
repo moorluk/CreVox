@@ -29,19 +29,15 @@ namespace CreVox
         {
             EditorGUIUtility.labelWidth = lw;
 
-            EditorGUI.BeginChangeCheck ();
-            vm.useLocalSetting = EditorGUILayout.ToggleLeft ("Use Local Setting", vm.useLocalSetting);
-            if (vm.useLocalSetting) {
-                DrawVLocal (vm);
-            } else {
-                DrawVGlobal ();
-            }
-            if (EditorGUI.EndChangeCheck ()) {
-                Volume[] vs = vm.GetComponentsInChildren<Volume> ();
-                foreach (Volume v in vs) {
-                    v.vm = vm.useLocalSetting ? vm : null;
-                }
-                vm.BroadcastMessage ("BuildVolume");
+            using (var ch = new EditorGUI.ChangeCheckScope()) {
+                vm.useLocalSetting = EditorGUILayout.ToggleLeft("Use Local Setting", vm.useLocalSetting);
+                if (vm.useLocalSetting)
+                    DrawVLocal(vm);
+                else
+                    DrawVGlobal();
+
+                if (ch.changed)
+                    UpdateLocalSetting();
             }
 
             EditorGUIUtility.wideMode = true;
@@ -54,6 +50,7 @@ namespace CreVox
                     if (GUILayout.Button ("Generate")) {
                         vm.ClearVolumes (false);
                         vm.CreateVolumes ();
+                        UpdateLocalSetting();
                     }
                     if (GUILayout.Button("Update Portal"))
                         VolumeAdapter.UpdatePortals(vm.gameObject);
@@ -215,6 +212,14 @@ namespace CreVox
 		{
             vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
 		}
+
+        void UpdateLocalSetting ()
+        {
+            Volume[] vs = vm.GetComponentsInChildren<Volume>();
+            foreach (Volume v in vs)
+                v.vm = vm.useLocalSetting ? vm : null;
+            vm.BroadcastMessage("BuildVolume");
+        }
 
 		#endregion
     }

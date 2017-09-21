@@ -122,7 +122,9 @@ namespace CreVox
 				DrawArtPack ();
 				EditorGUI.BeginChangeCheck ();
                 if (volume.vm) {
-                    VolumeManagerEditor.DrawVLocal (volume.vm);
+                    VolumeManagerEditor.DrawVLocal(volume.vm);
+                } else {
+                    VolumeManagerEditor.DrawVGlobal();
                 }
 				if (EditorGUI.EndChangeCheck ()) {
 					UpdateVolume ();

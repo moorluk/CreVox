@@ -31,7 +31,7 @@ namespace CreVox
         public bool debugRulerL;
         public bool showBlockHoldL;
 
-        public List<Dungeon> dungeons;
+        public List<Dungeon> dungeons = new List<Dungeon> ();
         public bool useStageData = false;
         public StageData stageData;
 
@@ -65,19 +65,17 @@ namespace CreVox
 
         public void ClearVolumes (bool runtime = true)
         {
-            Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-            if (v.Length > 0) {
-                if (useStageData) {
-                    RandomDungeon ();
-                } else {
-                    UpdateDungeon ();
-                }
-                for (int i = 0; i < v.Length; i++) {
-                    if (runtime)
-                        GameObject.Destroy (v [i].gameObject);
-                    else
-                        GameObject.DestroyImmediate (v [i].gameObject, false);
-                }
+            Volume[] v = transform.GetComponentsInChildren<Volume>(false);
+            if (useStageData) {
+                RandomDungeon();
+            } else {
+                if (v.Length > 0)
+                    UpdateDungeon();
+            }
+
+            for (int i = 0; i < v.Length; i++) {
+                if (runtime) GameObject.Destroy(v[i].gameObject);
+                else GameObject.DestroyImmediate(v[i].gameObject, false);
             }
         }
 
@@ -120,8 +118,8 @@ namespace CreVox
         public void UpdateDungeon ()
         {
             Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-            dungeons = new List<Dungeon> ();
 
+            dungeons.Clear();
             for (int i = 0; i < v.Length; i++) {
                 Dungeon newDungeon = new Dungeon ();
                 newDungeon.volumeData = v [i].vd;
