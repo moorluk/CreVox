@@ -150,9 +150,15 @@ namespace CreVox
 				int totalItems = _categorizedItems[_categorySelected].Count;
 				for (int i = 0; i < totalItems; i++) {
 					GUIContent guiContent = new GUIContent();
-					guiContent.text = _categorizedItems[_categorySelected][i].gameObject.name + "\n" + _categorizedItems[_categorySelected][i].itemName;
-					guiContent.image = _previews[_categorizedItems[_categorySelected][i]];
-					guiContents.Add(guiContent);
+                    if (_categorizedItems[_categorySelected][i] != null)
+                    {
+                        guiContent.text = _categorizedItems[_categorySelected][i].gameObject.name + "\n" + _categorizedItems[_categorySelected][i].itemName;
+                        guiContent.image = _previews[_categorizedItems[_categorySelected][i]];
+                    } else {
+                        InitContent();
+                        break;
+                    }
+                    guiContents.Add(guiContent);
 				}
 			}
 			return guiContents.ToArray();
