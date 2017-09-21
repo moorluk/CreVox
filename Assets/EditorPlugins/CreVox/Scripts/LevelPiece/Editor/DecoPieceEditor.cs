@@ -86,11 +86,11 @@ namespace CreVox
 
                     //Draw First Line of TreeElement
                     using (var h = new EditorGUILayout.HorizontalScope ()) {
-                        showNodeProp.boolValue = EditorGUILayout.Toggle (showNodeProp.boolValue, "foldout", GUILayout.Width (12));
+                        showNodeProp.boolValue = EditorGUILayout.Toggle (showNodeProp.boolValue, "foldout", GUILayout.Width (10));
                         int indentTemp2 = EditorGUI.indentLevel;
                         EditorGUI.indentLevel = 0;
                         treeIndexProp.intValue = tIndex;
-                        GUILayout.Label (treeIndexProp.intValue.ToString (), GUILayout.Width (12));
+                        GUILayout.Label (treeIndexProp.intValue.ToString (), GUILayout.Width (20));
                         switch (typeProp.intValue) {
                         default:
                             Color _color = GUI.color;

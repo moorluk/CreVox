@@ -98,18 +98,9 @@ namespace CreVox
 		private void DrawFunction()
 		{
 			EditorGUILayout.BeginHorizontal(EditorStyles.textField);
-			if (GUILayout.Button("Select Path", GUILayout.Width(80))) {
-				_path = EditorUtility.OpenFolderPanel("Select Pieces' Path", PathCollect.resourcesPath + PathCollect.pieces, "");
-				if (_path.LastIndexOf ("Assets") < 0)
-					_path = PathCollect.resourcesPath + PathCollect.pieces;
-				_path = _path.Substring(_path.LastIndexOf("Assets"));
-
-				InitCategories();
-				InitContent();
-			}
 			EditorGUILayout.LabelField(label:_path,style:EditorStyles.miniLabel);
 			EditorGUILayout.LabelField("Button Size",GUILayout.Width (70));
-			ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 90f, 140f, GUILayout.Width (100));
+			ButtonWidth = GUILayout.HorizontalSlider (ButtonWidth, 90f, 150f, GUILayout.Width (200));
 			if (GUILayout.Button("Refresh Preview", EditorStyles.miniButton, GUILayout.Width(90))) {
 				InitCategories();
 				InitContent();
@@ -170,7 +161,7 @@ namespace CreVox
 		private GUIStyle GetGUIStyle()
 		{
 			GUIStyle guiStyle = new GUIStyle(GUI.skin.button);
-			guiStyle.fontSize = Mathf.FloorToInt (Mathf.Clamp (ButtonWidth/8.5f,9f,12f));
+			guiStyle.fontSize = 9;
 			guiStyle.alignment = TextAnchor.LowerCenter;
 			guiStyle.imagePosition = ImagePosition.ImageAbove;
 			guiStyle.fixedWidth = ButtonWidth;

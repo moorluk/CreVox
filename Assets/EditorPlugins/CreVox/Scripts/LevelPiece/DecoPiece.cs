@@ -24,7 +24,7 @@ namespace CreVox
                     te.self.instance = null;
                 }
             }
-            tree [0].Generate (root, this);
+            tree[0].Generate(root != null ? root : gameObject, this);
         }
 
         public void ClearRoot()

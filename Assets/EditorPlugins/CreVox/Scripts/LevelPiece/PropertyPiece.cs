@@ -219,7 +219,10 @@ namespace CreVox
                     return;
                 if (!transform.IsChildOf(t))
                     return;
-                PaletteItem p = t.GetComponent<Volume>()._itemInspected;
+                Volume v = t.GetComponent<Volume>();
+                if (v == null)
+                    return;
+                PaletteItem p = v._itemInspected;
                 if (p == null)
                     return; 
                 LevelPiece l = p.inspectedScript;
