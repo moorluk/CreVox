@@ -29,7 +29,7 @@ namespace CreVox
     [Serializable]
     public class Node : NIndex
     {
-        public int type;
+        public DecoType type;
         public GameObject source;
         public GameObject instance;
         public Vector3 pos;
@@ -43,22 +43,7 @@ namespace CreVox
         public Node(){
             id = 0;
             treeIndex = 0;
-            type = 0;
-            pos = Vector3.zero;
-            posR = Vector3.zero;
-            rot = Vector3.zero;
-            rotR = Vector3.zero;
-            scl = Vector3.one;
-            sclR = Vector3.zero;
-            rotS = turnSide.one;
-            probability = 1.0f;
-        }
-
-        public void Init()
-        {
-            id = 0;
-            treeIndex = 0;
-            type = 1;
+            type = DecoType.Node;
             pos = Vector3.zero;
             posR = Vector3.zero;
             rot = Vector3.zero;
@@ -78,7 +63,7 @@ namespace CreVox
                 instance = GameObject.Instantiate(source); 
                 #endif
             } else {
-                instance = new GameObject (root.name + ".child");
+                instance = new GameObject ("TreeElement (" + treeIndex.ToString() + ")");
             }
             instance.transform.parent = root.transform;
             instance.transform.localPosition = CalculateV3 (pos, posR);

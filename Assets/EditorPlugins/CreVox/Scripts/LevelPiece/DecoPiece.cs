@@ -9,6 +9,7 @@ namespace CreVox
     public class DecoPiece : LevelPiece
     {
         public List<TreeElement> tree = new List<TreeElement> ();
+        public GameObject root;
 
         void Start ()
         {
@@ -17,13 +18,20 @@ namespace CreVox
 
         public override void SetupPiece(BlockItem item)
         {
-            if (tree.Count > 0) {
-                GameObject root = tree [0].self.instance;
-                if (root != null)
-                    GameObject.DestroyImmediate (root);
-                tree [0].Generate (gameObject, this);
+            if (tree.Count > 0 && root != null){
+                ClearRoot ();
+                foreach (TreeElement te in tree) {
+                    te.self.instance = null;
+                }
             }
+            tree [0].Generate (root, this);
         }
 
+        public void ClearRoot()
+        {
+            for (int i = root.transform.childCount; i > 0; i--) {
+                GameObject.DestroyImmediate (root.transform.GetChild (i - 1).gameObject);
+            }
+        }
     }
 }

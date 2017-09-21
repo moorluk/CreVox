@@ -38,35 +38,35 @@ namespace CreVox
         public void Generate (GameObject parent, DecoPiece rootObject)
         {
             switch (self.type) {
-            case (int)DecoType.Node:
-                self.Generate (parent);
+            case DecoType.Node:
+                self.instance = self.Generate (parent);
                 break;
-            case (int)DecoType.Tree:
-                GameObject r = self.Generate (parent);
+            case DecoType.Tree:
+                self.instance = self.Generate (parent);
                 foreach (NIndex d in childs) {
-                    // save but slow
-//                    rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (r, rootObject);
-                    rootObject.tree[d.treeIndex].Generate (r, rootObject);
+                    // safe but slow
+//                    rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (self.instance, rootObject);
+                    rootObject.tree[d.treeIndex].Generate (self.instance, rootObject);
                 }
                 break;
-            case (int)DecoType.RandomOne:
+            case DecoType.RandomOne:
                 foreach (NIndex d in childs) {
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if (d.probability >= p) {
-                        // save but slow
+                        // safe but slow
 //                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                         break;
                     }
                 }
                 break;
-            case (int)DecoType.RandomAll:
+            case DecoType.RandomAll:
                 int c = childs.Count;
                 for (int i = 0; i < c; i++) {
                     NIndex d = childs [i];
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if ((d.probability * (c - i) / c) >= p) {
-                        // save but slow
+                        // safe but slow
 //                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                     }
