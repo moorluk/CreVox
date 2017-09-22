@@ -60,11 +60,12 @@ namespace CreVox
                 #if UNITY_EDITOR
                 instance = PrefabUtility.InstantiatePrefab (source) as GameObject;
                 #else
-                instance = GameObject.Instantiate(source); 
+                instance = GameObject.Instantiate (source); 
                 #endif
             } else {
-                instance = new GameObject ("TreeElement (" + treeIndex.ToString() + ")");
+                instance = new GameObject ("Empty TreeElement");
             }
+            instance.name += " (" + treeIndex + ")";
             instance.transform.parent = root.transform;
             instance.transform.localPosition = CalculateV3 (pos, posR);
             instance.transform.localRotation = Quaternion.Euler (CalculateV3 (rot, rotR, true));

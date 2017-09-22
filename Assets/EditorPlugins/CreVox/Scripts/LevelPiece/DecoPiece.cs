@@ -13,21 +13,23 @@ namespace CreVox
 
         void Start ()
         {
+            if (root == null)
+                root = gameObject;
             SetupPiece (null);
         }
 
-        public override void SetupPiece(BlockItem item)
+        public override void SetupPiece (BlockItem item)
         {
-            if (tree.Count > 0 && root != null){
+            if (tree.Count > 0 && root != null) {
                 ClearRoot ();
                 foreach (TreeElement te in tree) {
                     te.self.instance = null;
                 }
             }
-            tree[0].Generate(root != null ? root : gameObject, this);
+            tree [0].Generate (root != null ? root : gameObject, this);
         }
 
-        public void ClearRoot()
+        public void ClearRoot ()
         {
             for (int i = root.transform.childCount; i > 0; i--) {
                 GameObject.DestroyImmediate (root.transform.GetChild (i - 1).gameObject);

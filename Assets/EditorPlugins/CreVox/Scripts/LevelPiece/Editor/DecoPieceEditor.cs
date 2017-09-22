@@ -37,12 +37,16 @@ namespace CreVox
                 }
             }
             // Root
-            EditorGUILayout.ObjectField (root, typeof(GameObject), new GUIContent("Root"));
+            EditorGUILayout.ObjectField (root, typeof(GameObject), new GUIContent ("Root"));
 
             using (var h = new EditorGUILayout.HorizontalScope ()) {
-                if (GUILayout.Button ("Init", "prebutton"/*, GUILayout.Width (35)*/)) {
+                if (GUILayout.Button ("Init", "prebutton")) {
                     if (EditorUtility.DisplayDialog ("風蕭蕭兮易水寒", "Remoove All Tree Element !!?", "Yes", "No"))
                         InitTree ();
+                }
+                if (GUILayout.Button ("AutoGet", "prebutton")) {
+                    if (EditorUtility.DisplayDialog ("", "Remoove All Tree Element and find all prefab in childrens?", "Yes", "No"))
+                        AutoBuildTree ();
                 }
             }
 
@@ -51,8 +55,9 @@ namespace CreVox
                 DrawTree (dp.tree [0], tree.GetArrayElementAtIndex (0).FindPropertyRelative ("childs"));
             }
 
-            // childs gameobject
-            DrawChildObjectButtonList();
+            // tools
+            DrawSetParentTool ();
+            DrawChildObjectButtonList ();
 
             serializedObject.ApplyModifiedProperties ();
             if (EditorGUI.EndChangeCheck ()) {
@@ -82,7 +87,7 @@ namespace CreVox
                     var sourceProp = childTe.FindPropertyRelative ("self.source");
                     var instanceProp = childTe.FindPropertyRelative ("self.instance");
                     var childsProp = childTe.FindPropertyRelative ("childs");
-                    var childProbabilityProp = _childs.GetArrayElementAtIndex(i).FindPropertyRelative ("probability");
+                    var childProbabilityProp = _childs.GetArrayElementAtIndex (i).FindPropertyRelative ("probability");
 
                     //Draw First Line of TreeElement
                     using (var h = new EditorGUILayout.HorizontalScope ()) {
@@ -96,19 +101,14 @@ namespace CreVox
                             Color _color = GUI.color;
                             if (instanceProp.objectReferenceValue != null)
                                 GUI.color = Color.green;
-                            using (var ch = new EditorGUI.ChangeCheckScope()){
-                            GameObject newSource = sourceProp.objectReferenceValue as GameObject;
-                            newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject), true);
+                            using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                                GameObject newSource = sourceProp.objectReferenceValue as GameObject;
+                                newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject), true);
                                 if (ch.changed) {
                                     if (newSource == null || PrefabUtility.GetPrefabType (newSource) == PrefabType.Prefab)
                                         sourceProp.objectReferenceValue = newSource;
                                     else if (PrefabUtility.GetPrefabType (newSource) == PrefabType.PrefabInstance) {
-                                        GameObject newSourceAsset = (GameObject)PrefabUtility.GetPrefabParent (newSource);
-                                        selfProp.FindPropertyRelative ("pos").vector3Value = newSource.transform.localPosition;
-                                        selfProp.FindPropertyRelative ("rot").vector3Value = newSource.transform.localEulerAngles;
-                                        selfProp.FindPropertyRelative ("scl").vector3Value = newSource.transform.localScale;
-                                        sourceProp.objectReferenceValue = newSourceAsset;
-                                        GameObject.DestroyImmediate (newSource);
+                                        AssignPrefabInstance (newSource, selfProp);
                                     }
                                 }
                             }
@@ -214,14 +214,56 @@ namespace CreVox
             serializedObject.Update ();
         }
 
-        private void AddElement (TreeElement _te)
+        private void AutoBuildTree ()
+        {
+            //init Tree
+            dp.tree.Clear ();
+            dp.tree.Add (new TreeElement ());
+            TreeElement _parent = dp.tree [0];
+            _parent.self.type = DecoType.Tree;
+
+            //search prefab
+            Transform[] _all = dp.root.GetComponentsInChildren<Transform> (false);
+            List<GameObject> _allPrefab = new List<GameObject> ();
+            foreach (Transform t in _all) {
+                GameObject g = t.gameObject;
+                PrefabType pt = PrefabUtility.GetPrefabType (g);
+                GameObject pr = PrefabUtility.FindPrefabRoot (g);
+                if (g != dp.gameObject && pt == PrefabType.PrefabInstance && pr == g)
+                    _allPrefab.Add (g);
+            }
+            //add TreeElement
+            for (int i = 0; i < _allPrefab.Count; i++)
+                AddElement (_parent);
+            serializedObject.Update ();
+            //assign prefab
+            for (int i = 1; i < dp.tree.Count; i++) {
+                GameObject _pInstance = _allPrefab [i - 1];
+                SerializedProperty _nodeProp = tree.GetArrayElementAtIndex (i).FindPropertyRelative ("self");
+                AssignPrefabInstance (_pInstance, _nodeProp);
+            }
+            serializedObject.ApplyModifiedProperties ();
+            serializedObject.Update ();
+        }
+
+        private void AssignPrefabInstance (GameObject _prefabInstance, SerializedProperty _nodeProp)
+        {
+            GameObject newSourceAsset = (GameObject)PrefabUtility.GetPrefabParent (_prefabInstance);
+            _nodeProp.FindPropertyRelative ("pos").vector3Value = _prefabInstance.transform.localPosition;
+            _nodeProp.FindPropertyRelative ("rot").vector3Value = _prefabInstance.transform.localEulerAngles;
+            _nodeProp.FindPropertyRelative ("scl").vector3Value = _prefabInstance.transform.localScale;
+            _nodeProp.FindPropertyRelative ("source").objectReferenceValue = newSourceAsset;
+            GameObject.DestroyImmediate (_prefabInstance);
+        }
+
+        private void AddElement (TreeElement _parent)
         {
             TreeElement newT = new TreeElement ();
-            newT.parent.id = _te.self.id;
-            newT.parent.treeIndex = _te.self.treeIndex;
+            newT.parent.id = _parent.self.id;
+            newT.parent.treeIndex = _parent.self.treeIndex;
             newT.self.id = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
             dp.tree.Add (newT);
-            _te.childs.Add (newT.self as NIndex);
+            _parent.childs.Add (newT.self as NIndex);
         }
 
         private void RemoveElement (List<NIndex> _childs)
@@ -238,20 +280,72 @@ namespace CreVox
             serializedObject.ApplyModifiedProperties ();
         }
 
+        static bool showSetParentTool = true;
+        private int _parentIndex = 0; 
+        int ParentIndex
+        {
+            get{return _parentIndex; }
+            set{_parentIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1);}
+        }
+        private int _childIndex = 0;
+        int ChildIndex
+        {
+            get{return _childIndex; }
+            set{_childIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1);}
+        }
+        private void DrawSetParentTool ()
+        {
+            showSetParentTool = EditorGUILayout.Foldout (showSetParentTool, "Set Parent Tool");
+            if (showSetParentTool) {
+                using (var h = new GUILayout.HorizontalScope (EditorStyles.helpBox)) {
+                    EditorGUILayout.LabelField ("Child", GUILayout.Width (35));
+                    ChildIndex = EditorGUILayout.IntField (ChildIndex, GUILayout.Width (25));
+                    EditorGUILayout.LabelField (": Parent(" + dp.tree[ChildIndex].parent.treeIndex + ")-->", GUILayout.Width (85));
+                    ParentIndex = EditorGUILayout.IntField (ParentIndex, GUILayout.Width (25));
+                    EditorGUILayout.Space ();
+                    if (GUILayout.Button ("Set", GUILayout.Width (50))){
+                        SetParent ();
+                    }
+                }
+            }
+        }
+
+        private void SetParent ()
+        {
+            TreeElement c = dp.tree [_childIndex];
+            TreeElement oldP = dp.tree [c.parent.treeIndex];
+            TreeElement newP = dp.tree [_parentIndex];
+            Predicate<NIndex> sameID = delegate(NIndex obj) {return obj.id == c.self.id;};
+
+            if (oldP.self.id == newP.self.id)
+                return;
+
+            oldP.childs.RemoveAll (sameID);
+            newP.childs.Add (c.self);
+            if (newP.self.type == DecoType.Node)
+                newP.self.type = DecoType.Tree;
+            c.parent = newP.self;
+        }
+
         static bool showChildObjectButtonList = false;
         private void DrawChildObjectButtonList ()
         {
             showChildObjectButtonList = EditorGUILayout.Foldout (showChildObjectButtonList, "Object List");
+            Rect r = EditorGUI.IndentedRect (EditorGUILayout.GetControlRect ());
+            r.height = 12;
+            r.width = Screen.width - 100;
             if (showChildObjectButtonList) {
                 var transforms = dp.transform.GetComponentsInChildren<Transform> ();
                 foreach (var t in transforms) {
                     GameObject obj = t.gameObject;
                     if (obj != dp.gameObject && PrefabUtility.GetPrefabType (obj) == PrefabType.PrefabInstance && PrefabUtility.FindPrefabRoot (obj) == obj) {
-                        if (GUILayout.Button (obj.name)) {
+                        if (GUI.Button (r, obj.name, "minibutton")) {
                             Selection.activeGameObject = obj;
                         }
+                        r.y += r.height;
                     }
                 }
+                GUILayout.Space (r.y);
             }
         }
 
