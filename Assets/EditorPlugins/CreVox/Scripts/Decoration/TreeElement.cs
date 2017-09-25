@@ -37,16 +37,21 @@ namespace CreVox
 
         public void Generate (GameObject parent, DecoPiece rootObject)
         {
+            float pSelf = UnityEngine.Random.Range (0f, 1f);
             switch (self.type) {
             case DecoType.Node:
-                self.instance = self.Generate (parent);
+                if (self.probability >= pSelf) {
+                    self.instance = self.Generate (parent);
+                }
                 break;
             case DecoType.Tree:
-                self.instance = self.Generate (parent);
-                foreach (NIndex d in childs) {
-                    // safe but slow
-//                    rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (self.instance, rootObject);
-                    rootObject.tree[d.treeIndex].Generate (self.instance, rootObject);
+                if (self.probability >= pSelf) {
+                    self.instance = self.Generate (parent);
+                    foreach (NIndex d in childs) {
+                        // safe but slow
+                        //rootObject.tree [d.FindListByNode (rootObject.tree)].Generate (self.instance, rootObject);
+                        rootObject.tree [d.treeIndex].Generate (self.instance, rootObject);
+                    }
                 }
                 break;
             case DecoType.RandomOne:
@@ -54,7 +59,7 @@ namespace CreVox
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if (d.probability >= p) {
                         // safe but slow
-//                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
+                        //rootObject.tree[d.FindListByNode(rootObject.tree)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                         break;
                     }
@@ -67,7 +72,7 @@ namespace CreVox
                     float p = UnityEngine.Random.Range (0f, 1f);
                     if ((d.probability * (c - i) / c) >= p) {
                         // safe but slow
-//                        rootObject.tree[TreeElement.FindListByNode(rootObject.tree,d)].Generate (parent, rootObject);
+                        //rootObject.tree[d.FindListByNode(rootObject.tree)].Generate (parent, rootObject);
                         rootObject.tree[d.treeIndex].Generate (parent, rootObject);
                     }
                 }
