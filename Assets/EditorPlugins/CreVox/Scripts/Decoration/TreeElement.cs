@@ -37,17 +37,16 @@ namespace CreVox
 
         public void Generate (GameObject parent, DecoPiece rootObject)
         {
-            float pSelf = UnityEngine.Random.Range (0f, 1f);
             switch (self.type) {
             case DecoType.Node:
-                if (self.probability >= pSelf) {
-                    self.instance = self.Generate (parent);
-                }
+                self.instance = self.Generate (parent);
                 break;
+
             case DecoType.Tree:
-                if (self.probability >= pSelf) {
-                    self.instance = self.Generate (parent);
-                    foreach (NIndex d in childs) {
+                self.instance = self.Generate (parent);
+                foreach (NIndex d in childs) {
+                    float p = UnityEngine.Random.Range (0.0f, 0.999f);
+                    if (d.probability >= p) {
                         // safe but slow
                         //rootObject.tree [d.FindListByNode (rootObject.tree)].Generate (self.instance, rootObject);
                         rootObject.tree [d.treeIndex].Generate (self.instance, rootObject);
