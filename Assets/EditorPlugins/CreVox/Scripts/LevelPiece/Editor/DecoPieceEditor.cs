@@ -20,14 +20,17 @@ namespace CreVox
             tree = serializedObject.FindProperty ("tree");
         }
 
+        float screenW;
         public override void OnInspectorGUI ()
         {
+            screenW = Screen.width - 30;
+
             EditorGUI.BeginChangeCheck ();
             serializedObject.Update ();
             DrawInspector ();
 
             using (var h = new EditorGUILayout.HorizontalScope ()) {
-                EditorGUILayout.LabelField ("Decoration Object", EditorStyles.boldLabel, GUILayout.Width (Screen.width - 120));
+                EditorGUILayout.LabelField ("Decoration Object", EditorStyles.boldLabel, GUILayout.Width (screenW - 120));
                 GUILayout.FlexibleSpace ();
                 if (GUILayout.Button ("Test", GUILayout.Width (45))) {
                     dp.SetupPiece (null);
@@ -333,7 +336,7 @@ namespace CreVox
             showChildObjectButtonList = EditorGUILayout.Foldout (showChildObjectButtonList, "Object List");
             Rect r = EditorGUI.IndentedRect (EditorGUILayout.GetControlRect ());
             r.height = 12;
-            r.width = Screen.width - 100;
+            r.width = screenW - 100;
             if (showChildObjectButtonList) {
                 var transforms = dp.transform.GetComponentsInChildren<Transform> ();
                 foreach (var t in transforms) {
