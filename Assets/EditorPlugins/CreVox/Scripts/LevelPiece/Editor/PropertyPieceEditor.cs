@@ -259,9 +259,10 @@ namespace CreVox
                     "　├─ Eye　(" + obj.m_AiData.eye.ToString () + ")\n" +
                     "　├─ Ear　(" + obj.m_AiData.ear.ToString () + ")\n" +
                     "　└─ Toggle Offsets　(" + obj.m_AiData.toggleOffsets.Length.ToString () + ")\n" +
-                    "　　　└─ Offsets　(x,y,z,w(range))",
+                    "　　　└─ Offsets　(x,y,z,w(range))\n" +
+                    "Patrol Points\u3000(x,y,z)",
                     EditorStyles.miniLabel,
-                    GUILayout.Height (150));
+                    GUILayout.Height (165));
                 if (!Application.isPlaying)
                     ((EnemySpawner)pp.PProperties [_index].tObject).m_isStart = false;
             } else {
@@ -277,7 +278,6 @@ namespace CreVox
         #endregion
 
         #region EditorGUI
-
         public override void OnEditorGUI (ref BlockItem item)
         {
             PropertyPiece pp = (PropertyPiece)target;
@@ -396,61 +396,107 @@ namespace CreVox
                             if (pp.PProperties [i].tObject != null) {
                                 EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
                                 pp.CheckAiData (obj);
+                                AiData _ai = obj.m_AiData;
+                                //_code 0
+                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";"; 
+
+                                //_code 1
                                 obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
+                                _code += obj.m_enemyType.ToString () + ";";
+
+                                //_code (2 ~ 5) spawnerData
                                 EditorGUILayout.LabelField ("Spawner Data");
                                 EditorGUI.indentLevel++;
+
+                                //_code 2
                                 obj.m_spawnerData.m_totalQty = EditorGUILayout.IntField ("Total Qty", obj.m_spawnerData.m_totalQty);
+                                _code += obj.m_spawnerData.m_totalQty.ToString () + ";" ;
+
+                                //_code 3
                                 obj.m_spawnerData.m_maxLiveQty = EditorGUILayout.IntField ("Max Live Qty", obj.m_spawnerData.m_maxLiveQty);
+                                _code += obj.m_spawnerData.m_maxLiveQty.ToString () + ";" ;
+
+                                //_code 4
                                 obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spawn Count", obj.m_spawnerData.m_spwnCountPerTime);
+                                _code += obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" ;
+
+                                //_code 5
                                 obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
+                                _code += obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString () + ";" ;
+
                                 EditorGUI.indentLevel--;
 
+                                //_code (6 ~ 7) AiData
                                 EditorGUILayout.LabelField ("AI Data");
                                 EditorGUI.indentLevel++;
-                                obj.m_AiData.eye = EditorGUILayout.FloatField ("Eye Range", obj.m_AiData.eye);
-                                obj.m_AiData.ear = EditorGUILayout.FloatField ("Ear Range", obj.m_AiData.ear);
 
-                                EditorGUI.BeginChangeCheck ();
-                                Vector4 t = new Vector4 (
-                                                obj.m_AiData.toggleOffset.x,
-                                                obj.m_AiData.toggleOffset.y,
-                                                obj.m_AiData.toggleOffset.z,
-                                                obj.m_AiData.toggle
-                                            );
-                                t = EditorGUILayout.Vector4Field ("Toggle Range", t);
-                                if (EditorGUI.EndChangeCheck ()) {
-                                    obj.m_AiData.toggleOffset = new Vector3 (t.x, t.y, t.z);
-                                    obj.m_AiData.toggle = t.w;
-                                }
+                                //_code 6
+                                _ai.eye = EditorGUILayout.FloatField ("Eye Range", _ai.eye);
+                                _ai.ear = EditorGUILayout.FloatField ("Ear Range", _ai.ear);
+                                _code += _ai.eye.ToString () + "," + _ai.ear.ToString () + ";";
 
-                                EditorGUI.BeginChangeCheck ();
-                                int oCount = obj.m_AiData.toggleOffsets.Length;
-                                oCount = Mathf.FloorToInt (EditorGUILayout.Slider ("Extra toggle", oCount, 0f, 10f));
-                                if (EditorGUI.EndChangeCheck () && oCount != obj.m_AiData.toggleOffsets.Length) {
-                                    Vector4[] newOffsets = new Vector4[oCount];
-                                    for (int o = 0; o < newOffsets.Length; o++) {
-                                        newOffsets [o] = (o < obj.m_AiData.toggleOffsets.Length) ? obj.m_AiData.toggleOffsets [o] : new Vector4 (0.0f, 0.0f, 0.0f, 10f);
+                                //_code 7
+                                using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                                    Vector4 t = new Vector4 (_ai.toggleOffset.x, _ai.toggleOffset.y, _ai.toggleOffset.z, _ai.toggle);
+                                    EditorGUILayout.LabelField ("Toggle");
+                                    using (var h = new GUILayout.HorizontalScope ()) {
+                                        EditorGUILayout.LabelField ("", GUILayout.Width(30));
+                                        t = EditorGUILayout.Vector4Field ("", t);
                                     }
-                                    obj.m_AiData.toggleOffsets = newOffsets;
+                                    if (ch.changed) {
+                                        _ai.toggleOffset = new Vector3 (t.x, t.y, t.z);
+                                        _ai.toggle = t.w;
+                                    }
                                 }
+                                _code += _ai.toggleOffset.x + "_" + _ai.toggleOffset.y + "_" + _ai.toggleOffset.z + "_" + _ai.toggle;
 
-                                for (int o = 0; o < obj.m_AiData.toggleOffsets.Length; o++)
-                                    obj.m_AiData.toggleOffsets [o] = EditorGUILayout.Vector4Field (o.ToString (), obj.m_AiData.toggleOffsets [o]);
+                                using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                                    int oCount = _ai.toggleOffsets.Length;
+                                    oCount = EditorGUILayout.IntSlider ("Extra toggle", oCount, 0, 10);
+                                    if (ch.changed && oCount != _ai.toggleOffsets.Length) {
+                                        Vector4[] newOffsets = new Vector4[oCount];
+                                        for (int o = 0; o < newOffsets.Length; o++)
+                                            newOffsets [o] = (o < _ai.toggleOffsets.Length) ? _ai.toggleOffsets [o] : new Vector4 (0.0f, o+1, 0.0f, 1.0f);
+                                        _ai.toggleOffsets = newOffsets;
+                                    }
+                                }
+                                for (int o = 0; o < _ai.toggleOffsets.Length; o++) {
+                                    using (var h = new GUILayout.HorizontalScope ()) {
+                                        EditorGUILayout.LabelField (o.ToString (), GUILayout.Width (30));
+                                        _ai.toggleOffsets [o] = EditorGUILayout.Vector4Field ("", _ai.toggleOffsets [o]);
+                                    }
+                                    Vector4 v4 = _ai.toggleOffsets [o];
+                                    _code += "," + v4.x + "_" + v4.y + "_" + v4.z + "_" + v4.w;
+                                }
+                                _code += ";";
 
                                 EditorGUI.indentLevel--;
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
-                                               obj.m_enemyType.ToString () + ";" +
-                                               obj.m_spawnerData.m_totalQty.ToString () + ";" +
-                                               obj.m_spawnerData.m_maxLiveQty.ToString () + ";" +
-                                               obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" +
-                                               obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString () + ";" +
-                                               obj.m_AiData.eye.ToString () + "," + obj.m_AiData.ear.ToString () + ";" +
-                                               obj.m_AiData.toggleOffset.x + "_" + obj.m_AiData.toggleOffset.y + "_" + obj.m_AiData.toggleOffset.z + "_" + obj.m_AiData.toggle + ",";
-                                for (int o = 0; o < obj.m_AiData.toggleOffsets.Length; o++) {
-                                    Vector4 v4 = obj.m_AiData.toggleOffsets [o];
-                                    _code += v4.x + "_" + v4.y + "_" + v4.z + "_" + v4.w + ",";
+
+                                //_code 8 Patrol Points
+                                using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                                    int pCount = obj.m_patrolPoints.Length;
+                                    pCount = EditorGUILayout.IntSlider ("Patrol Points", pCount, 1, 20);
+                                    if (ch.changed) {
+                                        Vector3[] newOffsets = new Vector3[pCount];
+                                        for (int p = 0; p < newOffsets.Length; p++)
+                                            newOffsets [p] = (p < obj.m_patrolPoints.Length) ? obj.m_patrolPoints [p] : new Vector3 (0.0f, 0.0f, p*2);
+                                        obj.m_patrolPoints = newOffsets;
+                                    }
                                 }
-                                _code = _code.Remove (_code.Length - 1);
+                                for (int p = 0; p < obj.m_patrolPoints.Length; p++) {
+                                    using (var h = new GUILayout.HorizontalScope ()) {
+                                        using (var d = new EditorGUI.DisabledGroupScope (p < 1)) {
+                                            EditorGUILayout.LabelField (p.ToString (), GUILayout.Width (45));
+                                            obj.m_patrolPoints [p] = EditorGUILayout.Vector3Field (GUIContent.none, obj.m_patrolPoints [p]);
+                                        }
+                                    }
+                                    Vector3 v3 = obj.m_patrolPoints [p];
+                                    if (p > 0)
+                                        _code += ",";
+                                    _code += v3.x + "_" + v3.y + "_" + v3.z;
+                                }
+                                _code += ";";
+
                                 item.attributes [i] = _code;
                             }
                             break;

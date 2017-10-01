@@ -137,29 +137,30 @@ namespace CreVox
                             break;
 
                         case "EnemySpawner":
-                            if (obj != null && obj is EnemySpawner && _code.Length > 5) {
+                            if (obj != null && obj is EnemySpawner) {
                                 EnemySpawner es = (EnemySpawner)obj;
                                 PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
                                 es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
-                                es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
-                                es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
-                                es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
-                                string[] _r5 = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
-                                es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r5 [0]), float.Parse (_r5 [1]));
+                                // support spawnerData
+                                if (_code.Length > 5) {
+                                    es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
+                                    es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
+                                    es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
+                                    string[] _r5 = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
+                                    es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r5 [0]), float.Parse (_r5 [1]));
+                                }
+                                // support AiData.basicSetting
                                 if (_code.Length > 6) {
                                     string[] _r6 = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
                                     es.m_AiData = ScriptableObject.CreateInstance (typeof(AiData)) as AiData;
                                     es.m_AiData.eye = int.Parse (_r6 [0]);
                                     es.m_AiData.ear = int.Parse (_r6 [1]);
                                 }
+                                // support AiData.ActiveRange[]
                                 if (_code.Length > 7) {
                                     string[] _r7 = _code [7].Split (new string[1]{ "," }, StringSplitOptions.None);
                                     string[] v3 = _r7 [0].Split (new string[1]{ "_" }, StringSplitOptions.None);
-                                    es.m_AiData.toggleOffset = new Vector3 (
-                                        float.Parse (v3 [0]),
-                                        float.Parse (v3 [1]),
-                                        float.Parse (v3 [2])
-                                    );
+                                    es.m_AiData.toggleOffset = new Vector3 (float.Parse (v3 [0]), float.Parse (v3 [1]), float.Parse (v3 [2]));
                                     es.m_AiData.toggle = float.Parse (v3 [3]);
                                     es.m_AiData.toggleOffsets = new Vector4[_r7.Length - 1];
                                     for (int o = 0; o < es.m_AiData.toggleOffsets.Length; o++) {
@@ -170,6 +171,20 @@ namespace CreVox
                                             float.Parse (v4 [2]),
                                             float.Parse (v4 [3])
                                         );    
+                                    }
+                                }
+                                // support patrolPoints[]
+                                if (_code.Length > 8) {
+                                    string[] _r8 = _code [8].Split (new string[1]{ "," }, StringSplitOptions.None);
+                                    es.m_patrolPoints = new Vector3[_r8.Length];
+                                    for (int p = 0; p < es.m_patrolPoints.Length; p++) {
+                                        string[] v3 = _r8 [p].Split (new string[1]{ "_" }, StringSplitOptions.None);
+                                        if (v3.Length == 3)
+                                            es.m_patrolPoints [p] = new Vector3 (
+                                                float.Parse (v3 [0]),
+                                                float.Parse (v3 [1]),
+                                                float.Parse (v3 [2])
+                                            );
                                     }
                                 }
                                 if (es.m_isStart == false)
@@ -226,50 +241,62 @@ namespace CreVox
             }
         }
 
-        void OnDrawGizmos ()
+        #if UNITY_EDITOR
+        public void DrawPatrolPoints ()
         {
-            if (Application.isPlaying)
-                return;
-            #if UNITY_EDITOR
-            Transform t = UnityEditor.Selection.activeTransform;
-            if (t == null)
-                return;
-            if (!transform.IsChildOf (t))
-                return;
-            Volume v = t.GetComponent<Volume> ();
-            if (v == null)
-                return;
-            PaletteItem p = v._itemInspected;
-            if (p == null)
-                return; 
-            LevelPiece l = p.inspectedScript;
-            if (l == null)
-                return; 
-            if (!l.Equals (this))
-                return;
-            #endif
-            Matrix4x4 oldMatrix = Gizmos.matrix;
-            Gizmos.color = Color.yellow;
-            Gizmos.matrix = transform.localToWorldMatrix;
+            Matrix4x4 defMatrix = UnityEditor.Handles.matrix;
+            UnityEditor.Handles.matrix = transform.localToWorldMatrix;
+            UnityEditor.Handles.color = Color.green;
             for (int i = 0; i < 5; i++) {
                 if (PProperties [i].tObject is EnemySpawner) {
-                    AiData data = ((EnemySpawner)PProperties [i].tObject).m_AiData;
-                    if (data != null) {
-                        Vector3 center = data.toggleOffset;
-                        float range = data.toggle;
-                        Gizmos.DrawWireSphere (center, range);
-                        if (data.toggleOffsets != null) {
-                            for (int o = 0; o < data.toggleOffsets.Length; o++) {
-                                center = new Vector3 (
-                                    data.toggleOffsets [o].x, 
-                                    data.toggleOffsets [o].y, 
-                                    data.toggleOffsets [o].z
-                                );
-                                range = data.toggleOffsets [o].w;
-                                Gizmos.DrawWireSphere (center, range);
-                            }
+                    Vector3[] pPoints = ((EnemySpawner)PProperties [i].tObject).m_patrolPoints;
+                    UnityEditor.Handles.DrawAAPolyLine (6f, pPoints);
+                    if (pPoints.Length < 2 || Event.current.alt)
+                        return;
+                    using (var ch = new UnityEditor.EditorGUI.ChangeCheckScope ()) {
+                        for (int p = pPoints.Length - 1; p > 0; p--) {
+                            UnityEditor.Handles.Label (pPoints [p], p.ToString (), "OL box");
+                            pPoints [p] = UnityEditor.Handles.DoPositionHandle (pPoints [p], Quaternion.Euler (Vector3.zero));
                         }
+                        if (ch.changed)
+                            UnityEditor.EditorUtility.SetDirty (this);
                     }
+                }
+            }
+            UnityEditor.Handles.matrix = defMatrix;
+        }
+        #endif
+
+        void OnDrawGizmos ()
+        {
+            // check item is select
+            if (Application.isPlaying) return;
+            #if UNITY_EDITOR
+            Transform t = UnityEditor.Selection.activeTransform;
+            if (t == null) return;
+            if (!transform.IsChildOf (t)) return;
+            Volume v = t.GetComponent<Volume> ();
+            if (v == null) return;
+            PaletteItem p = v._itemInspected;
+            if (p == null) return; 
+            LevelPiece l = p.inspectedScript;
+            if (l == null) return; 
+            if (!l.Equals (this)) return;
+            #endif
+
+            Gizmos.color = Color.yellow;
+            Matrix4x4 oldMatrix = Gizmos.matrix;
+            Gizmos.matrix = transform.localToWorldMatrix;
+            for (int i = 0; i < 5; i++) {
+                if (!(PProperties [i].tObject is EnemySpawner)) return;
+                //Draw EnemySpawner.ToggleOffsets
+                AiData data = ((EnemySpawner)PProperties [i].tObject).m_AiData;
+                if (data == null) return;
+                Gizmos.DrawWireSphere (data.toggleOffset, data.toggle);
+                if (data.toggleOffsets == null) return;
+                for (int o = 0; o < data.toggleOffsets.Length; o++) {
+                    Vector4 vo = data.toggleOffsets [o];
+                    Gizmos.DrawWireSphere (new Vector3 (vo.x, vo.y, vo.z), vo.w);
                 }
             }
             Gizmos.matrix = oldMatrix;

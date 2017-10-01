@@ -49,6 +49,7 @@ namespace CreVox
 			float buttonW = 80;
 			float defLabelWidth = EditorGUIUtility.labelWidth;
 			GUI.color = (volume.vd == null) ? Color.red : Color.white;
+            EditorGUIUtility.wideMode = true;
 
 			using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
 				GUI.backgroundColor = Color.white;
@@ -75,15 +76,15 @@ namespace CreVox
 				EditorGUILayout.Separator ();
 				EditorGUI.BeginChangeCheck ();
                 if (volume.vd != null) {
+                    float intW = Mathf.Ceil (Screen.width - 119) / 3;
                     if (volume.vd.useFreeChunk) {
                         ChunkData c = volume.vd.freeChunk;
                         using (var h = new EditorGUILayout.HorizontalScope ()) {
                             EditorGUIUtility.labelWidth = 15;
-                            float w = Mathf.Ceil (Screen.width - 119) / 3;
                             EditorGUILayout.LabelField ("Chunk Size");
-                            c.freeChunkSize.x = EditorGUILayout.IntField ("X", c.freeChunkSize.x, GUILayout.Width (w));
-                            c.freeChunkSize.y = EditorGUILayout.IntField ("Y", c.freeChunkSize.y, GUILayout.Width (w));
-                            c.freeChunkSize.z = EditorGUILayout.IntField ("Z", c.freeChunkSize.z, GUILayout.Width (w));
+                            c.freeChunkSize.x = EditorGUILayout.IntField ("X", c.freeChunkSize.x, GUILayout.Width (intW));
+                            c.freeChunkSize.y = EditorGUILayout.IntField ("Y", c.freeChunkSize.y, GUILayout.Width (intW));
+                            c.freeChunkSize.z = EditorGUILayout.IntField ("Z", c.freeChunkSize.z, GUILayout.Width (intW));
                             EditorGUIUtility.labelWidth = defLabelWidth;
                         }
                         if (GUILayout.Button ("Convert to Voxel Chunk")) {
@@ -93,12 +94,11 @@ namespace CreVox
                     } else {
                         using (var h = new EditorGUILayout.HorizontalScope ()) {
                             EditorGUIUtility.labelWidth = 15;
-                            float w = Mathf.Ceil (Screen.width - 119) / 3;
-                            cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (w));
-                            cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (w));
-                            cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (w));
+                            cx = EditorGUILayout.IntField ("X", cx, GUILayout.Width (intW));
+                            cy = EditorGUILayout.IntField ("Y", cy, GUILayout.Width (intW));
+                            cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (intW));
                             EditorGUIUtility.labelWidth = defLabelWidth;
-                            if (GUILayout.Button ("Init", GUILayout.Width (buttonW))) {
+                            if (GUILayout.Button ("Init")) {
                                 volume.vd = null;
                                 volume.Init (cx, cy, cz);
                                 WriteVData (volume);
@@ -117,26 +117,28 @@ namespace CreVox
 				}
 			}
 
-			if (volume.vd != null) {
-				EditorGUI.BeginChangeCheck ();
-				DrawArtPack ();
-				EditorGUI.BeginChangeCheck ();
-                if (volume.vm) {
-                    VolumeManagerEditor.DrawVLocal(volume.vm);
-                } else {
-                    VolumeManagerEditor.DrawVGlobal();
-                }
-				if (EditorGUI.EndChangeCheck ()) {
-					UpdateVolume ();
-					volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-				}
-				if (selectedItemID != -1)
-					DrawPieceInspectedGUI ();
+            if (volume.vd != null) {
+                using (var ch1 = new EditorGUI.ChangeCheckScope ()) {
+                    DrawArtPack ();
+                    using (var ch2 = new EditorGUI.ChangeCheckScope ()) {
+                        if (volume.vm) {
+                            VolumeManagerEditor.DrawVLocal (volume.vm);
+                        } else {
+                            VolumeManagerEditor.DrawVGlobal ();
+                        }
+                        if (ch2.changed) {
+                            UpdateVolume ();
+                            volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+                        }
+                    }
+                    if (selectedItemID != -1)
+                        DrawPieceInspectedGUI ();
 
-				if (EditorGUI.EndChangeCheck ()) {
-					EditorUtility.SetDirty (volume);
-					volume.UpdateChunks ();
-				}
+                    if (ch1.changed) {
+                        EditorUtility.SetDirty (volume);
+                        volume.UpdateChunks ();
+                    }
+                }
 			}
 		}
 
@@ -193,7 +195,8 @@ namespace CreVox
             DrawLayerModeGUI ();
             DrawSelectedGUI ();
             Handles.EndGUI ();
-
+            if (volume._itemInspected != null && volume._itemInspected.inspectedScript is PropertyPiece)
+                ((PropertyPiece)volume._itemInspected.inspectedScript).DrawPatrolPoints ();
         }
 
 		public enum EditMode
@@ -1275,30 +1278,26 @@ namespace CreVox
         private LevelPiece _pieceSelected;
 
 		private void DrawPieceInspectedGUI()
-		{
-			if (currentEditMode != EditMode.Item)
-				return;
+        {
+            if (currentEditMode != EditMode.Item || volume._itemInspected == null)
+                return;
+            
+            using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
+                EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
+                string _label2 = "[" + selectedItemID + "] " + volume._itemInspected.name + " (" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") ";
+                GUILayout.Label (_label2, EditorStyles.miniLabel);
 
-            if (volume._itemInspected != null) {
-				using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-					using (var h = new EditorGUILayout.HorizontalScope ()) {
-						string _label = "Piece Edited [" + selectedItemID + "]";
-						EditorGUILayout.LabelField (_label, EditorStyles.boldLabel, GUILayout.Width (110));
-                        string _label2 = "(" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") " + volume._itemInspected.name;
-						EditorGUILayout.LabelField (_label2,EditorStyles.miniLabel);
-					}
-                    if (volume._itemInspected.inspectedScript != null) {
-                        LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (volume._itemInspected.inspectedScript));
-						BlockItem item = volume.vd.blockItems [selectedItemID];
+                if (volume._itemInspected.inspectedScript != null) {
+                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (volume._itemInspected.inspectedScript));
+                    BlockItem item = volume.vd.blockItems [selectedItemID];
 
-						if (e != null)
-							e.OnEditorGUI (ref item);
-					} else {
-						EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
-					}
-				}
-			}
-		}
+                    if (e != null)
+                        e.OnEditorGUI (ref item);
+                } else {
+                    EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
+                }
+            }
+        }
 
 		private void SubscribeEvents ()
 		{
