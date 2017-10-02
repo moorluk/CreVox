@@ -2,7 +2,6 @@
 using UnityEditor;
 using System;
 using System.Collections.Generic;
-using System.Xml.Serialization.Configuration;
 
 namespace CreVox
 {
@@ -20,7 +19,10 @@ namespace CreVox
             tree = serializedObject.FindProperty ("tree");
         }
 
+        #region InspectorGUI
+
         float screenW;
+
         public override void OnInspectorGUI ()
         {
             screenW = Screen.width - 30;
@@ -30,7 +32,7 @@ namespace CreVox
             DrawInspector ();
 
             using (var h = new EditorGUILayout.HorizontalScope ()) {
-                EditorGUILayout.LabelField ("Decoration Object", EditorStyles.boldLabel, GUILayout.Width (screenW - 120));
+                EditorGUILayout.LabelField ("Decoration Tree", EditorStyles.boldLabel, GUILayout.Width (screenW - 120));
                 GUILayout.FlexibleSpace ();
                 if (GUILayout.Button ("Test", GUILayout.Width (45))) {
                     dp.SetupPiece (null);
@@ -44,12 +46,16 @@ namespace CreVox
 
             using (var h = new EditorGUILayout.HorizontalScope ()) {
                 if (GUILayout.Button ("Init", "prebutton")) {
-                    if (EditorUtility.DisplayDialog ("風蕭蕭兮易水寒", "Remoove All Tree Element !!?", "Yes", "No"))
+                    if (EditorUtility.DisplayDialog ("", "Remoove All Tree Element !!?", "Yes", "No"))
                         InitTree ();
                 }
                 if (GUILayout.Button ("AutoGet", "prebutton")) {
-                    if (EditorUtility.DisplayDialog ("", "Remoove All Tree Element and find all prefab in childrens?", "Yes", "No"))
+                    if (EditorUtility.DisplayDialog ("", "Remoove All Tree Element and find all prefab in childrens ?", "Yes", "No"))
                         AutoBuildTree ();
+                }
+                if (GUILayout.Button ("Sort", "prebutton")) {
+                    if (EditorUtility.DisplayDialog ("", "Sort All Tree Element's Index ?", "Yes", "No"))
+                        Sort ();
                 }
             }
 
@@ -110,9 +116,8 @@ namespace CreVox
                                 if (ch.changed) {
                                     if (newSource == null || PrefabUtility.GetPrefabType (newSource) == PrefabType.Prefab)
                                         sourceProp.objectReferenceValue = newSource;
-                                    else if (PrefabUtility.GetPrefabType (newSource) == PrefabType.PrefabInstance) {
+                                    else if (PrefabUtility.GetPrefabType (newSource) == PrefabType.PrefabInstance)
                                         AssignPrefabInstance (newSource, selfProp);
-                                    }
                                 }
                             }
                             GUI.color = _color;
@@ -190,7 +195,7 @@ namespace CreVox
                 GUI.Label (r, GUIContent.none, "RL Footer");
                 r = new Rect (r.x + 7, r.y - 3, 16, 16);
                 if (GUI.Button (r, GUIContent.none, "OL Plus")) {
-                    AddElement (_te);
+                    AddElement (_te, dp.tree);
                     return;
                 }
                 r.x += 30;
@@ -202,12 +207,9 @@ namespace CreVox
             EditorGUI.indentLevel = indentTemp;
         }
 
-        private void UpdateTreeIndex ()
-        {
-            for (int i = 0; i < dp.tree.Count; i++) {
-                dp.tree [i].self.treeIndex = i;
-            }
-        }
+        #endregion
+
+        #region TreeFunction
 
         private void InitTree ()
         {
@@ -237,7 +239,7 @@ namespace CreVox
             }
             //add TreeElement
             for (int i = 0; i < _allPrefab.Count; i++)
-                AddElement (_parent);
+                AddElement (_parent, dp.tree);
             serializedObject.Update ();
             //assign prefab
             for (int i = 1; i < dp.tree.Count; i++) {
@@ -249,22 +251,35 @@ namespace CreVox
             serializedObject.Update ();
         }
 
-        private void AssignPrefabInstance (GameObject _prefabInstance, SerializedProperty _nodeProp)
+        private void Sort ()
         {
-            GameObject newSourceAsset = (GameObject)PrefabUtility.GetPrefabParent (_prefabInstance);
-            _nodeProp.FindPropertyRelative ("pos").vector3Value = _prefabInstance.transform.localPosition;
-            _nodeProp.FindPropertyRelative ("rot").vector3Value = _prefabInstance.transform.localEulerAngles;
-            _nodeProp.FindPropertyRelative ("scl").vector3Value = _prefabInstance.transform.localScale;
-            _nodeProp.FindPropertyRelative ("source").objectReferenceValue = newSourceAsset;
-            GameObject.DestroyImmediate (_prefabInstance);
+            List<TreeElement> newTree = new List<TreeElement> ();
+            newTree.Add (dp.tree [0]);
+            SortChild (dp.tree [0], newTree);
+            if (newTree.Count == dp.tree.Count)
+                dp.tree = newTree;
+            else {
+                string log = "";
+                for (int i = 0; i < newTree.Count; i++)
+                    log += "[" + i + "]" + newTree [i].self.treeIndex + "\n";
+                Debug.Log (log);
+            }
         }
 
-        private void AddElement (TreeElement _parent)
+        private void SortChild (TreeElement _te, List<TreeElement> _newTree)
+        {
+            for (int i = 0; i < _te.childs.Count; i++)
+                _newTree.Add (dp.tree [_te.childs [i].FindListByNode (dp.tree)]);
+            for (int i = 0; i < _te.childs.Count; i++)
+                SortChild (dp.tree [_te.childs [i].FindListByNode (dp.tree)], _newTree);
+        }
+
+        private void AddElement (TreeElement _parent, List<TreeElement> _tree)
         {
             TreeElement newT = new TreeElement ();
             newT.parent.id = _parent.self.id;
             newT.parent.treeIndex = _parent.self.treeIndex;
-            newT.self.id = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+            newT.self.id = GetNewID ();
             dp.tree.Add (newT);
             _parent.childs.Add (newT.self as NIndex);
         }
@@ -283,19 +298,59 @@ namespace CreVox
             serializedObject.ApplyModifiedProperties ();
         }
 
+        #endregion
+
+        private int GetNewID ()
+        {
+            int newID = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+            Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
+                return obj.self.id.Equals (newID);
+            };
+            while (dp.tree.Exists (checkNode)) {
+                newID = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+            }
+            return newID;
+        }
+
+        private void AssignPrefabInstance (GameObject _prefabInstance, SerializedProperty _nodeProp)
+        {
+            GameObject newSourceAsset = (GameObject)PrefabUtility.GetPrefabParent (_prefabInstance);
+            _nodeProp.FindPropertyRelative ("pos").vector3Value = _prefabInstance.transform.localPosition;
+            _nodeProp.FindPropertyRelative ("rot").vector3Value = _prefabInstance.transform.localEulerAngles;
+            _nodeProp.FindPropertyRelative ("scl").vector3Value = _prefabInstance.transform.localScale;
+            _nodeProp.FindPropertyRelative ("source").objectReferenceValue = newSourceAsset;
+            GameObject.DestroyImmediate (_prefabInstance);
+        }
+
+        private void UpdateTreeIndex ()
+        {
+            for (int i = 0; i < dp.tree.Count; i++) {
+                dp.tree [i].self.treeIndex = i;
+            }
+            for (int i = 0; i < dp.tree.Count; i++) {
+                dp.tree [i].parent.treeIndex = dp.tree [i].parent.FindListByNode (dp.tree);
+                foreach (NIndex n in dp.tree[i].childs)
+                    n.treeIndex = n.FindListByNode (dp.tree);
+            }
+        }
+
+        #region SetParentTool
+
         static bool showSetParentTool = true;
-        private int _parentIndex = 0; 
-        int ParentIndex
-        {
-            get{return _parentIndex; }
-            set{_parentIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1);}
+        private int _parentIndex = 0;
+
+        int ParentIndex {
+            get{ return _parentIndex; }
+            set{ _parentIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1); }
         }
+
         private int _childIndex = 0;
-        int ChildIndex
-        {
-            get{return _childIndex; }
-            set{_childIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1);}
+
+        int ChildIndex {
+            get{ return _childIndex; }
+            set{ _childIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1); }
         }
+
         private void DrawSetParentTool ()
         {
             showSetParentTool = EditorGUILayout.Foldout (showSetParentTool, "Set Parent Tool");
@@ -303,10 +358,10 @@ namespace CreVox
                 using (var h = new GUILayout.HorizontalScope (EditorStyles.helpBox)) {
                     EditorGUILayout.LabelField ("Child", GUILayout.Width (35));
                     ChildIndex = EditorGUILayout.IntField (ChildIndex, GUILayout.Width (25));
-                    EditorGUILayout.LabelField (": Parent(" + dp.tree[ChildIndex].parent.treeIndex + ")-->", GUILayout.Width (85));
+                    EditorGUILayout.LabelField (": Parent (" + dp.tree [ChildIndex].parent.treeIndex + ") →", GUILayout.Width (90));
                     ParentIndex = EditorGUILayout.IntField (ParentIndex, GUILayout.Width (25));
                     EditorGUILayout.Space ();
-                    if (GUILayout.Button ("Set", GUILayout.Width (50))){
+                    if (GUILayout.Button ("Set", GUILayout.Width (50))) {
                         SetParent ();
                     }
                 }
@@ -318,19 +373,27 @@ namespace CreVox
             TreeElement c = dp.tree [_childIndex];
             TreeElement oldP = dp.tree [c.parent.treeIndex];
             TreeElement newP = dp.tree [_parentIndex];
-            Predicate<NIndex> sameID = delegate(NIndex obj) {return obj.id == c.self.id;};
+            Predicate<NIndex> sameID = delegate(NIndex obj) {
+                return obj.id == c.self.id;
+            };
 
             if (oldP.self.id == newP.self.id)
                 return;
 
             oldP.childs.RemoveAll (sameID);
+            newP.childs.RemoveAll (sameID);
             newP.childs.Add (c.self);
             if (newP.self.type == DecoType.Node)
                 newP.self.type = DecoType.Tree;
             c.parent = newP.self;
         }
 
+        #endregion
+
+        #region ChildObjectButtonList
+
         static bool showChildObjectButtonList = false;
+
         private void DrawChildObjectButtonList ()
         {
             showChildObjectButtonList = EditorGUILayout.Foldout (showChildObjectButtonList, "Object List");
@@ -352,6 +415,7 @@ namespace CreVox
             }
         }
 
+        #endregion
     }
 
 }
