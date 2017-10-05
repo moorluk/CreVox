@@ -1,7 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using System;
 
 [ExecuteInEditMode]
 public class ColorSpill : MonoBehaviour {

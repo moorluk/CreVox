@@ -107,15 +107,6 @@ namespace CreVox
                     y = Mathf.Max (y, newb.BlockPos.y);
                     z = Mathf.Max (z, newb.BlockPos.z);
                 }
-                foreach (BlockHold b in cd.blockHolds) {
-                    BlockHold newb = b;
-                    newb.BlockPos.x += cd.ChunkPos.x;
-                    newb.BlockPos.y += cd.ChunkPos.y;
-                    newb.BlockPos.z += cd.ChunkPos.z;
-                    x = Mathf.Max (x, newb.BlockPos.x);
-                    y = Mathf.Max (y, newb.BlockPos.y);
-                    z = Mathf.Max (z, newb.BlockPos.z);
-                }
             }
             chunkDatas.Clear ();
             freeChunk.isFreeChunk = true;

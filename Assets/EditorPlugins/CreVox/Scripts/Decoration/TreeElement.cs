@@ -1,11 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using System.Collections.Generic;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace CreVox
 {
