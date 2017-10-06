@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public class VolumeAdapter {
+public static class VolumeAdapter {
 
 	public static void AfterVolumeInit(GameObject volume)
     {
@@ -24,7 +24,7 @@ public class VolumeAdapter {
         }
     }
 
-    private static int useSetupDungeon = -1;
+    static int useSetupDungeon = -1;
     public static bool CheckSetupDungeon ()
     {
         if (useSetupDungeon < 0) {
@@ -36,7 +36,7 @@ public class VolumeAdapter {
             useSetupDungeon = (t != null && gg != null) ? 1 : 0;
         }
 
-        return (useSetupDungeon > 0) ? true : false;
+        return (useSetupDungeon > 0);
     }
 
 	public static void UpdatePortals(GameObject root)
@@ -47,7 +47,7 @@ public class VolumeAdapter {
 			UpdatePortalsByDis (root);
 	}
 
-	private static void UpdatePortalsByDis (GameObject root)
+	static void UpdatePortalsByDis (GameObject root)
 	{
 		string log1 = "<b>Linked Sectr_Portal:</b>\n";
 		string log2 = "<b>Diasbled Sectr_Portal:</b>\n";
@@ -88,33 +88,35 @@ public class VolumeAdapter {
 		Debug.Log (log1 + "\n" + log2);
 	}
 
-	private static void UpdatePortalsByInfo (GameObject root)
+	static void UpdatePortalsByInfo (GameObject root)
 	{
 		List<SECTR_Portal> _portals = new List<SECTR_Portal> ();
 		root.GetComponentsInChildren (false, _portals);
 		Dictionary<SECTR_Portal,CreVox.Volume> _rooms = new Dictionary<SECTR_Portal, CreVox.Volume> ();
 
-		for (int i = 0; i < _portals.Count; i++) {
-			//find all connection's volume.
-			SECTR_Portal _p = _portals [i];
-			CreVox.Volume _room = _p.transform.parent.parent.parent.gameObject.GetComponent<CreVox.Volume>();
-			_rooms.Add (_p, _room);
-		}
+		foreach (var _p in _portals) {
+            //find all connection's volume.
+            CreVox.Volume _room = _p.transform.parent.parent.parent.gameObject.GetComponent<CreVox.Volume> ();
+            _rooms.Add (_p, _room);
+        }
 
 		string log1 = "<b>Linked Sectr_Portal:</b>\n";
 		string log2 = "<b>Diasbled Sectr_Portal:</b>\n";
 
-		for (int i = 0; i < _portals.Count; i++) {
-			Vector3 _start = _portals [i].transform.parent.position;
-			CreVox.Volume _vol = _rooms[_portals[i]];
-			if (_vol.ConnectionInfos == null)
-				continue;
-			for (int c = 0; c < _vol.ConnectionInfos.Count; c++) {
-				if (Vector3.Equals (_vol.ConnectionInfos [c].position, _start))
-					_portals [i].FrontSector = _vol.gameObject.GetComponentInChildren<SECTR_Sector> ();
-					_portals [i].BackSector = _vol.ConnectionInfos [c].connectedGameObject.GetComponentInChildren<SECTR_Sector> ();
-			}
-		}
+        for (int i = 0; i < _portals.Count; i++) {
+            Vector3 _start = _portals [i].transform.parent.position;
+            CreVox.Volume _vol = _rooms [_portals [i]];
+            if (_vol.ConnectionInfos == null)
+                continue;
+            for (int c = 0; c < _vol.ConnectionInfos.Count; c++) {
+                if (object.Equals (_vol.ConnectionInfos [c].position, _start))
+                    _portals [i].FrontSector = _vol.gameObject.GetComponentInChildren<SECTR_Sector> ();
+                _portals [i].BackSector = _vol.ConnectionInfos [c].connectedGameObject.GetComponentInChildren<SECTR_Sector> ();
+                log1 += _vol.gameObject.name + "<size=8>." + _vol.transform.parent.name + "</size>"
+                + "  <b><size=16>→</size></b> "
+                    + _vol.ConnectionInfos [c].connectedGameObject.name + "<size=8>." + _vol.ConnectionInfos [c].connectedGameObject.transform.parent.name + "</size>\n";
+            }
+        }
 		Debug.Log (log1 + "\n" + log2);
 	}
 }
