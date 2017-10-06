@@ -23,11 +23,11 @@ namespace CreVox
 
         private delegate void volumeAdd (GameObject volume);
 
-        private void AddComponent ()
+        void AddComponent ()
         {
             volumeAdd AfterVolumeInit = new volumeAdd (VolumeAdapter.AfterVolumeInit);
             if (AfterVolumeInit != null)
-                AfterVolumeInit (this.gameObject);
+                AfterVolumeInit (gameObject);
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace CreVox
 
         #region Chunk
 
-        private GameObject chunkPrefab;
+        GameObject chunkPrefab;
         GameObject chunkRoot;
         Chunk freeChunk;
         public Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
@@ -124,7 +124,7 @@ namespace CreVox
             #endif
         }
 
-        private void Reset ()
+        void Reset ()
         {
             if (chunkRoot) {
                 Dictionary<WorldPos,Chunk> c = GetChunks ();
@@ -137,22 +137,22 @@ namespace CreVox
             itemNodes.Clear ();
 
             for (int i = transform.childCount; i > 0; i--)
-                GameObject.DestroyImmediate (transform.GetChild (i - 1).gameObject);
+                UnityEngine.Object.DestroyImmediate (transform.GetChild (i - 1).gameObject);
 
             #if UNITY_EDITOR
             mColl = null;
             bColl = null;
             if (ruler)
-                GameObject.DestroyImmediate (ruler);
+                UnityEngine.Object.DestroyImmediate (ruler);
             if (layerRuler)
-                GameObject.DestroyImmediate (layerRuler);
+                UnityEngine.Object.DestroyImmediate (layerRuler);
             #endif
         }
 
         public Dictionary<WorldPos,Chunk> GetChunks ()
         {
             if (vd.useFreeChunk) {
-                Dictionary<WorldPos,Chunk> c = new Dictionary<WorldPos, CreVox.Chunk> ();
+                Dictionary<WorldPos,Chunk> c = new Dictionary<WorldPos, Chunk> ();
                 if (freeChunk == null) {
                     CreateFreeChunk ();
                 }
@@ -189,7 +189,7 @@ namespace CreVox
             VGlobal vg = VGlobal.GetSetting ();
             WorldPos chunkPos = new WorldPos (x, y, z);
 
-            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero)) as GameObject;
+            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero));
             newChunkObject.name = "Chunk(" + x + "," + y + "," + z + ")";
             newChunkObject.transform.parent = chunkRoot.transform;
             newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
@@ -212,7 +212,7 @@ namespace CreVox
 
         void CreateFreeChunk ()
         {
-            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero)) as GameObject;
+            GameObject newChunkObject = Instantiate (chunkPrefab, Vector3.zero, Quaternion.Euler (Vector3.zero));
             newChunkObject.name = "FreeChunk";
             newChunkObject.transform.parent = chunkRoot.transform;
             newChunkObject.transform.localPosition = Vector3.zero;
@@ -236,7 +236,7 @@ namespace CreVox
         {
             if (vd.useFreeChunk) {
                 #if UNITY_EDITOR
-                GameObject.DestroyImmediate (freeChunk.gameObject);
+                UnityEngine.Object.DestroyImmediate (freeChunk.gameObject);
                 #else
                 UnityEngine.Object.Destroy(freeChunk.gameObject);
                 #endif
@@ -257,7 +257,7 @@ namespace CreVox
             if (chunks.ContainsKey (chunkPos) && chunks [chunkPos] != null) {
                 if (chunks [chunkPos].gameObject) {
                     #if UNITY_EDITOR
-                    GameObject.DestroyImmediate (chunks [chunkPos].gameObject);
+                    UnityEngine.Object.DestroyImmediate (chunks [chunkPos].gameObject);
                     #else
                     UnityEngine.Object.Destroy(chunks [chunkPos].gameObject);
                     #endif
@@ -322,8 +322,7 @@ namespace CreVox
 
         public void UpdateChunkNodes (ChunkData cData)
         {
-            for (int i = 0; i < cData.blockAirs.Count; i++) {
-                BlockAir bAir = cData.blockAirs [i];
+            foreach (BlockAir bAir in cData.blockAirs) {
                 bool isEmpty = true;
                 foreach (string p in bAir.pieceNames) {
                     if (p != "") {
@@ -341,7 +340,7 @@ namespace CreVox
                     GameObject node = GetNode (volumePos);
                     if (node != null) {
                         #if UNITY_EDITOR
-                        if (!UnityEditor.EditorApplication.isPlaying && cuter && bAir.BlockPos.y + cData.ChunkPos.y > cutY)
+                        if (!EditorApplication.isPlaying && cuter && bAir.BlockPos.y + cData.ChunkPos.y > cutY)
                             node.SetActive (false);
                         else
                             node.SetActive (true);
@@ -359,14 +358,14 @@ namespace CreVox
             bool isEmpty = true;
             if (blockAir != null) {
                 foreach (string p in blockAir.pieceNames) {
-                    if (p != null && p.Length > 0) {
+                    if (!String.IsNullOrEmpty(p)) {
                         isEmpty = false;
                         break;
                     }
                 }
                 if (isEmpty) {
                     if (nodes.ContainsKey (bPos)) {
-                        GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
+                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieceRoot);
                         nodes.Remove (bPos);
                     }
                 }
@@ -396,11 +395,7 @@ namespace CreVox
 
         public GameObject GetItemNode (BlockItem blockItem)
         {
-            if (itemNodes.ContainsKey (blockItem))
-                return itemNodes [blockItem];
-            else {
-                return null;
-            }
+            return itemNodes [blockItem];
         }
 
         #endregion
@@ -454,7 +449,7 @@ namespace CreVox
                         if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
                             BlockAir ba = oldBlock as BlockAir;
                             for (int i = 0; i < 8; i++) {
-                                PlacePiece (ba.BlockPos, new WorldPos (i % 3, 0, (int)(i / 3)), null);
+                                PlacePiece (ba.BlockPos, new WorldPos (i % 3, 0, (i / 3)), null);
                             }
                         }
                         if (!chunk.cData.blocks.Exists (sameBlock)) {
@@ -533,18 +528,18 @@ namespace CreVox
                     }
                 }
             } else {
-                if (!(_id < vd.blockItems.Count))
+                if (_id > vd.blockItems.Count -1)
                     return;
                 
                 blockItem = vd.blockItems [_id];
-                GameObject.DestroyImmediate (itemNodes [blockItem]);
+                UnityEngine.Object.DestroyImmediate (itemNodes [blockItem]);
                 itemNodes.Remove (blockItem);
                 vd.blockItems.RemoveAt (_id);
             }
             
         }
 
-        private void PlaceItems ()
+        void PlaceItems ()
         {
             GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
             LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
@@ -564,7 +559,7 @@ namespace CreVox
         public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, bool isNew = true)
         {
             Block block = GetBlock (bPos.x, bPos.y, bPos.z);
-            BlockAir blockAir = null;
+            BlockAir blockAir;
             int id = gPos.z * 3 + gPos.x;
             GameObject pObj;
 
@@ -572,10 +567,8 @@ namespace CreVox
                 return;
 
             if (_piece != null) {
-                if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item) {
-                    if (_piece.name != "Missing")
+                if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item && _piece.name != "Missing")
                         return;
-                }
                 
                 if (block == null) {
                     SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
@@ -588,15 +581,11 @@ namespace CreVox
                 pObj = nodes [bPos].pieces [id];
                 if (pObj != null) {
                     PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
-                    GameObject.DestroyImmediate (pObj);
+                    UnityEngine.Object.DestroyImmediate (pObj);
                 }
 
                 #if UNITY_EDITOR
-                if (isNew) {
-                    pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
-                } else {
-                    pObj = _piece.gameObject;
-                }
+                pObj = isNew ? PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject : _piece.gameObject;
                 #else
                 pObj = GameObject.Instantiate(_piece.gameObject);
                 #endif
@@ -621,7 +610,7 @@ namespace CreVox
                         pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + blockAir.pieceNames [id]);
                     }
 
-                    if (_piece.isHold == true)
+                    if (_piece.isHold)
                         PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), false);
                 }
             } else {
@@ -635,7 +624,7 @@ namespace CreVox
                     pObj = nodes [bPos].pieces [id];
                     if (pObj != null) {
                         PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
-                        GameObject.DestroyImmediate (pObj);
+                        UnityEngine.Object.DestroyImmediate (pObj);
                     }
                 }
 
@@ -665,7 +654,7 @@ namespace CreVox
                     }
 
                     if (a_cut) {
-                        GameObject.DestroyImmediate (nodes [bPos].pieces [id]);
+                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieces [id]);
                         nodes [bPos].pieces [id] = null;
                     }
                 }
@@ -678,7 +667,7 @@ namespace CreVox
         static GameObject _missing;
         static LevelPiece _missingP;
 
-        private void PlacePieces ()
+        void PlacePieces ()
         {
             if (_missing == null) {
                 _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
@@ -687,35 +676,30 @@ namespace CreVox
                 _missingP = _missing.GetComponent<LevelPiece> ();
             }
             foreach (Chunk c in GetChunks().Values) {
-                for (int b = 0; b < c.cData.blockAirs.Count; b++) {
-                    BlockAir ba = c.cData.blockAirs [b];
+                foreach (var ba in c.cData.blockAirs) {
                     for (int i = 0; i < ba.pieceNames.Length; i++) {
-                        if (ba.pieceNames [i] != null && ba.pieceNames [i] != "") {
+                        if (!String.IsNullOrEmpty (ba.pieceNames [i])) {
                             LevelPiece p = _missingP;
                             for (int k = 0; k < itemArray.Length; k++) {
-                                if (ba.pieceNames [i] == itemArray [k].name) {
+                                if (ba.pieceNames [i] == itemArray [k].name)
                                     p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-                                }
                             }
                             PlacePiece (
-                                new WorldPos (
-                                    c.cData.ChunkPos.x + ba.BlockPos.x,
-                                    c.cData.ChunkPos.y + ba.BlockPos.y,
-                                    c.cData.ChunkPos.z + ba.BlockPos.z),
-                                new WorldPos (i % 3, 0, (int)(i / 3)),
+                                new WorldPos (c.cData.ChunkPos.x + ba.BlockPos.x, c.cData.ChunkPos.y + ba.BlockPos.y, c.cData.ChunkPos.z + ba.BlockPos.z),
+                                new WorldPos (i % 3, 0, (i / 3)),
                                 p
                             );
                         }
                     }
                 }
             }
-            BehaviorManager _bm = this.gameObject.GetComponentInParent<BehaviorManager> ();
+            BehaviorManager _bm = gameObject.GetComponentInParent<BehaviorManager> ();
             if (_bm) {
-                BehaviorTree[] _tree = this.gameObject.GetComponentsInChildren<BehaviorTree> ();
+                BehaviorTree[] _tree = gameObject.GetComponentsInChildren<BehaviorTree> ();
                 if (_tree.Length > 0) {
                     for (int i = 0; i < _tree.Length; i++) {
                         _tree [i].EnableBehavior ();
-                        _bm.EnableBehavior (_tree [i] as Behavior);
+                        _bm.EnableBehavior (_tree [i]);
                         if (_tree [i].ExternalBehavior != null) {
                             List<SharedVariable> n = _tree [i].GetAllVariables ();
                             for (int j = 0; j < n.Count; j++) {
@@ -728,25 +712,19 @@ namespace CreVox
             }
         }
 
-        private int GetBlockHoldIndex (int x, int y, int z, Chunk containerChunk)
+        static int GetBlockHoldIndex (int x, int y, int z, Chunk containerChunk)
         {
             WorldPos bPos = new WorldPos (x, y, z);
             Predicate <BlockHold> checkBlockPos = delegate (BlockHold bh) {
                 return bh.BlockPos.Compare (bPos);
             };
-            if (containerChunk != null) {
-                int _index = containerChunk.cData.blockHolds.FindIndex (checkBlockPos);
-                return _index;
-            } else {
-                return -1;
-            }
+            return (containerChunk != null) ? containerChunk.cData.blockHolds.FindIndex (checkBlockPos) : -1;
         }
 
-        private void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
+        void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
         {
 //            Debug.Log ("[" + _bPos.ToString () + "](" + _id.ToString () + ")-" + (_isErase?"Delete":"Add"));
-            for (int i = 0; i < _piece.holdBlocks.Count; i++) {
-                LevelPiece.Hold bh = _piece.holdBlocks [i];
+            foreach (LevelPiece.Hold bh in _piece.holdBlocks) {
                 int x = _bPos.x + bh.offset.x;
                 int y = _bPos.y + bh.offset.y;
                 int z = _bPos.z + bh.offset.z;
@@ -760,18 +738,15 @@ namespace CreVox
                     bhData.blockPos = _bPos;
                     bhData.pieceID = _id;
 
-
                     Predicate<BlockHold.piecePos> samePiecePos = delegate(BlockHold.piecePos obj) {
                         return (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
                     };
 
-                    BlockHold bhBlock = null;
                     int _index = GetBlockHoldIndex (x, y, z, _chunk);
-                    if (_index > -1)
-                        bhBlock = _chunk.cData.blockHolds [_index];
+                    BlockHold bhBlock = (_index > -1) ? _chunk.cData.blockHolds [_index] : null;
                     
                     if (_isErase) {
-                        if (bhBlock != null) { 
+                        if (bhBlock != null) {
                             if (bhBlock.roots.Exists (samePiecePos))
                                 bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
                             if (bhBlock.roots.Count == 0)
@@ -779,12 +754,12 @@ namespace CreVox
                         }
                     } else {
                         if (bhBlock == null) {
-                            bhBlock = new BlockHold ();
-                            bhBlock.BlockPos = new WorldPos (x, y, z);
+                            bhBlock = new BlockHold (x, y, z);
                             bhBlock.roots.Add (bhData);
                             _chunk.cData.blockHolds.Add (bhBlock);
-                        } else if (!bhBlock.roots.Exists (samePiecePos))
+                        } else if (!bhBlock.roots.Exists (samePiecePos)) {
                             bhBlock.roots.Add (bhData);
+                        }
                         
                         if (bh.isSolid)
                             bhBlock.SetSolid (true);
@@ -872,7 +847,7 @@ namespace CreVox
         {
             string vdName = AssetDatabase.GetAssetPath (vd);
             vdName = vdName.Substring (vdName.LastIndexOf ("/") + 1);
-            string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
+            string date = DateTime.Now.ToString ("yyyyMMdd") + "-" + DateTime.Now.ToString ("HHmmss");
             string backupPath = PathCollect.resourcesPath + PathCollect.save + "/_TempBackup/" + date + "_" + vdName;
 
             VolumeData vdBackup = ScriptableObject.CreateInstance<VolumeData> ();
@@ -881,7 +856,7 @@ namespace CreVox
             vdBackup.chunkX = vd.chunkX;
             vdBackup.chunkY = vd.chunkY;
             vdBackup.chunkZ = vd.chunkZ;
-            UnityEditor.AssetDatabase.CreateAsset (vdBackup, backupPath);
+            AssetDatabase.CreateAsset (vdBackup, backupPath);
             AssetDatabase.Refresh ();
         }
         #endif
@@ -900,15 +875,15 @@ namespace CreVox
 
         #if UNITY_EDITOR
         [SerializeField]
-        private MeshCollider mColl;
+        MeshCollider mColl;
         [SerializeField]
-        private BoxCollider bColl;
+        BoxCollider bColl;
         [SerializeField]
-        private GameObject ruler;
+        GameObject ruler;
         [SerializeField]
-        private GameObject layerRuler;
-        public GameObject box = null;
-        public bool useBox = false;
+        GameObject layerRuler;
+        public GameObject box;
+        public bool useBox;
 
         void CreateRuler ()
         {
@@ -963,7 +938,7 @@ namespace CreVox
         {
             if (!box) {
                 VGlobal vg = VGlobal.GetSetting ();
-                box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (vg.w, vg.h, vg.d));
+                box = BoxCursorUtils.CreateBoxCursor (transform, new Vector3 (vg.w, vg.h, vg.d));
             }
         }
 
@@ -988,7 +963,7 @@ namespace CreVox
 
         public void ShowRuler ()
         {
-            bool _active = EditorApplication.isPlaying ? false : (vm != null ? vm.debugRulerL : VolumeManager.debugRuler);
+            bool _active = !EditorApplication.isPlaying && (vm == null ? VolumeManager.debugRuler : vm.debugRulerL);
             ActiveRuler (_active);
         }
         #endif
@@ -997,7 +972,7 @@ namespace CreVox
         #region Editor Scene UI
 
         #if UNITY_EDITOR
-        public static Volume focusVolume = null;
+        public static Volume focusVolume;
         public Color YColor;
         public bool pointer;
         public int pointY;
@@ -1059,18 +1034,17 @@ namespace CreVox
         void DrawBlockItem ()
         {
             VGlobal vg = VGlobal.GetSetting ();
-            for (int i = 0; i < vd.blockItems.Count; i++) {
-                BlockItem item = vd.blockItems [i];
+            foreach (var item in vd.blockItems) {
                 Vector3 localPos = new Vector3 (
-                                       Mathf.Round (item.posX / vg.w) * vg.w,
-                                       Mathf.Round (item.posY / vg.h) * vg.h,
+                                       Mathf.Round (item.posX / vg.w) * vg.w, 
+                                       Mathf.Round (item.posY / vg.h) * vg.h, 
                                        Mathf.Round (item.posZ / vg.d) * vg.d
                                    );
                 Gizmos.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
                 Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
                 Vector3 localPos2 = new Vector3 (
-                                        item.BlockPos.x * vg.w,
-                                        item.BlockPos.y * vg.h,
+                                        item.BlockPos.x * vg.w, 
+                                        item.BlockPos.y * vg.h, 
                                         item.BlockPos.z * vg.d
                                     );
                 Gizmos.DrawWireCube (localPos2, new Vector3 (vg.w, vg.h, vg.d));
@@ -1156,23 +1130,23 @@ namespace CreVox
         public GameObject connectedGameObject;
         public bool used;
         // Just for connection.
-        public ConnectionInfo (WorldPos position, Quaternion rotation, ConnectionInfoType type, string name = "")
+        public ConnectionInfo (WorldPos _position, Quaternion _rotation, ConnectionInfoType _type, string _name = "")
         {
-            this.position = position;
-            this.rotation = rotation;
-            this.type = type;
-            this.connectionName = name;
+            position = _position;
+            rotation = _rotation;
+            type = _type;
+            connectionName = _name;
             used = false;
             connectedGameObject = null;
         }
 
         public ConnectionInfo (ConnectionInfo clone)
         {
-            this.position = clone.position;
-            this.rotation = clone.rotation;
-            this.type = clone.type;
-            this.connectionName = clone.connectionName;
-            this.used = clone.used;
+            position = clone.position;
+            rotation = clone.rotation;
+            type = clone.type;
+            connectionName = clone.connectionName;
+            used = clone.used;
             connectedObjectGuid = clone.connectedObjectGuid;
             connectedGameObject = clone.connectedGameObject;
         }
@@ -1184,12 +1158,18 @@ namespace CreVox
 
         public bool Compare (ConnectionInfo obj)
         {
-            return this.position.Compare (obj.position) && this.rotation == obj.rotation && this.type == obj.type && this.used == obj.used && this.connectedObjectGuid == obj.connectedObjectGuid;
+            return (
+                position.Compare (obj.position)
+                && rotation == obj.rotation
+                && type == obj.type
+                && used == obj.used
+                && connectedObjectGuid == obj.connectedObjectGuid
+            );
         }
 
         public WorldPos RelativePosition (float degree)
         {
-            int absoluteDegree = ((int)(degree + this.rotation.eulerAngles.y) % 360);
+            int absoluteDegree = ((int)(degree + rotation.eulerAngles.y) % 360);
             return DirectionOffset [absoluteDegree / 90];
         }
         // Constant array.
