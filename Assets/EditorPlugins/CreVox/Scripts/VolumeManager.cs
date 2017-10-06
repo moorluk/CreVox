@@ -23,7 +23,7 @@ namespace CreVox
         public static bool debugRuler;
         public static bool showBlockHold;
 
-        public bool useLocalSetting = false;
+        public bool useLocalSetting;
         public bool saveBackupL;
         public bool volumeShowArtPackL;
         public bool GenerationL;
@@ -32,7 +32,7 @@ namespace CreVox
         public bool showBlockHoldL;
 
         public List<Dungeon> dungeons = new List<Dungeon> ();
-        public bool useStageData = false;
+        public bool useStageData;
         public StageData stageData;
 
         void Awake ()
@@ -41,7 +41,11 @@ namespace CreVox
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
             if (useLocalSetting ? GenerationL : Generation) {
-                ClearVolumes (true);
+                ClearVolumes ();
+                if (useStageData)
+                    RandomDungeon ();
+                else
+                    UpdateDungeon ();
             }
         }
 
@@ -54,7 +58,7 @@ namespace CreVox
                 UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
                 string log = "";
                 for (int i = 0; i < _event.GetInvocationList ().Length; i++) {
-                    log = log + i + "/" + _event.GetInvocationList ().Length + ": " + _event.GetInvocationList () [i].Method.ToString () + "\n";
+                    log += i + "/" + _event.GetInvocationList ().Length + ": " + _event.GetInvocationList () [i].Method + "\n";
                 }
                 Debug.LogWarning (log);
             }
@@ -65,49 +69,27 @@ namespace CreVox
 
         public void ClearVolumes (bool runtime = true)
         {
-            Volume[] v = transform.GetComponentsInChildren<Volume>(false);
-            if (useStageData) {
-                RandomDungeon();
-            } else {
-                if (v.Length > 0)
-                    UpdateDungeon();
+            Volume[] vs = transform.GetComponentsInChildren<Volume>(false);
+            foreach(Volume v in vs){
+                if (runtime) UnityEngine.Object.Destroy(v.gameObject);
+                else UnityEngine.Object.DestroyImmediate(v.gameObject, false);
             }
-
-            for (int i = 0; i < v.Length; i++) {
-                if (runtime) GameObject.Destroy(v[i].gameObject);
-                else GameObject.DestroyImmediate(v[i].gameObject, false);
-            }
-        }
-
-        public void CreateVolumes ()
-        {
-            for (int vi = 0; vi < dungeons.Count; vi++) {
-                GameObject volume = new GameObject (dungeons [vi].volumeData.name);
-                volume.transform.parent = transform;
-                volume.transform.localPosition = dungeons [vi].position;
-                volume.transform.localRotation = dungeons [vi].rotation;
-                Volume v = volume.AddComponent<Volume> ();
-                v.vd = dungeons [vi].volumeData;
-                v.ArtPack = dungeons [vi].ArtPack;
-                v.vMaterial = dungeons [vi].vMaterial;
-            }
-            BroadcastMessage("BuildVolume",SendMessageOptions.DontRequireReceiver);
         }
 
         public void CreateVolumeMakers ()
         {
-            for (int vi = 0; vi < dungeons.Count; vi++) {
-                GameObject volume = new GameObject (dungeons [vi].volumeData.ToString ());
+            foreach (Dungeon d in dungeons) {
+                GameObject volume = new GameObject (d.volumeData.ToString ());
                 volume.transform.parent = transform;
-                volume.transform.localPosition = dungeons [vi].position;
-                volume.transform.localRotation = dungeons [vi].rotation;
+                volume.transform.localPosition = d.position;
+                volume.transform.localRotation = d.rotation;
                 volume.SetActive (false);
                 VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
                 vm.enabled = false;
-                vm.m_vd = dungeons [vi].volumeData;
+                vm.m_vd = d.volumeData;
                 vm.m_style = VolumeMaker.Style.ChunkWithPieceAndItem;
-                vm.ArtPack = dungeons [vi].ArtPack;
-                vm.vMaterial = dungeons [vi].vMaterial;
+                vm.ArtPack = d.ArtPack;
+                vm.vMaterial = d.vMaterial;
                 volume.SetActive (true);
                 if ((useLocalSetting ? GenerationL : Generation) && !VolumeAdapter.CheckSetupDungeon ()) {
                     vm.Build ();
@@ -115,25 +97,28 @@ namespace CreVox
             }
         }
 
+        /// <summary>
+        /// Search all volumes in children and create new Dungeon list.
+        /// </summary>
         public void UpdateDungeon ()
         {
-            Volume[] v = transform.GetComponentsInChildren<Volume> (false);
+            Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
 
             dungeons.Clear();
-            for (int i = 0; i < v.Length; i++) {
+            foreach (Volume v in vs) {
                 Dungeon newDungeon = new Dungeon ();
-                newDungeon.volumeData = v [i].vd;
-                newDungeon.position = v [i].transform.position;
-                newDungeon.rotation = v [i].transform.rotation;
-                newDungeon.ArtPack = v [i].ArtPack;
-                newDungeon.vMaterial = v [i].vMaterial;
+                newDungeon.volumeData = v.vd;
+                newDungeon.position = v.transform.position;
+                newDungeon.rotation = v.transform.rotation;
+                newDungeon.ArtPack = v.ArtPack;
+                newDungeon.vMaterial = v.vMaterial;
                 dungeons.Add (newDungeon);
             }
         }
 
         public void RandomDungeon()
         {
-            UnityEngine.Random.InitState (System.Guid.NewGuid ().GetHashCode ());
+            UnityEngine.Random.InitState (Guid.NewGuid ().GetHashCode ());
             int i = UnityEngine.Random.Range (0, stageData.stageList.Count);
             dungeons.Clear ();
             foreach (Dungeon d in stageData.stageList[i].Dlist) {
