@@ -104,6 +104,8 @@ namespace CreVox
         {
             Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
 
+            if (vs.Length < 1 && dungeons.Count > 0)
+                return;
             dungeons.Clear();
             foreach (Volume v in vs) {
                 Dungeon newDungeon = new Dungeon ();

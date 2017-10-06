@@ -242,7 +242,7 @@ namespace CreVox
                 _v.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                 EditorUtility.SetDirty (_v.vd);
             }
-            vm.BroadcastMessage ("BuildVolume");
+            Button_BuildAll ();
             vm.UpdateDungeon ();
         }
 
