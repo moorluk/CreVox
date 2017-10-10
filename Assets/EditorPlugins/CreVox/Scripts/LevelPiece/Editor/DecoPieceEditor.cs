@@ -75,7 +75,7 @@ namespace CreVox
             }
         }
 
-        private void DrawTree (TreeElement _te, SerializedProperty _childs)
+        void DrawTree (TreeElement _te, SerializedProperty _childs)
         {
             int indentTemp = EditorGUI.indentLevel;
             using (var v = new EditorGUILayout.VerticalScope ("RL Background", GUILayout.Height (16))) {
@@ -146,8 +146,6 @@ namespace CreVox
                         case (int)DecoType.RandomAll:
                             sub = true;
                             break;
-                        default:
-                            break;
                         }
 
                         EditorGUILayout.BeginHorizontal ();
@@ -211,7 +209,7 @@ namespace CreVox
 
         #region TreeFunction
 
-        private void InitTree ()
+        void InitTree ()
         {
             dp.tree.Clear ();
             dp.tree.Add (new TreeElement ());
@@ -219,7 +217,7 @@ namespace CreVox
             serializedObject.Update ();
         }
 
-        private void AutoBuildTree ()
+        void AutoBuildTree ()
         {
             //init Tree
             dp.tree.Clear ();
@@ -251,7 +249,7 @@ namespace CreVox
             serializedObject.Update ();
         }
 
-        private void Sort ()
+        void Sort ()
         {
             List<TreeElement> newTree = new List<TreeElement> ();
             newTree.Add (dp.tree [0]);
@@ -266,7 +264,7 @@ namespace CreVox
             }
         }
 
-        private void SortChild (TreeElement _te, List<TreeElement> _newTree)
+        void SortChild (TreeElement _te, List<TreeElement> _newTree)
         {
             for (int i = 0; i < _te.childs.Count; i++)
                 _newTree.Add (dp.tree [_te.childs [i].FindListByNode (dp.tree)]);
@@ -281,10 +279,10 @@ namespace CreVox
             newT.parent.treeIndex = _parent.self.treeIndex;
             newT.self.id = GetNewID ();
             dp.tree.Add (newT);
-            _parent.childs.Add (newT.self as NIndex);
+            _parent.childs.Add (newT.self);
         }
 
-        private void RemoveElement (List<NIndex> _childs)
+        void RemoveElement (IList<NIndex> _childs)
         {
             if (_childs.Count == 0)
                 return;
@@ -300,29 +298,29 @@ namespace CreVox
 
         #endregion
 
-        private int GetNewID ()
+        int GetNewID ()
         {
-            int newID = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+            int newID = Mathf.Abs (Guid.NewGuid ().GetHashCode ());
             Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
                 return obj.self.id.Equals (newID);
             };
             while (dp.tree.Exists (checkNode)) {
-                newID = Mathf.Abs (System.Guid.NewGuid ().GetHashCode ());
+                newID = Mathf.Abs (Guid.NewGuid ().GetHashCode ());
             }
             return newID;
         }
 
-        private void AssignPrefabInstance (GameObject _prefabInstance, SerializedProperty _nodeProp)
+        static void AssignPrefabInstance (GameObject _prefabInstance, SerializedProperty _nodeProp)
         {
             GameObject newSourceAsset = (GameObject)PrefabUtility.GetPrefabParent (_prefabInstance);
             _nodeProp.FindPropertyRelative ("pos").vector3Value = _prefabInstance.transform.localPosition;
             _nodeProp.FindPropertyRelative ("rot").vector3Value = _prefabInstance.transform.localEulerAngles;
             _nodeProp.FindPropertyRelative ("scl").vector3Value = _prefabInstance.transform.localScale;
             _nodeProp.FindPropertyRelative ("source").objectReferenceValue = newSourceAsset;
-            GameObject.DestroyImmediate (_prefabInstance);
+            UnityEngine.Object.DestroyImmediate (_prefabInstance);
         }
 
-        private void UpdateTreeIndex ()
+        void UpdateTreeIndex ()
         {
             for (int i = 0; i < dp.tree.Count; i++) {
                 dp.tree [i].self.treeIndex = i;
@@ -337,21 +335,21 @@ namespace CreVox
         #region SetParentTool
 
         static bool showSetParentTool = true;
-        private int _parentIndex = 0;
+        int _parentIndex;
 
         int ParentIndex {
             get{ return _parentIndex; }
             set{ _parentIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1); }
         }
 
-        private int _childIndex = 0;
+        int _childIndex;
 
         int ChildIndex {
             get{ return _childIndex; }
             set{ _childIndex = Mathf.Clamp (value, 0, dp.tree.Count - 1); }
         }
 
-        private void DrawSetParentTool ()
+        void DrawSetParentTool ()
         {
             showSetParentTool = EditorGUILayout.Foldout (showSetParentTool, "Set Parent Tool");
             if (showSetParentTool) {
@@ -368,7 +366,7 @@ namespace CreVox
             }
         }
 
-        private void SetParent ()
+        void SetParent ()
         {
             TreeElement c = dp.tree [_childIndex];
             TreeElement oldP = dp.tree [c.parent.treeIndex];
@@ -392,9 +390,9 @@ namespace CreVox
 
         #region ChildObjectButtonList
 
-        static bool showChildObjectButtonList = false;
+        static bool showChildObjectButtonList;
 
-        private void DrawChildObjectButtonList ()
+        void DrawChildObjectButtonList ()
         {
             showChildObjectButtonList = EditorGUILayout.Foldout (showChildObjectButtonList, "Object List");
             Rect r = EditorGUI.IndentedRect (EditorGUILayout.GetControlRect ());

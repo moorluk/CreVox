@@ -130,7 +130,7 @@ namespace CreVox
 				return s.number == _stageNumber;
 			};
 			if (!StageList.Exists (findStage)) {
-				Stage s = new Stage () {
+				Stage s = new Stage {
 					number = _stageNumber,
 					artPack = _artPack,
 					XmlPath = _XmlPath,

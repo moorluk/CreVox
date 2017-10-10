@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace CreVox
@@ -29,7 +28,7 @@ namespace CreVox
             public Block block;
         }
 
-        private void OnEnable ()
+        void OnEnable ()
         {
             volume = (Volume)target;
             Volume.focusVolume = volume;
@@ -37,7 +36,7 @@ namespace CreVox
             SubscribeEvents ();
         }
 
-        private void OnDisable ()
+        void OnDisable ()
         {
             Volume.focusVolume = null;
             volume.ActiveRuler (false);
@@ -46,7 +45,6 @@ namespace CreVox
 
         public override void OnInspectorGUI ()
         {
-            float buttonW = 80;
             float defLabelWidth = EditorGUIUtility.labelWidth;
             GUI.color = (volume.vd == null) ? Color.red : Color.white;
             EditorGUIUtility.wideMode = true;
@@ -69,7 +67,7 @@ namespace CreVox
                         UpdateVolume ();
                         volume.gameObject.name = volume.vd.name.Replace ("_vData", "");
                     }
-                    if (GUILayout.Button ("Backup", GUILayout.Width (buttonW))) {
+                    if (GUILayout.Button ("Backup", GUILayout.Width (ButtonW))) {
                         volume.SaveTempWorld ();
                     }
                 }
@@ -185,7 +183,7 @@ namespace CreVox
 
         #region Scene GUI
 
-        private void OnSceneGUI ()
+        void OnSceneGUI ()
         {
             ModeHandler ();
 
@@ -210,10 +208,10 @@ namespace CreVox
             Item
         }
 
-        private EditMode selectedEditMode;
-        private EditMode currentEditMode;
+        EditMode selectedEditMode;
+        EditMode currentEditMode;
 
-        private void ModeHandler ()
+        void ModeHandler ()
         {
             switch (selectedEditMode) {
             case EditMode.Voxel:
@@ -235,11 +233,11 @@ namespace CreVox
             }
         }
 
-        private int fixPointY = 0;
-        private int fixCutY = 0;
-        float ButtonW = 80;
+        int fixPointY;
+        int fixCutY;
+        const float ButtonW = 80;
 
-        private void DrawModeGUI ()
+        void DrawModeGUI ()
         {
             VGlobal vg = VGlobal.GetSetting ();
             List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode> ();
@@ -265,9 +263,9 @@ namespace CreVox
             }
         }
 
-        float blockW = 85f;
+        const float blockW = 85f;
 
-        private void DrawLayerModeGUI ()
+        void DrawLayerModeGUI ()
         {
             int tile = (_pieceSelected == null) ? 3 : 4;
             using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (blockW + 3f) * tile, 65f), "")) {
@@ -325,14 +323,14 @@ namespace CreVox
             }
         }
 
-        private bool m_mappingX = false;
-        private bool m_mappingZ = false;
-        private Vector3 m_selectedMin;
-        private Vector3 m_selectedMax;
-        private List<Vector3> m_selectedBlocks = new List<Vector3> ();
-        private Vector3 m_translate;
+        bool m_mappingX;
+        bool m_mappingZ;
+        Vector3 m_selectedMin;
+        Vector3 m_selectedMax;
+        List<Vector3> m_selectedBlocks = new List<Vector3> ();
+        Vector3 m_translate;
 
-        private void DrawSelectedGUI ()
+        void DrawSelectedGUI ()
         {
             using (var a = new GUILayout.AreaScope (new Rect (10f, 135f, blockW * 2 + 4, 170f), "")) {
                 EditorGUIUtility.wideMode = true;
@@ -382,7 +380,7 @@ namespace CreVox
 
         #region Draw Marker
 
-        private void EventHandler ()
+        void EventHandler ()
         {
             if (Event.current.alt) {
                 return;
@@ -475,9 +473,6 @@ namespace CreVox
                     }
                     DrawMarkerEdit (ref button);
                     break;
-
-                default:
-                    break;
                 }
 
                 if (Event.current.type == EventType.MouseUp) {
@@ -486,7 +481,7 @@ namespace CreVox
             }
         }
 
-        private void DrawMarker (bool isErase)
+        void DrawMarker (bool isErase)
         {
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -496,7 +491,7 @@ namespace CreVox
 
             if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
                 RaycastHit hitFix = hit;
-                WorldPos pos = EditTerrain.GetBlockPos (hitFix, isErase ? false : true);
+                WorldPos pos = EditTerrain.GetBlockPos (hitFix, !isErase);
                 hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
 
                 Handles.DrawLine (hit.point, hit.point + hit.normal);
@@ -511,7 +506,7 @@ namespace CreVox
             }
         }
 
-        private void DrawMarkerLayer ()
+        void DrawMarkerLayer ()
         {
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -521,7 +516,7 @@ namespace CreVox
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 RaycastHit hitFix = hit;
-                WorldPos pos = EditTerrain.GetBlockPos (hitFix, false);
+                WorldPos pos = EditTerrain.GetBlockPos (hitFix);
                 hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
 				
                 Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.h / 2, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
@@ -534,7 +529,7 @@ namespace CreVox
             SceneView.RepaintAll ();
         }
 
-        private void DrawMarkerGrid ()
+        void DrawMarkerGrid ()
         {
             if (_pieceSelected == null)
                 return;
@@ -564,7 +559,7 @@ namespace CreVox
                 float gz = pos.z * vg.d + gPos.z + ((pos.z < 0) ? 1 : -1);
 
                 LevelPiece.PivotType pivot = _pieceSelected.pivot;
-                if (CheckPlaceable ((int)gPos.x, (int)gPos.z, pivot)) {
+                if (CheckPlaceable (gPos.x, gPos.z, pivot)) {
                     Handles.color = Color.red;
                     Handles.RectangleCap (0, new Vector3 (gx, gy, gz), Quaternion.Euler (90, 0, 0), 0.5f);
                     Handles.color = Color.white;
@@ -584,11 +579,11 @@ namespace CreVox
             }
         }
 
-        private int workItemId = -1;
-        private int selectedItemID = -1;
-        private bool isItemSnap = false;
+        int workItemId = -1;
+        int selectedItemID = -1;
+        bool isItemSnap;
 
-        private void DrawMarkerEdit (ref int button)
+        void DrawMarkerEdit (ref int button)
         {
             VGlobal vg = VGlobal.GetSetting ();
             Matrix4x4 defMatrix = Handles.matrix;
@@ -689,8 +684,6 @@ namespace CreVox
                 UpdateInapectedItem (selectedItemID);
                 log += "\n[After Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
                 break;
-            default :
-                break;
             }
             workItemId = -1;
             if (log.Length > 0)
@@ -723,7 +716,7 @@ namespace CreVox
 
         #region Paint
 
-        private void Paint (bool isErase)
+        void Paint (bool isErase)
         {
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -735,7 +728,7 @@ namespace CreVox
             if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
                 gHit.point = volume.transform.InverseTransformPoint (gHit.point);
                 gHit.normal = volume.transform.InverseTransformDirection (gHit.normal);
-                pos = EditTerrain.GetBlockPos (gHit, isErase ? false : true);
+                pos = EditTerrain.GetBlockPos (gHit, !isErase);
 
                 //volume.SetBlock (pos.x, pos.y, pos.z, isErase ? null : new Block ());
                 VolumeHelper.MirrorPosition (volume,
@@ -756,7 +749,7 @@ namespace CreVox
             EditorUtility.SetDirty (volume.vd);
         }
 
-        private void PaintLayer (bool isErase)
+        void PaintLayer (bool isErase)
         {
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -789,7 +782,7 @@ namespace CreVox
             EditorUtility.SetDirty (volume.vd);
         }
 
-        private void PaintPiece (bool isErase)
+        void PaintPiece (bool isErase)
         {
             if (_pieceSelected == null)
                 return;
@@ -827,7 +820,7 @@ namespace CreVox
             }
         }
 
-        private void PaintItem (bool isErase)
+        void PaintItem (bool isErase)
         {
             if (_pieceSelected == null)
                 return;
@@ -857,26 +850,20 @@ namespace CreVox
 
         #region Tools
 
-        private void HotkeyFunction (string funcKey = "", bool isKeyEvent = false)
+        void HotkeyFunction (string funcKey = "", bool isKeyEvent = false)
         {
             int _index = (int)currentEditMode;
-            int _count = System.Enum.GetValues (typeof(EditMode)).Length - 1;
-            bool _hotkey = isKeyEvent ? (currentEditMode != EditMode.View && currentEditMode != EditMode.Item) : true;
+            int _count = Enum.GetValues (typeof(EditMode)).Length - 1;
+            bool _hotkey = !isKeyEvent || (currentEditMode != EditMode.View && currentEditMode != EditMode.Item);
 
             switch (funcKey) {
             case "A":
-                if (_index == 0)
-                    selectedEditMode = (EditMode)_count;
-                else
-                    selectedEditMode = (EditMode)(_index - 1);
+                selectedEditMode = _index == 0 ? (EditMode)_count : (EditMode)(_index - 1);
                 Repaint ();
                 break;
 
             case "D":
-                if (_index == _count)
-                    selectedEditMode = (EditMode)0;
-                else
-                    selectedEditMode = (EditMode)(_index + 1);
+                selectedEditMode = _index == _count ? (EditMode)0 : (EditMode)(_index + 1);
                 Repaint ();
                 break;
 
@@ -976,21 +963,21 @@ namespace CreVox
             EditorUtility.SetDirty (volume);
         }
 
-        private void UpdateVolume ()
+        void UpdateVolume ()
         {
             selectedItemID = -1;
             volume.BuildVolume ();
             SceneView.RepaintAll ();
         }
 
-        private void UpdateInapectedItem (int id)
+        void UpdateInapectedItem (int id)
         {
             GameObject ItemNode = (id > -1) ? volume.GetItemNode (volume.vd.blockItems [id]) : null;
             volume._itemInspected = (ItemNode != null) ? ItemNode.GetComponent<PaletteItem> () : null;
             EditorUtility.SetDirty (volume);
         }
 
-        private void UpdateDirtyChunks ()
+        void UpdateDirtyChunks ()
         {
             foreach (KeyValuePair<WorldPos, Chunk> c in dirtyChunks) {
                 c.Value.UpdateMeshCollider ();
@@ -998,7 +985,7 @@ namespace CreVox
             dirtyChunks.Clear ();
         }
 
-        private bool CheckPlaceable (int x, int z, LevelPiece.PivotType pType)
+        static bool CheckPlaceable (int x, int z, LevelPiece.PivotType pType)
         {
             if (pType == LevelPiece.PivotType.Grid)
                 return true;
@@ -1021,8 +1008,8 @@ namespace CreVox
             sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
 
             VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
-            UnityEditor.AssetDatabase.CreateAsset (vd, sPath);
-            UnityEditor.AssetDatabase.Refresh ();
+            AssetDatabase.CreateAsset (vd, sPath);
+            AssetDatabase.Refresh ();
 
             _volume.vd = vd;
             vd.chunkX = _volume.chunkX;
@@ -1070,7 +1057,7 @@ namespace CreVox
                     WorldPos chunkBlockPos = new WorldPos ((int)pos.x, (int)pos.y, (int)pos.z);
                     bool objectPlaced = false;
                     for (int r = 0; r <= 8; ++r) {
-                        WorldPos gPos = new WorldPos (r % 3, 0, (int)(r / 3));
+                        WorldPos gPos = new WorldPos (r % 3, 0, (r / 3));
                         GameObject go = volume.CopyPiece (chunkBlockPos, gPos, a_cut);
                         if (go != null) {
                             TranslatedGo tg;
@@ -1083,7 +1070,7 @@ namespace CreVox
                     }
 
                     if (block != null) {
-                        if (objectPlaced == false) {
+                        if (!objectPlaced) {
                             sb.block = new Block (block);
                             a_blocks.Add (sb);
                         }
@@ -1167,7 +1154,7 @@ namespace CreVox
                             if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
                                 BlockAir ba = oldBlock as BlockAir;
                                 for (int j = 0; j < 8; j++) {
-                                    volume.PlacePiece (ba.BlockPos, new WorldPos (j % 3, 0, (int)(j / 3)), null);
+                                    volume.PlacePiece (ba.BlockPos, new WorldPos (j % 3, 0, (j / 3)), null);
                                 }
                             }
                             if (!chunk.cData.blocks.Exists (sameBlock)) {
@@ -1252,12 +1239,12 @@ namespace CreVox
 
         #region SubscribeEvents
 
-        //        private PaletteItem _itemInspected;
-        private PaletteItem _itemSelected;
-        private Texture2D _itemPreview;
-        private LevelPiece _pieceSelected;
+//        private PaletteItem _itemInspected;
+        PaletteItem _itemSelected;
+        Texture2D _itemPreview;
+        LevelPiece _pieceSelected;
 
-        private void DrawPieceInspectedGUI ()
+        void DrawPieceInspectedGUI ()
         {
             if (currentEditMode != EditMode.Item || volume._itemInspected == null)
                 return;
@@ -1279,21 +1266,21 @@ namespace CreVox
             }
         }
 
-        private void SubscribeEvents ()
+        void SubscribeEvents ()
         {
             PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
         }
 
-        private void UnsubscribeEvents ()
+        void UnsubscribeEvents ()
         {
             PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
         }
 
-        private void UpdateCurrentPieceInstance (PaletteItem item, Texture2D preview)
+        void UpdateCurrentPieceInstance (PaletteItem item, Texture2D preview)
         {
             _itemSelected = item;
             _itemPreview = preview;
-            _pieceSelected = (LevelPiece)item.GetComponent<LevelPiece> ();
+            _pieceSelected = item.GetComponent<LevelPiece> ();
             Repaint ();
         }
 

@@ -26,13 +26,13 @@ namespace CreVox
                     te.self.instance = null;
                 }
             }
-            tree [0].Generate (root != null ? root : gameObject, this);
+            tree [0].Generate (root ?? gameObject, this);
         }
 
         public void ClearRoot ()
         {
             for (int i = root.transform.childCount; i > 0; i--) {
-                GameObject.DestroyImmediate (root.transform.GetChild (i - 1).gameObject);
+                UnityEngine.Object.DestroyImmediate (root.transform.GetChild (i - 1).gameObject);
             }
         }
     }

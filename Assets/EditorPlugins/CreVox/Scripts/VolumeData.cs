@@ -7,10 +7,10 @@ namespace CreVox
 	public class VolumeData : ScriptableObject
 	{
 		// free chunk
-		public bool useFreeChunk = false;
-		public ChunkData freeChunk = new ChunkData (){isFreeChunk = true};
+		public bool useFreeChunk;
+		public ChunkData freeChunk = new ChunkData {isFreeChunk = true};
 		// ==============
-        public int chunkSize = 0;
+        public int chunkSize;
 		public int chunkX = 1;
 		public int chunkY = 1;
 		public int chunkZ = 1;
@@ -19,23 +19,25 @@ namespace CreVox
 		public string subArtPack = "";
 
 		// [XAOCX add]
-		public VolumeData() : base() { }
-        public VolumeData(VolumeData clone) : base() {
-            this.useFreeChunk = clone.useFreeChunk;
-            this.freeChunk = clone.freeChunk;
-            this.chunkSize = clone.chunkSize;
-			this.chunkX = clone.chunkX;
-			this.chunkY = clone.chunkY;
-			this.chunkZ = clone.chunkZ;
-			this.chunkDatas = new List<ChunkData>();
+		public VolumeData()
+        { }
+        public VolumeData(VolumeData clone)
+        {
+            useFreeChunk = clone.useFreeChunk;
+            freeChunk = clone.freeChunk;
+            chunkSize = clone.chunkSize;
+			chunkX = clone.chunkX;
+			chunkY = clone.chunkY;
+			chunkZ = clone.chunkZ;
+			chunkDatas = new List<ChunkData> ();
 			foreach (var chunkData in clone.chunkDatas) {
-				this.chunkDatas.Add(new ChunkData(chunkData));
+				chunkDatas.Add(new ChunkData(chunkData));
 			}
-			this.blockItems = new List<BlockItem>();
+			blockItems = new List<BlockItem> ();
 			foreach (var blockItem in clone.blockItems) {
-				this.blockItems.Add(new BlockItem(blockItem));
+				blockItems.Add(new BlockItem(blockItem));
 			}
-            this.subArtPack = clone.subArtPack;
+            subArtPack = clone.subArtPack;
 		}
 		// ==============
 
@@ -145,7 +147,7 @@ namespace CreVox
                 b.BlockPos = new WorldPos(b.BlockPos.x - c.ChunkPos.x, b.BlockPos.y - c.ChunkPos.y, b.BlockPos.z - c.ChunkPos.z);
                 c.blockAirs.Add (b);
             }
-            freeChunk = new ChunkData () {
+            freeChunk = new ChunkData {
                 isFreeChunk = true,
                 freeChunkSize = new WorldPos (0, 0, 0)
             };

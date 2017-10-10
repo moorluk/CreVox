@@ -55,16 +55,14 @@ namespace CreVox
             } else {
                 cd = m_vd.chunkDatas;
             }
+            VGlobal vg = VGlobal.GetSetting ();
             foreach (var cData in cd) {
                 GameObject chunk = Instantiate (Resources.Load (PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler (Vector3.zero));
                 chunk.name = "Chunk" + cData.ChunkPos;
                 chunk.transform.parent = nodeRoot.transform;
-                VGlobal vg = VGlobal.GetSetting ();
                 chunk.transform.localPosition = new Vector3 (cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
                 chunk.transform.localRotation = Quaternion.Euler (Vector3.zero);
-                Material vMat = Resources.Load (vMaterial, typeof(Material)) as Material;
-                if (vMat == null)
-                    vMat = Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+                Material vMat = Resources.Load (vMaterial, typeof(Material)) as Material ?? Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
                 chunk.GetComponent<Renderer> ().sharedMaterial = vMat;
                 chunk.layer = LayerMask.NameToLayer ("Floor");
                 Chunk c = chunk.GetComponent<Chunk> ();
@@ -99,9 +97,7 @@ namespace CreVox
         {
             bool result = true;
             for (int idx = 0; idx < m_bts.Count; ++idx) {
-                if (m_bts [idx].ExecutionStatus == BehaviorDesigner.Runtime.Tasks.TaskStatus.Running) {
-                    result = false;
-                }
+                result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
             }
             return (result & isFinish);
         }
@@ -111,12 +107,14 @@ namespace CreVox
             ChunkData cData = _chunk.cData;
             foreach (BlockAir bAir in cData.blockAirs) {
                 for (int i = 0; i < bAir.pieceNames.Length; i++) {
-                    for (int k = 0; k < itemArray.Length; k++) {
-                        if (bAir.pieceNames [i] == itemArray [k].name) {
+                    if (System.String.IsNullOrEmpty (bAir.pieceNames [i]))
+                        continue;
+                    foreach (PaletteItem pi in itemArray){
+                        if (bAir.pieceNames [i] == pi.name) {
                             PlacePiece (
                                 bAir.BlockPos,
                                 new WorldPos (i % 3, 0, (i / 3)), 
-                                itemArray [k].gameObject.GetComponent<LevelPiece> (),
+                                pi.gameObject.GetComponent<LevelPiece> (),
                                 _chunk.transform
                             );
                         }
@@ -147,17 +145,17 @@ namespace CreVox
 
         void CreateItems (VolumeData _vData, PaletteItem[] itemArray)
         {
-            for (int i = 0; i < _vData.blockItems.Count; i++) {
-                for (int k = 0; k < itemArray.Length; k++) {
-                    BlockItem blockItem = _vData.blockItems [i];
-                    if (blockItem.pieceName == itemArray [k].name) {
-                        CreateItem (blockItem, i, itemArray [k]);
+            foreach (BlockItem bi in _vData.blockItems){
+                foreach (PaletteItem pi in itemArray){
+                    if (bi.pieceName == pi.name) {
+                        CreateItem (bi, pi);
+                        break;
                     }
                 }
             }
         }
 
-        void CreateItem (BlockItem blockItem, int _id, PaletteItem _piece)
+        void CreateItem (BlockItem blockItem, PaletteItem _piece)
         {
             GameObject pObj = Object.Instantiate (_piece.gameObject);
             LevelPiece p = pObj.GetComponent<LevelPiece> ();

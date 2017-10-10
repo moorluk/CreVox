@@ -678,18 +678,20 @@ namespace CreVox
             foreach (Chunk c in GetChunks().Values) {
                 foreach (var ba in c.cData.blockAirs) {
                     for (int i = 0; i < ba.pieceNames.Length; i++) {
-                        if (!String.IsNullOrEmpty (ba.pieceNames [i])) {
-                            LevelPiece p = _missingP;
-                            for (int k = 0; k < itemArray.Length; k++) {
-                                if (ba.pieceNames [i] == itemArray [k].name)
-                                    p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-                            }
-                            PlacePiece (
-                                new WorldPos (c.cData.ChunkPos.x + ba.BlockPos.x, c.cData.ChunkPos.y + ba.BlockPos.y, c.cData.ChunkPos.z + ba.BlockPos.z),
-                                new WorldPos (i % 3, 0, (i / 3)),
-                                p
-                            );
+                        if (String.IsNullOrEmpty (ba.pieceNames [i]))
+                            continue;
+                        LevelPiece p = _missingP;
+                        foreach (PaletteItem pi in itemArray) {
+                            if (ba.pieceNames [i] != pi.name)
+                                continue;
+                            p = pi.GetComponent<LevelPiece> ();
+                            break;
                         }
+                        PlacePiece (
+                            new WorldPos (c.cData.ChunkPos.x + ba.BlockPos.x, c.cData.ChunkPos.y + ba.BlockPos.y, c.cData.ChunkPos.z + ba.BlockPos.z),
+                            new WorldPos (i % 3, 0, (i / 3)),
+                            p
+                        );
                     }
                 }
             }
@@ -1106,11 +1108,9 @@ namespace CreVox
         #endif
         #endregion
 
-        private List<ConnectionInfo> _connectionInfos;
-
         public List<ConnectionInfo> ConnectionInfos {
-            get { return _connectionInfos; }
-            set { _connectionInfos = value; }
+            get;
+            set;
         }
     }
 
@@ -1173,7 +1173,7 @@ namespace CreVox
             return DirectionOffset [absoluteDegree / 90];
         }
         // Constant array.
-        public static WorldPos[] DirectionOffset = new WorldPos[] {
+        public static WorldPos[] DirectionOffset = {
             new WorldPos (0, 0, 1),
             new WorldPos (1, 0, 0),
             new WorldPos (0, 0, -1),

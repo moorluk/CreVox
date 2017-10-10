@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -20,9 +19,9 @@ namespace CreVox
         public int FindListByNode(List<TreeElement> _list)
         {
             Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
-                return obj.self.id.Equals(this.id);
+                return obj.self.id.Equals(id);
             };
-            return _list.FindIndex(1,checkNode);
+            return _list.FindIndex(0,checkNode);
         }
     }
 
@@ -56,15 +55,11 @@ namespace CreVox
 
         public GameObject Generate (GameObject root)
         {
-            if (source != null) {
-                #if UNITY_EDITOR
-                instance = PrefabUtility.InstantiatePrefab (source) as GameObject;
-                #else
-                instance = GameObject.Instantiate (source); 
-                #endif
-            } else {
-                instance = new GameObject ("Empty TreeElement");
-            }
+            #if UNITY_EDITOR
+            instance = source != null ? PrefabUtility.InstantiatePrefab (source) as GameObject : new GameObject ("Empty TreeElement");
+            #else
+            instance = source != null ? GameObject.Instantiate (source) as GameObject : new GameObject ("Empty TreeElement"); 
+            #endif
             instance.name += " (" + treeIndex + ")";
             instance.transform.parent = root.transform;
             instance.transform.localPosition = CalculateV3 (pos, posR);
@@ -74,7 +69,7 @@ namespace CreVox
             return instance;
         }
 
-        private Vector3 CalculateV3 (Vector3 _base, Vector3 _random, bool _rotation = false)
+        Vector3 CalculateV3 (Vector3 _base, Vector3 _random, bool _rotation = false)
         {
             float _turn = 0;
             if (_rotation) {
@@ -85,11 +80,9 @@ namespace CreVox
                 case turnSide.four:
                     _turn = 90 * Mathf.Floor (UnityEngine.Random.value * 4);
                     break;
-                default:
-                    break;
                 }
             }
-            UnityEngine.Random.InitState (System.Guid.NewGuid ().GetHashCode ());
+            UnityEngine.Random.InitState (Guid.NewGuid ().GetHashCode ());
             Vector3 v = new Vector3 (
                             _base.x + UnityEngine.Random.Range (-_random.x, _random.x),
                             _base.y + UnityEngine.Random.Range (-_random.y, _random.y) + _turn,
