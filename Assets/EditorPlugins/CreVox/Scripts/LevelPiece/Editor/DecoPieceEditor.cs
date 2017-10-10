@@ -83,7 +83,7 @@ namespace CreVox
                     //search Tree to get TreeElement & index
                     int tIndex = _te.childs [i].FindListByNode (dp.tree);
                     if (tIndex < 0) {
-                        Debug.LogError (i.ToString () + " : " + _te.childs [i].treeIndex);
+                        Debug.LogError (i + " : " + _te.childs [i].treeIndex);
                         return;
                     }
 
@@ -195,7 +195,7 @@ namespace CreVox
                 GUI.Label (r, GUIContent.none, "RL Footer");
                 r = new Rect (r.x + 7, r.y - 3, 16, 16);
                 if (GUI.Button (r, GUIContent.none, "OL Plus")) {
-                    AddElement (_te, dp.tree);
+                    AddElement (_te);
                     return;
                 }
                 r.x += 30;
@@ -239,7 +239,7 @@ namespace CreVox
             }
             //add TreeElement
             for (int i = 0; i < _allPrefab.Count; i++)
-                AddElement (_parent, dp.tree);
+                AddElement (_parent);
             serializedObject.Update ();
             //assign prefab
             for (int i = 1; i < dp.tree.Count; i++) {
@@ -274,7 +274,7 @@ namespace CreVox
                 SortChild (dp.tree [_te.childs [i].FindListByNode (dp.tree)], _newTree);
         }
 
-        private void AddElement (TreeElement _parent, List<TreeElement> _tree)
+        void AddElement (TreeElement _parent)
         {
             TreeElement newT = new TreeElement ();
             newT.parent.id = _parent.self.id;

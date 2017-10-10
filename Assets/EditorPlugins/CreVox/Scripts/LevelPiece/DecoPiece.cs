@@ -11,7 +11,7 @@ namespace CreVox
         public List<TreeElement> tree = new List<TreeElement> ();
         public GameObject root;
 
-        void Start ()
+        void Awake ()
         {
             if (root == null)
                 root = gameObject;
