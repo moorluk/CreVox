@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 
 namespace CreVox
@@ -72,7 +71,7 @@ namespace CreVox
 
 		}
 
-		private bool SolidCheck(Chunk chunk, int x, int y, int z)
+		static bool SolidCheck(Chunk chunk, int x, int y, int z)
 		{
 			Block b = chunk.GetBlock (x, y, z);
 			if (b == null)
@@ -226,10 +225,9 @@ namespace CreVox
 			VGlobal vg = VGlobal.GetSetting ();
 			Vector2[] UVs = new Vector2[4];
 			Tile tilePos = TexturePosition (direction);
-			float max = Mathf.Max (new float[]{ vg.w, vg.h, vg.d });
+			float max = Mathf.Max (new []{ vg.w, vg.h, vg.d });
 
 			switch (direction) {
-			default:
 			case Direction.up:
 			case Direction.down:
 				UVs [0] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * (tilePos.y + vg.d / max));
@@ -250,7 +248,9 @@ namespace CreVox
 				UVs [1] = new Vector2 (vg.tileSize * tilePos.x, vg.tileSize * (tilePos.y + vg.h / max));
 				UVs [2] = new Vector2 (vg.tileSize * (tilePos.x + vg.d / max), vg.tileSize * (tilePos.y + vg.h / max));
 				UVs [3] = new Vector2 (vg.tileSize * (tilePos.x + vg.d / max), vg.tileSize * tilePos.y);
-				return UVs;
+                return UVs;
+            default:
+                return null;
 			}
 		}
 

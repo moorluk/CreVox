@@ -45,10 +45,29 @@ namespace CreVox
 
         public override void OnInspectorGUI ()
         {
-            float defLabelWidth = EditorGUIUtility.labelWidth;
             GUI.color = (volume.vd == null) ? Color.red : Color.white;
             EditorGUIUtility.wideMode = true;
 
+            DrawInsVData ();
+
+            if (volume.vd == null)
+                return;
+            using (var ch1 = new EditorGUI.ChangeCheckScope ()) {
+                DrawInsArtPack ();
+                DrawInsSetting ();
+                if (selectedItemID != -1)
+                    DrawPieceInspectedGUI ();
+
+                if (ch1.changed) {
+                    EditorUtility.SetDirty (volume);
+                    volume.UpdateChunks ();
+                }
+            }
+        }
+
+        void DrawInsVData ()
+        {
+            float defLabelWidth = EditorGUIUtility.labelWidth;
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 GUI.backgroundColor = Color.white;
                 GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
@@ -72,8 +91,9 @@ namespace CreVox
                     }
                 }
                 EditorGUILayout.Separator ();
-                EditorGUI.BeginChangeCheck ();
-                if (volume.vd != null) {
+                using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                    if (volume.vd == null)
+                        return;
                     float intW = Mathf.Ceil (Screen.width - 119) / 3;
                     if (volume.vd.useFreeChunk) {
                         ChunkData c = volume.vd.freeChunk;
@@ -107,32 +127,8 @@ namespace CreVox
                             CalculateBlockHold ();
                         }
                     }
-                }
-                if (EditorGUI.EndChangeCheck ()) {
-                    EditorUtility.SetDirty (volume.vd);
-                    EditorUtility.SetDirty (volume);
-                    volume.UpdateChunks ();
-                }
-            }
-
-            if (volume.vd != null) {
-                using (var ch1 = new EditorGUI.ChangeCheckScope ()) {
-                    DrawArtPack ();
-                    using (var ch2 = new EditorGUI.ChangeCheckScope ()) {
-                        if (volume.vm) {
-                            VolumeManagerEditor.DrawVLocal (volume.vm);
-                        } else {
-                            VolumeManagerEditor.DrawVGlobal ();
-                        }
-                        if (ch2.changed) {
-                            UpdateVolume ();
-                            volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-                        }
-                    }
-                    if (selectedItemID != -1)
-                        DrawPieceInspectedGUI ();
-
-                    if (ch1.changed) {
+                    if (ch.changed) {
+                        EditorUtility.SetDirty (volume.vd);
                         EditorUtility.SetDirty (volume);
                         volume.UpdateChunks ();
                     }
@@ -140,17 +136,17 @@ namespace CreVox
             }
         }
 
-        void DrawArtPack ()
+        void DrawInsArtPack ()
         {
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 GUILayout.Label ("ArtPack", EditorStyles.boldLabel);
                 EditorGUILayout.HelpBox ((volume.ArtPack != null) ? (volume.ArtPack + volume.vd.subArtPack) : "(none.)", MessageType.Info, true);
                 if (GUILayout.Button ("Set")) {
                     string ppath = EditorUtility.OpenFolderPanel (
-                        "選擇場景風格元件包的目錄位置",
-                        Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
-                        ""
-                    );
+                                       "選擇場景風格元件包的目錄位置",
+                                       Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
+                                       ""
+                                   );
                     if (volume.vm != null ? volume.vm.saveBackupL : VolumeManager.saveBackup)
                         volume.SaveTempWorld ();
 
@@ -181,6 +177,21 @@ namespace CreVox
             }
         }
 
+        void DrawInsSetting ()
+        {
+            using (var ch2 = new EditorGUI.ChangeCheckScope ()) {
+                if (volume.vm) {
+                    VolumeManagerEditor.DrawVLocal (volume.vm);
+                } else {
+                    VolumeManagerEditor.DrawVGlobal ();
+                }
+                if (ch2.changed) {
+                    UpdateVolume ();
+                    volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+                }
+            }
+        }
+
         #region Scene GUI
 
         void OnSceneGUI ()
@@ -192,7 +203,7 @@ namespace CreVox
             Handles.BeginGUI ();
             DrawModeGUI ();
             DrawLayerModeGUI ();
-            DrawSelectedGUI ();
+            DrawModifyGUI ();
             Handles.EndGUI ();
             if (volume._itemInspected != null && volume._itemInspected.inspectedScript is PropertyPiece)
                 ((PropertyPiece)volume._itemInspected.inspectedScript).DrawPatrolPoints ();
@@ -330,17 +341,42 @@ namespace CreVox
         List<Vector3> m_selectedBlocks = new List<Vector3> ();
         Vector3 m_translate;
 
-        void DrawSelectedGUI ()
+        void DrawModifyGUI ()
         {
-            using (var a = new GUILayout.AreaScope (new Rect (10f, 135f, blockW * 2 + 4, 170f), "")) {
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 135f, blockW * 2 + 4, 230f), "")) {
                 EditorGUIUtility.wideMode = true;
+
+                GUI.color = volume.YColor;
+                using (var v = new GUILayout.VerticalScope (EditorStyles.textArea)) {
+                    GUI.color = Color.white;
+                    EditorGUIUtility.labelWidth = 40;
+                    EditorGUILayout.LabelField ("Offset All", EditorStyles.boldLabel);
+                    using (var h = new GUILayout.HorizontalScope ()) {
+                        GUILayout.Space (40);
+                        if (GUILayout.Button ("X+"))
+                            OffsetBlock (new WorldPos (1, 0, 0));
+                        if (GUILayout.Button ("Y+"))
+                            OffsetBlock (new WorldPos (0, 1, 0));
+                        if (GUILayout.Button ("Z+"))
+                            OffsetBlock (new WorldPos (0, 0, 1));
+                    }
+                    using (var h = new GUILayout.HorizontalScope ()) {
+                        GUILayout.Space (40);
+                        if (GUILayout.Button ("X-"))
+                            OffsetBlock (new WorldPos (-1, 0, 0));
+                        if (GUILayout.Button ("Y-"))
+                            OffsetBlock (new WorldPos (0, -1, 0));
+                        if (GUILayout.Button ("Z-"))
+                            OffsetBlock (new WorldPos (0, 0, -1));
+                    }
+                }
 
                 GUI.color = volume.YColor;
                 using (var v = new GUILayout.VerticalScope (EditorStyles.textArea)) {
                     GUI.color = Color.white;
                     using (var h = new GUILayout.HorizontalScope ()) {
                         EditorGUIUtility.labelWidth = 10;
-                        EditorGUILayout.LabelField ("Mirror", EditorStyles.boldLabel);
+                        EditorGUILayout.LabelField ("Mirror Edit", EditorStyles.boldLabel);
                         m_mappingX = GUILayout.Toggle (m_mappingX, "X", GUILayout.Width (40));
                         m_mappingZ = GUILayout.Toggle (m_mappingZ, "Z", GUILayout.Width (40));
                     }
@@ -1031,6 +1067,67 @@ namespace CreVox
             }
         }
 
+        void OffsetBlock (WorldPos _offset)
+        {
+            bool isFreeChunk = volume.vd.useFreeChunk;
+            if (!isFreeChunk)
+                volume.vd.ConvertToFreeChunk ();
+            ChunkData newc = new ChunkData ();
+            newc.freeChunkSize = volume.vd.freeChunk.freeChunkSize;
+            foreach (var b in volume.vd.freeChunk.blocks) {
+                b.BlockPos.x += _offset.x;
+                while (b.BlockPos.x < 0) b.BlockPos.x += newc.freeChunkSize.x;
+                while (b.BlockPos.x >= newc.freeChunkSize.x) b.BlockPos.x -= newc.freeChunkSize.x;
+                b.BlockPos.y += _offset.y;
+                while (b.BlockPos.y < 0) b.BlockPos.y += newc.freeChunkSize.y;
+                while (b.BlockPos.y >= newc.freeChunkSize.y) b.BlockPos.y -= newc.freeChunkSize.y;
+                b.BlockPos.z += _offset.z;
+                while (b.BlockPos.z < 0) b.BlockPos.z += newc.freeChunkSize.z;
+                while (b.BlockPos.z >= newc.freeChunkSize.z) b.BlockPos.z -= newc.freeChunkSize.z;
+                newc.blocks.Add (b);
+            }
+            foreach (var ba in volume.vd.freeChunk.blockAirs) {
+                ba.BlockPos.x += _offset.x;
+                while (ba.BlockPos.x < 0) ba.BlockPos.x += newc.freeChunkSize.x;
+                while (ba.BlockPos.x >= newc.freeChunkSize.x) ba.BlockPos.x -= newc.freeChunkSize.x;
+                ba.BlockPos.y += _offset.y;
+                while (ba.BlockPos.y < 0) ba.BlockPos.y += newc.freeChunkSize.y;
+                while (ba.BlockPos.y >= newc.freeChunkSize.y) ba.BlockPos.y -= newc.freeChunkSize.y;
+                ba.BlockPos.z += _offset.z;
+                while (ba.BlockPos.z < 0) ba.BlockPos.z += newc.freeChunkSize.z;
+                while (ba.BlockPos.z >= newc.freeChunkSize.z) ba.BlockPos.z -= newc.freeChunkSize.z;
+                newc.blockAirs.Add (ba);
+            }
+            var vg = VGlobal.GetSetting ();
+            foreach (var bi in volume.vd.blockItems) {
+                bi.posX += _offset.x * vg.w;
+                while (bi.posX < -vg.w / 2)
+                    bi.posX += newc.freeChunkSize.x * vg.w;
+                while (bi.posX >= newc.freeChunkSize.x * vg.w - vg.w / 2)
+                    bi.posX -= newc.freeChunkSize.x * vg.w;
+                bi.posY += _offset.y * vg.h;
+                while (bi.posY < -vg.h / 2)
+                    bi.posY += newc.freeChunkSize.y * vg.h;
+                while (bi.posY >= newc.freeChunkSize.y * vg.h - vg.h / 2)
+                    bi.posY -= newc.freeChunkSize.y * vg.h;
+                bi.posZ += _offset.z * vg.d;
+                while (bi.posZ < -vg.d / 2)
+                    bi.posZ += newc.freeChunkSize.z * vg.d;
+                while (bi.posZ >= newc.freeChunkSize.z * vg.d - vg.d / 2)
+                    bi.posZ -= newc.freeChunkSize.z * vg.d;
+
+                bi.BlockPos = EditTerrain.GetBlockPos (new Vector3 (bi.posX, bi.posY, bi.posZ));
+            }
+
+            volume.vd.freeChunk = newc;
+            if (!isFreeChunk)
+                volume.vd.ConvertToVoxelChunk ();
+            CalculateBlockHold ();
+            volume.UpdateChunks ();
+            EditorUtility.SetDirty (volume.vd);
+            SceneView.RepaintAll ();
+        }
+
         public void Translate (bool a_cut = true)
         {
             List<SelectedBlock> translatedBlocks = new List<SelectedBlock> ();
@@ -1239,7 +1336,7 @@ namespace CreVox
 
         #region SubscribeEvents
 
-//        private PaletteItem _itemInspected;
+        //        private PaletteItem _itemInspected;
         PaletteItem _itemSelected;
         Texture2D _itemPreview;
         LevelPiece _pieceSelected;
