@@ -41,7 +41,7 @@ namespace CreVox
             if (chunks == null)
                 chunks = new Dictionary<WorldPos, Chunk> ();
             if (vm != null ? vm.GenerationL : VolumeManager.Generation)
-                LoadTempWorld ();
+                BuildVolume ();
         }
 
         void Update ()
@@ -167,7 +167,6 @@ namespace CreVox
         {
             foreach (Chunk chunk in GetChunks().Values) {
                 chunk.UpdateChunk ();
-                UpdateChunkNodes (chunk.cData);
             }
         }
 
@@ -318,38 +317,6 @@ namespace CreVox
             newNode.pieces = new GameObject[9];
 
             nodes.Add (bPos, newNode);
-        }
-
-        public void UpdateChunkNodes (ChunkData cData)
-        {
-            foreach (BlockAir bAir in cData.blockAirs) {
-                bool isEmpty = true;
-                foreach (string p in bAir.pieceNames) {
-                    if (p != "") {
-                        isEmpty = false;
-                        break;
-                    }
-                }
-                if (isEmpty) {
-                    cData.blockAirs.Remove (bAir);
-                } else { 
-                    WorldPos volumePos = new WorldPos (
-                                             cData.ChunkPos.x + bAir.BlockPos.x, 
-                                             cData.ChunkPos.y + bAir.BlockPos.y, 
-                                             cData.ChunkPos.z + bAir.BlockPos.z);
-                    GameObject node = GetNode (volumePos);
-                    if (node != null) {
-                        #if UNITY_EDITOR
-                        if (!EditorApplication.isPlaying && cuter && bAir.BlockPos.y + cData.ChunkPos.y > cutY)
-                            node.SetActive (false);
-                        else
-                            node.SetActive (true);
-                        #else
-                            node.SetActive (true);
-                        #endif
-                    }
-                }
-            }
         }
 
         bool RemoveNodeIfIsEmpty (WorldPos bPos)
@@ -827,7 +794,7 @@ namespace CreVox
             }
 
             if (!EditorApplication.isCompiling && compileSave) {
-                LoadTempWorld ();
+                BuildVolume ();
                 compileSave = false;
             }
         }
@@ -862,15 +829,6 @@ namespace CreVox
             AssetDatabase.Refresh ();
         }
         #endif
-        public void LoadTempWorld ()
-        {
-            BuildVolume ();
-
-            #if UNITY_EDITOR
-            SceneView.RepaintAll ();
-            #endif
-        }
-
         #endregion
 
         #region Ruler
@@ -984,14 +942,15 @@ namespace CreVox
 
         void OnDrawGizmos ()
         {
+            Matrix4x4 oldMatrix = Gizmos.matrix;
+            Gizmos.matrix = transform.localToWorldMatrix;
+
             if (focusVolume == this && (vm != null ? vm.debugRulerL : VolumeManager.debugRuler)) {
-                Matrix4x4 oldMatrix = Gizmos.matrix;
                 VGlobal vg = VGlobal.GetSetting ();
                 if ((vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null))
                     Gizmos.color = Color.red;
                 else
                     Gizmos.color = new Color (YColor.r, YColor.g, YColor.b, 0.4f);
-                Gizmos.matrix = transform.localToWorldMatrix;
                 if (mColl)
                     Gizmos.DrawWireCube (
                         new Vector3 (
@@ -1007,10 +966,12 @@ namespace CreVox
                 DrawGizmoBoxCursor ();
                 DrawGizmoLayer ();
                 DrawBlockItem ();
-                if (vm != null ? vm.showBlockHoldL : VolumeManager.showBlockHold)
-                    DrawBlockHold ();
-                Gizmos.matrix = oldMatrix;
             }
+
+            if (vm != null ? vm.showBlockHoldL : VolumeManager.showBlockHold)
+                DrawBlockHold ();
+            
+            Gizmos.matrix = oldMatrix;
         }
 
         void DrawBlockHold ()

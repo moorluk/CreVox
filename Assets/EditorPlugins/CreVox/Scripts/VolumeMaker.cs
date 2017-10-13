@@ -56,13 +56,15 @@ namespace CreVox
                 cd = m_vd.chunkDatas;
             }
             VGlobal vg = VGlobal.GetSetting ();
+            GameObject chunkBase = Resources.Load (PathCollect.chunk) as GameObject;
+            Material defMat = Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             foreach (var cData in cd) {
-                GameObject chunk = Instantiate (Resources.Load (PathCollect.chunk) as GameObject, Vector3.zero, Quaternion.Euler (Vector3.zero));
+                GameObject chunk = Instantiate (chunkBase, Vector3.zero, Quaternion.Euler (Vector3.zero));
                 chunk.name = "Chunk" + cData.ChunkPos;
                 chunk.transform.parent = nodeRoot.transform;
                 chunk.transform.localPosition = new Vector3 (cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
                 chunk.transform.localRotation = Quaternion.Euler (Vector3.zero);
-                Material vMat = Resources.Load (vMaterial, typeof(Material)) as Material ?? Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+                Material vMat = Resources.Load (vMaterial, typeof(Material)) as Material ?? defMat;
                 chunk.GetComponent<Renderer> ().sharedMaterial = vMat;
                 chunk.layer = LayerMask.NameToLayer ("Floor");
                 Chunk c = chunk.GetComponent<Chunk> ();

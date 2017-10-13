@@ -165,7 +165,7 @@ namespace CreVox
                     volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                     EditorUtility.SetDirty (volume.vd);
 
-                    volume.LoadTempWorld ();
+                    volume.BuildVolume ();
                 }
                 EditorGUIUtility.labelWidth = 120f;
                 volume.vd.subArtPack = EditorGUILayout.TextField ("SubArtPack", volume.vd.subArtPack);
