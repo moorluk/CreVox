@@ -5,6 +5,7 @@ using CreVox;
 [System.Serializable]
 public class DList
 {
+    public string Name = "";
     public List<Dungeon> Dlist = new List<Dungeon> ();
 }
 

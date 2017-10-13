@@ -33,6 +33,7 @@ namespace CreVox
 
         public List<Dungeon> dungeons = new List<Dungeon> ();
         public bool useStageData;
+        public int currentStageData = -1;
         public StageData stageData;
 
         void Awake ()
@@ -126,6 +127,7 @@ namespace CreVox
             foreach (Dungeon d in stageData.stageList[i].Dlist) {
                 dungeons.Add (d);
             }
+            currentStageData = i;
         }
     }
 }

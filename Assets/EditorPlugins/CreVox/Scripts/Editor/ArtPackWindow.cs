@@ -2,14 +2,13 @@
 using UnityEditor;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace CreVox
 {
 
 	public class ArtPackWindow : EditorWindow
 	{
-		private class Item{
+		class Item{
 			public PaletteItem paletteitem;
 			public PaletteItem.Category category;
 			public GameObject itemObject;
@@ -19,20 +18,20 @@ namespace CreVox
 		}
 		public static ArtPackWindow instance;
 
-		private Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
-		private string vgName = "";
-		private VGlobal vg;
+		Dictionary<string,Dictionary<PaletteItem.Category,List<Item>>> _itemCells;
+		string vgName = "";
+		VGlobal vg;
 
-		private List<string> _artPacks= new List<string> ();
+		List<string> _artPacks= new List<string> ();
 
-		private List<Item> _items;
-		private Dictionary<PaletteItem.Category, List<string>> itemNames;
+		List<Item> _items;
+		Dictionary<PaletteItem.Category, List<string>> itemNames;
 
-		private static string _path = PathCollect.resourcesPath + PathCollect.artPack;
-		private Vector2 _scrollPosition;
-		private Vector2 _scrollPositionX;
-		private Vector2 _scrollPositionY;
-		private float ButtonWidth = 140;
+		static string _path = PathCollect.resourcesPath + PathCollect.artPack;
+		Vector2 _scrollPosition;
+		Vector2 _scrollPositionX;
+		Vector2 _scrollPositionY;
+		float ButtonWidth = 140;
 
 		public static void ShowPalette ()
 		{
@@ -40,12 +39,12 @@ namespace CreVox
 			instance.titleContent = new GUIContent ("ArtPack");
 		}
 
-		private void OnEnable ()
+		void OnEnable ()
 		{
 			InitContent ();
 		}
 
-		private void OnGUI ()
+		void OnGUI ()
 		{
 			DrawList ();
 			DrawScroll ();
@@ -53,10 +52,10 @@ namespace CreVox
 			DrawFunction ();
 		}
 
-		private void InitContent ()
+		void InitContent ()
 		{
-			if (vg == null)
-				vg = VGlobal.GetSetting ();
+            if (vg == null)
+                vg = VGlobal.GetSetting ();
 
 			//GetItems
 			_items = new List<Item> ();
@@ -112,15 +111,14 @@ namespace CreVox
 
 			//Log
 			string logCell = "";
-			for (int a = 0; a < _artPacks.Count; a++) {
-				for (int c = 0; c < _categories.Count; c++) {
-					_itemCells [_artPacks [a]] [_categories [c]].Sort (t);
-					logCell = logCell + _artPacks [a] + 
-						"/" + _categories [c].ToString () + ": " + 
-						_itemCells [_artPacks [a]] [_categories [c]].Count + "\n";
-				}
-				logCell = logCell + " -------------\n";
-			}
+            for (int a = 0; a < _artPacks.Count; a++) {
+                for (int c = 0; c < _categories.Count; c++) {
+                    var cells = _itemCells [_artPacks [a]] [_categories [c]];
+                    cells.Sort (t);
+                    logCell += _artPacks [a] + "/" + _categories [c] + ": " + cells.Count + "\n";
+                }
+                logCell += " -------------\n";
+            }
 			Debug.Log (logCell);
 
 			UpdateAppList ();
@@ -330,7 +328,7 @@ namespace CreVox
                         Debug.Log (log + "<b>End.</b>");
                         Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
 						foreach (Volume vol in vols) {
-							vol.LoadTempWorld ();
+                            vol.BuildVolume ();
 						}
 					}
 				}
@@ -339,28 +337,27 @@ namespace CreVox
 		}
 		#endregion
 		#region ArtPackParent
-		private Dictionary<string,string> _pDict = new Dictionary<string, string>();
-		private void UpdateAppDict ()
-		{
-			_pDict.Clear();
-			for (int i = 1; i < _artPacks.Count; i++) {
-				for (int j = 0; j < vg.artPackParentList.Count; j++) {
-					if (vg.artPackParentList [j].pack == _artPacks [i]) {
-						_pDict.Add (vg.artPackParentList [j].pack, vg.artPackParentList [j].parentPack);
-						break;
-					}
-				}
-				if(!_pDict.ContainsKey(_artPacks[i]))
-					_pDict.Add (_artPacks[i], "LevelPieces");
-			}
-		}
+		Dictionary<string,string> _pDict = new Dictionary<string, string>();
+		void UpdateAppDict ()
+        {
+            _pDict.Clear ();
+            foreach (string apName in _artPacks) {
+                for (int j = 0; j < vg.artPackParentList.Count; j++) {
+                    if (vg.artPackParentList [j].pack == apName) {
+                        _pDict.Add (vg.artPackParentList [j].pack, vg.artPackParentList [j].parentPack);
+                        break;
+                    }
+                }
+                if (!_pDict.ContainsKey (apName))
+                    _pDict.Add (apName, "LevelPieces");
+            }
+        }
 
-		private void UpdateAppList ()
+		void UpdateAppList ()
 		{
 			List<VGlobal.ArtPackParent> _pList = new List<VGlobal.ArtPackParent>();
-			VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
 			foreach (KeyValuePair<string,string> k in _pDict) {
-				_a = new VGlobal.ArtPackParent ();
+                VGlobal.ArtPackParent _a = new VGlobal.ArtPackParent ();
 				_a.pack = k.Key;
 				_a.parentPack = k.Value;
 				_pList.Add(_a);
@@ -371,13 +368,13 @@ namespace CreVox
 
 		public static void UpdateItemArrays(VGlobal _vg = null)
 		{
-			if (_vg == null)
-				_vg = VGlobal.GetSetting ();
+            if (_vg == null)
+                _vg = VGlobal.GetSetting ();
 			List<string> artPacks = VGlobal.GetArtPacks ();
-			_vg.APItemPathList.Clear ();
-			for (int i = 0; i < artPacks.Count; i++) {
+            _vg.APItemPathList.Clear ();
+            foreach (string apName in artPacks) {
 				VGlobal.APItemPath _n = new VGlobal.APItemPath ();
-				_n.name = artPacks [i];
+                _n.name = apName;
 				_n.itemPath = new List<string> ();
 				PaletteItem[] _p = UpdateItemArray (PathCollect.artPack + _n.name, _vg);
 				for (int j = 0; j < _p.Length; j++) {
@@ -390,7 +387,7 @@ namespace CreVox
 			EditorUtility.SetDirty (_vg);
 		}
 
-		private static PaletteItem[] UpdateItemArray(string _artPackPath, VGlobal _vg = null)
+		static PaletteItem[] UpdateItemArray(string _artPackPath, VGlobal _vg = null)
 		{
 			PaletteItem[] _final = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
 
@@ -449,7 +446,7 @@ namespace CreVox
 
 		#endregion
 		#region Get
-		private Texture2D GetPreview(GameObject obj = null)
+		Texture2D GetPreview(GameObject obj = null)
 		{
 			Texture2D thumbnail = null;
 			if (obj != null)
@@ -459,7 +456,7 @@ namespace CreVox
 			return thumbnail;
 		}
 
-		private GUIStyle GetLabelStyle ()
+		GUIStyle GetLabelStyle ()
 		{
 			GUIStyle guiStyle = new GUIStyle (GUI.skin.button);
 			guiStyle.fontSize = Mathf.FloorToInt (Mathf.Clamp (ButtonWidth/12f,1f,14f));
@@ -470,7 +467,7 @@ namespace CreVox
 			return guiStyle;
 		}
 
-		private GUIStyle GetPreviewStyle ()
+		GUIStyle GetPreviewStyle ()
 		{
 			float size = ButtonWidth / 3;
 			GUIStyle guiStyle = new GUIStyle (GUI.skin.label);

@@ -100,44 +100,33 @@ namespace CreVox
                 vm.useStageData = EditorGUILayout.ToggleLeft ("Use StageData", vm.useStageData);
                 if (!vm.useStageData)
                     return;
-                if (GUILayout.Button ("TEST")) {
-                    vm.RandomDungeon ();
-                    Button_Generate ();
-                }
+                if (GUILayout.Button ("TEST"))
+                    Button_Test ();
             }
             vm.stageData = EditorGUILayout.ObjectField (vm.stageData, typeof(StageData), false) as StageData;
             if (vm.stageData == null)
                 return;
-            int workIndex = -1;
+            Color defColor = GUI.color;
             for (int i = 0; i < vm.stageData.stageList.Count; i++) {
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
-                    EditorGUILayout.LabelField (i + " (" + vm.stageData.stageList [i].Dlist.Count + ")", GUILayout.Width (45));
-                    if (GUILayout.Button ("Save")) {
-                        vm.stageData.stageList [i].Dlist.Clear ();
-                        foreach (var d in vm.dungeons) {
-                            vm.stageData.stageList [i].Dlist.Add (d);
-                        }
-                    }
-                    if (GUILayout.Button ("Load")) {
-                        vm.dungeons.Clear ();
-                        foreach (Dungeon d in vm.stageData.stageList[i].Dlist) {
-                            vm.dungeons.Add (d);
-                        }
-                        Button_Generate ();
-                    }
+                    EditorGUILayout.LabelField (i + " (" + vm.stageData.stageList [i].Dlist.Count + ")", GUILayout.Width (38));
+                    GUI.color = i == vm.currentStageData ? Color.green : defColor;
+                    vm.stageData.stageList [i].Name = GUILayout.TextField (vm.stageData.stageList [i].Name);
+                    GUI.color = defColor;
+                    if (GUILayout.Button ("Save", GUILayout.Width (buttonW - 10)))
+                        Button_Save (i);
+                    if (GUILayout.Button ("Load", GUILayout.Width (buttonW - 10)))
+                        Button_Load (i);
                     if (GUILayout.Button ("Delete", GUILayout.Width (buttonW))) {
-                        workIndex = i;
+                        Button_Delete (i);
+                        break;
                     }
                 }
-            }
-            if (workIndex > -1) {
-                vm.stageData.stageList.RemoveAt (workIndex);
             }
             using (var h = new EditorGUILayout.HorizontalScope ()) {
                 GUILayout.FlexibleSpace ();
-                if (GUILayout.Button ("Add", GUILayout.Width (buttonW))) {
-                    vm.stageData.stageList.Add (new DList ());
-                }
+                if (GUILayout.Button ("Add", GUILayout.Width (buttonW)))
+                    Button_Add ();
             }
             EditorUtility.SetDirty (vm.stageData);
         }
@@ -145,8 +134,8 @@ namespace CreVox
         void DrawSetAll ()
         {
             using (var h = new EditorGUILayout.HorizontalScope ()) {
-                if (GUILayout.Button ("Build all"))
-                    Button_BuildAll ();
+                if (GUILayout.Button ("Build"))
+                    Button_Build ();
                 if (GUILayout.Button ("Generate"))
                     Button_Generate ();
                 if (GUILayout.Button ("Update Portal"))
@@ -206,7 +195,41 @@ namespace CreVox
 
         #region Inspector Function
 
-        void Button_BuildAll ()
+        void Button_Test ()
+        {
+            vm.RandomDungeon ();
+            Button_Generate ();
+        }
+
+        void Button_Save (int _index)
+        {
+            vm.stageData.stageList [_index].Dlist.Clear ();
+            foreach (var d in vm.dungeons) {
+                vm.stageData.stageList [_index].Dlist.Add (d);
+            }
+        }
+
+        void Button_Load (int _index)
+        {
+            vm.dungeons.Clear ();
+            foreach (Dungeon d in vm.stageData.stageList[_index].Dlist) {
+                vm.dungeons.Add (d);
+            }
+            Button_Generate ();
+            vm.currentStageData = _index;
+        }
+
+        void Button_Delete (int _index)
+        {
+            vm.stageData.stageList.RemoveAt (_index);
+        }
+
+        void Button_Add ()
+        {
+            vm.stageData.stageList.Add (new DList ());
+        }
+
+        void Button_Build ()
         {
             vm.BroadcastMessage ("BuildVolume", SendMessageOptions.DontRequireReceiver);
         }
@@ -225,6 +248,7 @@ namespace CreVox
                 v.vMaterial = d.vMaterial;
             }
             UpdateLocalSetting ();
+            Button_Build ();
         }
 
         void Button_UpdatePortal ()
@@ -242,7 +266,7 @@ namespace CreVox
                 _v.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                 EditorUtility.SetDirty (_v.vd);
             }
-            Button_BuildAll ();
+            Button_Build ();
             vm.UpdateDungeon ();
         }
 
