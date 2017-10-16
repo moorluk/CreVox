@@ -234,7 +234,6 @@ namespace CreVox
 
             case EditMode.View:
             case EditMode.Item:
-            default:
                 break;
             }
             if (selectedEditMode != currentEditMode) {
@@ -580,8 +579,8 @@ namespace CreVox
                 if (hit.normal.y <= 0) {
                     volume.useBox = false;
                     return;
-                } else
-                    volume.useBox = true;
+                }
+                volume.useBox = true;
 
                 RaycastHit hitFix = hit;
                 WorldPos pos = EditTerrain.GetBlockPos (hitFix, isNotLayer);
@@ -1025,11 +1024,11 @@ namespace CreVox
         {
             if (pType == LevelPiece.PivotType.Grid)
                 return true;
-            else if (pType == LevelPiece.PivotType.Center && (x * z) == 1)
+            if (pType == LevelPiece.PivotType.Center && (x * z) == 1)
                 return true;
-            else if (pType == LevelPiece.PivotType.Vertex && (x + z) % 2 == 0 && x * z != 1)
+            if (pType == LevelPiece.PivotType.Vertex && (x + z) % 2 == 0 && x * z != 1)
                 return true;
-            else if (pType == LevelPiece.PivotType.Edge && (Mathf.Abs (x) + Mathf.Abs (z)) % 2 == 1)
+            if (pType == LevelPiece.PivotType.Edge && (Mathf.Abs (x) + Mathf.Abs (z)) % 2 == 1)
                 return true;
 
             return false;
@@ -1227,9 +1226,7 @@ namespace CreVox
                                                  (int)pos.z + translateZ - chunk.cData.ChunkPos.z);
                     if (_block != null) {
                         _block.BlockPos = chunkBlockPos;
-                        Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
-                            return b.BlockPos.Compare (chunkBlockPos);
-                        };
+                        Predicate<BlockAir> sameBlockAir = blockAir => blockAir.BlockPos.Compare (chunkBlockPos);
                         switch (_block.GetType ().ToString ()) {
                         case "CreVox.BlockAir":
                             if (!chunk.cData.blockAirs.Exists (sameBlockAir)) {
@@ -1237,17 +1234,13 @@ namespace CreVox
                             }
                             break;
                         case "CreVox.BlockHold":
-                            Predicate<BlockHold> sameBlockHold = delegate(BlockHold b) {
-                                return b.BlockPos.Compare (chunkBlockPos);
-                            };
+                            Predicate<BlockHold> sameBlockHold = blockHold => blockHold.BlockPos.Compare (chunkBlockPos);
                             if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
                                 chunk.cData.blockHolds.Add (_block as BlockHold);
                             }
                             break;
                         case "CreVox.Block":
-                            Predicate<Block> sameBlock = delegate(Block b) {
-                                return b.BlockPos.Compare (chunkBlockPos);
-                            };
+                            Predicate<Block> sameBlock = block => block.BlockPos.Compare (chunkBlockPos);
                             if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
                                 BlockAir ba = oldBlock as BlockAir;
                                 for (int j = 0; j < 8; j++) {
@@ -1365,12 +1358,12 @@ namespace CreVox
 
         void SubscribeEvents ()
         {
-            PaletteWindow.ItemSelectedEvent += new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
+            PaletteWindow.ItemSelectedEvent += UpdateCurrentPieceInstance;
         }
 
         void UnsubscribeEvents ()
         {
-            PaletteWindow.ItemSelectedEvent -= new PaletteWindow.itemSelectedDelegate (UpdateCurrentPieceInstance);
+            PaletteWindow.ItemSelectedEvent -= UpdateCurrentPieceInstance;
         }
 
         void UpdateCurrentPieceInstance (PaletteItem item, Texture2D preview)

@@ -79,8 +79,8 @@ namespace CreVox
                 PaletteItem[] itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + m_vd.subArtPack);
 
                 if ((style & 2) > 0) {
-                    for (int p = 0; p < m_cs.Count; ++p) {
-                        PlacePieces (m_cs [p], itemArray);
+                    foreach (Chunk c in m_cs) {
+                        PlacePieces (c, itemArray);
                     }
                     isFinish = true;
                     Debug.Log("<color=maroon>" + gameObject.name + " place pieces finish...</color>\n");

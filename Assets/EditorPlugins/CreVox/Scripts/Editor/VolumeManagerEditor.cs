@@ -212,7 +212,7 @@ namespace CreVox
         void Button_Load (int _index)
         {
             vm.dungeons.Clear ();
-            foreach (Dungeon d in vm.stageData.stageList[_index].Dlist) {
+            foreach (var d in vm.stageData.stageList[_index].Dlist) {
                 vm.dungeons.Add (d);
             }
             Button_Generate ();
