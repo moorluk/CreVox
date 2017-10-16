@@ -204,9 +204,11 @@ namespace CreVox
         void Button_Save (int _index)
         {
             vm.stageData.stageList [_index].Dlist.Clear ();
+            vm.UpdateDungeon ();
             foreach (var d in vm.dungeons) {
                 vm.stageData.stageList [_index].Dlist.Add (d);
             }
+            vm.currentStageData = _index;
         }
 
         void Button_Load (int _index)
