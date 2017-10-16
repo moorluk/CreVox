@@ -59,7 +59,7 @@ namespace CreVox
             GameObject chunkBase = Resources.Load (PathCollect.chunk) as GameObject;
             Material defMat = Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             foreach (var cData in cd) {
-                GameObject chunk = Instantiate (chunkBase, Vector3.zero, Quaternion.Euler (Vector3.zero));
+                GameObject chunk = Instantiate (chunkBase);
                 chunk.name = "Chunk" + cData.ChunkPos;
                 chunk.transform.parent = nodeRoot.transform;
                 chunk.transform.localPosition = new Vector3 (cData.ChunkPos.x * vg.w, cData.ChunkPos.y * vg.h, cData.ChunkPos.z * vg.d);
@@ -82,13 +82,13 @@ namespace CreVox
                     foreach (Chunk c in m_cs) {
                         PlacePieces (c, itemArray);
                     }
-                    isFinish = true;
-                    Debug.Log("<color=maroon>" + gameObject.name + " place pieces finish...</color>\n");
                 }
 
                 if ((style & 4) > 0) {
                     CreateItems (m_vd, itemArray);
                 }
+                isFinish = true;
+                Debug.Log("<color=maroon>" + gameObject.name + " place pieces finish...</color>\n");
             }
 
             AddComponent ();
