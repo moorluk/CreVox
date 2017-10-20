@@ -153,14 +153,12 @@ namespace CreVox
         {
             if (vd.useFreeChunk) {
                 Dictionary<WorldPos,Chunk> c = new Dictionary<WorldPos, Chunk> ();
-                if (freeChunk == null) {
+                if (freeChunk == null)
                     CreateFreeChunk ();
-                }
                 c.Add (freeChunk.cData.ChunkPos, freeChunk);
                 return c;
-            } else {
-                return chunks;
             }
+            return chunks;
         }
 
         public void UpdateChunks ()
@@ -297,11 +295,9 @@ namespace CreVox
         {
             if (nodes.ContainsKey (_volumePos))
                 return nodes [_volumePos].pieceRoot;
-            else {
                 Debug.Log ("(" + _volumePos + ") has no Node; try another artpack !!!");
                 return null;
             }
-        }
 
         void CreateNode (WorldPos bPos)
         {
@@ -378,10 +374,8 @@ namespace CreVox
                                   y - containerChunk.cData.ChunkPos.y,
                                   z - containerChunk.cData.ChunkPos.z);
                 return block;
-            } else {
-                return null;
             }
-
+            return null;
         }
 
         public void SetBlock (int x, int y, int z, Block _block)
@@ -392,9 +386,7 @@ namespace CreVox
                 WorldPos chunkBlockPos = new WorldPos (x - chunk.cData.ChunkPos.x, y - chunk.cData.ChunkPos.y, z - chunk.cData.ChunkPos.z);
                 if (_block != null) {
                     _block.BlockPos = chunkBlockPos;
-                    Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
-                        return b.BlockPos.Compare (chunkBlockPos);
-                    };
+                    Predicate<BlockAir> sameBlockAir = b => b.BlockPos.Compare (chunkBlockPos);
                     switch (_block.GetType ().ToString ()) {
                     case "CreVox.BlockAir":
                         if (!chunk.cData.blockAirs.Exists (sameBlockAir)) {
@@ -402,17 +394,13 @@ namespace CreVox
                         }
                         break;
                     case "CreVox.BlockHold":
-                        Predicate<BlockHold> sameBlockHold = delegate(BlockHold b) {
-                            return b.BlockPos.Compare (chunkBlockPos);
-                        };
+                        Predicate<BlockHold> sameBlockHold = b => b.BlockPos.Compare (chunkBlockPos);
                         if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
                             chunk.cData.blockHolds.Add (_block as BlockHold);
                         }
                         break;
                     case "CreVox.Block":
-                        Predicate<Block> sameBlock = delegate(Block b) {
-                            return b.BlockPos.Compare (chunkBlockPos);
-                        };
+                        Predicate<Block> sameBlock = b => b.BlockPos.Compare (chunkBlockPos);
                         if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
                             BlockAir ba = oldBlock as BlockAir;
                             for (int i = 0; i < 8; i++) {
@@ -567,10 +555,10 @@ namespace CreVox
                 pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
                 nodes [bPos].pieces [id] = pObj;
 
-                if (block is BlockAir) {
                     blockAir = block as BlockAir;
+                if (blockAir != null) {
                     if (_piece.name != "Missing") {
-                        blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
+                        blockAir.SetPiece (gPos, pObj.GetComponent<LevelPiece> ());
                         blockAir.SolidCheck (nodes [bPos].pieces);
                         SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
                     } else {
@@ -581,9 +569,9 @@ namespace CreVox
                         PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), false);
                 }
             } else {
-                if (block is BlockAir) {
                     blockAir = block as BlockAir;
-                    blockAir.SetPiece (bPos, gPos, null);
+                if (blockAir != null) {
+                    blockAir.SetPiece (gPos, null);
                     blockAir.SolidCheck (nodes [bPos].pieces);
                 }
 
@@ -684,9 +672,7 @@ namespace CreVox
         static int GetBlockHoldIndex (int x, int y, int z, Chunk containerChunk)
         {
             WorldPos bPos = new WorldPos (x, y, z);
-            Predicate <BlockHold> checkBlockPos = delegate (BlockHold bh) {
-                return bh.BlockPos.Compare (bPos);
-            };
+            Predicate <BlockHold> checkBlockPos = bh => bh.BlockPos.Compare (bPos);
             return (containerChunk != null) ? containerChunk.cData.blockHolds.FindIndex (checkBlockPos) : -1;
         }
 
@@ -707,9 +693,7 @@ namespace CreVox
                     bhData.blockPos = _bPos;
                     bhData.pieceID = _id;
 
-                    Predicate<BlockHold.piecePos> samePiecePos = delegate(BlockHold.piecePos obj) {
-                        return (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
-                    };
+                    Predicate<BlockHold.piecePos> samePiecePos = obj => (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
 
                     int _index = GetBlockHoldIndex (x, y, z, _chunk);
                     BlockHold bhBlock = (_index > -1) ? _chunk.cData.blockHolds [_index] : null;

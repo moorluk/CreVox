@@ -53,9 +53,9 @@ namespace CreVox
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     EditorGUILayout.LabelField ("Volume List (" + vm.dungeons.Count + ")", EditorStyles.boldLabel);
                     if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
-                        vm.UpdateDungeon ();
+                        Button_VolumeList_Update ();
                     if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
-                        vm.dungeons.Clear ();
+                        Button_VolumeList_Clear();
                 }
                 DrawVolumeList ();
             }
@@ -159,7 +159,7 @@ namespace CreVox
                 Dungeon _d = vm.dungeons [i];
                 GUI.color = volColor;
                 using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-                    GUI.color = defColor;
+                    GUI.color = _d.volumeData == null ? Color.red : defColor;
                     EditorGUIUtility.labelWidth = 100;
                     EditorGUILayout.ObjectField ("[" + i + "]vData", _d.volumeData, typeof(VolumeData), true);
                     EditorGUIUtility.labelWidth = 88;
@@ -270,6 +270,16 @@ namespace CreVox
             }
             Button_Build ();
             vm.UpdateDungeon ();
+        }
+
+        void Button_VolumeList_Update()
+        {
+            vm.UpdateDungeon ();
+        }
+
+        void Button_VolumeList_Clear()
+        {
+            vm.dungeons.Clear ();
         }
 
         void UpdateStatus ()

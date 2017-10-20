@@ -36,17 +36,5 @@ namespace CreVox
 		public string itemName = "";
         public LevelPiece inspectedScript;
         public string assetPath;
-
-        // Use this for initialization
-        //		void Start()
-        //		{
-        //	
-        //		}
-
-        // Update is called once per frame
-        //		void Update()
-        //		{
-        //	
-        //		}
     }
 }
