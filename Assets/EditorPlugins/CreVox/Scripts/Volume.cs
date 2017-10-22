@@ -119,7 +119,6 @@ namespace CreVox
             #if UNITY_EDITOR
             CreateRuler ();
             CreateLevelRuler ();
-            CreateBox ();
             ShowRuler ();
             #endif
         }
@@ -826,8 +825,6 @@ namespace CreVox
         GameObject ruler;
         [SerializeField]
         GameObject layerRuler;
-        public GameObject box;
-        public bool useBox;
 
         void CreateRuler ()
         {
@@ -878,14 +875,6 @@ namespace CreVox
             ChangePointY (pointY);
         }
 
-        void CreateBox ()
-        {
-            if (!box) {
-                VGlobal vg = VGlobal.GetSetting ();
-                box = BoxCursorUtils.CreateBoxCursor (transform, new Vector3 (vg.w, vg.h, vg.d));
-            }
-        }
-
         public void ActiveRuler (bool _active)
         {
             bool r = (vm != null ? vm.debugRulerL : VolumeManager.debugRuler);
@@ -898,9 +887,6 @@ namespace CreVox
                 bColl.enabled = _active;
                 layerRuler.SetActive (_active);
                 layerRuler.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
-            }
-            if (box) {
-                box.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
             }
             pointer = _active;
         }
@@ -947,7 +933,6 @@ namespace CreVox
                             ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d)
                     );
                 
-                DrawGizmoBoxCursor ();
                 DrawGizmoLayer ();
                 DrawBlockItem ();
             }
@@ -1010,17 +995,6 @@ namespace CreVox
                         Vector3 localPos = new Vector3 (xi * vg.w, pointY * vg.h, zi * vg.d);
                         Gizmos.DrawCube (localPos, new Vector3 (vg.w * cSize, vg.h * cSize, vg.d * cSize));
                     }
-                }
-            }
-        }
-
-        void DrawGizmoBoxCursor ()
-        {
-            if (box != null) {
-                if (!Selection.Contains (gameObject.GetInstanceID ()) || Event.current.alt) {
-                    box.SetActive (false);
-                } else {
-                    box.SetActive (useBox);
                 }
             }
         }

@@ -32,6 +32,7 @@ namespace CreVox
         {
             volume = (Volume)target;
             Volume.focusVolume = volume;
+            BoxCursor.Create (volume.transform, VGlobal.GetSetting ());
             volume.ActiveRuler (true);
             SubscribeEvents ();
         }
@@ -39,6 +40,8 @@ namespace CreVox
         void OnDisable ()
         {
             Volume.focusVolume = null;
+            if (BoxCursor.Box)
+                GameObject.DestroyImmediate (BoxCursor.Box, false);
             volume.ActiveRuler (false);
             UnsubscribeEvents ();
         }
@@ -74,6 +77,7 @@ namespace CreVox
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     if (GUILayout.Button ("Refresh")) {
                         UpdateVolume ();
+                        BoxCursor.Create (volume.transform, VGlobal.GetSetting ());
                     }
                     if (GUILayout.Button ("Calculate BlockHold")) {
                         CalculateBlockHold ();
@@ -443,11 +447,11 @@ namespace CreVox
                 switch (currentEditMode) {
                 case EditMode.View:
                 case EditMode.Item:
-                    volume.useBox = false;
+                    BoxCursor.useBox = false;
                     break;
 
                 default:
-                    volume.useBox = true;
+                    BoxCursor.useBox = true;
                     break;
                 }
 
@@ -533,12 +537,11 @@ namespace CreVox
                 if (hit.collider.gameObject.tag == PathCollect.rularTag) {
                     hit.normal = Vector3.zero;
                 }
-                BoxCursorUtils.UpdateBox (volume.box, hitFix.point, hit.normal);
-                SceneView.RepaintAll ();
+                BoxCursor.Update (hitFix.point, hit.normal);
             } else {
-                volume.useBox = false;
-                SceneView.RepaintAll ();
+                BoxCursor.useBox = false;
             }
+            SceneView.RepaintAll ();
         }
 
         void DrawMarkerLayer ()
@@ -556,10 +559,10 @@ namespace CreVox
 				
                 Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.h / 2, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
                 Handles.DrawLine (hit.point, hitFix.point);
-                volume.useBox = true;
-                BoxCursorUtils.UpdateBox (volume.box, hitFix.point, Vector3.zero);
+                BoxCursor.useBox = true;
+                BoxCursor.Update (hitFix.point, Vector3.zero);
             } else {
-                volume.useBox = false;
+                BoxCursor.useBox = false;
             }
             SceneView.RepaintAll ();
         }
@@ -577,10 +580,10 @@ namespace CreVox
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 if (hit.normal.y <= 0) {
-                    volume.useBox = false;
+                    BoxCursor.useBox = false;
                     return;
                 }
-                volume.useBox = true;
+                BoxCursor.useBox = true;
 
                 RaycastHit hitFix = hit;
                 WorldPos pos = EditTerrain.GetBlockPos (hitFix, isNotLayer);
@@ -605,13 +608,12 @@ namespace CreVox
                 Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.h / 2 - gPos.y, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
                 Handles.DrawLine (hit.point, hitFix.point);
 
-                volume.useBox = true;
-                BoxCursorUtils.UpdateBox (volume.box, hitFix.point, Vector3.zero);
-                SceneView.RepaintAll ();
+                BoxCursor.useBox = true;
+                BoxCursor.Update (hitFix.point, Vector3.zero);
             } else {
-                volume.useBox = false;
-                SceneView.RepaintAll ();
+                BoxCursor.useBox = false;
             }
+            SceneView.RepaintAll ();
         }
 
         int workItemId = -1;
@@ -1329,7 +1331,7 @@ namespace CreVox
 
         #region SubscribeEvents
 
-        //        private PaletteItem _itemInspected;
+//        private PaletteItem _itemInspected;
         PaletteItem _itemSelected;
         Texture2D _itemPreview;
         LevelPiece _pieceSelected;
