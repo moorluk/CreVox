@@ -482,7 +482,6 @@ namespace CreVox
                     LevelPiece p = pObj.GetComponent<LevelPiece> ();
                     if (p != null) {
                         p.block = blockItem;
-                        p.id = _id;
                         p.SetupPiece (blockItem);
                     }
                 }
@@ -552,7 +551,6 @@ namespace CreVox
                 LevelPiece p = pObj.GetComponent<LevelPiece> ();
                 if (p != null) {
                     p.block = block;
-                    p.id = _id;
                 }
                 Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
                 VGlobal vg = VGlobal.GetSetting ();

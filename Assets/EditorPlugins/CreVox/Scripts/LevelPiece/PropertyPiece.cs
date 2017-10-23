@@ -37,7 +37,7 @@ namespace CreVox
                 if (_code.Length == 0)
                     continue;
                 var obj = PProperties [i].tObject;
-                string[] t = _code [0].Split (breakChar, StringSplitOptions.None);
+                string[] t = _code [0].Split (new string[]{ "," }, StringSplitOptions.None);
                 //fix old saved attrittube
                 switch (t.Length) {
                 case 1:
