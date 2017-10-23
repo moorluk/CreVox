@@ -34,10 +34,10 @@ namespace CreVox
             //解析從blockitem的attribute,進行相應的動作.
             for (int i = 0; i < 5; i++) {
                 string[] _code = UpdateValue (ref item, i);
-                UnityEngine.Object obj = PProperties [i].tObject;
-                    string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
                 if (_code.Length == 0)
                     continue;
+                var obj = PProperties [i].tObject;
+                string[] t = _code [0].Split (breakChar, StringSplitOptions.None);
                 //fix old saved attrittube
                 switch (t.Length) {
                 case 1:

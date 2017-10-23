@@ -32,8 +32,10 @@ namespace CreVox
 
         #endregion
 
-        void Start ()
+        void Awake ()
         {
+            if (!gameObject.activeSelf)
+                return;
             if (nodes == null)
                 nodes = new Dictionary<WorldPos, Node> ();
             if (itemNodes == null)
@@ -46,6 +48,7 @@ namespace CreVox
 
         void Update ()
         {
+            #if UNITY_EDITOR
             VGlobal vg = VGlobal.GetSetting ();
             if (vm != null ? vm.snapGridL : VolumeManager.snapGrid) {
                 float x = transform.position.x - transform.position.x % vg.w;
@@ -53,7 +56,6 @@ namespace CreVox
                 float z = transform.position.z - transform.position.z % vg.d;
                 transform.position = new Vector3 (x, y, z);
             }
-            #if UNITY_EDITOR
             if (vm != null ? vm.saveBackupL : VolumeManager.saveBackup)
                 CompileSave ();
             #endif
@@ -294,9 +296,9 @@ namespace CreVox
         {
             if (nodes.ContainsKey (_volumePos))
                 return nodes [_volumePos].pieceRoot;
-                Debug.Log ("(" + _volumePos + ") has no Node; try another artpack !!!");
-                return null;
-            }
+            Debug.Log ("(" + _volumePos + ") has no Node; try another artpack !!!");
+            return null;
+        }
 
         void CreateNode (WorldPos bPos)
         {
@@ -320,7 +322,7 @@ namespace CreVox
             bool isEmpty = true;
             if (blockAir != null) {
                 foreach (string p in blockAir.pieceNames) {
-                    if (!String.IsNullOrEmpty(p)) {
+                    if (!String.IsNullOrEmpty (p)) {
                         isEmpty = false;
                         break;
                     }
@@ -357,7 +359,9 @@ namespace CreVox
 
         public GameObject GetItemNode (BlockItem blockItem)
         {
-            return itemNodes [blockItem];
+            GameObject obj;
+            itemNodes.TryGetValue (blockItem, out obj);
+            return obj;
         }
 
         #endregion
@@ -478,11 +482,12 @@ namespace CreVox
                     LevelPiece p = pObj.GetComponent<LevelPiece> ();
                     if (p != null) {
                         p.block = blockItem;
+                        p.id = _id;
                         p.SetupPiece (blockItem);
                     }
                 }
             } else {
-                if (_id > vd.blockItems.Count -1)
+                if (_id > vd.blockItems.Count - 1)
                     return;
                 
                 blockItem = vd.blockItems [_id];
@@ -514,7 +519,7 @@ namespace CreVox
         {
             Block block = GetBlock (bPos.x, bPos.y, bPos.z);
             BlockAir blockAir;
-            int id = gPos.z * 3 + gPos.x;
+            int _id = gPos.z * 3 + gPos.x;
             GameObject pObj;
 
             if (block != null && !(block is BlockAir))
@@ -522,7 +527,7 @@ namespace CreVox
 
             if (_piece != null) {
                 if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item && _piece.name != "Missing")
-                        return;
+                    return;
                 
                 if (block == null) {
                     SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
@@ -532,9 +537,9 @@ namespace CreVox
                 if (!nodes.ContainsKey (bPos))
                     CreateNode (bPos);
                 
-                pObj = nodes [bPos].pieces [id];
+                pObj = nodes [bPos].pieces [_id];
                 if (pObj != null) {
-                    PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
+                    PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
                     UnityEngine.Object.DestroyImmediate (pObj);
                 }
 
@@ -544,7 +549,11 @@ namespace CreVox
                 pObj = GameObject.Instantiate(_piece.gameObject);
                 #endif
                 pObj.transform.parent = nodes [bPos].pieceRoot.transform;
-                pObj.GetComponent<LevelPiece> ().block = block;
+                LevelPiece p = pObj.GetComponent<LevelPiece> ();
+                if (p != null) {
+                    p.block = block;
+                    p.id = _id;
+                }
                 Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
                 VGlobal vg = VGlobal.GetSetting ();
                 float x = bPos.x * vg.w + pos.x;
@@ -552,32 +561,32 @@ namespace CreVox
                 float z = bPos.z * vg.d + pos.z;
                 pObj.transform.localPosition = new Vector3 (x, y, z);
                 pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
-                nodes [bPos].pieces [id] = pObj;
+                nodes [bPos].pieces [_id] = pObj;
 
-                    blockAir = block as BlockAir;
+                blockAir = block as BlockAir;
                 if (blockAir != null) {
                     if (_piece.name != "Missing") {
                         blockAir.SetPiece (gPos, pObj.GetComponent<LevelPiece> ());
                         blockAir.SolidCheck (nodes [bPos].pieces);
                         SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
                     } else {
-                        pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + blockAir.pieceNames [id]);
+                        pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + blockAir.pieceNames [_id]);
                     }
 
                     if (_piece.isHold)
-                        PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), false);
+                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), false);
                 }
             } else {
-                    blockAir = block as BlockAir;
+                blockAir = block as BlockAir;
                 if (blockAir != null) {
                     blockAir.SetPiece (gPos, null);
                     blockAir.SolidCheck (nodes [bPos].pieces);
                 }
 
                 if (nodes.ContainsKey (bPos)) {
-                    pObj = nodes [bPos].pieces [id];
+                    pObj = nodes [bPos].pieces [_id];
                     if (pObj != null) {
-                        PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
+                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
                         UnityEngine.Object.DestroyImmediate (pObj);
                     }
                 }
@@ -590,11 +599,11 @@ namespace CreVox
         #if UNITY_EDITOR
         public GameObject CopyPiece (WorldPos bPos, WorldPos gPos, bool a_cut)
         {
-            int id = gPos.z * 3 + gPos.x;
+            int _id = gPos.z * 3 + gPos.x;
             GameObject pObj = null;
 
-            if (nodes.ContainsKey (bPos) && nodes [bPos].pieces.Length > id) {
-                pObj = nodes [bPos].pieces [id];
+            if (nodes.ContainsKey (bPos) && nodes [bPos].pieces.Length > _id) {
+                pObj = nodes [bPos].pieces [_id];
 
                 if (pObj != null) {
                     Vector3 pos = pObj.transform.position;
@@ -608,8 +617,8 @@ namespace CreVox
                     }
 
                     if (a_cut) {
-                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieces [id]);
-                        nodes [bPos].pieces [id] = null;
+                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieces [_id]);
+                        nodes [bPos].pieces [_id] = null;
                     }
                 }
             }

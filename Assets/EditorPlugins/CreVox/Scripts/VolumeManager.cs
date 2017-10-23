@@ -65,7 +65,9 @@ namespace CreVox
             }
             #endif
 
-            CreateVolumeMakers ();
+            if (useLocalSetting ? GenerationL : Generation) {
+                CreateVolumeMakers ();
+            }
         }
 
         public void ClearVolumes (bool runtime = true)

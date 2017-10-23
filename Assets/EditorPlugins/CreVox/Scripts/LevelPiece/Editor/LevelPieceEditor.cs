@@ -68,7 +68,6 @@ namespace CreVox
 
         public virtual void OnEditorGUI(ref BlockItem item)
 		{
-			LevelPiece lp = (LevelPiece)target;
 			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope ("box")) {
 				lp.PProperties [0].tComponent = FocalComponent.DefaultEventRange;
@@ -119,12 +118,9 @@ namespace CreVox
 		void DrawList ()
 		{
 			using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
-				for (int i = 0; i < lp.holdBlocks.Count; i++) {
-                    LevelPiece.Hold holdBlock = lp.holdBlocks [i];
+                foreach (var holdBlock in lp.holdBlocks) {
 					using (var h = new EditorGUILayout.HorizontalScope ("textfield")) {
-                        GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", 
-                            "In TitleText",GUILayout.Width(Screen.width - 160));
-//						GUILayout.Space(Screen.width - 200);
+                        GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", "In TitleText", GUILayout.Width (Screen.width - 160));
 						GUILayout.Label ("Solid", "miniLabel");
 						holdBlock.isSolid = EditorGUILayout.Toggle (holdBlock.isSolid);
 						if (GUILayout.Button ("Remove","miniButton"))
