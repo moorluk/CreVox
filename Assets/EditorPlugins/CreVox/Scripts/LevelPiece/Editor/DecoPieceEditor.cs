@@ -114,10 +114,13 @@ namespace CreVox
                                 GameObject newSource = sourceProp.objectReferenceValue as GameObject;
                                 newSource = (GameObject)EditorGUILayout.ObjectField (newSource, typeof(GameObject), true);
                                 if (ch.changed) {
-                                    if (newSource == null || PrefabUtility.GetPrefabType (newSource) == PrefabType.Prefab)
+                                    PrefabType _type = PrefabUtility.GetPrefabType (newSource);
+                                    if (newSource == null || _type == PrefabType.Prefab)
                                         sourceProp.objectReferenceValue = newSource;
-                                    else if (PrefabUtility.GetPrefabType (newSource) == PrefabType.PrefabInstance)
+                                    else if (_type == PrefabType.PrefabInstance) {
                                         AssignPrefabInstance (newSource, selfProp);
+                                        UnityEngine.Object.DestroyImmediate (newSource);
+                                    }
                                 }
                             }
                             GUI.color = _color;
@@ -219,16 +222,22 @@ namespace CreVox
 
         void AutoBuildTree ()
         {
-            //init Tree
-            dp.tree.Clear ();
-            dp.tree.Add (new TreeElement ());
-            TreeElement _parent = dp.tree [0];
-            _parent.self.type = DecoType.Tree;
+            InitTree ();
+
+            //clean other tree
+            var _trees = dp.root.GetComponentsInChildren<DecoPiece> (false);
+            foreach (var t in _trees) {
+                if (t.Equals (dp))
+                    continue;
+                t.ClearRoot ();
+            }
 
             //search prefab
             Transform[] _all = dp.root.GetComponentsInChildren<Transform> (false);
             List<GameObject> _allPrefab = new List<GameObject> ();
             foreach (Transform t in _all) {
+                if (t == null)
+                    continue;
                 GameObject g = t.gameObject;
                 PrefabType pt = PrefabUtility.GetPrefabType (g);
                 GameObject pr = PrefabUtility.FindPrefabRoot (g);
@@ -237,13 +246,17 @@ namespace CreVox
             }
             //add TreeElement
             for (int i = 0; i < _allPrefab.Count; i++)
-                AddElement (_parent);
+                AddElement (dp.tree [0]);
             serializedObject.Update ();
             //assign prefab
             for (int i = 1; i < dp.tree.Count; i++) {
                 GameObject _pInstance = _allPrefab [i - 1];
                 SerializedProperty _nodeProp = tree.GetArrayElementAtIndex (i).FindPropertyRelative ("self");
                 AssignPrefabInstance (_pInstance, _nodeProp);
+            }
+            foreach (GameObject g in _allPrefab) {
+                if (g)
+                    GameObject.DestroyImmediate (g, false);
             }
             serializedObject.ApplyModifiedProperties ();
             serializedObject.Update ();
@@ -301,9 +314,7 @@ namespace CreVox
         int GetNewID ()
         {
             int newID = Mathf.Abs (Guid.NewGuid ().GetHashCode ());
-            Predicate<TreeElement> checkNode = delegate(TreeElement obj) {
-                return obj.self.id.Equals (newID);
-            };
+            Predicate<TreeElement> checkNode = obj => obj.self.id.Equals (newID);
             while (dp.tree.Exists (checkNode)) {
                 newID = Mathf.Abs (Guid.NewGuid ().GetHashCode ());
             }
@@ -317,7 +328,6 @@ namespace CreVox
             _nodeProp.FindPropertyRelative ("rot").vector3Value = _prefabInstance.transform.localEulerAngles;
             _nodeProp.FindPropertyRelative ("scl").vector3Value = _prefabInstance.transform.localScale;
             _nodeProp.FindPropertyRelative ("source").objectReferenceValue = newSourceAsset;
-            UnityEngine.Object.DestroyImmediate (_prefabInstance);
         }
 
         void UpdateTreeIndex ()
@@ -371,9 +381,7 @@ namespace CreVox
             TreeElement c = dp.tree [_childIndex];
             TreeElement oldP = dp.tree [c.parent.treeIndex];
             TreeElement newP = dp.tree [_parentIndex];
-            Predicate<NIndex> sameID = delegate(NIndex obj) {
-                return obj.id == c.self.id;
-            };
+            Predicate<NIndex> sameID = obj => obj.id == c.self.id;
 
             if (oldP.self.id == newP.self.id)
                 return;
