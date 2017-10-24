@@ -7,9 +7,9 @@ namespace CreVox
 	public class LevelPieceEditor : Editor
 	{
 		LevelPiece lp;
-        bool drawIsSolid = false;
-        bool drawHold = false;
-		bool drawDef = false;
+        bool drawIsSolid;
+        bool drawHold;
+        bool drawDef;
 
 		public override void OnInspectorGUI ()
         {

@@ -48,13 +48,15 @@ namespace CreVox
 
         public EventRange eventRange = EventRange.Free;
         public PProperty[] PProperties = new PProperty[5];
+        [HideInInspector]public static string[] breakChar = { "," };
+        [HideInInspector]public static string[] breakCharSub = { "_" };
 
         public virtual void SetupPiece (BlockItem item)
         {
             //解析從blockitem的attritube,進行相應的動作.
             string[] _code = UpdateValue (ref item, 0);
             if (_code.Length != 0) {
-				string[] t = _code [0].Split (new string[1]{ "," }, StringSplitOptions.None);
+                string[] t = _code [0].Split (breakChar, StringSplitOptions.None);
                 switch (t.Length) {
                 case 1:
                     t = new [] { "true", t [0], PProperties [0].tRange.ToString () };

@@ -37,7 +37,7 @@ namespace CreVox
                 if (_code.Length == 0)
                     continue;
                 var obj = PProperties [i].tObject;
-                string[] t = _code [0].Split (new string[]{ "," }, StringSplitOptions.None);
+                string[] t = _code [0].Split (breakChar, StringSplitOptions.None);
                 //fix old saved attrittube
                 switch (t.Length) {
                 case 1:
@@ -69,8 +69,8 @@ namespace CreVox
                         if (obj is GameObject && _code.Length == 3) {
                             GameObject es = (GameObject)obj;
                             PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
-                                string[] _p = _code [1].Split (new string[1]{ "," }, StringSplitOptions.None);
-                                string[] _s = _code [2].Split (new string[1]{ "," }, StringSplitOptions.None);
+                            string[] _p = _code [1].Split (breakChar, StringSplitOptions.None);
+                            string[] _s = _code [2].Split (breakChar, StringSplitOptions.None);
                             es.transform.localPosition = new Vector3 (float.Parse (_p [0]), float.Parse (_p [1]), float.Parse (_p [2]));
                             es.transform.localScale = new Vector3 (float.Parse (_s [0]), float.Parse (_s [1]), float.Parse (_s [2]));
                         }
@@ -138,25 +138,25 @@ namespace CreVox
                                 es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
                                 es.m_spawnerData.m_maxLiveQty = int.Parse (_code [3]);
                                 es.m_spawnerData.m_spwnCountPerTime = int.Parse (_code [4]);
-                                    string[] _r5 = _code [5].Split (new string[1]{ "," }, StringSplitOptions.None);
+                                string[] _r5 = _code [5].Split (breakChar, StringSplitOptions.None);
                                 es.m_spawnerData.m_randomSpawn = new Vector2 (float.Parse (_r5 [0]), float.Parse (_r5 [1]));
                             }
                             // support AiData.basicSetting
                             if (_code.Length > 6) {
-                                    string[] _r6 = _code [6].Split (new string[1]{ "," }, StringSplitOptions.None);
+                                string[] _r6 = _code [6].Split (breakChar, StringSplitOptions.None);
                                 es.m_AiData = ScriptableObject.CreateInstance (typeof(AiData)) as AiData;
                                 es.m_AiData.eye = int.Parse (_r6 [0]);
                                 es.m_AiData.ear = int.Parse (_r6 [1]);
                             }
                             // support AiData.ActiveRange[]
                             if (_code.Length > 7) {
-                                    string[] _r7 = _code [7].Split (new string[1]{ "," }, StringSplitOptions.None);
-                                    string[] v3 = _r7 [0].Split (new string[1]{ "_" }, StringSplitOptions.None);
+                                string[] _r7 = _code [7].Split (breakChar, StringSplitOptions.None);
+                                string[] v3 = _r7 [0].Split (breakCharSub, StringSplitOptions.None);
                                 es.m_AiData.toggleOffset = new Vector3 (float.Parse (v3 [0]), float.Parse (v3 [1]), float.Parse (v3 [2]));
                                 es.m_AiData.toggle = float.Parse (v3 [3]);
                                 es.m_AiData.toggleOffsets = new Vector4[_r7.Length - 1];
                                 for (int o = 0; o < es.m_AiData.toggleOffsets.Length; o++) {
-                                        string[] v4 = _r7 [o + 1].Split (new string[1]{ "_" }, StringSplitOptions.None);
+                                    string[] v4 = _r7 [o + 1].Split (breakCharSub, StringSplitOptions.None);
                                     es.m_AiData.toggleOffsets [o] = new Vector4 (
                                         float.Parse (v4 [0]),
                                         float.Parse (v4 [1]),
@@ -167,10 +167,10 @@ namespace CreVox
                             }
                             // support patrolPoints[]
                             if (_code.Length > 8) {
-                                    string[] _r8 = _code [8].Split (new string[1]{ "," }, StringSplitOptions.None);
+                                string[] _r8 = _code [8].Split (breakChar, StringSplitOptions.None);
                                 es.m_patrolPoints = new Vector3[_r8.Length];
                                 for (int p = 0; p < es.m_patrolPoints.Length; p++) {
-                                        string[] v3 = _r8 [p].Split (new string[1]{ "_" }, StringSplitOptions.None);
+                                    string[] v3 = _r8 [p].Split (breakCharSub, StringSplitOptions.None);
                                     if (v3.Length == 3)
                                         es.m_patrolPoints [p] = new Vector3 (
                                             float.Parse (v3 [0]),
@@ -179,7 +179,7 @@ namespace CreVox
                                         );
                                 }
                             }
-                                if (es.m_isStart == false)
+                            if (!es.m_isStart)
                                 es.m_isStart = true;
                         }
                         break;
