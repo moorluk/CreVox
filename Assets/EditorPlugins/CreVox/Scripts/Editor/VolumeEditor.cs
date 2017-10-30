@@ -32,17 +32,16 @@ namespace CreVox
         {
             volume = (Volume)target;
             Volume.focusVolume = volume;
-            BoxCursor.Create (volume.transform, VGlobal.GetSetting ());
-            volume.ActiveRuler (true);
+            BoxCursor.Create (volume.transform, vg);
+            Rular.Build ();
             SubscribeEvents ();
         }
 
         void OnDisable ()
         {
             Volume.focusVolume = null;
-            if (BoxCursor.Box)
-                GameObject.DestroyImmediate (BoxCursor.Box, false);
-            volume.ActiveRuler (false);
+            BoxCursor.Destroy ();
+            Rular.Clear ();
             UnsubscribeEvents ();
         }
 
@@ -77,7 +76,6 @@ namespace CreVox
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     if (GUILayout.Button ("Refresh")) {
                         UpdateVolume ();
-                        BoxCursor.Create (volume.transform, VGlobal.GetSetting ());
                     }
                     if (GUILayout.Button ("Calculate BlockHold")) {
                         CalculateBlockHold ();
@@ -422,6 +420,7 @@ namespace CreVox
         void EventHandler ()
         {
             if (Event.current.alt) {
+                BoxCursor.visible = false;
                 return;
             }
 
@@ -444,16 +443,16 @@ namespace CreVox
                 }
                 HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
 
-                switch (currentEditMode) {
-                case EditMode.View:
-                case EditMode.Item:
-                    BoxCursor.useBox = false;
-                    break;
-
-                default:
-                    BoxCursor.useBox = true;
-                    break;
-                }
+//            switch (currentEditMode) {
+//            case EditMode.View:
+//            case EditMode.Item:
+//                BoxCursor.visible = false;
+//                break;
+//
+//            default:
+//                BoxCursor.visible = true;
+//                break;
+//            }
 
                 switch (currentEditMode) {
                 case EditMode.Voxel:
@@ -538,8 +537,9 @@ namespace CreVox
                     hit.normal = Vector3.zero;
                 }
                 BoxCursor.Update (hitFix.point, hit.normal);
+                BoxCursor.visible = true;
             } else {
-                BoxCursor.useBox = false;
+                BoxCursor.visible = false;
             }
             SceneView.RepaintAll ();
         }
@@ -559,10 +559,10 @@ namespace CreVox
 				
                 Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.h / 2, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
                 Handles.DrawLine (hit.point, hitFix.point);
-                BoxCursor.useBox = true;
                 BoxCursor.Update (hitFix.point, Vector3.zero);
+                BoxCursor.visible = true;
             } else {
-                BoxCursor.useBox = false;
+                BoxCursor.visible = false;
             }
             SceneView.RepaintAll ();
         }
@@ -580,10 +580,9 @@ namespace CreVox
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 if (hit.normal.y <= 0) {
-                    BoxCursor.useBox = false;
+                    BoxCursor.visible = false;
                     return;
                 }
-                BoxCursor.useBox = true;
 
                 RaycastHit hitFix = hit;
                 WorldPos pos = EditTerrain.GetBlockPos (hitFix, isNotLayer);
@@ -608,10 +607,10 @@ namespace CreVox
                 Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.h / 2 - gPos.y, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
                 Handles.DrawLine (hit.point, hitFix.point);
 
-                BoxCursor.useBox = true;
                 BoxCursor.Update (hitFix.point, Vector3.zero);
+                BoxCursor.visible = true;
             } else {
-                BoxCursor.useBox = false;
+                BoxCursor.visible = false;
             }
             SceneView.RepaintAll ();
         }
@@ -908,14 +907,14 @@ namespace CreVox
                 if (_hotkey) {
                     volume.pointer = !volume.pointer;
                     fixPointY = volume.pointY;
-                    volume.ChangePointY (fixPointY);
+                    Rular.SetY (fixPointY);
                 }
                 break;
 
             case "W":
                 if (_hotkey) {
                     fixPointY = volume.pointY + 1;
-                    volume.ChangePointY (fixPointY);
+                    Rular.SetY (fixPointY);
                     fixPointY = volume.pointY;
                 }
                 break;
@@ -923,7 +922,7 @@ namespace CreVox
             case "S":
                 if (_hotkey) {
                     fixPointY = volume.pointY - 1;
-                    volume.ChangePointY (fixPointY);
+                    Rular.SetY (fixPointY);
                     fixPointY = volume.pointY;
                 }
                 break;
@@ -1004,6 +1003,8 @@ namespace CreVox
         {
             selectedItemID = -1;
             volume.BuildVolume ();
+            BoxCursor.Create (volume.transform, vg);
+//            volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
             SceneView.RepaintAll ();
         }
 

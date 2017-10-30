@@ -13,6 +13,8 @@ namespace CreVox
     [ExecuteInEditMode]
     public class Volume : MonoBehaviour
     {
+        public static Volume focusVolume;
+
         public string ArtPack = PathCollect.pieces;
         public string vMaterial = PathCollect.defaultVoxelMaterial;
         public Material vertexMaterial;
@@ -821,95 +823,8 @@ namespace CreVox
         #endif
         #endregion
 
-        #region Ruler
-
-        #if UNITY_EDITOR
-        [SerializeField]
-        MeshCollider mColl;
-        [SerializeField]
-        BoxCollider bColl;
-        [SerializeField]
-        GameObject ruler;
-        [SerializeField]
-        GameObject layerRuler;
-
-        void CreateRuler ()
-        {
-            ruler = new GameObject ("Ruler");
-            ruler.layer = LayerMask.NameToLayer ("Editor");
-            ruler.tag = PathCollect.rularTag;
-            ruler.transform.parent = transform;
-            mColl = ruler.AddComponent<MeshCollider> ();
-
-            MeshData meshData = new MeshData ();
-            VGlobal vg = VGlobal.GetSetting ();
-            float x = -vg.w / 2;
-            float y = -vg.h / 2;
-            float z = -vg.d / 2;
-            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : chunkX * vd.chunkSize) * vg.w + x;
-            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d + z;
-            meshData.useRenderDataForCol = true;
-            meshData.AddVertex (new Vector3 (x, y, z));
-            meshData.AddVertex (new Vector3 (x, y, d));
-            meshData.AddVertex (new Vector3 (w, y, d));
-            meshData.AddVertex (new Vector3 (w, y, z));
-            meshData.AddQuadTriangles ();
-
-            mColl.sharedMesh = null;
-            Mesh cmesh = new Mesh ();
-            cmesh.vertices = meshData.colVertices.ToArray ();
-            cmesh.triangles = meshData.colTriangles.ToArray ();
-            cmesh.RecalculateNormals ();
-
-            mColl.sharedMesh = cmesh;
-
-            ruler.transform.localPosition = Vector3.zero;
-            ruler.transform.localRotation = Quaternion.Euler (Vector3.zero);
-        }
-
-        void CreateLevelRuler ()
-        {
-            VGlobal vg = VGlobal.GetSetting ();
-            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : chunkX * vd.chunkSize) * vg.w;
-            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d;
-            layerRuler = new GameObject ("LevelRuler");
-            layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
-            layerRuler.transform.parent = transform;
-            layerRuler.transform.localPosition = new Vector3 (w / 2 - vg.w / 2, 0f, d / 2 - vg.d / 2);
-            layerRuler.transform.localRotation = Quaternion.Euler (Vector3.zero);
-            bColl = layerRuler.AddComponent<BoxCollider> ();
-            bColl.size = new Vector3 (w, 0f, d);
-            ChangePointY (pointY);
-        }
-
-        public void ActiveRuler (bool _active)
-        {
-            bool r = (vm != null ? vm.debugRulerL : VolumeManager.debugRuler);
-            if (mColl) {
-                mColl.enabled = _active;
-                ruler.SetActive (_active);
-                ruler.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
-            }
-            if (bColl) {
-                bColl.enabled = _active;
-                layerRuler.SetActive (_active);
-                layerRuler.hideFlags = r ? HideFlags.None : HideFlags.HideInHierarchy;
-            }
-            pointer = _active;
-        }
-
-        public void ShowRuler ()
-        {
-            bool _active = !EditorApplication.isPlaying && (vm == null ? VolumeManager.debugRuler : vm.debugRulerL);
-            ActiveRuler (_active);
-        }
-        #endif
-        #endregion
-
         #region Editor Scene UI
-
         #if UNITY_EDITOR
-        public static Volume focusVolume;
         public Color YColor;
         public bool pointer;
         public int pointY;

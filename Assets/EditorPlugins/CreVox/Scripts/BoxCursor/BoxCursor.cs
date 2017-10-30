@@ -13,30 +13,32 @@ namespace CreVox
         public GameObject Zplus;
         public GameObject Zminor;
 
-        public static bool useBox {
-//            get {
-//                return Box.activeSelf;
-//            }
+        public static bool visible {
             set {
                 Box.SetActive (value);
             }
         }
 
-        public static GameObject Box {
+        static GameObject Box {
             get;
             set;
         }
 
         public static void Create (Transform _Parent, VGlobal vg)
         {
-            if (Box)
-                GameObject.DestroyImmediate (Box, false);
+            Destroy ();
             Box = GameObject.Instantiate (Resources.Load<GameObject> (PathCollect.box));
             Box.transform.SetParent (_Parent);
             Box.transform.localScale = new Vector3 (vg.w, vg.h, vg.d);
             Box.transform.localRotation = Quaternion.Inverse (_Parent.rotation);
 //            Box.hideFlags = HideFlags.HideInHierarchy;
             Update (_Parent.position, Vector3.zero);
+        }
+
+        public static void Destroy ()
+        {
+            if (Box)
+                GameObject.DestroyImmediate (Box, false);
         }
 
         public static void Update (Vector3 _pos, Vector3 _dir)
