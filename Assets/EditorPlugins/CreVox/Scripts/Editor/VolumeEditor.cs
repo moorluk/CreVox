@@ -151,7 +151,7 @@ namespace CreVox
                                        Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.artPack,
                                        ""
                                    );
-                    if (volume.vm != null ? volume.vm.saveBackupL : VolumeManager.saveBackup)
+                    if (volume.Vm.SaveBackup)
                         volume.SaveTempWorld ();
 
                     string artPackName = ppath.Substring (ppath.LastIndexOf ("/") + 1);
@@ -184,11 +184,7 @@ namespace CreVox
         void DrawInsSetting ()
         {
             using (var ch2 = new EditorGUI.ChangeCheckScope ()) {
-                if (volume.vm) {
-                    VolumeManagerEditor.DrawVLocal (volume.vm);
-                } else {
-                    VolumeManagerEditor.DrawVGlobal ();
-                }
+                VolumeManagerEditor.DrawVGlobal (volume.Vm);
                 if (ch2.changed) {
                     UpdateVolume ();
                     volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);

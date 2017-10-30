@@ -18,7 +18,6 @@ namespace CreVox
         public string ArtPack = PathCollect.pieces;
         public string vMaterial = PathCollect.defaultVoxelMaterial;
         public Material vertexMaterial;
-        public VolumeManager vm;
 
         VGlobal vg;
 
@@ -26,6 +25,14 @@ namespace CreVox
             get { return vg ?? VGlobal.GetSetting (); }
             set { vg = value; }
         }
+
+        VolumeManager vm;
+
+        public VolumeManager Vm {
+            get { return vm ?? transform.GetComponentInParent<VolumeManager> (); }
+            set { vm = value; }
+        }
+
         public VolumeData vd;
 
         #region delgate
@@ -51,7 +58,7 @@ namespace CreVox
                 itemNodes = new Dictionary<BlockItem, GameObject> ();
             if (chunks == null)
                 chunks = new Dictionary<WorldPos, Chunk> ();
-            if (vm != null ? vm.GenerationL : VolumeManager.Generation)
+            if (Vm && !Vm.UseVMaker)
                 BuildVolume ();
         }
 
@@ -848,7 +855,7 @@ namespace CreVox
                 DrawBlockItem ();
             }
 
-            if (vm != null ? vm.showBlockHoldL : VolumeManager.showBlockHold)
+            if (Vm.ShowBlockHold)
                 DrawBlockHold ();
             
             Gizmos.matrix = oldMatrix;
