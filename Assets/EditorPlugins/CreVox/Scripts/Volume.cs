@@ -136,14 +136,6 @@ namespace CreVox
             for (int i = transform.childCount; i > 0; i--)
                 UnityEngine.Object.DestroyImmediate (transform.GetChild (i - 1).gameObject);
 
-            #if UNITY_EDITOR
-            mColl = null;
-            bColl = null;
-            if (ruler)
-                UnityEngine.Object.DestroyImmediate (ruler);
-            if (layerRuler)
-                UnityEngine.Object.DestroyImmediate (layerRuler);
-            #endif
         }
 
         public Dictionary<WorldPos,Chunk> GetChunks ()
@@ -831,13 +823,10 @@ namespace CreVox
             Matrix4x4 oldMatrix = Gizmos.matrix;
             Gizmos.matrix = transform.localToWorldMatrix;
 
-            if (focusVolume == this && (vm != null ? vm.debugRulerL : VolumeManager.debugRuler)) {
-                VGlobal vg = VGlobal.GetSetting ();
-                if ((vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null))
-                    Gizmos.color = Color.red;
-                else
-                    Gizmos.color = new Color (YColor.r, YColor.g, YColor.b, 0.4f);
-                if (mColl)
+            if (focusVolume == this && Vm.DebugRuler) {
+                bool isLost = (vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null);
+                Gizmos.color = isLost ? Color.red : new Color (YColor.r, YColor.g, YColor.b, 0.4f);
+                if (vd) {
                     Gizmos.DrawWireCube (
                         new Vector3 (
                             ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.x - 1 : (chunkX * vd.chunkSize - 1)) * vg.w / 2,
@@ -848,6 +837,7 @@ namespace CreVox
                             ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.y : chunkY * vd.chunkSize) * vg.h,
                             ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.z : chunkZ * vd.chunkSize) * vg.d)
                     );
+                }
                 
                 DrawGizmoLayer ();
                 DrawBlockItem ();
@@ -925,9 +915,6 @@ namespace CreVox
                 (200 - Mathf.Abs ((pointY % 10) - 5) * 20) / 255f,
                 (200 - (pointY % 10) * 20) / 255f
             );
-            if (bColl) {
-                bColl.center = new Vector3 (bColl.center.x, (pointY + 0.5f) * vg.h, bColl.center.z);
-            }
             if (chunks != null && chunks.Count > 0)
                 UpdateChunks ();
         }

@@ -34,7 +34,7 @@ namespace CreVox
                 Object.DestroyImmediate (layerRuler);
         }
 
-        public static void CreateRuler ()
+        static void CreateRuler ()
         {
             Volume vol = Volume.focusVolume;
             VGlobal Vg = vol.Vg;
@@ -71,7 +71,7 @@ namespace CreVox
             ruler.transform.localRotation = Quaternion.Euler (Vector3.zero);
         }
 
-        public static void CreateLevelRuler ()
+        static void CreateLevelRuler ()
         {
             Volume vol = Volume.focusVolume;
             VGlobal Vg = vol.Vg;
@@ -89,7 +89,7 @@ namespace CreVox
             vol.ChangePointY (vol.pointY);
         }
 
-        public static void ActiveRuler (bool _active)
+        static void ActiveRuler (bool _active)
         {
             bool r = (Volume.focusVolume.Vm.DebugRuler);
             if (mColl) {
