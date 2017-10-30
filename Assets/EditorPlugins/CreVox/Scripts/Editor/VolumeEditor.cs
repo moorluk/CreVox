@@ -9,12 +9,14 @@ namespace CreVox
     public class VolumeEditor : Editor
     {
         Volume volume;
+
         Dictionary<WorldPos, Chunk> dirtyChunks = new Dictionary<WorldPos, Chunk> ();
         int cx = 1;
         int cy = 1;
         int cz = 1;
-
         WorldPos workpos;
+
+        VGlobal vg { get { return volume.Vg; } }
 
         public struct TranslatedGo
         {
@@ -251,7 +253,6 @@ namespace CreVox
 
         void DrawModeGUI ()
         {
-            VGlobal vg = VGlobal.GetSetting ();
             List<EditMode> modes = EditorUtils.GetListFromEnum<EditMode> ();
             List<string> modeLabels = new List<string> ();
             foreach (EditMode mode in modes) {
@@ -524,7 +525,6 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
 
             if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
@@ -549,7 +549,6 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
@@ -575,7 +574,6 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out hit, (int)vg.editDis, _mask);
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
@@ -621,7 +619,6 @@ namespace CreVox
 
         void DrawMarkerEdit (ref int button)
         {
-            VGlobal vg = VGlobal.GetSetting ();
             Matrix4x4 defMatrix = Handles.matrix;
             Color defColor = Handles.color;
             Quaternion facingCamera;
@@ -732,7 +729,6 @@ namespace CreVox
         {
             Color old = Handles.color;
             Handles.color = Color.red;
-            VGlobal vg = VGlobal.GetSetting ();
             float width = vg.w;
             float height = vg.h;
             float depth = vg.d;
@@ -757,7 +753,6 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
             WorldPos pos;
 
@@ -790,7 +785,6 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
             WorldPos pos;
 
@@ -826,7 +820,6 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-            VGlobal vg = VGlobal.GetSetting ();
             bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
 
             if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -867,7 +860,6 @@ namespace CreVox
                 RaycastHit gHit;
                 Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
                 LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-                VGlobal vg = VGlobal.GetSetting ();
                 bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
 
                 if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -1100,7 +1092,6 @@ namespace CreVox
                 while (ba.BlockPos.z >= newc.freeChunkSize.z) ba.BlockPos.z -= newc.freeChunkSize.z;
                 newc.blockAirs.Add (ba);
             }
-            var vg = VGlobal.GetSetting ();
             foreach (var bi in volume.vd.blockItems) {
                 bi.posX += _offset.x * vg.w;
                 while (bi.posX < -vg.w / 2)
@@ -1297,7 +1288,6 @@ namespace CreVox
                 WorldPos gPos = tg.gPos;
 
                 Vector3 pos = Volume.GetPieceOffset (gPos.x, gPos.z);
-                VGlobal vg = VGlobal.GetSetting ();
 
                 WorldPos bPos;
                 bPos.x = (int)((goPos.x - pos.x) / vg.w);
@@ -1314,7 +1304,6 @@ namespace CreVox
                     WorldPos gPos = tg.gPos;
 
                     Vector3 pos = Volume.GetPieceOffset (gPos.x, gPos.z);
-                    VGlobal vg = VGlobal.GetSetting ();
 
                     WorldPos bPos;
                     bPos.x = Mathf.RoundToInt ((goPos.x - pos.x) / vg.w + m_translate.x);
