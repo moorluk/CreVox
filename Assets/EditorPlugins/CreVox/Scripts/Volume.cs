@@ -916,7 +916,6 @@ namespace CreVox
 
         public void ChangePointY (int _y)
         {
-            VGlobal vg = VGlobal.GetSetting ();
             _y = Mathf.Clamp (_y, 0, ((vd.useFreeChunk) ? freeChunk.cData.freeChunkSize.y : (chunkY * vd.chunkSize)) - 1);
             pointY = _y;
             YColor = new Color (
