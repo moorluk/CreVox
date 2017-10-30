@@ -166,16 +166,16 @@ namespace CreVox
                     volume.ArtPack = PathCollect.artPack + artPackName;
                     volume.vMaterial = volume.ArtPack + "/" + artPackName + "_voxel";
                     ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
-                    volume.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
+                    volume.VertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                     EditorUtility.SetDirty (volume.vd);
 
                     volume.BuildVolume ();
                 }
                 EditorGUIUtility.labelWidth = 120f;
                 volume.vd.subArtPack = EditorGUILayout.TextField ("SubArtPack", volume.vd.subArtPack);
-                volume.vertexMaterial = (Material)EditorGUILayout.ObjectField (
+                volume.VertexMaterial = (Material)EditorGUILayout.ObjectField (
                     new GUIContent ("Volume Material", "Auto Select if Material's name is ArtPack's name + \"_voxel\"")
-					, volume.vertexMaterial
+					, volume.VertexMaterial
 					, typeof(Material)
 					, false);
             }

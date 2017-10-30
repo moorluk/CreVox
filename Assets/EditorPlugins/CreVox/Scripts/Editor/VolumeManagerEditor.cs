@@ -254,7 +254,7 @@ namespace CreVox
                 _v.ArtPack = PathCollect.artPack + artPacks [APIndex];
                 _v.vMaterial = _v.ArtPack + "/" + artPacks [APIndex] + "_voxel";
                 string ppath = PathCollect.resourcesPath + _v.vMaterial + ".mat";
-                _v.vertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
+                _v.VertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                 EditorUtility.SetDirty (_v.vd);
             }
             Button_Build ();

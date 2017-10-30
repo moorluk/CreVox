@@ -17,7 +17,13 @@ namespace CreVox
 
         public string ArtPack = PathCollect.pieces;
         public string vMaterial = PathCollect.defaultVoxelMaterial;
-        public Material vertexMaterial;
+
+        Material vertexMaterial;
+
+        public Material VertexMaterial {
+            get { return vertexMaterial ?? Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material; }
+            set { vertexMaterial = value; }
+        }
 
         VGlobal vg;
 
