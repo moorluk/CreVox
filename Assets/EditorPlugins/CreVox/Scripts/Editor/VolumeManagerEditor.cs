@@ -28,14 +28,9 @@ namespace CreVox
             EditorGUIUtility.labelWidth = lw;
 
             using (var ch = new EditorGUI.ChangeCheckScope ()) {
-                vm.useLocalSetting = EditorGUILayout.ToggleLeft ("Use Local Setting", vm.useLocalSetting);
-                if (vm.useLocalSetting)
-                    DrawVLocal (vm);
-                else
-                    DrawVGlobal ();
-
+                DrawVGlobal (vm);
                 if (ch.changed) {
-                    UpdateLocalSetting ();
+                    Button_Build ();
                 }
             }
 
@@ -66,31 +61,26 @@ namespace CreVox
                 UpdateStatus ();
         }
 
-        public static void DrawVGlobal ()
+        public static void DrawVGlobal (VolumeManager _vm = null)
         {
+            if (_vm == null)
+                return;
+            bool local = _vm.useLocalSetting;
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 EditorGUILayout.LabelField ("Global Setting", EditorStyles.boldLabel);
-                using (var dis = new EditorGUI.DisabledScope (true)) {
-                    EditorGUILayout.ToggleLeft ("Auto Backup File", VolumeManager.saveBackup);
-                    EditorGUILayout.ToggleLeft ("Volume Show ArtPack", VolumeManager.volumeShowArtPack);
-                    EditorGUILayout.ToggleLeft ("Runtime Generation", VolumeManager.Generation);
-                    EditorGUILayout.ToggleLeft ("Snap Grid", VolumeManager.snapGrid);
-                    EditorGUILayout.ToggleLeft ("Show Ruler", VolumeManager.debugRuler);
-                    EditorGUILayout.ToggleLeft ("Show BlockHold", VolumeManager.showBlockHold);
-                }
-            }
-        }
-
-        public static void DrawVLocal (VolumeManager vm)
-        {
-            using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-                EditorGUILayout.LabelField ("Local Setting", EditorStyles.boldLabel);
-                vm.saveBackupL = EditorGUILayout.ToggleLeft ("Auto Backup File", vm.saveBackupL);
-                vm.volumeShowArtPackL = EditorGUILayout.ToggleLeft ("Volume Show ArtPack", vm.volumeShowArtPackL);
-                vm.GenerationL = EditorGUILayout.ToggleLeft ("Runtime Generation", vm.GenerationL);
-                vm.snapGridL = EditorGUILayout.ToggleLeft ("Snap Grid", vm.snapGridL);
-                vm.debugRulerL = EditorGUILayout.ToggleLeft ("Show Ruler", vm.debugRulerL);
-                vm.showBlockHoldL = EditorGUILayout.ToggleLeft ("Show BlockHold", vm.showBlockHoldL);
+                _vm.useLocalSetting = EditorGUILayout.ToggleLeft ("Use Local Setting", _vm.useLocalSetting);
+                EditorGUI.BeginDisabledGroup (!local);
+                EditorGUI.indentLevel++;
+                _vm.SaveBackup    = EditorGUILayout.ToggleLeft ("Auto Backup File", _vm.SaveBackup);
+                _vm.UseArtPack    = EditorGUILayout.ToggleLeft ("Use ArtPack",      _vm.UseArtPack);
+                _vm.UseVMaker     = EditorGUILayout.ToggleLeft ("Use Volume Maker", _vm.UseVMaker);
+                _vm.SnapGrid      = EditorGUILayout.ToggleLeft ("Snap Grid",        _vm.SnapGrid);
+                _vm.DebugRuler    = EditorGUILayout.ToggleLeft ("Show Ruler",       _vm.DebugRuler);
+                _vm.ShowBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold",   _vm.ShowBlockHold);
+                EditorGUI.indentLevel--;
+                EditorGUI.EndDisabledGroup ();
+                if (local)
+                    EditorUtility.SetDirty (_vm);
             }
         }
 
@@ -249,7 +239,6 @@ namespace CreVox
                 v.ArtPack = d.ArtPack;
                 v.vMaterial = d.vMaterial;
             }
-            UpdateLocalSetting ();
             Button_Build ();
         }
 
@@ -285,13 +274,6 @@ namespace CreVox
         void UpdateStatus ()
         {
             vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
-        }
-
-        void UpdateLocalSetting ()
-        {
-            Volume[] vs = vm.GetComponentsInChildren<Volume> ();
-            foreach (Volume v in vs)
-                v.vm = vm.useLocalSetting ? vm : null;
         }
 
         #endregion

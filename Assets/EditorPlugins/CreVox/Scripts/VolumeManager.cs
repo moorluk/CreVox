@@ -13,23 +13,46 @@ namespace CreVox
         public string ArtPack;
         public string vMaterial;
     }
-        
+
     public class VolumeManager : MonoBehaviour
     {
-        public static bool saveBackup;
-        public static bool volumeShowArtPack = true;
-        public static bool Generation = true;
-        public static bool snapGrid;
-        public static bool debugRuler;
-        public static bool showBlockHold;
-
         public bool useLocalSetting;
-        public bool saveBackupL;
-        public bool volumeShowArtPackL;
-        public bool GenerationL;
-        public bool snapGridL;
-        public bool debugRulerL;
-        public bool showBlockHoldL;
+
+        [SerializeField]bool saveBackup;
+        public bool SaveBackup {
+            get { return useLocalSetting ? saveBackup : false; }
+            set { saveBackup = useLocalSetting ? value : saveBackup; }
+        }
+
+        [SerializeField]bool useArtPack;
+        public bool UseArtPack {
+            get { return useLocalSetting ? useArtPack : true; }
+            set { useArtPack = useLocalSetting ? value : useArtPack; }
+        }
+
+        [SerializeField]bool useVMaker;
+        public bool UseVMaker {
+            get { return useLocalSetting ? useVMaker : true; }
+            set { useVMaker = useLocalSetting ? value : useVMaker; }
+        }
+
+        [SerializeField]bool snapGridL;
+        public bool SnapGrid {
+            get { return useLocalSetting ? snapGridL : false; }
+            set { snapGridL = useLocalSetting ? value : snapGridL; }
+        }
+
+        [SerializeField]bool debugRulerL;
+        public bool DebugRuler {
+            get { return useLocalSetting ? debugRulerL : false; }
+            set { debugRulerL = useLocalSetting ? value : debugRulerL; }
+        }
+
+        [SerializeField]bool showBlockHoldL;
+        public bool ShowBlockHold {
+            get { return useLocalSetting ? showBlockHoldL : false; }
+            set { showBlockHoldL = useLocalSetting ? value : showBlockHoldL; }
+        }
 
         public List<Dungeon> dungeons = new List<Dungeon> ();
         public bool useStageData;
@@ -41,7 +64,7 @@ namespace CreVox
             if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
-            if (useLocalSetting ? GenerationL : Generation) {
+            if (UseVMaker) {
                 ClearVolumes ();
                 if (useStageData)
                     RandomDungeon ();
@@ -53,7 +76,7 @@ namespace CreVox
         void Start ()
         {
             #if UNITY_EDITOR
-            if (!UnityEditor.EditorApplication.isPlaying && useLocalSetting ? saveBackupL : saveBackup) {
+            if (!UnityEditor.EditorApplication.isPlaying && SaveBackup) {
                 BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
                 UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
@@ -65,17 +88,19 @@ namespace CreVox
             }
             #endif
 
-            if (useLocalSetting ? GenerationL : Generation) {
+            if (UseVMaker) {
                 CreateVolumeMakers ();
             }
         }
 
         public void ClearVolumes (bool runtime = true)
         {
-            Volume[] vs = transform.GetComponentsInChildren<Volume>(false);
-            foreach(Volume v in vs){
-                if (runtime) UnityEngine.Object.Destroy(v.gameObject);
-                else UnityEngine.Object.DestroyImmediate(v.gameObject, false);
+            Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
+            foreach (Volume v in vs) {
+                if (runtime)
+                    UnityEngine.Object.Destroy (v.gameObject);
+                else
+                    UnityEngine.Object.DestroyImmediate (v.gameObject, false);
             }
         }
 
@@ -94,7 +119,7 @@ namespace CreVox
                 vm.ArtPack = d.ArtPack;
                 vm.vMaterial = d.vMaterial;
                 volume.SetActive (true);
-                if ((useLocalSetting ? GenerationL : Generation) && !VolumeAdapter.CheckSetupDungeon ()) {
+                if (UseVMaker && !VolumeAdapter.CheckSetupDungeon ()) {
                     vm.Build ();
                 }
             }
@@ -109,7 +134,7 @@ namespace CreVox
 
             if (vs.Length < 1 && dungeons.Count > 0)
                 return;
-            dungeons.Clear();
+            dungeons.Clear ();
             foreach (Volume v in vs) {
                 Dungeon newDungeon = new Dungeon ();
                 newDungeon.volumeData = v.vd;
@@ -121,7 +146,7 @@ namespace CreVox
             }
         }
 
-        public void RandomDungeon()
+        public void RandomDungeon ()
         {
             UnityEngine.Random.InitState (Guid.NewGuid ().GetHashCode ());
             int i = UnityEngine.Random.Range (0, stageData.stageList.Count);
