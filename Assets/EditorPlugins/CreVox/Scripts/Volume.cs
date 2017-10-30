@@ -192,13 +192,10 @@ namespace CreVox
             newChunkObject.transform.parent = chunkRoot.transform;
             newChunkObject.transform.localPosition = new Vector3 (x * Vg.w, y * Vg.h, z * Vg.d);
             newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            newChunkObject.GetComponent<Renderer> ().material = (Vm.UseArtPack) ? VertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             #if UNITY_EDITOR
-            if (vertexMaterial != null)
-                newChunkObject.GetComponent<Renderer> ().material = (vm != null ? vm.volumeShowArtPackL : VolumeManager.volumeShowArtPack) ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
             #else
-            if (vertexMaterial != null)
-                newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
             newChunkObject.layer = LayerMask.NameToLayer("Floor");
             #endif
             Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
@@ -215,13 +212,10 @@ namespace CreVox
             newChunkObject.transform.parent = chunkRoot.transform;
             newChunkObject.transform.localPosition = Vector3.zero;
             newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            newChunkObject.GetComponent<Renderer> ().material = (Vm.UseArtPack) ? VertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             #if UNITY_EDITOR
-            if (vertexMaterial != null)
-                newChunkObject.GetComponent<Renderer> ().material = (vm != null ? vm.volumeShowArtPackL : VolumeManager.volumeShowArtPack) ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
             newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
             #else
-            if (vertexMaterial != null)
-            newChunkObject.GetComponent<Renderer> ().material = vertexMaterial;
             newChunkObject.layer = LayerMask.NameToLayer("Floor");
             #endif
             freeChunk = newChunkObject.GetComponent<Chunk> ();
