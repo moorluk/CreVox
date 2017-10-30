@@ -119,12 +119,6 @@ namespace CreVox
             } else {
                 CreateChunks ();
             }
-
-            #if UNITY_EDITOR
-            CreateRuler ();
-            CreateLevelRuler ();
-            ShowRuler ();
-            #endif
         }
 
         void Reset ()
