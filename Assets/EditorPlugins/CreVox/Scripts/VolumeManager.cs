@@ -107,6 +107,8 @@ namespace CreVox
         public void CreateVolumeMakers ()
         {
             foreach (Dungeon d in dungeons) {
+                if (d.volumeData == null)
+                    continue;
                 GameObject volume = new GameObject (d.volumeData.ToString ());
                 volume.transform.parent = transform;
                 volume.transform.localPosition = d.position;

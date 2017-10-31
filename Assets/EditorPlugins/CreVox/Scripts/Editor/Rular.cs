@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using UnityEditor;
 
 namespace CreVox
 {
 
-    public class Rular
+    public static class Rular
     {
         [SerializeField]
         static MeshCollider mColl;
@@ -15,16 +14,17 @@ namespace CreVox
         [SerializeField]
         static GameObject layerRuler;
 
-        public static void Build ()
+        public static void Create ()
         {
             //clear
-            Clear ();
+            Destroy ();
             //rebuild
             CreateRuler ();
             CreateLevelRuler ();
             ShowRuler ();
         }
-        public static void Clear ()
+
+        public static void Destroy ()
         {
             mColl = null;
             if (ruler)
@@ -50,8 +50,8 @@ namespace CreVox
             float x = -Vg.w / 2;
             float y = -Vg.h / 2;
             float z = -Vg.d / 2;
-            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : vd.chunkX * vd.chunkSize) * Vg.w + x;
-            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : vd.chunkZ * vd.chunkSize) * Vg.d + z;
+            float w = (vd == null) ? Vg.w : (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : vd.chunkX * vd.chunkSize) * Vg.w + x;
+            float d = (vd == null) ? Vg.d : (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : vd.chunkZ * vd.chunkSize) * Vg.d + z;
             meshData.useRenderDataForCol = true;
             meshData.AddVertex (new Vector3 (x, y, z));
             meshData.AddVertex (new Vector3 (x, y, d));
@@ -77,8 +77,8 @@ namespace CreVox
             VGlobal Vg = vol.Vg;
             VolumeData vd = vol.vd;
 
-            float w = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : vd.chunkX * vd.chunkSize) * Vg.w;
-            float d = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : vd.chunkZ * vd.chunkSize) * Vg.d;
+            float w = (vd == null) ? Vg.w : (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : vd.chunkX * vd.chunkSize) * Vg.w;
+            float d = (vd == null) ? Vg.d : (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : vd.chunkZ * vd.chunkSize) * Vg.d;
             layerRuler = new GameObject ("LevelRuler");
             layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
             layerRuler.transform.parent = vol.transform;
@@ -86,7 +86,7 @@ namespace CreVox
             layerRuler.transform.localRotation = Quaternion.Euler (Vector3.zero);
             bColl = layerRuler.AddComponent<BoxCollider> ();
             bColl.size = new Vector3 (w, 0f, d);
-            vol.ChangePointY (vol.pointY);
+            SetY (vol.pointY);
         }
 
         static void ActiveRuler (bool _active)
@@ -107,17 +107,26 @@ namespace CreVox
 
         public static void ShowRuler ()
         {
-            bool _active = !EditorApplication.isPlaying && (Volume.focusVolume.Vm.DebugRuler);
+            bool _active = !UnityEditor.EditorApplication.isPlaying && (Volume.focusVolume.Vm.DebugRuler);
             ActiveRuler (_active);
         }
 
         public static void SetY (int pointY)
         {
             Volume vol = Volume.focusVolume;
-            if (bColl) {
-                bColl.center = new Vector3 (bColl.center.x, (pointY + 0.5f) * vol.Vg.h, bColl.center.z);
-            }
-            vol.ChangePointY (pointY);
+            VGlobal Vg = vol.Vg;
+            VolumeData vd = vol.vd;
+
+            int maxY = (vd == null) ? 0 : ((vd.useFreeChunk) ? vd.freeChunk.freeChunkSize.y : (vd.chunkY * vd.chunkSize)) - 1;
+            pointY = Mathf.Clamp (pointY, 0, maxY);
+            if (bColl)
+                bColl.center = new Vector3 (bColl.center.x, (pointY + 0.5f) * Vg.h, bColl.center.z);
+            vol.pointY = pointY;
+            vol.YColor = new Color (
+                (20 + (pointY % 10) * 20) / 255f,
+                (200 - Mathf.Abs ((pointY % 10) - 5) * 20) / 255f,
+                (200 - (pointY % 10) * 20) / 255f
+            );
         }
 
     }

@@ -47,39 +47,20 @@ namespace CreVox
 				chunkDatas.Add (new ChunkData ());
 		}
 
-		public ChunkData GetChunkData (WorldPos _pos)
+		ChunkData GetChunkData (WorldPos _pos)
         {
             if (useFreeChunk) {
                 if (freeChunk == null)
-                    freeChunk = new ChunkData ();
+                    freeChunk = new ChunkData { isFreeChunk = true, freeChunkSize = new WorldPos (0, 0, 0) };
                 return freeChunk;
             } else {
                 WorldPos _chunkPos = new WorldPos (
-                    Mathf.FloorToInt (_pos.x / chunkSize) * chunkSize,
-                    Mathf.FloorToInt (_pos.y / chunkSize) * chunkSize,
-                    Mathf.FloorToInt (_pos.z / chunkSize) * chunkSize
-                                    );
-                foreach (ChunkData cd in chunkDatas) {
-                    if (cd.ChunkPos.Compare (_chunkPos))
-                        return cd;
-                }
+                                         Mathf.FloorToInt (_pos.x / chunkSize) * chunkSize,
+                                         Mathf.FloorToInt (_pos.y / chunkSize) * chunkSize,
+                                         Mathf.FloorToInt (_pos.z / chunkSize) * chunkSize
+                                     );
+                return chunkDatas.Find (p => p.ChunkPos.Compare (_chunkPos));
             }
-            return null;
-        }
-
-		public static VolumeData GetVData (string workFile)
-		{
-			VolumeData _vData = ScriptableObject.CreateInstance<VolumeData> ();
-			#if UNITY_EDITOR
-			if (_vData == null) {
-				string bytesPath = PathCollect.resourcesPath + workFile;
-				VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
-				UnityEditor.AssetDatabase.CreateAsset (vd, bytesPath);
-				UnityEditor.AssetDatabase.Refresh();
-			}
-			#endif
-			_vData = Resources.Load (workFile.Replace(".asset",""), typeof(VolumeData)) as VolumeData;
-			return _vData;
         }
 
         public void ConvertToFreeChunk ()
@@ -111,6 +92,9 @@ namespace CreVox
                 }
             }
             chunkDatas.Clear ();
+            chunkX = 0;
+            chunkY = 0;
+            chunkZ = 0;
             freeChunk.isFreeChunk = true;
             freeChunk.freeChunkSize.x = x + 1;
             freeChunk.freeChunkSize.y = y + 1;
@@ -139,18 +123,15 @@ namespace CreVox
             }
             foreach (Block b in freeChunk.blocks) {
                 ChunkData c = GetChunkData (b.BlockPos);
-                b.BlockPos = new WorldPos(b.BlockPos.x - c.ChunkPos.x, b.BlockPos.y - c.ChunkPos.y, b.BlockPos.z - c.ChunkPos.z);
+                b.BlockPos = new WorldPos (b.BlockPos.x - c.ChunkPos.x, b.BlockPos.y - c.ChunkPos.y, b.BlockPos.z - c.ChunkPos.z);
                 c.blocks.Add (b);
             }
             foreach (BlockAir b in freeChunk.blockAirs) {
                 ChunkData c = GetChunkData (b.BlockPos);
-                b.BlockPos = new WorldPos(b.BlockPos.x - c.ChunkPos.x, b.BlockPos.y - c.ChunkPos.y, b.BlockPos.z - c.ChunkPos.z);
+                b.BlockPos = new WorldPos (b.BlockPos.x - c.ChunkPos.x, b.BlockPos.y - c.ChunkPos.y, b.BlockPos.z - c.ChunkPos.z);
                 c.blockAirs.Add (b);
             }
-            freeChunk = new ChunkData {
-                isFreeChunk = true,
-                freeChunkSize = new WorldPos (0, 0, 0)
-            };
+            freeChunk = new ChunkData { isFreeChunk = true, freeChunkSize = new WorldPos (0, 0, 0) };
         }
     }
 }

@@ -147,29 +147,32 @@ namespace CreVox
                 vm.UpdateDungeon ();
             for (int i = 0; i < vm.dungeons.Count; i++) {
                 Dungeon _d = vm.dungeons [i];
-                GUI.color = volColor;
+                GUI.color = _d.volumeData == null ? Color.red : volColor;
                 using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-                    GUI.color = _d.volumeData == null ? Color.red : defColor;
+                    GUI.color = defColor;
                     EditorGUIUtility.labelWidth = 100;
                     EditorGUILayout.ObjectField ("[" + i + "]vData", _d.volumeData, typeof(VolumeData), true);
+                    if (!_d.volumeData)
+                        continue;
                     EditorGUIUtility.labelWidth = 88;
                     EditorGUILayout.Vector3Field ("Position", _d.position);
                     EditorGUILayout.Vector3Field ("Rotation", _d.rotation.eulerAngles);
                     string _APName = _d.ArtPack.Replace (PathCollect.artPack, "");
                     int _APNameIndex = VGlobal.GetArtPacks ().IndexOf (_APName);
-                    EditorGUI.BeginChangeCheck ();
-                    _APNameIndex = EditorGUILayout.Popup ("ArtPack", _APNameIndex, artPacks);
+                    using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                        _APNameIndex = EditorGUILayout.Popup ("ArtPack", _APNameIndex, artPacks);
+                        if (ch.changed) {
+                            _APName = artPacks [_APNameIndex];
+                            if (_APName.Length == 4)
+                                _APName = _APName.Remove (3);
+                            string _APPath = PathCollect.artPack + _APName;
+                            _d.ArtPack = _APPath;
+                            _d.vMaterial = _APPath + "/" + _APName + "_voxel";
+                            vm.dungeons [i] = _d;
+                        }
+                    }
                     EditorGUILayout.LabelField ("Final ArtPack", _APName + _d.volumeData.subArtPack, EditorStyles.miniLabel);
                     EditorGUILayout.LabelField ("Voxel Material", _d.vMaterial.Substring (_d.vMaterial.LastIndexOf ("/") + 1), EditorStyles.miniLabel);
-                    if (EditorGUI.EndChangeCheck ()) {
-                        _APName = artPacks [_APNameIndex];
-                        if (_APName.Length == 4)
-                            _APName = _APName.Remove (3);
-                        string _APPath = PathCollect.artPack + _APName;
-                        _d.ArtPack = _APPath;
-                        _d.vMaterial = _APPath + "/" + _APName + "_voxel";
-                        vm.dungeons [i] = _d;
-                    }
                 }
             }
         }
@@ -223,6 +226,7 @@ namespace CreVox
 
         void Button_Build ()
         {
+            Debug.Log ("VolumeManager.Button_Build");
             vm.BroadcastMessage ("BuildVolume", SendMessageOptions.DontRequireReceiver);
         }
 
@@ -258,7 +262,7 @@ namespace CreVox
                 EditorUtility.SetDirty (_v.vd);
             }
             Button_Build ();
-            vm.UpdateDungeon ();
+            Button_VolumeList_Update ();
         }
 
         void Button_VolumeList_Update()
@@ -273,6 +277,7 @@ namespace CreVox
 
         void UpdateStatus ()
         {
+            Debug.Log ("VolumeManager.UpdateStatus");
             vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
         }
 

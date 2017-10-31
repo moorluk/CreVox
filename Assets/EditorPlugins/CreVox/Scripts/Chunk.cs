@@ -65,11 +65,6 @@ namespace CreVox
             UpdateChunk ();
         }
 
-        public void Destroy ()
-        {
-            cData = new ChunkData ();
-        }
-
         void Start ()
         {
             filter = gameObject.GetComponent<MeshFilter> ();

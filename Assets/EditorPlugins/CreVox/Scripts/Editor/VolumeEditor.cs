@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace CreVox
 {
@@ -35,7 +35,7 @@ namespace CreVox
             volume = (Volume)target;
             Volume.focusVolume = volume;
             BoxCursor.Create (volume.transform, vg);
-            Rular.Build ();
+            Rular.Create ();
             SubscribeEvents ();
         }
 
@@ -43,7 +43,7 @@ namespace CreVox
         {
             Volume.focusVolume = null;
             BoxCursor.Destroy ();
-            Rular.Clear ();
+            Rular.Destroy ();
             UnsubscribeEvents ();
         }
 
@@ -64,7 +64,7 @@ namespace CreVox
 
                 if (ch1.changed) {
                     EditorUtility.SetDirty (volume);
-                    volume.UpdateChunks ();
+                    BuildVolume ();
                 }
             }
         }
@@ -77,18 +77,19 @@ namespace CreVox
                 GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     if (GUILayout.Button ("Refresh")) {
-                        UpdateVolume ();
+                        BuildVolume ();
                     }
                     if (GUILayout.Button ("Calculate BlockHold")) {
                         CalculateBlockHold ();
                     }
                 }
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
-                    EditorGUI.BeginChangeCheck ();
-                    volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
-                    if (EditorGUI.EndChangeCheck ()) {
-                        UpdateVolume ();
-                        volume.gameObject.name = volume.vd.name.Replace ("_vData", "");
+                    using (var ch = new EditorGUI.ChangeCheckScope ()) {
+                        volume.vd = (VolumeData)EditorGUILayout.ObjectField (volume.vd, typeof(VolumeData), false);
+                        if (ch.changed) {
+                            BuildVolume ();
+                            volume.gameObject.name = volume.vd ? volume.vd.name.Replace ("_vData", "") : "???";
+                        }
                     }
                     if (GUILayout.Button ("Backup", GUILayout.Width (ButtonW))) {
                         volume.SaveTempWorld ();
@@ -121,8 +122,6 @@ namespace CreVox
                             cz = EditorGUILayout.IntField ("Z", cz, GUILayout.Width (intW));
                             EditorGUIUtility.labelWidth = defLabelWidth;
                             if (GUILayout.Button ("Init")) {
-                                volume.vd = null;
-                                volume.Init (cx, cy, cz);
                                 WriteVData (volume);
                             }
                         }
@@ -134,7 +133,7 @@ namespace CreVox
                     if (ch.changed) {
                         EditorUtility.SetDirty (volume.vd);
                         EditorUtility.SetDirty (volume);
-                        volume.UpdateChunks ();
+                        BuildVolume ();
                     }
                 }
             }
@@ -168,8 +167,7 @@ namespace CreVox
                     ppath = ppath.Substring (ppath.IndexOf (PathCollect.resourcesPath)) + "/" + artPackName + "_voxel.mat";
                     volume.VertexMaterial = AssetDatabase.LoadAssetAtPath<Material> (ppath);
                     EditorUtility.SetDirty (volume.vd);
-
-                    volume.BuildVolume ();
+                    BuildVolume ();
                 }
                 EditorGUIUtility.labelWidth = 120f;
                 volume.vd.subArtPack = EditorGUILayout.TextField ("SubArtPack", volume.vd.subArtPack);
@@ -186,8 +184,7 @@ namespace CreVox
             using (var ch2 = new EditorGUI.ChangeCheckScope ()) {
                 VolumeManagerEditor.DrawVGlobal (volume.Vm);
                 if (ch2.changed) {
-                    UpdateVolume ();
-                    volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+                    BuildVolume ();
                 }
             }
         }
@@ -196,15 +193,19 @@ namespace CreVox
 
         void OnSceneGUI ()
         {
-            ModeHandler ();
+            if (volume.vd == null)
+                return;
 
             EventHandler ();
+            ModeHandler ();
 
             Handles.BeginGUI ();
+            DrawSelected ();
             DrawModeGUI ();
             DrawLayerModeGUI ();
             DrawModifyGUI ();
             Handles.EndGUI ();
+
             if (volume._itemInspected != null && volume._itemInspected.inspectedScript is PropertyPiece)
                 ((PropertyPiece)volume._itemInspected.inspectedScript).DrawPatrolPoints ();
         }
@@ -245,6 +246,7 @@ namespace CreVox
 
         int fixPointY;
         int fixCutY;
+        static float editDis = 999;
         const float ButtonW = 80;
 
         void DrawModeGUI ()
@@ -258,16 +260,16 @@ namespace CreVox
             GUI.color = volume.YColor;
             using (var a = new GUILayout.AreaScope (new Rect (10f, 10f, modeLabels.Count * ButtonW, 50f), "", EditorStyles.textArea)) {
                 GUI.color = Color.white;
-                selectedEditMode = (EditMode)GUILayout.Toolbar ((int)currentEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
+                selectedEditMode = (EditMode)GUILayout.Toolbar ((int)selectedEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
                     EditorGUI.BeginChangeCheck ();
-                    vg.editDis = GUILayout.HorizontalSlider (vg.editDis, 99f, 999f);
+                    editDis = GUILayout.HorizontalSlider (editDis, 99f, 999f);
                     if (EditorGUI.EndChangeCheck ())
                         EditorUtility.SetDirty (vg);
-                    EditorGUILayout.LabelField (((int)vg.editDis).ToString (), GUILayout.Width (25));
-                    if (selectedEditMode == EditMode.Item)
-                        isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
+                    EditorGUILayout.LabelField (((int)editDis).ToString (), GUILayout.Width (25));
+//                    if (selectedEditMode == EditMode.Item)
+                    isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
                 }
             }
         }
@@ -421,24 +423,24 @@ namespace CreVox
                 return;
             }
 
-            DrawMarkerSelected ();
-
             if (Event.current.type == EventType.KeyDown) {
                 HotkeyFunction (Event.current.keyCode.ToString (), true);
                 return;
             } 
 
-            if (currentEditMode != EditMode.View) {
-                int button = -1;
-                if (currentEditMode != EditMode.Item) {
-                    button = Event.current.button;
-                }
-                if (Event.current.type == EventType.MouseUp && Event.current.button < 2) {
-                    button = Event.current.button;
-                    if (Event.current.button == 1)
-                        Event.current.button = 0;
-                }
-                HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
+            if (currentEditMode == EditMode.View)
+                return; 
+
+            int button = -1;
+            if (currentEditMode != EditMode.Item) {
+                button = Event.current.button;
+            }
+            if (Event.current.type == EventType.MouseUp && Event.current.button < 2) {
+                button = Event.current.button;
+                if (Event.current.button == 1)
+                    Event.current.button = 0;
+            }
+            HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
 
 //            switch (currentEditMode) {
 //            case EditMode.View:
@@ -451,68 +453,67 @@ namespace CreVox
 //                break;
 //            }
 
-                switch (currentEditMode) {
-                case EditMode.Voxel:
+            switch (currentEditMode) {
+            case EditMode.Voxel:
+                if (button == 0)
+                    DrawMarker (false);
+                else if (button == 1) {
+                    DrawMarker (true);
+                }
+
+                if (Event.current.type == EventType.MouseDown) {
                     if (button == 0)
-                        DrawMarker (false);
+                        Paint (false);
                     else if (button == 1) {
-                        DrawMarker (true);
+                        Paint (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
                     }
-
-                    if (Event.current.type == EventType.MouseDown) {
-                        if (button == 0)
-                            Paint (false);
-                        else if (button == 1) {
-                            Paint (true);
-                            Tools.viewTool = ViewTool.None;
-                            Event.current.Use ();
-                        }
-                    }
-                    break;
-
-                case EditMode.VoxelLayer: 
-                    DrawMarkerLayer ();
-
-                    if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-                        if (button == 0)
-                            PaintLayer (false);
-                        else if (button == 1) {
-                            PaintLayer (true);
-                            Tools.viewTool = ViewTool.None;
-                            Event.current.Use ();
-                        }
-                    }
-                    break;
-
-                case EditMode.Object:
-                case EditMode.ObjectLayer:
-                    DrawMarkerGrid ();
-
-                    if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-                        if (button == 0)
-                            PaintPiece (false);
-                        else if (button == 1) {
-                            PaintPiece (true);
-                            Tools.viewTool = ViewTool.None;
-                            Event.current.Use ();
-                        }
-                    }
-                    break;
-
-                case EditMode.Item:
-                    if (Event.current.type == EventType.MouseDown) {
-                        if (button == 1) {
-                            Tools.viewTool = ViewTool.None;
-                            Event.current.Use ();
-                        }
-                    }
-                    DrawMarkerEdit (ref button);
-                    break;
                 }
+                break;
 
-                if (Event.current.type == EventType.MouseUp) {
-                    UpdateDirtyChunks ();
+            case EditMode.VoxelLayer: 
+                DrawMarkerLayer ();
+
+                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+                    if (button == 0)
+                        PaintLayer (false);
+                    else if (button == 1) {
+                        PaintLayer (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
                 }
+                break;
+
+            case EditMode.Object:
+            case EditMode.ObjectLayer:
+                DrawMarkerGrid ();
+
+                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+                    if (button == 0)
+                        PaintPiece (false);
+                    else if (button == 1) {
+                        PaintPiece (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
+                }
+                break;
+
+            case EditMode.Item:
+                if (Event.current.type == EventType.MouseDown) {
+                    if (button == 1) {
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
+                }
+                DrawMarkerEdit (ref button);
+                break;
+            }
+
+            if (Event.current.type == EventType.MouseUp) {
+                UpdateDirtyChunks ();
             }
         }
 
@@ -521,7 +522,7 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-            bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out hit, editDis, _mask);
 
             if (isHit && !isErase && hit.collider.GetComponentInParent<Volume> () == volume) {
                 RaycastHit hitFix = hit;
@@ -545,7 +546,7 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-            bool isHit = Physics.Raycast (worldRay, out hit, vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out hit, editDis, _mask);
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 RaycastHit hitFix = hit;
@@ -570,7 +571,7 @@ namespace CreVox
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = isNotLayer ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-            bool isHit = Physics.Raycast (worldRay, out hit, (int)vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out hit, editDis, _mask);
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 if (hit.normal.y <= 0) {
@@ -626,7 +627,7 @@ namespace CreVox
                 RaycastHit hit;
                 Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
                 LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-                bool isHit = Physics.Raycast (worldRay, out hit, VGlobal.GetSetting ().editDis, _mask);
+                bool isHit = Physics.Raycast (worldRay, out hit, editDis, _mask);
                 if (isHit && hit.collider.GetComponentInParent<Volume> () == volume && hit.normal.y > 0) {
                     Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
                     Handles.DrawSolidDisc (hit.point, hit.normal, 0.5f);
@@ -721,7 +722,7 @@ namespace CreVox
             SceneView.RepaintAll ();
         }
 
-        void DrawMarkerSelected ()
+        void DrawSelected ()
         {
             Color old = Handles.color;
             Handles.color = Color.red;
@@ -749,7 +750,7 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-            bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out gHit, editDis, _mask);
             WorldPos pos;
 
             if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -781,7 +782,7 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = 1 << LayerMask.NameToLayer ("EditorLevel");
-            bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out gHit, editDis, _mask);
             WorldPos pos;
 
             if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
@@ -816,7 +817,7 @@ namespace CreVox
             RaycastHit gHit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
             LayerMask _mask = (currentEditMode == EditMode.Object) ? 1 << LayerMask.NameToLayer ("Editor") : 1 << LayerMask.NameToLayer ("EditorLevel");
-            bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
+            bool isHit = Physics.Raycast (worldRay, out gHit, editDis, _mask);
 
             if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
                 if (gHit.normal.y <= 0)
@@ -856,7 +857,7 @@ namespace CreVox
                 RaycastHit gHit;
                 Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
                 LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
-                bool isHit = Physics.Raycast (worldRay, out gHit, vg.editDis, _mask);
+                bool isHit = Physics.Raycast (worldRay, out gHit, editDis, _mask);
 
                 if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
                     if (gHit.normal.y <= 0)
@@ -894,49 +895,35 @@ namespace CreVox
             case "Q":
                 if (_hotkey) {
                     volume.pointer = !volume.pointer;
-                    fixPointY = volume.pointY;
-                    Rular.SetY (fixPointY);
+                    Rular.SetY (volume.pointY);
                 }
                 break;
 
             case "W":
-                if (_hotkey) {
-                    fixPointY = volume.pointY + 1;
-                    Rular.SetY (fixPointY);
-                    fixPointY = volume.pointY;
-                }
+                if (_hotkey)
+                    Rular.SetY (++volume.pointY);
                 break;
 
             case "S":
-                if (_hotkey) {
-                    fixPointY = volume.pointY - 1;
-                    Rular.SetY (fixPointY);
-                    fixPointY = volume.pointY;
-                }
+                if (_hotkey)
+                    Rular.SetY (--volume.pointY);
                 break;
 
             case "E":
                 if (_hotkey) {
                     volume.cuter = !volume.cuter;
-                    fixCutY = volume.cutY;
-                    volume.ChangeCutY (fixCutY);
+                    volume.ChangeCutY (volume.cutY);
                 }
                 break;
 
             case "R":
-                if (_hotkey) {
-                    fixCutY = volume.cutY + 1;
-                    volume.ChangeCutY (fixCutY);
-                    fixCutY = volume.cutY;
-                }
+                if (_hotkey)
+                    volume.ChangeCutY (++volume.cutY);
                 break;
 
             case "F":
-                if (_hotkey) {
-                    fixCutY = volume.cutY - 1;
-                    volume.ChangeCutY (fixCutY);
-                    fixCutY = volume.cutY;
-                }
+                if (_hotkey)
+                    volume.ChangeCutY (--volume.cutY);
                 break;
 
             case "Add":
@@ -981,18 +968,18 @@ namespace CreVox
             }
             string apOld = volume.ArtPack;
             volume.ArtPack = PathCollect.pieces;
-            UpdateVolume ();
+            BuildVolume ();
             volume.ArtPack = apOld;
-            UpdateVolume ();
+            BuildVolume ();
             EditorUtility.SetDirty (volume);
         }
 
-        void UpdateVolume ()
+        void BuildVolume ()
         {
             selectedItemID = -1;
             volume.BuildVolume ();
             BoxCursor.Create (volume.transform, vg);
-//            volume.transform.root.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
+            Rular.Create ();
             SceneView.RepaintAll ();
         }
 
@@ -1032,29 +1019,14 @@ namespace CreVox
             if (sPath.Length < 1)
                 return;
             sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
-
-            VolumeData vd = ScriptableObject.CreateInstance<VolumeData> ();
-            AssetDatabase.CreateAsset (vd, sPath);
-            AssetDatabase.Refresh ();
+            VolumeData vd = Resources.Load (sPath) as VolumeData;
+            if (vd == null) {
+                vd = ScriptableObject.CreateInstance<VolumeData> ();
+                AssetDatabase.CreateAsset (vd, sPath);
+                AssetDatabase.Refresh ();
+            }
 
             _volume.vd = vd;
-            vd.chunkX = _volume.chunkX;
-            vd.chunkY = _volume.chunkY;
-            vd.chunkZ = _volume.chunkZ;
-            vd.chunkDatas = new List<ChunkData> ();
-            vd.blockItems = _volume.vd.blockItems;
-            foreach (Chunk _chunk in _volume.chunks.Values) {
-                WorldPos _pos = _chunk.cData.ChunkPos;
-
-                ChunkData newChunkData = new ChunkData ();
-                newChunkData.ChunkPos = _pos;
-                newChunkData.blocks = _chunk.cData.blocks;
-                newChunkData.blockAirs = _chunk.cData.blockAirs;
-                newChunkData.blockHolds = _chunk.cData.blockHolds;
-
-                vd.chunkDatas.Add (newChunkData);
-                _chunk.cData = newChunkData;
-            }
         }
 
         void OffsetBlock (WorldPos _offset)
@@ -1066,26 +1038,38 @@ namespace CreVox
             newc.freeChunkSize = volume.vd.freeChunk.freeChunkSize;
             foreach (var b in volume.vd.freeChunk.blocks) {
                 b.BlockPos.x += _offset.x;
-                while (b.BlockPos.x < 0) b.BlockPos.x += newc.freeChunkSize.x;
-                while (b.BlockPos.x >= newc.freeChunkSize.x) b.BlockPos.x -= newc.freeChunkSize.x;
+                while (b.BlockPos.x < 0)
+                    b.BlockPos.x += newc.freeChunkSize.x;
+                while (b.BlockPos.x >= newc.freeChunkSize.x)
+                    b.BlockPos.x -= newc.freeChunkSize.x;
                 b.BlockPos.y += _offset.y;
-                while (b.BlockPos.y < 0) b.BlockPos.y += newc.freeChunkSize.y;
-                while (b.BlockPos.y >= newc.freeChunkSize.y) b.BlockPos.y -= newc.freeChunkSize.y;
+                while (b.BlockPos.y < 0)
+                    b.BlockPos.y += newc.freeChunkSize.y;
+                while (b.BlockPos.y >= newc.freeChunkSize.y)
+                    b.BlockPos.y -= newc.freeChunkSize.y;
                 b.BlockPos.z += _offset.z;
-                while (b.BlockPos.z < 0) b.BlockPos.z += newc.freeChunkSize.z;
-                while (b.BlockPos.z >= newc.freeChunkSize.z) b.BlockPos.z -= newc.freeChunkSize.z;
+                while (b.BlockPos.z < 0)
+                    b.BlockPos.z += newc.freeChunkSize.z;
+                while (b.BlockPos.z >= newc.freeChunkSize.z)
+                    b.BlockPos.z -= newc.freeChunkSize.z;
                 newc.blocks.Add (b);
             }
             foreach (var ba in volume.vd.freeChunk.blockAirs) {
                 ba.BlockPos.x += _offset.x;
-                while (ba.BlockPos.x < 0) ba.BlockPos.x += newc.freeChunkSize.x;
-                while (ba.BlockPos.x >= newc.freeChunkSize.x) ba.BlockPos.x -= newc.freeChunkSize.x;
+                while (ba.BlockPos.x < 0)
+                    ba.BlockPos.x += newc.freeChunkSize.x;
+                while (ba.BlockPos.x >= newc.freeChunkSize.x)
+                    ba.BlockPos.x -= newc.freeChunkSize.x;
                 ba.BlockPos.y += _offset.y;
-                while (ba.BlockPos.y < 0) ba.BlockPos.y += newc.freeChunkSize.y;
-                while (ba.BlockPos.y >= newc.freeChunkSize.y) ba.BlockPos.y -= newc.freeChunkSize.y;
+                while (ba.BlockPos.y < 0)
+                    ba.BlockPos.y += newc.freeChunkSize.y;
+                while (ba.BlockPos.y >= newc.freeChunkSize.y)
+                    ba.BlockPos.y -= newc.freeChunkSize.y;
                 ba.BlockPos.z += _offset.z;
-                while (ba.BlockPos.z < 0) ba.BlockPos.z += newc.freeChunkSize.z;
-                while (ba.BlockPos.z >= newc.freeChunkSize.z) ba.BlockPos.z -= newc.freeChunkSize.z;
+                while (ba.BlockPos.z < 0)
+                    ba.BlockPos.z += newc.freeChunkSize.z;
+                while (ba.BlockPos.z >= newc.freeChunkSize.z)
+                    ba.BlockPos.z -= newc.freeChunkSize.z;
                 newc.blockAirs.Add (ba);
             }
             foreach (var bi in volume.vd.blockItems) {
@@ -1112,8 +1096,8 @@ namespace CreVox
             if (!isFreeChunk)
                 volume.vd.ConvertToVoxelChunk ();
             CalculateBlockHold ();
-            volume.UpdateChunks ();
             EditorUtility.SetDirty (volume.vd);
+            BuildVolume ();
             SceneView.RepaintAll ();
         }
 
@@ -1317,7 +1301,7 @@ namespace CreVox
 
         #region SubscribeEvents
 
-//        private PaletteItem _itemInspected;
+        //        private PaletteItem _itemInspected;
         PaletteItem _itemSelected;
         Texture2D _itemPreview;
         LevelPiece _pieceSelected;
