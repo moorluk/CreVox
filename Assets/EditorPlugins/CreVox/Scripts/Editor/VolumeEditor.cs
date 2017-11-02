@@ -977,7 +977,7 @@ namespace CreVox
         void BuildVolume ()
         {
             selectedItemID = -1;
-            volume.BuildVolume ();
+            volume.Build ();
             BoxCursor.Create (volume.transform, vg);
             Rular.Create ();
             SceneView.RepaintAll ();

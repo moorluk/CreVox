@@ -30,12 +30,6 @@ namespace CreVox
             set { useArtPack = useLocalSetting ? value : useArtPack; }
         }
 
-        [SerializeField]bool useVMaker;
-        public bool UseVMaker {
-            get { return useLocalSetting ? useVMaker : true; }
-            set { useVMaker = useLocalSetting ? value : useVMaker; }
-        }
-
         [SerializeField]bool snapGridL;
         public bool SnapGrid {
             get { return useLocalSetting ? snapGridL : false; }
@@ -64,12 +58,17 @@ namespace CreVox
             if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
-            if (UseVMaker) {
+            if (useStageData) {
                 ClearVolumes ();
-                if (useStageData)
-                    RandomDungeon ();
-                else
-                    UpdateDungeon ();
+                GenerateDungeonByStageData ();
+                CreateVolumeMakers ();
+                BuildVolumes ();
+            } else {
+                GenerateDungeonByChildVolumes ();
+                ClearVolumes ();
+                CreateVolumeMakers ();
+                if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon"))
+                    BuildVolumes ();
             }
         }
 
@@ -87,24 +86,22 @@ namespace CreVox
                 Debug.LogWarning (log);
             }
             #endif
-
-            if (UseVMaker) {
-                CreateVolumeMakers ();
-            }
         }
 
-        public void ClearVolumes (bool runtime = true)
+        public void ClearVolumes ()
         {
             Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
             foreach (Volume v in vs) {
-                if (runtime)
-                    UnityEngine.Object.Destroy (v.gameObject);
-                else
-                    UnityEngine.Object.DestroyImmediate (v.gameObject, false);
+                UnityEngine.Object.DestroyImmediate (v.gameObject, false);
             }
         }
 
-        public void CreateVolumeMakers ()
+        public void BuildVolumes ()
+        {
+            BroadcastMessage ("Build", SendMessageOptions.DontRequireReceiver);
+        }
+
+        void CreateVolumeMakers ()
         {
             foreach (Dungeon d in dungeons) {
                 if (d.volumeData == null)
@@ -121,19 +118,15 @@ namespace CreVox
                 vm.ArtPack = d.ArtPack;
                 vm.vMaterial = d.vMaterial;
                 volume.SetActive (true);
-                if (UseVMaker && !VolumeAdapter.CheckSetupDungeon ()) {
-                    vm.Build ();
-                }
             }
         }
 
         /// <summary>
         /// Search all volumes in children and create new Dungeon list.
         /// </summary>
-        public void UpdateDungeon ()
+        public void GenerateDungeonByChildVolumes ()
         {
             Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
-
             if (vs.Length < 1 && dungeons.Count > 0)
                 return;
             dungeons.Clear ();
@@ -148,7 +141,10 @@ namespace CreVox
             }
         }
 
-        public void RandomDungeon ()
+        /// <summary>
+        /// Generates the dungeon by StageData.
+        /// </summary>
+        public void GenerateDungeonByStageData ()
         {
             UnityEngine.Random.InitState (Guid.NewGuid ().GetHashCode ());
             int i = UnityEngine.Random.Range (0, stageData.stageList.Count);

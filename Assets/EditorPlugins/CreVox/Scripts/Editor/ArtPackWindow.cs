@@ -173,11 +173,8 @@ namespace CreVox
                         foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
                             GUILayout.Label (k.Key.ToString (), "In Title");
                             foreach (string n in k.Value) {
-                                Predicate<Item> findItem = delegate(Item obj) {
-                                    return obj.itemName == n;
-                                };
                                 using (var h = new EditorGUILayout.HorizontalScope ()) {
-                                    Item _item = _itemCells [_artPacks [0]] [k.Key].Find (findItem);
+                                    Item _item = _itemCells [_artPacks [0]] [k.Key].Find (obj => obj.itemName == n);
                                     if (_item != null) {
                                         GUILayout.Label (_item.preview, GetPreviewStyle ());
                                         string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
@@ -203,12 +200,9 @@ namespace CreVox
                         foreach (KeyValuePair<PaletteItem.Category, List<string>> k in itemNames) {
                             GUILayout.Label ("", "In Title");
                             foreach (string n in k.Value) {
-                                Predicate<Item> findItem = delegate(Item obj) {
-                                    return obj.itemName == n;
-                                };
                                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                                     for (int i = 1; i < _artPacks.Count; i++) {
-                                        Item _item = _itemCells [_artPacks [i]] [k.Key].Find (findItem);
+                                        Item _item = _itemCells [_artPacks [i]] [k.Key].Find (obj => obj.itemName == n);
                                         if (_item != null) {
                                             GUILayout.Label (_item.preview, GetPreviewStyle ());
                                             string itemLebel = _item.itemName + "\n(" + _item.paletteitem.itemName + ")";
@@ -321,7 +315,7 @@ namespace CreVox
                         Debug.Log (log + "<b>End.</b>");
                         Volume[] vols = vm.transform.GetComponentsInChildren<Volume> (false);
                         foreach (Volume vol in vols) {
-                            vol.BuildVolume ();
+                            vol.Build ();
                         }
                     }
                 }

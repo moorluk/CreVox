@@ -88,7 +88,7 @@ namespace CreVox
                     CreateItems (m_vd, itemArray);
                 }
                 isFinish = true;
-                Debug.Log("<color=maroon>" + gameObject.name + " place pieces finish...</color>\n");
+                Debug.Log("<color=purple>" + gameObject.name + " place pieces finish...</color>\n");
             }
 
             AddComponent ();

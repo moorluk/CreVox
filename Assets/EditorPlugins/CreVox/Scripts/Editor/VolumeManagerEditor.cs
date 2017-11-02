@@ -17,7 +17,6 @@ namespace CreVox
             vg = VGlobal.GetSetting ();
             ArtPackWindow.UpdateItemArrays (vg);
             artPacks = VGlobal.GetArtPacks ().ToArray ();
-            UpdateStatus ();
         }
 
         const float buttonW = 50;
@@ -50,15 +49,12 @@ namespace CreVox
                     if (GUILayout.Button ("Update", GUILayout.Width (buttonW)))
                         Button_VolumeList_Update ();
                     if (GUILayout.Button ("Clear", GUILayout.Width (buttonW)))
-                        Button_VolumeList_Clear();
+                        Button_VolumeList_Clear ();
                 }
                 DrawVolumeList ();
             }
 
             DrawDef ();
-
-            if (GUI.changed)
-                UpdateStatus ();
         }
 
         public static void DrawVGlobal (VolumeManager _vm = null)
@@ -71,15 +67,14 @@ namespace CreVox
                 _vm.useLocalSetting = EditorGUILayout.ToggleLeft ("Use Local Setting", _vm.useLocalSetting);
                 EditorGUI.BeginDisabledGroup (!local);
                 EditorGUI.indentLevel++;
-                _vm.SaveBackup    = EditorGUILayout.ToggleLeft ("Auto Backup File", _vm.SaveBackup);
-                _vm.UseArtPack    = EditorGUILayout.ToggleLeft ("Use ArtPack",      _vm.UseArtPack);
-                _vm.UseVMaker     = EditorGUILayout.ToggleLeft ("Use Volume Maker", _vm.UseVMaker);
-                _vm.SnapGrid      = EditorGUILayout.ToggleLeft ("Snap Grid",        _vm.SnapGrid);
-                _vm.DebugRuler    = EditorGUILayout.ToggleLeft ("Show Ruler",       _vm.DebugRuler);
-                _vm.ShowBlockHold = EditorGUILayout.ToggleLeft ("Show BlockHold",   _vm.ShowBlockHold);
+                _vm.SaveBackup    = EditorGUILayout.ToggleLeft (new GUIContent ("Auto Backup File", "???"), _vm.SaveBackup);
+                _vm.UseArtPack    = EditorGUILayout.ToggleLeft (new GUIContent ("Use ArtPack", "???"),      _vm.UseArtPack);
+                _vm.SnapGrid      = EditorGUILayout.ToggleLeft (new GUIContent ("Snap Grid", "???"),        _vm.SnapGrid);
+                _vm.DebugRuler    = EditorGUILayout.ToggleLeft (new GUIContent ("Show Ruler", "???"),       _vm.DebugRuler);
+                _vm.ShowBlockHold = EditorGUILayout.ToggleLeft (new GUIContent ("Show BlockHold", "???"),   _vm.ShowBlockHold);
                 EditorGUI.indentLevel--;
                 EditorGUI.EndDisabledGroup ();
-                if (local)
+                if (GUI.changed && local)
                     EditorUtility.SetDirty (_vm);
             }
         }
@@ -144,7 +139,7 @@ namespace CreVox
             Color volColor = new Color (0.5f, 0.8f, 0.75f);
             float DefaultLabelWidth = EditorGUIUtility.labelWidth;
             if (vm.dungeons == null)
-                vm.UpdateDungeon ();
+                vm.GenerateDungeonByChildVolumes ();
             for (int i = 0; i < vm.dungeons.Count; i++) {
                 Dungeon _d = vm.dungeons [i];
                 GUI.color = _d.volumeData == null ? Color.red : volColor;
@@ -186,18 +181,18 @@ namespace CreVox
                 DrawDefaultInspector ();
         }
 
-        #region Inspector Function
+        #region StageData Button
 
         void Button_Test ()
         {
-            vm.RandomDungeon ();
+            vm.GenerateDungeonByStageData ();
             Button_Generate ();
         }
 
         void Button_Save (int _index)
         {
             vm.stageData.stageList [_index].Dlist.Clear ();
-            vm.UpdateDungeon ();
+            vm.GenerateDungeonByChildVolumes ();
             foreach (var d in vm.dungeons) {
                 vm.stageData.stageList [_index].Dlist.Add (d);
             }
@@ -210,8 +205,8 @@ namespace CreVox
             foreach (var d in vm.stageData.stageList[_index].Dlist) {
                 vm.dungeons.Add (d);
             }
-            Button_Generate ();
             vm.currentStageData = _index;
+            Button_Generate ();
         }
 
         void Button_Delete (int _index)
@@ -224,15 +219,18 @@ namespace CreVox
             vm.stageData.stageList.Add (new DList ());
         }
 
+        #endregion
+
+        #region SetAll Button
+
         void Button_Build ()
         {
-            Debug.Log ("VolumeManager.Button_Build");
-            vm.BroadcastMessage ("BuildVolume", SendMessageOptions.DontRequireReceiver);
+            vm.BuildVolumes ();
         }
 
         void Button_Generate ()
         {
-            vm.ClearVolumes (false);
+            vm.ClearVolumes ();
             foreach (Dungeon d in vm.dungeons) {
                 GameObject volume = new GameObject (d.volumeData.name);
                 volume.transform.parent = vm.transform;
@@ -265,20 +263,18 @@ namespace CreVox
             Button_VolumeList_Update ();
         }
 
-        void Button_VolumeList_Update()
+        #endregion
+
+        #region VlumeList Button
+
+        void Button_VolumeList_Update ()
         {
-            vm.UpdateDungeon ();
+            vm.GenerateDungeonByChildVolumes ();
         }
 
-        void Button_VolumeList_Clear()
+        void Button_VolumeList_Clear ()
         {
             vm.dungeons.Clear ();
-        }
-
-        void UpdateStatus ()
-        {
-            Debug.Log ("VolumeManager.UpdateStatus");
-            vm.BroadcastMessage ("ShowRuler", SendMessageOptions.DontRequireReceiver);
         }
 
         #endregion

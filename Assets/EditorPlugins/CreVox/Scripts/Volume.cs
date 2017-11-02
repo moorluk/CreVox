@@ -71,8 +71,14 @@ namespace CreVox
                 itemNodes = new Dictionary<BlockItem, GameObject> ();
             if (chunks == null)
                 chunks = new Dictionary<WorldPos, Chunk> ();
-            if (Vm && !Vm.UseVMaker)
-                BuildVolume ();
+        }
+
+        void Start ()
+        {
+            if (isLost) {
+                Debug.Log (string.Format ("<color=purple>Volume({0}) Reload...</color>\n", gameObject.name));
+                Build ();
+            }
         }
 
         #if UNITY_EDITOR
@@ -93,7 +99,7 @@ namespace CreVox
         }
         #endif
 
-        public void BuildVolume ()
+        public void Build ()
         {
             ClearNodes ();
             CreateNodeRoots ();
@@ -120,23 +126,29 @@ namespace CreVox
         {
             //clear LevelPiece
             nodes.Clear ();
-            UnityEngine.Object.DestroyImmediate (nodeRoot);
+            ClearNode (nodeRoot);
 
             //clear Item
             itemNodes.Clear ();
-            UnityEngine.Object.DestroyImmediate (itemRoot);
+            ClearNode (itemRoot);
 
             //clear Chunk
             chunks.Clear ();
-            UnityEngine.Object.DestroyImmediate (chunkRoot);
+            ClearNode (chunkRoot);
 
-            //log other gameobject
-//            string log = "<b>Other GameObject :</b>\n";
+            string log = "<b>Other GameObject :</b>\n";
             for (int i = transform.childCount; i > 0; i--) {
-//                log += transform.GetChild (i - 1).gameObject.name + "\n";
-                UnityEngine.Object.DestroyImmediate (transform.GetChild (i - 1).gameObject);
+                log += transform.GetChild (i - 1).gameObject.name + "\n";
+                ClearNode (transform.GetChild (i - 1).gameObject);
             }
-//            Debug.Log (log);
+            Debug.Log (log);
+        }
+        void ClearNode (GameObject _node)
+        {
+            if (Application.isPlaying)
+                UnityEngine.Object.Destroy (_node);
+            else
+                UnityEngine.Object.DestroyImmediate (_node);
         }
 
         void CreateNodeRoots ()
@@ -755,7 +767,7 @@ namespace CreVox
             }
 
             if (!EditorApplication.isCompiling && compileSave) {
-                BuildVolume ();
+                Build ();
                 compileSave = false;
             }
         }
@@ -794,6 +806,10 @@ namespace CreVox
 
         #region Editor Scene UI
 
+        public bool isLost {
+            get { return (vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null); }
+        }
+
         #if UNITY_EDITOR
         public Color YColor;
         public bool pointer;
@@ -808,7 +824,6 @@ namespace CreVox
             Gizmos.matrix = transform.localToWorldMatrix;
 
             if (focusVolume == this && Vm.DebugRuler) {
-                bool isLost = (vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null);
                 Gizmos.color = isLost ? Color.red : new Color (YColor.r, YColor.g, YColor.b, 0.4f);
 
                 Vector3 center, size;
