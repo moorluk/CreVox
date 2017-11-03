@@ -59,17 +59,14 @@ namespace CreVox
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
             if (useStageData) {
-                ClearVolumes ();
                 GenerateDungeonByStageData ();
-                CreateVolumeMakers ();
-                BuildVolumes ();
             } else {
                 GenerateDungeonByChildVolumes ();
-                ClearVolumes ();
-                CreateVolumeMakers ();
-                if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon"))
-                    BuildVolumes ();
             }
+            ClearVolumes ();
+            CreateVolumeMakers ();
+            if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon"))
+                BuildVolumes ();
         }
 
         void Start ()
@@ -112,7 +109,6 @@ namespace CreVox
                 volume.transform.localRotation = d.rotation;
                 volume.SetActive (false);
                 VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
-                vm.enabled = false;
                 vm.m_vd = d.volumeData;
                 vm.m_style = VolumeMaker.Style.ChunkWithPieceAndItem;
                 vm.ArtPack = d.ArtPack;
