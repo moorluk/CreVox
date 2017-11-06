@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using BehaviorDesigner.Runtime;
 
@@ -34,16 +35,6 @@ namespace CreVox
         }
 
         #endregion
-        bool logged;
-        void Update ()
-        {
-            if (logged)
-                return;
-            if (LoadCompeleted ()) {
-                Debug.Log ("<color=purple>" + gameObject.name + " Build finish...</color>\n");
-                logged = true;
-            }
-        }
 
         public void Build ()
         {
@@ -86,16 +77,12 @@ namespace CreVox
             }
 
             if (style > 1) {
-                PaletteItem[] itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack + m_vd.subArtPack);
+                PaletteItem[] itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack, m_vd.subArtPack);
 
                 if ((style & 2) > 0) {
                     foreach (Chunk c in m_cs) {
-                        StartCoroutine( PlacePieces (c, itemArray));
+                        StartCoroutine (PlacePieces (c, itemArray));
                     }
-                }
-
-                if ((style & 4) > 0) {
-                    CreateItems (m_vd, itemArray);
                 }
             }
 
@@ -104,6 +91,7 @@ namespace CreVox
 
         bool isPieceFin;
         bool isItemFin;
+
         public bool LoadCompeleted ()
         {
             bool result = true;
@@ -113,12 +101,15 @@ namespace CreVox
             return (result & isPieceFin && isItemFin);
         }
 
-        System.Collections.IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
+        IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
         {
-            ChunkData cData = _chunk.cData;
             string log = "";
             float time = Time.deltaTime;
+
+            ChunkData cData = _chunk.cData;
             foreach (PaletteItem pi in itemArray) {
+                if (pi.markType == PaletteItem.MarkerType.Item)
+                    continue;
                 foreach (BlockAir bAir in cData.blockAirs) {
                     for (int i = 0; i < bAir.pieceNames.Length; i++) {
                         if (System.String.IsNullOrEmpty (bAir.pieceNames [i]))
@@ -134,11 +125,14 @@ namespace CreVox
                     }
                 }
                 time = Time.deltaTime - time;
-                log += ("<color=" + ((Time.deltaTime > 0.2f) ? "red" : "black") + ">" + pi.name + " : " + Time.deltaTime + "</color>\n");
-                yield return new WaitForSeconds(0.00f);
+                log += (string.Format ("<color={0}>{1} : {2}</color>\n", ((time > 0.2f) ? "red" : "black"), pi.name, time));
+                yield return new WaitForSeconds (0.00f);
             }
             Debug.Log (log);
             isPieceFin = true;
+
+            if (((int)m_style & 4) > 0)
+                StartCoroutine (CreateItems (m_vd, itemArray));
         }
 
         void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, Transform _parent)
@@ -161,16 +155,20 @@ namespace CreVox
             }
         }
 
-        void CreateItems (VolumeData _vData, PaletteItem[] itemArray)
+        IEnumerator CreateItems (VolumeData _vData, PaletteItem[] itemArray)
         {
-            foreach (BlockItem bi in _vData.blockItems){
-                foreach (PaletteItem pi in itemArray){
+            foreach (BlockItem bi in _vData.blockItems) {
+                foreach (PaletteItem pi in itemArray) {
+                    if (pi.markType != PaletteItem.MarkerType.Item)
+                        continue;
                     if (bi.pieceName == pi.name) {
                         CreateItem (bi, pi);
                         break;
                     }
                 }
+                yield return new WaitForSeconds (0.00f);
             }
+            Debug.Log (name + " create Item finish...");
             isItemFin = true;
         }
 

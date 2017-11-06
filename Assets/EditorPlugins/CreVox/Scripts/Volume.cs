@@ -114,7 +114,7 @@ namespace CreVox
             }
             UpdateChunks ();
 
-            itemArray = Vg.GetItemArray (ArtPack + vd.subArtPack, (Vm.UseArtPack));
+            itemArray = Vg.GetItemArray (ArtPack, vd.subArtPack, (Vm.UseArtPack));
 
             PlacePieces ();
             PlaceItems ();

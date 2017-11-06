@@ -63,26 +63,19 @@ namespace CreVox
         }
 
         #endregion
-
-        public PaletteItem[] GetItemArray (string _artPackPath, bool _showArtPack = true)
+        public PaletteItem[] GetItemArray (string _artPackPath, string _subArtPack, bool _showArtPack = true)
         {
             String _artPackName = Path.GetFileName (_artPackPath);
-            //Check SubArtPack Exist or use parent ArtPack.
-            Predicate<ArtPackParent> apNamecheck = a => a.pack == _artPackName;
-            if (!artPackParentList.Exists (apNamecheck))
-                _artPackName = _artPackName.Remove (_artPackName.Length - 1);
-            if (!artPackParentList.Exists (apNamecheck))
-                _artPackName = Path.GetFileName (PathCollect.pieces);
-            //
-            string[] _itemPaths = new string[APItemPathList [0].itemPath.Count];
-            for (int i = 0; i < APItemPathList.Count; i++) {
-                if (APItemPathList [i].name == _artPackName) {
-                    _itemPaths = APItemPathList [i].itemPath.ToArray ();
-                    break;
-                }
-            }
 
-            PaletteItem[] result = new PaletteItem[_itemPaths.Length];
+            if (artPackParentList.Exists (a => a.pack == _artPackName + _subArtPack))
+                _artPackName += _subArtPack;
+            if (!artPackParentList.Exists (a => a.pack == _artPackName))
+                _artPackName = Path.GetFileName (PathCollect.pieces);
+            
+            //
+            string[] _itemPaths = APItemPathList.Find (a => a.name == _artPackName).itemPath.ToArray ();
+
+            PaletteItem[] result;
             GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
             if (_showArtPack || Application.isPlaying) {
                 result = new PaletteItem[_itemPaths.Length];
@@ -99,6 +92,7 @@ namespace CreVox
             } else {
                 result = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
             }
+            Array.Sort<PaletteItem> (result, (x, y) => x.markType.CompareTo (y.markType));
             return result;
         }
 
