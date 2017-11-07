@@ -13,7 +13,7 @@ public static class VolumeAdapter
             volume.AddComponent (eventDriver);
         //SECTR
         Type sectr = Type.GetType ("SECTR_Sector");
-        GameObject root = (volume.transform.FindChild ("DecorationRoot")).gameObject;
+        GameObject root = (volume.transform.Find ("DecorationRoot")).gameObject;
         if (sectr != null) {
             if (root.GetComponent (sectr) == null) {
                 root.AddComponent (sectr);
