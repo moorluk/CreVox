@@ -13,42 +13,42 @@ public class ThirdPersonCamera : MonoBehaviour
 	[Header ("Position Setting")]
 	public float distanceAway = 4.3f;
 	public float distanceUp = 1.2f;
-	private float curAway, curUp, curDis, curYRot;
-	private Vector3 desiredRigPos, vecolity;
+	float curAway, curUp, curDis, curYRot;
+	Vector3 desiredRigPos, vecolity;
 	
 	[Header ("Rotation Setting")]
 	public float yRotateSpeed = 500f;
 	public float xRotateSpeed = 15f;
 	public float smooth = 5;
-	private float xInput = 0f, yInput = 0f;
-	private Vector3 lookDir = Vector3.zero;
+	float xInput, yInput;
+	Vector3 lookDir = Vector3.zero;
 	public float targetPitchMax = 30f;
-	private float curTargetPitch = 0f;
+	float curTargetPitch;
 	public float xAngleMin = -10f;
 	public float xAngleMax = 60f;
-	private float curXAngle = 0f;
+	float curXAngle;
 
 	[Header ("Target Effect Setting")]
 	public GameObject targetEffect;
 	[Range (0f, 1f)] public float effectHigh = 0.66f;
-	private GameObject effInstance;
-	private Vector3 targetPos, effectPos, smoothedLookPos;
+	GameObject effInstance;
+	Vector3 targetPos, effectPos, smoothedLookPos;
 
 	[Space]
 	public CameraCollisionHandler camCol = new CameraCollisionHandler ();
 //	private InputAct act;
 
 	[Header ("Infomation Only")]
-	[SerializeField] private CamState camState;
-	[SerializeField] private Transform m_look, m_camera, m_target;
-	private Vector3 sVel1, sVel2, sVel3; 
+	[SerializeField] CamState camState;
+	[SerializeField] Transform m_look, m_camera, m_target;
+	Vector3 sVel1, sVel2, sVel3; 
 
 	[Header("Test Camera Shake")]
 	public float duration = 0.3f;
 	public float speed = 20f;
 	public float magnitude = 0.01f;
 	public AnimationCurve damper = new AnimationCurve(new Keyframe(0f, 1f), new Keyframe(0.9f, .33f, -2f, -2f), new Keyframe(1f, 0f, -5.65f, -5.65f));
-	public bool testCameraShake = false;
+	public bool testCameraShake;
 
 
 	void Start ()
@@ -71,8 +71,11 @@ public class ThirdPersonCamera : MonoBehaviour
 
 	void Update ()
 	{
-		if (m_look == null)
-			m_look = GameObject.FindWithTag ("Look").transform;
+        if (m_look == null) {
+            var g = GameObject.FindWithTag ("Look");
+            if (g != null)
+                m_look = g.transform;
+        }
 
 //		if(act != null)
 //			m_target = act.m_target;
@@ -94,7 +97,7 @@ public class ThirdPersonCamera : MonoBehaviour
 		xInput = Input.GetAxis ("CamH");
 		yInput = Input.GetAxis ("CamV");
 
-		if (Input.GetButton ("Fire1") && testCameraShake == true) {
+		if (Input.GetButton ("Fire1") && testCameraShake) {
 			StopAllCoroutines ();
 			StartCoroutine (ShakeCamera (Camera.main, duration, speed, magnitude, damper));
 		}
@@ -102,6 +105,8 @@ public class ThirdPersonCamera : MonoBehaviour
 
 	void LateUpdate ()
 	{
+        if (!m_look)
+            return;
 		switch (camState) {
 		case CamState.Behind:
 			lookDir = m_look.position - transform.position;
@@ -145,15 +150,13 @@ public class ThirdPersonCamera : MonoBehaviour
 
 		smoothedLookPos = Vector3.SmoothDamp (smoothedLookPos, lookPos, ref sVel2, smooth * 1.3f);
 
-		if(camState == CamState.Reset)
-			transform.position = Vector3.SmoothDamp (transform.position, desiredRigPos, ref sVel1, smooth*0.12f);
-		else
-			transform.position = desiredRigPos; 
+		transform.position = camState == CamState.Reset ? 
+            Vector3.SmoothDamp (transform.position, desiredRigPos, ref sVel1, smooth * 0.12f) : 
+            desiredRigPos; 
 
-		if (camCol.Collide (smoothedLookPos, desiredRigPos))
-			m_camera.position = Vector3.SmoothDamp (m_camera.position, camCol.targetPos, ref sVel3, smooth*0.01f);
-		else
-			m_camera.position = transform.position;
+		m_camera.position = camCol.Collide (smoothedLookPos, desiredRigPos) ? 
+            Vector3.SmoothDamp (m_camera.position, camCol.targetPos, ref sVel3, smooth * 0.01f) : 
+            transform.position;
 
 		//transform.LookAt (smoothedLookPos);
 		if(camState == CamState.Target)
@@ -205,7 +208,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
 	void CameraCollision ()
 	{
-		RaycastHit hit = new RaycastHit ();
+        RaycastHit hit;
 		if (Physics.Linecast (m_look.position, desiredRigPos, out hit, camCol.collisionLayer))
 			desiredRigPos = hit.point;
 	}
@@ -216,7 +219,7 @@ public class ThirdPersonCamera : MonoBehaviour
 		Gizmos.DrawSphere (camCol.targetPos, 0.3f);
 	}
 
-	IEnumerator ShakeCamera(Camera camera, float duration, float speed, float magnitude, AnimationCurve damper = null)
+	static IEnumerator ShakeCamera(Camera camera, float duration, float speed, float magnitude, AnimationCurve damper = null)
 	{
 		float elapsed = 0f;
 		while (elapsed < duration) 
