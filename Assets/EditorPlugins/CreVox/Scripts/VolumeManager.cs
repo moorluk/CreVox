@@ -16,6 +16,8 @@ namespace CreVox
 
     public class VolumeManager : MonoBehaviour
     {
+        #region LocalSetting
+
         public bool useLocalSetting;
 
         [SerializeField]bool saveBackup;
@@ -48,6 +50,8 @@ namespace CreVox
             set { showBlockHoldL = useLocalSetting ? value : showBlockHoldL; }
         }
 
+        #endregion
+
         public List<Dungeon> dungeons = new List<Dungeon> ();
         public bool useStageData;
         public int currentStageData = -1;
@@ -65,8 +69,29 @@ namespace CreVox
             }
             ClearVolumes ();
             CreateVolumeMakers ();
-            if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon"))
+            if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon")) {
                 BuildVolumes ();
+                StartCoroutine (CheckLoadCompeleted ());
+            }
+        }
+        List<VolumeMaker> vms = new List<VolumeMaker>();
+        bool loaded;
+        System.Collections.IEnumerator CheckLoadCompeleted ()
+        {
+            while (!loaded) {
+                loaded = true;
+                foreach (var vm in vms) {
+                    if (!vm.LoadCompeleted ()) {
+                        loaded = false;
+                        break;
+                    }
+                }
+                if (loaded) {
+                    VolumeAdapter.UpdatePortals (gameObject);
+                    yield break;
+                }
+                yield return new WaitForSeconds (0.00f);
+            }
         }
 
         void Start ()
@@ -100,20 +125,20 @@ namespace CreVox
 
         void CreateVolumeMakers ()
         {
+            vms.Clear ();
             foreach (Dungeon d in dungeons) {
                 if (d.volumeData == null)
                     continue;
-                GameObject volume = new GameObject (d.volumeData.ToString ());
+                GameObject volume = new GameObject (d.volumeData.name);
                 volume.transform.parent = transform;
                 volume.transform.localPosition = d.position;
                 volume.transform.localRotation = d.rotation;
-                volume.SetActive (false);
                 VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
                 vm.m_vd = d.volumeData;
                 vm.m_style = VolumeMaker.Style.ChunkWithPieceAndItem;
                 vm.ArtPack = d.ArtPack;
                 vm.vMaterial = d.vMaterial;
-                volume.SetActive (true);
+                vms.Add (vm);
             }
         }
 

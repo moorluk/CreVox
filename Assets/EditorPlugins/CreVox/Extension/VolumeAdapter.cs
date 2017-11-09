@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using CreVox;
 
 public static class VolumeAdapter
 {
@@ -19,8 +20,8 @@ public static class VolumeAdapter
                 root.AddComponent (sectr);
             }
             SECTR_Sector ss = root.GetComponent (sectr) as SECTR_Sector;
-            ss.BoundsUpdateMode = SECTR_Member.BoundsUpdateModes.Static;
-//            ss.ChildCulling = SECTR_Member.ChildCullModes.Individual;
+            ss.BoundsUpdateMode = SECTR_Member.BoundsUpdateModes.Start;
+            ss.ChildCulling = SECTR_Member.ChildCullModes.Group;
             ss.ForceUpdate (true);
         }
     }
@@ -65,10 +66,10 @@ public static class VolumeAdapter
         List<SECTR_Portal> _portals = new List<SECTR_Portal> ();
         root.GetComponentsInChildren (false, _portals);
 
-        Dictionary<GameObject,GameObject> _rooms = new Dictionary<GameObject, GameObject> ();
+        var _rooms = new Dictionary<GameObject, GameObject> ();
         for (int i = 0; i < _portals.Count; i++)
             _rooms.Add (_portals [i].gameObject, _portals [i].transform.parent.parent.parent.gameObject);
-		
+
         for (int i = 0; i < _portals.Count; i++) {
             float _nearDist = float.PositiveInfinity;
             GameObject _target = null;
@@ -87,14 +88,17 @@ public static class VolumeAdapter
                 _portals [i].FrontSector = _rooms [_portals [i].gameObject].GetComponentInChildren<SECTR_Sector> ();
                 _portals [i].BackSector = _rooms [_target].GetComponentInChildren<SECTR_Sector> ();
                 log1 += string.Format (
-                    "{0}.<size=8>{1}</size>  <b><size=16>→</size></b> {2}.<size=8>{3}</size>\n", 
+                    "{0}.<size=8>{1}</size>\t<b><size=16>→</size></b>\t{2}.<size=8>{3}</size>\t{4}\n", 
                     _rooms [_portals [i].gameObject].name, 
                     _portals [i].transform.parent.name, 
                     _rooms [_target].name, 
-                    _target.transform.parent.name
+                    _target.transform.parent.name,
+                    _nearDist
                 );
             } else {
-                _portals [i].enabled = false;
+                var pp = _portals [i].GetComponentInParent<PropertyPiece> ();
+                _rooms [_portals [i].gameObject].GetComponent<VolumeMaker> ().FixDoor (pp);
+//                GameObject.Destroy (pp.gameObject);
                 log2 += string.Format ("{0}<size=8>.{1}</size>\n", _rooms [_portals [i].gameObject].name, _portals [i].transform.parent.name);
             }
         }
@@ -106,11 +110,11 @@ public static class VolumeAdapter
     {
         List<SECTR_Portal> _portals = new List<SECTR_Portal> ();
         root.GetComponentsInChildren (false, _portals);
-        Dictionary<SECTR_Portal,CreVox.Volume> _rooms = new Dictionary<SECTR_Portal, CreVox.Volume> ();
+        Dictionary<SECTR_Portal,Volume> _rooms = new Dictionary<SECTR_Portal, Volume> ();
 
         foreach (var _p in _portals) {
             //find all connection's volume.
-            CreVox.Volume _room = _p.transform.parent.parent.parent.gameObject.GetComponent<CreVox.Volume> ();
+            Volume _room = _p.transform.parent.parent.parent.gameObject.GetComponent<Volume> ();
             _rooms.Add (_p, _room);
         }
 
@@ -118,7 +122,7 @@ public static class VolumeAdapter
 
         for (int i = 0; i < _portals.Count; i++) {
             Vector3 _start = _portals [i].transform.parent.position;
-            CreVox.Volume _vol = _rooms [_portals [i]];
+            Volume _vol = _rooms [_portals [i]];
             if (_vol.ConnectionInfos == null)
                 continue;
             for (int c = 0; c < _vol.ConnectionInfos.Count; c++) {

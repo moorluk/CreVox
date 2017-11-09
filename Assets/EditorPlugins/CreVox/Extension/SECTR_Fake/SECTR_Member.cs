@@ -19,4 +19,5 @@ public class SECTR_Member : MonoBehaviour {
 		Individual
 	};
 	public BoundsUpdateModes BoundsUpdateMode = BoundsUpdateModes.Always;
+    public ChildCullModes ChildCulling = ChildCullModes.Default;
 }

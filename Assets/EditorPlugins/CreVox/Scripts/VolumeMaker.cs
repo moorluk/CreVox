@@ -80,9 +80,14 @@ namespace CreVox
                 PaletteItem[] itemArray = VGlobal.GetSetting ().GetItemArray (ArtPack, m_vd.subArtPack);
 
                 if ((style & 2) > 0) {
+                    doorObjs.Clear ();
                     foreach (Chunk c in m_cs) {
                         StartCoroutine (PlacePieces (c, itemArray));
                     }
+                }
+
+                if (((int)m_style & 4) > 0) {
+                    StartCoroutine (CreateItems (m_vd, itemArray));
                 }
             }
 
@@ -101,6 +106,23 @@ namespace CreVox
             return (result & isPieceFin && isItemFin);
         }
 
+        Dictionary<WorldPos,GameObject> doorObjs = new Dictionary<WorldPos, GameObject> ();
+        GameObject doorClosedObj;
+
+        public void FixDoor (PropertyPiece pp)
+        {
+            if (pp == null)
+                return;
+            var _pos = pp.block.BlockPos;
+            if (!doorObjs.ContainsKey (_pos))
+                return;
+            var cDoor = doorObjs [_pos].transform;
+            GameObject.Instantiate (doorClosedObj, cDoor.position, cDoor.rotation, cDoor.parent);
+            GameObject.Destroy (doorObjs [_pos]);
+            doorObjs.Remove (_pos);
+            Debug.Log ("<b>Replace Door : </b>\n" + _pos);
+        }
+
         IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
         {
             string log = "";
@@ -110,17 +132,25 @@ namespace CreVox
             foreach (PaletteItem pi in itemArray) {
                 if (pi.markType == PaletteItem.MarkerType.Item)
                     continue;
+                if (doorClosedObj == null && pi.gameObject.name == "Door.Closed")
+                    doorClosedObj = pi.gameObject;
                 foreach (BlockAir bAir in cData.blockAirs) {
                     for (int i = 0; i < bAir.pieceNames.Length; i++) {
                         if (System.String.IsNullOrEmpty (bAir.pieceNames [i]))
                             continue;
                         if (bAir.pieceNames [i] == pi.name) {
-                            PlacePiece (
-                                bAir.BlockPos,
-                                new WorldPos (i % 3, 0, (i / 3)), 
-                                pi.gameObject.GetComponent<LevelPiece> (),
-                                _chunk.transform
-                            );
+                            var pObj = PlacePiece (
+                                           bAir.BlockPos,
+                                           new WorldPos (i % 3, 0, (i / 3)), 
+                                           pi.gameObject.GetComponent<LevelPiece> (),
+                                           _chunk.transform
+                                       );
+                            if (pi.markType == PaletteItem.MarkerType.Door)
+                                doorObjs.Add (new WorldPos (
+                                    cData.ChunkPos.x + bAir.BlockPos.x,
+                                    cData.ChunkPos.y + bAir.BlockPos.y,
+                                    cData.ChunkPos.z + bAir.BlockPos.z),
+                                    pObj);
                         }
                     }
                 }
@@ -130,12 +160,9 @@ namespace CreVox
             }
             Debug.Log (log);
             isPieceFin = true;
-
-            if (((int)m_style & 4) > 0)
-                StartCoroutine (CreateItems (m_vd, itemArray));
         }
 
-        void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, Transform _parent)
+        GameObject PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, Transform _parent)
         {
             Vector3 pos = Volume.GetPieceOffset (gPos.x, gPos.z);
             VGlobal vg = VGlobal.GetSetting ();
@@ -152,11 +179,16 @@ namespace CreVox
                 if (bt != null) {
                     m_bts.Add (bt);
                 }
+                return pObj;
             }
+            return null;
         }
 
         IEnumerator CreateItems (VolumeData _vData, PaletteItem[] itemArray)
         {
+            while (!isPieceFin)
+                yield return new WaitForSeconds (0.01f);
+            Debug.Log (gameObject.name + ".StartCoroutine (CreateItems)");
             foreach (BlockItem bi in _vData.blockItems) {
                 foreach (PaletteItem pi in itemArray) {
                     if (pi.markType != PaletteItem.MarkerType.Item)
@@ -168,7 +200,7 @@ namespace CreVox
                 }
                 yield return new WaitForSeconds (0.00f);
             }
-            Debug.Log (name + " create Item finish...");
+            Debug.Log (gameObject.name + " create Item finish...");
             isItemFin = true;
         }
 
@@ -181,6 +213,7 @@ namespace CreVox
             pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
 
             if (p != null) {
+                p.block = blockItem;
                 p.SetupPiece (blockItem);
             }
         }
