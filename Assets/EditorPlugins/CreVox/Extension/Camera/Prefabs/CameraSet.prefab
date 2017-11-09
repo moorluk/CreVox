@@ -259,8 +259,6 @@ Camera:
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
-  m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -286,7 +284,7 @@ Light:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1707515658386092}
   m_Enabled: 1
-  serializedVersion: 8
+  serializedVersion: 7
   m_Type: 0
   m_Color: {r: 1, g: 0.9732414, b: 0.903, a: 1}
   m_Intensity: 1
@@ -311,8 +309,6 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!108 &108850175899143054
@@ -322,7 +318,7 @@ Light:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1600987416074816}
   m_Enabled: 1
-  serializedVersion: 8
+  serializedVersion: 7
   m_Type: 1
   m_Color: {r: 1, g: 0.992762, b: 0.953, a: 1}
   m_Intensity: 1.5
@@ -347,8 +343,6 @@ Light:
   m_Lightmapping: 4
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 0
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!114 &114082384551412922
@@ -362,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: e60dbdd9198d9a248a1c1745d9d3b520, type: 2}
+  profile: {fileID: 0}
 --- !u!114 &114237314619635828
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -380,7 +374,6 @@ MonoBehaviour:
   m_Presets:
     preset: 2
   m_GeneralSettings:
-    integrationStage: 0
     quality: 2
     deinterleaving: 0
     resolution: 0
@@ -395,11 +388,7 @@ MonoBehaviour:
     maxDistance: 150
     distanceFalloff: 50
     perPixelNormals: 0
-    baseColor:
-      r: 0
-      g: 0
-      b: 0
-      a: 1
+    baseColor: {r: 0, g: 0, b: 0, a: 1}
   m_ColorBleedingSettings:
     enabled: 0
     saturation: 1
@@ -408,6 +397,7 @@ MonoBehaviour:
     amount: 2
     sharpness: 8
     downsample: 0
+  isDeferred: 0
 --- !u!114 &114281249968053276
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -430,7 +420,9 @@ MonoBehaviour:
   targetEffect: {fileID: 0}
   effectHigh: 0.66
   camCol:
-    collisionLayer: {}
+    collisionLayer:
+      serializedVersion: 2
+      m_Bits: 0
     distance: 0
     targetPos: {x: 22.452618, y: 1.6202812, z: 13.902911}
     cameraClipPoints:
@@ -447,18 +439,22 @@ MonoBehaviour:
   speed: 20
   magnitude: 0.01
   damper:
+    serializedVersion: 2
     m_Curve:
-    - time: 0
+    - serializedVersion: 2
+      time: 0
       value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
-    - time: 0.9
+    - serializedVersion: 2
+      time: 0.9
       value: 0.33
       inSlope: -2
       outSlope: -2
       tangentMode: 0
-    - time: 1
+    - serializedVersion: 2
+      time: 1
       value: 0
       inSlope: -5.65
       outSlope: -5.65
@@ -478,21 +474,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 646b5bc27a658f447b1d929fd5ffbd70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: 1
-  showGeneratedNormals: 0
-  offsetScale: 0.2
-  blurRadius: 18
-  edgeThresholdMin: 0.01
-  edgeThreshold: 0.1
-  edgeSharpness: 10
-  dlaaSharp: 0
-  ssaaShader: {fileID: 4800000, guid: b3728d1488b02490cbd196c7941bf1f8, type: 3}
-  dlaaShader: {fileID: 4800000, guid: 017ca72b9e8a749058d13ebd527e98fa, type: 3}
-  nfaaShader: {fileID: 4800000, guid: ce0cb2621f6d84e21a87414e471a3cce, type: 3}
-  shaderFXAAPreset2: {fileID: 4800000, guid: 6f1418cffd12146f2a83be795f6fa5a7, type: 3}
-  shaderFXAAPreset3: {fileID: 4800000, guid: c182fa94a5a0a4c02870641efcd38cd5, type: 3}
-  shaderFXAAII: {fileID: 4800000, guid: cd5b323dcc592457790ff18b528f5e67, type: 3}
-  shaderFXAAIII: {fileID: 4800000, guid: c547503fff0e8482ea5793727057041c, type: 3}
 --- !u!114 &114585397574403498
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -504,12 +485,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4975a6e437fc3b149a8cd508ce5bdd69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 0.05
-  intensity: 0.5
-  blurSize: 1
-  blurIterations: 2
-  blurType: 1
-  fastBloomShader: {fileID: 4800000, guid: 68a00c837b82e4c6d92e7da765dc5f1d, type: 3}
 --- !u!114 &114718448387612902
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -521,10 +496,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6e9497b0caa77240b858d5d9795686d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Time: 0
-  m_HeightFalloff: 0
-  m_Zones:
-  - {fileID: 114773848190791916}
 --- !u!114 &114718449783467754
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -561,25 +532,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c4fafdb1efc41444b18adbce8bb4087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_OverrideTime: 0
-  m_Time: 0.5
-  m_OverrideContextAsset: 0
-  m_Context: {fileID: 0}
-  m_OverrideContextVariant: 0
-  m_ContextItemIndex: 0
-  m_DirectLight: {fileID: 0}
-  m_RenderLocalVolumetrics: 1
-  m_TemporalReprojection: 1
-  m_GaussianDepthFalloff: 500
-  m_UpsampleDepthThreshold: 0.06
-  m_TemporalRejectionScale: 0.1
-  m_TemporalBlendFactor: 0.25
-  m_ApplyAirToSkybox: 0
-  m_ApplyHazeToSkybox: 1
-  m_ApplyFogExtinctionToSkybox: 0
-  m_ApplyFogLightingToSkybox: 1
-  m_ShowTemporalRejection: 0
-  m_ShowUpsampleThreshold: 0
 --- !u!114 &114773848190791916
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -591,57 +543,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5978316c83795be48ac1f51c1d0685c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Context:
-    m_ContextItems:
-    - m_Name: 616263
-      m_Weight:
-        m_Curve:
-        - time: 0.08638212
-          value: 0.14383559
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-        - time: 0.50101626
-          value: 0.9977169
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-        - time: 0.75
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 0
-      m_AirScatteringScale: 1
-      m_AirScatteringMultiplier: 3
-      m_AirDensityHeightFalloff: 0.032
-      m_HazeScatteringScale: 0.7
-      m_HazeScatteringMultiplier: 3
-      m_HazeDensityHeightFalloff: 0.008
-      m_HazeScatteringDirection: -0.33
-      m_HazeSecondaryScatteringRatio: 0.397
-      m_FogOpacity: 1
-      m_FogScatteringScale: 2.74
-      m_FogExtinctionScale: 2.93
-      m_FogExtinctionMultiplier: 3
-      m_FogDensityHeightFalloff: 0.03
-      m_FogStartDistance: 0.1
-      m_FogScatteringDirection: 0.04
-      m_FogAmbientColour:
-        r: 0.43529415
-        g: 0.45882356
-        b: 0.3921569
-        a: 1
-      m_FogLightColour:
-        r: 0.44705886
-        g: 0.4666667
-        b: 0.4039216
-        a: 1
-    m_SoloItem: -1
-  m_Priority: 47
-  m_BlendRange: 0.239
 --- !u!114 &114878257960194742
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -653,29 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e50e925fb93c78246bf995d9dc3a2330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 3
-  adaptiveTextureSize: 512
-  remapCurve:
-    m_Curve:
-    - time: 0
-      value: 0.005
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    - time: 1
-      value: 0.9
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 0
-  exposureAdjustment: 0.8
-  middleGrey: 0.16
-  white: 0.3
-  adaptionSpeed: 0.5
-  tonemapper: {fileID: 4800000, guid: 003377fc2620a44939dadde6fe3f8190, type: 3}
-  validRenderTextureFormat: 1
 --- !u!124 &124963164926382984
 Behaviour:
   m_ObjectHideFlags: 1
