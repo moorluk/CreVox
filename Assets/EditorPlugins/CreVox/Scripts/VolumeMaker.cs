@@ -111,7 +111,7 @@ namespace CreVox
 
         public void FixDoor (PropertyPiece pp)
         {
-            if (pp == null)
+            if (pp == null || doorClosedObj == null)
                 return;
             var _pos = pp.block.BlockPos;
             if (!doorObjs.ContainsKey (_pos))
