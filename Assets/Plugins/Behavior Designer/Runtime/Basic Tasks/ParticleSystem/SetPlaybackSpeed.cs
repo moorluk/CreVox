@@ -30,7 +30,8 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityParticleSystem
                 return TaskStatus.Failure;
             }
 
-            particleSystem.playbackSpeed = playbackSpeed.Value;
+            var main = particleSystem.main;
+                main.simulationSpeed = playbackSpeed.Value;
 
             return TaskStatus.Success;
         }
