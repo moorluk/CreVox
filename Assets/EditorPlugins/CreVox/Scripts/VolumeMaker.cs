@@ -125,7 +125,7 @@ namespace CreVox
 
         IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
         {
-            string log = "";
+            string log = gameObject.name + "<b> Create Pieces :</B>\n";
             float time = Time.deltaTime;
 
             ChunkData cData = _chunk.cData;
@@ -188,19 +188,22 @@ namespace CreVox
         {
             while (!isPieceFin)
                 yield return new WaitForSeconds (0.01f);
-            Debug.Log (gameObject.name + ".StartCoroutine (CreateItems)");
+            string log = gameObject.name + "<b>Create Items :</B>\n";
+            float time = Time.deltaTime;
             foreach (BlockItem bi in _vData.blockItems) {
                 foreach (PaletteItem pi in itemArray) {
                     if (pi.markType != PaletteItem.MarkerType.Item)
                         continue;
                     if (bi.pieceName == pi.name) {
                         CreateItem (bi, pi);
+                        time = Time.deltaTime - time;
+                        log += (string.Format ("<color={0}>{1} : {2}</color>\n", ((time > 0.2f) ? "red" : "black"), pi.name, time));
                         break;
                     }
                 }
                 yield return new WaitForSeconds (0.00f);
             }
-            Debug.Log (gameObject.name + " create Item finish...");
+            Debug.Log (log);
             isItemFin = true;
         }
 
