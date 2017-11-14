@@ -47,14 +47,7 @@
     }
 
     CGINCLUDE
-//#include "UnityShaderVariables.cginc"
-//#include "UnityStandardConfig.cginc"
-//#include "UnityLightingCommon.cginc"
-//#include "UnityGBuffer.cginc"
-//#include "UnityGlobalIllumination.cginc"
-//    #include "UnityPBSLighting.cginc"
         #define UNITY_SETUP_BRDF_INPUT SpecularSetup
-//        #define UNITY_BRDF_PBS fakeBRDF
     ENDCG
 
 //-------------------------------------------------------------------------------------
@@ -80,6 +73,8 @@
         sampler2D _EmissionMap;
         fixed4 _EmissionColor;
 
+        half3 n;
+
         struct Input {
             float2 uv_MainTex;
         };
@@ -101,16 +96,15 @@
 
 
         half4 LightingHalf (SurfaceOutput s, half3 viewDir, UnityGI gi) {
-			half3 h = normalize (gi.light.dir + viewDir);
-			float nh = max (0, dot (s.Normal, h));
-			float spec = pow (nh, s.Specular * s.Gloss * 128.0) * s.Gloss;
-			fixed3 spec_color = gi.light.color * s.Specular * spec;
+            half3 h = normalize (gi.light.dir + viewDir);
+            float nh = max (0, dot (s.Normal, h));
+            float spec = pow (nh, s.Specular * 128.0) * s.Gloss;
+            fixed3 spec_color = gi.light.color * s.Specular * spec;
 
-        	_WrapAmount *= 0.5;
-        	half3 n  = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
+            _WrapAmount *= 0.5;
+            n  = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
 
             fixed NdotL = max (0, dot (n, gi.light.dir));
-//            half diff = NdotL * (1 - _WrapAmount) + _WrapAmount;
             half diff = NdotL * (1 - _WrapAmount) * (1 - _WrapAmount) + _WrapAmount * (1 - _WrapAmount);
             fixed3 diff_color = gi.light.color * s.Albedo * diff;
 
@@ -118,39 +112,45 @@
             emission.rgb += diff_color + spec_color;
 
 
-			#ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
-				emission.rgb += s.Albedo * gi.indirect.diffuse;
-			#endif
+            #ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
+                emission.rgb += s.Albedo * gi.indirect.diffuse;
+            #endif
 
-			return emission;
+            return emission;
         }
 
         half4 LightingHalf_Deferred (SurfaceOutput s, half3 viewDir, UnityGI gi, out half4 outGBuffer0, out half4 outGBuffer1, out half4 outGBuffer2) {
-        	_WrapAmount *= 0.5;
-        	s.Normal = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
+            half3 h = normalize (gi.light.dir + viewDir);
+            float nh = max (0, dot (s.Normal, h));
+            float spec = pow (nh, s.Specular * 128.0) * s.Gloss;
+            fixed3 spec_color = gi.light.color * s.Specular * spec;
 
-			UnityStandardData data;
-			data.diffuseColor	= s.Albedo;
-			data.occlusion		= 1;
-			data.specularColor	= _SpecColor.rgb * s.Gloss * (1/UNITY_PI);
-			data.smoothness		= s.Specular;	
-			data.normalWorld	= s.Normal;
+            _WrapAmount *= 0.5;
+            n = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
 
-			UnityStandardDataToGbuffer(data, outGBuffer0, outGBuffer1, outGBuffer2);
+            UnityStandardData data;
+            data.diffuseColor    = s.Albedo;
+            data.occlusion       = 1;
+            data.specularColor   = _SpecColor.rgb * s.Gloss * (1/UNITY_PI);
+            data.smoothness      = s.Specular;
+            data.normalWorld     = n;
 
-			half4 emission = half4(s.Emission, 1);
+            UnityStandardDataToGbuffer(data, outGBuffer0, outGBuffer1, outGBuffer2);
 
-			#ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
-				emission.rgb += s.Albedo * gi.indirect.diffuse;
-			#endif
+            half4 emission = half4(s.Emission, 1);
+            emission.rgb += spec_color;
 
-			return emission;
+            #ifdef UNITY_LIGHT_FUNCTION_APPLY_INDIRECT
+                emission.rgb += s.Albedo * gi.indirect.diffuse;
+            #endif
+
+            return emission;
         }
 
         void LightingHalf_GI (SurfaceOutput s, UnityGIInput data, inout UnityGI gi)
-		{
-			gi = UnityGlobalIllumination (data, 1.0, s.Normal);
-		}
+        {
+            gi = UnityGlobalIllumination (data, 1.0, s.Normal);
+        }
 
         ENDCG
     }

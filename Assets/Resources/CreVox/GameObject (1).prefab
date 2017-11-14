@@ -1,0 +1,326 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1614839910226938}
+  m_IsPrefabParent: 1
+--- !u!1 &1614839910226938
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4550458742455316}
+  - component: {fileID: 114420424543062848}
+  m_Layer: 0
+  m_Name: GameObject (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4550458742455316
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1614839910226938}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -15.01, y: 1.4902124, z: 13.61}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114420424543062848
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1614839910226938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c30ad62913af44db634bc160946492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  block:
+    BlockPos:
+      x: 1
+      y: 0
+      z: 3
+  pivot: 2
+  isSolid: 000000000001
+  isHold: 1
+  holdBlocks:
+  - offset:
+      x: 0
+      y: -1
+      z: 0
+    isSolid: 0
+  - offset:
+      x: 0
+      y: 0
+      z: 0
+    isSolid: 0
+  - offset:
+      x: 0
+      y: 1
+      z: 0
+    isSolid: 0
+  - offset:
+      x: 0
+      y: 2
+      z: 0
+    isSolid: 0
+  - offset:
+      x: 0
+      y: 3
+      z: 0
+    isSolid: 0
+  - offset:
+      x: 0
+      y: 4
+      z: 0
+    isSolid: 0
+  maxX: 0
+  minX: 0
+  maxY: 4
+  minY: -1
+  maxZ: 0
+  minZ: 0
+  eventRange: 0
+  PProperties:
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  tree:
+  - showNode: 1
+    parent:
+      id: -1
+      treeIndex: -1
+      probability: 1
+    self:
+      id: 0
+      treeIndex: 0
+      probability: 1
+      type: 1
+      source: {fileID: 0}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs:
+    - id: 446056563
+      treeIndex: 1
+      probability: 1
+    - id: 2115923689
+      treeIndex: 2
+      probability: 1
+  - showNode: 1
+    parent:
+      id: 0
+      treeIndex: -1
+      probability: 1
+    self:
+      id: 446056563
+      treeIndex: 1
+      probability: 1
+      type: 1
+      source: {fileID: 1000011431832590, guid: 8a7d08d909cbb364989fd514a5d18356, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs:
+    - id: 495583874
+      treeIndex: 3
+      probability: 1
+    - id: 1168757785
+      treeIndex: 4
+      probability: 1
+    - id: 280694168
+      treeIndex: 5
+      probability: 1
+  - showNode: 1
+    parent:
+      id: 0
+      treeIndex: -1
+      probability: 1
+    self:
+      id: 2115923689
+      treeIndex: 2
+      probability: 1
+      type: 1
+      source: {fileID: 115580, guid: 53e3d84f4f9e8e84daea250925889d95, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs:
+    - id: 54059933
+      treeIndex: 6
+      probability: 1
+    - id: 1055876801
+      treeIndex: 7
+      probability: 1
+    - id: 1605395128
+      treeIndex: 8
+      probability: 1
+  - showNode: 1
+    parent:
+      id: 446056563
+      treeIndex: 1
+      probability: 1
+    self:
+      id: 495583874
+      treeIndex: 3
+      probability: 1
+      type: 0
+      source: {fileID: 169766, guid: 58268e245956ca142a4890d67bbbf592, type: 2}
+      instance: {fileID: 0}
+      pos: {x: -0.34, y: 0, z: -1.63}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  - showNode: 1
+    parent:
+      id: 446056563
+      treeIndex: 1
+      probability: 1
+    self:
+      id: 1168757785
+      treeIndex: 4
+      probability: 1
+      type: 0
+      source: {fileID: 128274, guid: 7b3313481087eab47b959200e22ef114, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0.5, y: 0, z: 1.2}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  - showNode: 1
+    parent:
+      id: 446056563
+      treeIndex: 1
+      probability: 1
+    self:
+      id: 280694168
+      treeIndex: 5
+      probability: 1
+      type: 0
+      source: {fileID: 128274, guid: 1f95806136fc0a945884c3669793b942, type: 2}
+      instance: {fileID: 0}
+      pos: {x: -0.936, y: 0, z: 0.6}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  - showNode: 1
+    parent:
+      id: 2115923689
+      treeIndex: 2
+      probability: 1
+    self:
+      id: 54059933
+      treeIndex: 6
+      probability: 1
+      type: 0
+      source: {fileID: 1000013781348564, guid: 7c69a85eb56c37c41b8df72d86c02bd4, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  - showNode: 1
+    parent:
+      id: 2115923689
+      treeIndex: 2
+      probability: 1
+    self:
+      id: 1055876801
+      treeIndex: 7
+      probability: 1
+      type: 0
+      source: {fileID: 115580, guid: bccb1f225a72e18498a9dc093acd36c9, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  - showNode: 1
+    parent:
+      id: 2115923689
+      treeIndex: 2
+      probability: 1
+    self:
+      id: 1605395128
+      treeIndex: 8
+      probability: 1
+      type: 0
+      source: {fileID: 1000013167810550, guid: ddcaae97024384e418923a031bbdf759, type: 2}
+      instance: {fileID: 0}
+      pos: {x: 0, y: 0, z: 0}
+      posR: {x: 0, y: 0, z: 0}
+      rot: {x: 0, y: 0, z: 0}
+      rotR: {x: 0, y: 0, z: 0}
+      scl: {x: 1, y: 1, z: 1}
+      sclR: {x: 0, y: 0, z: 0}
+      rotS: 0
+    childs: []
+  root: {fileID: 1614839910226938}

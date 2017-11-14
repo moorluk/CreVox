@@ -117,7 +117,7 @@
 		{
 			half3 reflDir = reflect (viewDir, normal);
 
-			half nl = dot(normal, light.dir);
+			half nl = saturate(dot(normal, light.dir));
 			half nv = saturate(dot(normal, viewDir));
 
 			// Vectorize Pow4 to save instructions
@@ -144,7 +144,7 @@
             s.Albedo = s.Albedo *(half3(1,1,1) - s.Specular);
 
         	_WrapAmount *= 0.5;
-        	s.Normal = normalize (lerp(s.Normal, gi.light.dir, _WrapAmount));
+        	s.Normal = normalize (lerp (s.Normal, gi.light.dir, _WrapAmount));
 
             half4 c;
             c = UNITY_BRDF_PBS (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir, gi.light, gi.indirect);
