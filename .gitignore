@@ -65,9 +65,13 @@ Assets/Resources/CreVox/VolumeData/Isaac.meta
 Assets/Resources/CreVox/VolumeData/Isaac/
 Assets/Resources/CreVox/VolumeData/TEST.meta
 Assets/Resources/CreVox/VolumeData/TEST/
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes.meta
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes/
 Assets/Resources/CreVox/NodeRelation.txt.meta
 Assets/Resources/CreVox/NodeRelation.txt
 Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs.meta
 Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs
 Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData.meta
 Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData/
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader.meta
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader
