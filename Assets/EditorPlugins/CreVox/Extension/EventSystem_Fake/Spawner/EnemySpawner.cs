@@ -56,11 +56,11 @@ public class EnemySpawner : SpawnerBase
     public int m_enemyId = 0;
 
     public SpawnerData m_spawnerData;
+    public Vector3[] m_patrolPoints = new Vector3[1]{Vector3.zero};
     public bool testClear = false;
     public bool m_isStart = false;
-	public AiData m_AiData;
-    
-    private float m_nextSpawnTime = 0f;
-    private bool m_boss = false;
-    private bool isClear = false;
+    public AiData m_AiData;
+//    private float m_nextSpawnTime = 0f;
+//    private bool m_boss = false;
+//    private bool isClear = false;
 }

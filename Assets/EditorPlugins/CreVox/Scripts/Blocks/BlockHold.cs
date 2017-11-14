@@ -16,17 +16,14 @@ namespace CreVox
 			//[XAOCX add]
 			public piecePos() { }
 			public piecePos(piecePos clone) {
-				this.blockPos = clone.blockPos;
-				this.pieceID = clone.pieceID;
+				blockPos = clone.blockPos;
+				pieceID = clone.pieceID;
 			}
 
 			public bool Compare (piecePos obj)
-			{
-				if (this.blockPos.Compare (obj.blockPos) && this.pieceID == obj.pieceID)
-					return true;
-				else
-					return false;
-			}
+            {
+                return (blockPos.Compare (obj.blockPos) && pieceID == obj.pieceID);
+            }
 		}
 
 		[SerializeField]
@@ -34,15 +31,17 @@ namespace CreVox
 		public List<piecePos> roots = new List<piecePos>();
 
 		// [XAOCX add]
-		public BlockHold () : base () { }
+		public BlockHold () { }
 		public BlockHold(BlockHold clone) : base(clone) {
-			this.roots = new List<piecePos>();
+			roots = new List<piecePos>();
 			foreach (var item in clone.roots) {
-				this.roots.Add(new piecePos(item));
+				roots.Add(new piecePos(item));
 			}
-			this.isSolid = clone.isSolid;
+			isSolid = clone.isSolid;
 		}
-
+        public BlockHold (int x,int y, int z) {
+            BlockPos = new WorldPos (x, y, z);
+        }
 
 		public override bool IsSolid (Direction direction)
 		{

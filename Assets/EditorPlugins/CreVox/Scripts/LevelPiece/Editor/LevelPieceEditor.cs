@@ -7,53 +7,67 @@ namespace CreVox
 	public class LevelPieceEditor : Editor
 	{
 		LevelPiece lp;
-		bool drawIsSolid = true;
-		bool drawDef = false;
+        bool drawIsSolid;
+        bool drawHold;
+        bool drawDef;
+
 		public override void OnInspectorGUI ()
-		{
-			lp = (LevelPiece)target;
-			
-			EditorGUI.BeginChangeCheck ();
+        {
+            EditorGUI.BeginChangeCheck ();
 
-			EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
-			using (var h = new EditorGUILayout.HorizontalScope ("Box")) {
-				lp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.eventRange);
-			}
-			EditorGUILayout.Separator ();
+            DrawInspector ();
 
-			EditorGUILayout.LabelField ("Modified Component", EditorStyles.boldLabel);
-			lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);
-			drawIsSolid = EditorGUILayout.Foldout (drawIsSolid, "Is Solid");
-			if (drawIsSolid) {
-				EditorGUI.indentLevel++;
-				using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
-					for (int i = 0; i < lp.isSolid.Length; i++) {
-						lp.isSolid [i] = EditorGUILayout.ToggleLeft (((Direction)i).ToString (), lp.isSolid [i]);
-					}
-				}
-				EditorGUI.indentLevel--;
-			}
+            drawDef = EditorGUILayout.Foldout (drawDef, "Default Inspector");
+            if (drawDef) {
+                EditorGUI.indentLevel++;
+                DrawDefaultInspector ();
+                EditorGUI.indentLevel = 0;
+            }
 
-			lp.isHold = EditorGUILayout.Foldout (lp.isHold, " Hold other Block", "toggle");
-			if (lp.isHold) {
-				DrawInit ();
-				DrawList ();
-			}
+            if (EditorGUI.EndChangeCheck ())
+                EditorUtility.SetDirty (lp);
+        }
 
-			drawDef = EditorGUILayout.Foldout (drawDef, "Default Inspector");
-			if (drawDef) {
-				EditorGUI.indentLevel++;
-				DrawDefaultInspector ();
-				EditorGUI.indentLevel = 0;
-			}
+        public void DrawInspector()
+        {
+            lp = (LevelPiece)target;
+            EditorGUILayout.LabelField ("Event", EditorStyles.boldLabel);
+            using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
+                lp.eventRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", lp.eventRange);
+            }
+            EditorGUILayout.Separator ();
 
-			if (EditorGUI.EndChangeCheck ())
-				EditorUtility.SetDirty (lp);
+            EditorGUILayout.LabelField ("Level Piece Setting", EditorStyles.boldLabel);
+            using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
+                lp.pivot = (LevelPiece.PivotType)EditorGUILayout.EnumPopup ("Pivot", lp.pivot);
+                EditorGUI.indentLevel++;
+                drawIsSolid = EditorGUILayout.Foldout (drawIsSolid, "Is Solid");
+                if (drawIsSolid) {
+                    using (var v2 = new EditorGUILayout.VerticalScope ("HelpBox")) {
+                        EditorGUI.indentLevel++;
+                        for (int i = 0; i < lp.isSolid.Length; i++) {
+                            lp.isSolid [i] = EditorGUILayout.ToggleLeft (((Direction)i).ToString (), lp.isSolid [i]);
+                        }
+                        EditorGUI.indentLevel--;
+                    }
+                }
+
+                drawHold = EditorGUILayout.Foldout (drawHold, "BlockHold");
+                EditorGUI.indentLevel--;
+                if (drawHold) {
+                    lp.isHold = EditorGUILayout.Toggle ("Hold other Block", lp.isHold);
+                    EditorGUI.BeginDisabledGroup (!lp.isHold);
+                    DrawInit ();
+                    if (lp.holdBlocks.Count > 0)
+                        DrawList ();
+                    EditorGUI.EndDisabledGroup ();
+                }
+            }
+            EditorGUILayout.Separator ();
 		}
 
         public virtual void OnEditorGUI(ref BlockItem item)
 		{
-			LevelPiece lp = (LevelPiece)target;
 			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope ("box")) {
 				lp.PProperties [0].tComponent = FocalComponent.DefaultEventRange;
@@ -73,29 +87,29 @@ namespace CreVox
 
         void DrawInit ()
 		{
-			using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
-				GUILayout.BeginVertical ();
+            using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
+                GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxX", "miniLabel");
-				lp.maxX = EditorGUILayout.IntField (lp.maxX);
+                lp.maxX = EditorGUILayout.IntField (lp.maxX);
 				GUILayout.Label ("MinX", "miniLabel");
-				lp.minX = EditorGUILayout.IntField (lp.minX);
+                lp.minX = EditorGUILayout.IntField (lp.minX);
 				GUILayout.EndVertical ();
 
-				GUILayout.BeginVertical ();
+                GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxY", "miniLabel");
 				lp.maxY = EditorGUILayout.IntField (lp.maxY);
 				GUILayout.Label ("MinY", "miniLabel");
-				lp.minY = EditorGUILayout.IntField (lp.minY);
+                lp.minY = EditorGUILayout.IntField (lp.minY);
 				GUILayout.EndVertical ();
 
-				GUILayout.BeginVertical ();
+                GUILayout.BeginVertical ();
 				GUILayout.Label ("MaxZ", "miniLabel");
 				lp.maxZ = EditorGUILayout.IntField (lp.maxZ);
 				GUILayout.Label ("MinZ", "miniLabel");
-				lp.minZ = EditorGUILayout.IntField (lp.minZ);
-				GUILayout.EndVertical ();
+                lp.minZ = EditorGUILayout.IntField (lp.minZ);
+                GUILayout.EndVertical ();
 
-				if (GUILayout.Button ("init", GUILayout.Height (30), GUILayout.Width (50))) {
+                if (GUILayout.Button ("init", GUILayout.ExpandHeight(true),GUILayout.Height (80), GUILayout.Width (50))) {
 					CreateHoldBlockList ();
 				}
 			}
@@ -104,11 +118,9 @@ namespace CreVox
 		void DrawList ()
 		{
 			using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
-				for (int i = 0; i < lp.holdBlocks.Count; i++) {
-                    LevelPiece.Hold holdBlock = lp.holdBlocks [i];
+                foreach (var holdBlock in lp.holdBlocks) {
 					using (var h = new EditorGUILayout.HorizontalScope ("textfield")) {
-						GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", "In TitleText");
-						GUILayout.Space(Screen.width - 200);
+                        GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", "In TitleText", GUILayout.Width (Screen.width - 160));
 						GUILayout.Label ("Solid", "miniLabel");
 						holdBlock.isSolid = EditorGUILayout.Toggle (holdBlock.isSolid);
 						if (GUILayout.Button ("Remove","miniButton"))

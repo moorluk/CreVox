@@ -19,8 +19,8 @@ namespace CreVox
 		public static string save = "CreVox/VolumeData";
 		public static string gram = "CreVox/Grammar";
 		public static string artDeco = "CreVox/ArtResources";
-		public static string artPack = "CreVox/VolumeArtPack";
-		public static string pieces = artPack + "/LevelPieces";
+		public static string artPack = "CreVox/VolumeArtPack/";
+		public static string pieces = artPack + "LevelPieces";
 		public static string defaultVoxelMaterial = pieces + "/LevelPieces_Voxel";
 		public static string camSetting = "CreVox/CamSetting";
 		public static string setting = "CreVox/GlobalSetting";

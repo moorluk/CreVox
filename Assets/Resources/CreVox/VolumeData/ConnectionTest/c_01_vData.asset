@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c6b4bb4b4dae544cadf38111b1b4525, type: 3}
+  m_Name: c_01_vData
+  m_EditorClassIdentifier: 
+  useFreeChunk: 0
+  freeChunk:
+    isFreeChunk: 1
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 0
+      y: 0
+      z: 0
+    blocks: []
+    blockAirs: []
+    blockHolds: []
+  chunkSize: 0
+  chunkX: 1
+  chunkY: 1
+  chunkZ: 1
+  chunkDatas:
+  - isFreeChunk: 0
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 0
+      y: 0
+      z: 0
+    blocks:
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 7
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 6
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 5
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 4
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 2
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 1
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 3
+    - BlockPos:
+        x: 1
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 2
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 3
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 4
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 5
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 6
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 7
+        y: 0
+        z: 8
+    - BlockPos:
+        x: 1
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 2
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 3
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 4
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 5
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 6
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 7
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 0
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 8
+    blockAirs: []
+    blockHolds: []
+  blockItems:
+  - BlockPos:
+      x: 0
+      y: 0
+      z: 4
+    pieceName: Starting Node
+    posX: -1.002702
+    posY: 1
+    posZ: 11.815405
+    rotX: 0
+    rotY: 0.7071068
+    rotZ: 0
+    rotW: 0.7071068
+    attributes:
+    - 
+    - 
+    - 
+    - 
+    - 
+  subArtPack: 

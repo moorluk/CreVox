@@ -9,7 +9,7 @@ public class EventDriver : MonoBehaviour {
 	protected ArrayList m_callback = new ArrayList();
 	protected Dictionary< string, List<EventActor> > m_actorMap = new Dictionary< string, List<EventActor> >();
 
-	static float SPACE_SIZE_3D = 0.5f;
+//	static float SPACE_SIZE_3D = 0.5f;
 	public bool isEventConnected = true;
 	public TriggerEvent[] m_TriggerEventList;
 	public EventActor[] m_EventActorList;

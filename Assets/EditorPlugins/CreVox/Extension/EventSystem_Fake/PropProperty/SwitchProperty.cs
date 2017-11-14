@@ -16,7 +16,7 @@ public class SwitchProperty : PropProperty {
 	public GameObject offObj;
 	public GameObject switchingObj;
 
-	void Start() {
+    new void Start() {
 //		onObj = transform.FindChild ("on").gameObject;
 //		offObj = transform.FindChild ("off").gameObject;
 //		switchingObj = transform.FindChild ("switching").gameObject;

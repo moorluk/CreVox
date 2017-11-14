@@ -1,0 +1,2233 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c6b4bb4b4dae544cadf38111b1b4525, type: 3}
+  m_Name: Prison_C_01_vData
+  m_EditorClassIdentifier: 
+  useFreeChunk: 0
+  freeChunk:
+    isFreeChunk: 1
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 0
+      y: 0
+      z: 0
+    blocks: []
+    blockAirs: []
+    blockHolds: []
+  chunkSize: 0
+  chunkX: 2
+  chunkY: 2
+  chunkZ: 1
+  chunkDatas:
+  - isFreeChunk: 0
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 0
+      y: 0
+      z: 0
+    blocks: []
+    blockAirs:
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    blockHolds:
+    - BlockPos:
+        x: 6
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 2
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 2
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 2
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 2
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 2
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 2
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 1
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 8
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 1
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 7
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 7
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 1
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 6
+          y: 1
+          z: 2
+        pieceID: 4
+  - isFreeChunk: 0
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 9
+      y: 0
+      z: 0
+    blocks: []
+    blockAirs:
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 2
+        y: 1
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 2
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.in.one
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 2
+        y: 1
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 7
+        y: 4
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 5
+        y: 3
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 5
+        y: 3
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 5
+        y: 3
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - Gnd.out
+      - 
+      - 
+      - 
+      - 
+      isSolid: 000000000001
+    - BlockPos:
+        x: 3
+        y: 2
+        z: 4
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 3
+        y: 2
+        z: 3
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    - BlockPos:
+        x: 3
+        y: 2
+        z: 2
+      pieceNames:
+      - 
+      - 
+      - 
+      - 
+      - 
+      - Stair.triangle
+      - 
+      - 
+      - 
+      isSolid: 000000000000
+    blockHolds:
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 2
+        z: 4
+      isSolid: 1
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 3
+        z: 4
+      isSolid: 1
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 2
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 6
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 7
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 8
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 2
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 2
+        z: 3
+      isSolid: 1
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 3
+        z: 3
+      isSolid: 1
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 6
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 7
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 8
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 6
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 7
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 8
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 1
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 1
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 10
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 1
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 0
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 9
+          y: 1
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 6
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 7
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 8
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 6
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 7
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 8
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 6
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 7
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 6
+        y: 8
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 15
+          y: 4
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 2
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 4
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 5
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 6
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 7
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 2
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 4
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 5
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 6
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 7
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 2
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 3
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 4
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 5
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 6
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+    - BlockPos:
+        x: 4
+        y: 7
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 13
+          y: 3
+          z: 2
+        pieceID: 4
+  - isFreeChunk: 0
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 0
+      y: 9
+      z: 0
+    blocks: []
+    blockAirs: []
+    blockHolds: []
+  - isFreeChunk: 0
+    freeChunkSize:
+      x: 9
+      y: 9
+      z: 9
+    ChunkPos:
+      x: 9
+      y: 9
+      z: 0
+    blocks: []
+    blockAirs: []
+    blockHolds:
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 4
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 4
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 3
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 3
+        pieceID: 4
+    - BlockPos:
+        x: 8
+        y: 0
+        z: 2
+      isSolid: 0
+      roots:
+      - blockPos:
+          x: 17
+          y: 5
+          z: 2
+        pieceID: 4
+  blockItems:
+  - BlockPos:
+      x: 17
+      y: 5
+      z: 3
+    pieceName: Starting Node
+    posX: 52
+    posY: 9.01
+    posZ: 9
+    rotX: 0
+    rotY: 0.7071068
+    rotZ: 0
+    rotW: -0.7071068
+    attributes:
+    - false,AreaTipActor,Free
+    - false,Unused,Free
+    - false,Unused,Free
+    - false,Unused,Free
+    - false,Unused,Free
+  - BlockPos:
+      x: 8
+      y: 1
+      z: 4
+    pieceName: Connection_Branch
+    posX: 24
+    posY: 1.01
+    posZ: 13
+    rotX: 0
+    rotY: 0
+    rotZ: 0
+    rotW: 1
+    attributes:
+    - false,DefaultEventRange,Free
+    - 
+    - 
+    - 
+    - 
+  - BlockPos:
+      x: 0
+      y: 0
+      z: 0
+    pieceName: DecoPrefab
+    posX: 0
+    posY: -0.99
+    posZ: -1
+    rotX: 0
+    rotY: 0
+    rotZ: 0
+    rotW: 1
+    attributes:
+    - Prison_C_01_vData
+    - True
+    - 
+    - 
+    - 
+  - BlockPos:
+      x: 6
+      y: 1
+      z: 3
+    pieceName: PlayerStart
+    posX: 17.292507
+    posY: 1.000005
+    posZ: 9.117306
+    rotX: 0
+    rotY: 0
+    rotZ: 0
+    rotW: 1
+    attributes:
+    - true,DefaultEventRange,Free
+    - 
+    - 
+    - 
+    - 
+  subArtPack: b
