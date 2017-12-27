@@ -32,7 +32,10 @@ namespace CreVox
         public void ClearRoot ()
         {
             for (int i = root.transform.childCount; i > 0; i--) {
-                UnityEngine.Object.DestroyImmediate (root.transform.GetChild (i - 1).gameObject);
+                if (Application.isPlaying)
+                    Destroy(root.transform.GetChild(i - 1).gameObject);
+                else
+                    DestroyImmediate(root.transform.GetChild(i - 1).gameObject);
             }
         }
     }
