@@ -71,3 +71,7 @@ Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs.meta
 Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs
 Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData.meta
 Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData/
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader.meta
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes/
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes.meta
