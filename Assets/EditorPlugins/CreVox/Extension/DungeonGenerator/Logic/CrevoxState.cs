@@ -105,7 +105,7 @@ namespace CrevoxExtend {
 
 		// Collision
 		private bool IsCollider(VolumeDataEx volumeEx) {
-			foreach (var chunkdata in volumeEx.volumeData.chunkDatas) {
+            foreach (var chunkdata in volumeEx.volumeData.GetChunkDatas()) {
 				foreach (var compareVolumeEx in _resultVolumeDatas) {
 					if (ReferenceEquals(volumeEx, compareVolumeEx)) {
 						continue;
@@ -113,7 +113,7 @@ namespace CrevoxExtend {
 					float rotateAngle = volumeEx.rotation.eulerAngles.y >= 0 ? volumeEx.rotation.eulerAngles.y : volumeEx.rotation.eulerAngles.y + 360;
 					float compareRotateAngle = compareVolumeEx.rotation.eulerAngles.y >= 0 ? compareVolumeEx.rotation.eulerAngles.y : compareVolumeEx.rotation.eulerAngles.y + 360;
 					Vector3 chunkPosition = volumeEx.position + AbsolutePosition(chunkdata.ChunkPos, rotateAngle).ToRealPosition();
-					foreach (var compareChunkData in compareVolumeEx.volumeData.chunkDatas) {
+                    foreach (var compareChunkData in compareVolumeEx.volumeData.GetChunkDatas()) {
 						Vector3 compareChunkPosition = compareVolumeEx.position + AbsolutePosition(compareChunkData.ChunkPos, compareRotateAngle).ToRealPosition();
 						// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
 						if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {

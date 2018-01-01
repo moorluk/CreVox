@@ -1,6 +1,4 @@
 ﻿using CreVox;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -25,7 +23,7 @@ public class ChunkCollider : MonoBehaviour {
 
 	// Collision
 	private bool IsCollider(Volume volume) {
-		foreach (var chunkdata in volume.vd.chunkDatas) {
+		foreach (var chunkdata in volume.vd.GetChunkDatas()) {
 			foreach (var compareVolume in resultVolumeManager.GetComponentsInChildren<Volume>()) {
 				if (compareVolume.GetHashCode() == volume.GetHashCode()) {
 					continue;
@@ -33,7 +31,7 @@ public class ChunkCollider : MonoBehaviour {
 				float rotateAngle = volume.transform.eulerAngles.y >= 0 ? volume.transform.eulerAngles.y : volume.transform.eulerAngles.y + 360;
 				float compareRotateAngle = compareVolume.transform.eulerAngles.y >= 0 ? compareVolume.transform.eulerAngles.y : compareVolume.transform.eulerAngles.y + 360;
 				Vector3 chunkPosition = volume.transform.position + AbsolutePosition(chunkdata.ChunkPos, rotateAngle).ToRealPosition();
-				foreach (var compareChunkData in compareVolume.vd.chunkDatas) {
+				foreach (var compareChunkData in compareVolume.vd.GetChunkDatas()) {
 					Vector3 compareChunkPosition = compareVolume.transform.position + AbsolutePosition(compareChunkData.ChunkPos, compareRotateAngle).ToRealPosition();
 					// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
 					if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
