@@ -1,0 +1,133 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1972534641695600}
+  m_IsPrefabParent: 1
+--- !u!1 &1972534641695600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4789978334330702}
+  - component: {fileID: 114583931369294892}
+  - component: {fileID: 114816205369850912}
+  - component: {fileID: 114162371905842578}
+  - component: {fileID: 135254622175392788}
+  m_Layer: 13
+  m_Name: Button.Invisible
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4789978334330702
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972534641695600}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114162371905842578
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972534641695600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a949b71bd5a9ce6469b3a3a10ef486f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114583931369294892
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972534641695600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f611ddee768e8f4eb0ce3e12311e179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 3
+  markType: -3
+  itemName: "\u73A9\u5BB6\u89F8\u767C\u6846"
+  inspectedScript: {fileID: 0}
+  assetPath: Assets/Resources/CreVox/VolumeArtPack/LevelPieces/3_Trap/Button.Invisible.prefab
+--- !u!114 &114816205369850912
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972534641695600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41acce97e7e257942bf7dcd701cb0060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  block:
+    BlockPos:
+      x: 0
+      y: 0
+      z: 0
+  pivot: 0
+  isSolid: 000000000000
+  isHold: 0
+  holdBlocks: []
+  maxX: 0
+  minX: 0
+  maxY: 0
+  minY: 0
+  maxZ: 0
+  minZ: 0
+  eventRange: 2
+  PProperties:
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  probability: 0
+--- !u!135 &135254622175392788
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1972534641695600}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}

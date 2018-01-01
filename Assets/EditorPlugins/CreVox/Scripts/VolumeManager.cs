@@ -4,91 +4,176 @@ using System;
 
 namespace CreVox
 {
-	[System.Serializable]
-	public struct Dungeon
-	{
-		public VolumeData volumeData;
-		public Vector3 position;
-		public Quaternion rotation;
-		public string ArtPack;
-		public string vMaterial;
-	}
+    [System.Serializable]
+    public struct Dungeon
+    {
+        public VolumeData volumeData;
+        public Vector3 position;
+        public Quaternion rotation;
+        public string ArtPack;
+        public string vMaterial;
+    }
 
-	public class VolumeManager : MonoBehaviour
-	{
-		public List<Dungeon> dungeons;
-		public PaletteItem[] itemArray;
-		public bool autoRun = true;
+    public class VolumeManager : MonoBehaviour
+    {
+        #region LocalSetting
 
-		void Awake ()
-		{
-			if (autoRun) {
-				Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-				if (v.Length > 0) {
-					UpdateDungeon ();
+        public bool useLocalSetting;
 
-					if (VGlobal.GetSetting ().FakeDeco) {
-						for (int i = 0; i < v.Length; i++) {
-							GameObject.Destroy (v [i].gameObject);
-						}
-					}
-				}
-			}
-		}
+        [SerializeField]bool saveBackup;
+        public bool SaveBackup {
+            get { return useLocalSetting ? saveBackup : false; }
+            set { saveBackup = useLocalSetting ? value : saveBackup; }
+        }
 
-		void Start ()
-		{
-			#if UNITY_EDITOR
-			if (!UnityEditor.EditorApplication.isPlaying && VGlobal.GetSetting ().saveBackup) {
-				BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
+        [SerializeField]bool useArtPack;
+        public bool UseArtPack {
+            get { return useLocalSetting ? useArtPack : true; }
+            set { useArtPack = useLocalSetting ? value : useArtPack; }
+        }
 
-				UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
-				string log = "";
-				for (int i = 0; i < _event.GetInvocationList ().Length; i++) {
-					log = log + i + "/" + _event.GetInvocationList ().Length + ": " + _event.GetInvocationList () [i].Method.ToString () + "\n";
-				}
-				Debug.LogWarning (log);
-			}
-			#endif
+        [SerializeField]bool snapGridL;
+        public bool SnapGrid {
+            get { return useLocalSetting ? snapGridL : false; }
+            set { snapGridL = useLocalSetting ? value : snapGridL; }
+        }
 
-			if (VGlobal.GetSetting().FakeDeco && autoRun) {
-				CreateVolumes ();
+        [SerializeField]bool debugRulerL;
+        public bool DebugRuler {
+            get { return useLocalSetting ? debugRulerL : false; }
+            set { debugRulerL = useLocalSetting ? value : debugRulerL; }
+        }
+
+        [SerializeField]bool showBlockHoldL;
+        public bool ShowBlockHold {
+            get { return useLocalSetting ? showBlockHoldL : false; }
+            set { showBlockHoldL = useLocalSetting ? value : showBlockHoldL; }
+        }
+
+        #endregion
+
+        public List<Dungeon> dungeons = new List<Dungeon> ();
+        public bool useStageData;
+        public int currentStageData = -1;
+        public StageData stageData;
+
+        void Awake ()
+        {
+            if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
+                gameObject.AddComponent (typeof(GlobalDriver));
             }
-		}
+            if (useStageData) {
+                GenerateDungeonByStageData ();
+            } else {
+                GenerateDungeonByChildVolumes ();
+            }
+            ClearVolumes ();
+            CreateVolumeMakers ();
+            if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon")) {
+                BuildVolumes ();
+                StartCoroutine (CheckLoadCompeleted ());
+            }
+        }
+        List<VolumeMaker> vms = new List<VolumeMaker>();
+        bool loaded;
+        System.Collections.IEnumerator CheckLoadCompeleted ()
+        {
+            while (!loaded) {
+                loaded = true;
+                foreach (var vm in vms) {
+                    if (!vm.LoadCompeleted ()) {
+                        loaded = false;
+                        break;
+                    }
+                }
+                if (loaded) {
+                    VolumeAdapter.UpdatePortals (gameObject);
+                    yield break;
+                }
+                yield return new WaitForSeconds (0.00f);
+            }
+        }
 
-		public void CreateVolumes ()
-		{
-			for (int vi = 0; vi < dungeons.Count; vi++) {
-				GameObject volume = new GameObject ("Volume" + dungeons [vi].volumeData.ToString());
-				volume.transform.parent = transform;
-				volume.transform.localPosition = dungeons[vi].position;
-				volume.transform.localRotation = dungeons[vi].rotation;
-				volume.SetActive (false);
-				VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
-				vm.enabled = false;
-				vm.m_vd = dungeons [vi].volumeData;
-				vm.m_style = VolumeMaker.Style.ChunkWithPieceAndItem;
-				vm.ArtPack = dungeons [vi].ArtPack;
-				vm.vMaterial = dungeons [vi].vMaterial;
-				volume.SetActive (true);
-				vm.Build ();
-			}
-		}
+        void Start ()
+        {
+            #if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlaying && SaveBackup) {
+                BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
 
-		public void UpdateDungeon ()
-		{
-			Volume[] v = transform.GetComponentsInChildren<Volume> (false);
-			dungeons = new List<Dungeon> ();
+                UnityEditor.EditorApplication.CallbackFunction _event = UnityEditor.EditorApplication.playmodeStateChanged;
+                string log = "";
+                for (int i = 0; i < _event.GetInvocationList ().Length; i++) {
+                    log += i + "/" + _event.GetInvocationList ().Length + ": " + _event.GetInvocationList () [i].Method + "\n";
+                }
+                Debug.LogWarning (log);
+            }
+            #endif
+        }
 
-			for (int i = 0; i < v.Length; i++) {
-				Dungeon newDungeon = new Dungeon();
-				newDungeon.volumeData = v [i].vd;
-				newDungeon.position = v [i].transform.position;
-				newDungeon.rotation = v [i].transform.rotation;
-				newDungeon.ArtPack = v [i].ArtPack;
-				newDungeon.vMaterial = v [i].vMaterial;
-				dungeons.Add (newDungeon);
-			}
-		}
-	}
+        public void ClearVolumes ()
+        {
+            Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
+            foreach (Volume v in vs) {
+                UnityEngine.Object.DestroyImmediate (v.gameObject, false);
+            }
+        }
+
+        public void BuildVolumes ()
+        {
+            BroadcastMessage ("Build", SendMessageOptions.DontRequireReceiver);
+        }
+
+        void CreateVolumeMakers ()
+        {
+            vms.Clear ();
+            foreach (Dungeon d in dungeons) {
+                if (d.volumeData == null)
+                    continue;
+                GameObject volume = new GameObject (d.volumeData.name);
+                volume.transform.parent = transform;
+                volume.transform.localPosition = d.position;
+                volume.transform.localRotation = d.rotation;
+                VolumeMaker vm = volume.AddComponent<VolumeMaker> ();
+                vm.m_vd = d.volumeData;
+                vm.m_style = VolumeMaker.Style.ChunkWithPieceAndItem;
+                vm.ArtPack = d.ArtPack;
+                vm.vMaterial = d.vMaterial;
+                vms.Add (vm);
+            }
+        }
+
+        /// <summary>
+        /// Search all volumes in children and create new Dungeon list.
+        /// </summary>
+        public void GenerateDungeonByChildVolumes ()
+        {
+            Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
+            if (vs.Length < 1 && dungeons.Count > 0)
+                return;
+            dungeons.Clear ();
+            foreach (Volume v in vs) {
+                Dungeon newDungeon = new Dungeon ();
+                newDungeon.volumeData = v.vd;
+                newDungeon.position = v.transform.position;
+                newDungeon.rotation = v.transform.rotation;
+                newDungeon.ArtPack = v.ArtPack;
+                newDungeon.vMaterial = v.vMaterial;
+                dungeons.Add (newDungeon);
+            }
+        }
+
+        /// <summary>
+        /// Generates the dungeon by StageData.
+        /// </summary>
+        public void GenerateDungeonByStageData ()
+        {
+            UnityEngine.Random.InitState (Guid.NewGuid ().GetHashCode ());
+            int i = UnityEngine.Random.Range (0, stageData.stageList.Count);
+            dungeons.Clear ();
+            foreach (Dungeon d in stageData.stageList[i].Dlist) {
+                dungeons.Add (d);
+            }
+            currentStageData = i;
+        }
+    }
 }

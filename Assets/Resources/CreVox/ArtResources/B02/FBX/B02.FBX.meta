@@ -128,6 +128,7 @@ ModelImporter:
     100240: B02a_SiCpWm002_Collision
     100242: B02a_GsEbWm002
     100244: B02a_GsEbWm003
+    100246: B02a_GiEpWm001_Unuse
     400000: //RootNode
     400002: C01a_Fnc001
     400004: C01a_GiEpWm001
@@ -251,6 +252,7 @@ ModelImporter:
     400240: B02a_SiCpWm002_Collision
     400242: B02a_GsEbWm002
     400244: B02a_GsEbWm003
+    400246: B02a_GiEpWm001_Unuse
     2300000: C01a_Fnc001
     2300002: C01a_GiEpWm001
     2300004: C01a_Stair001
@@ -370,6 +372,7 @@ ModelImporter:
     2300232: B02a_SiCpWm002_Collision
     2300234: B02a_GsEbWm002
     2300236: B02a_GsEbWm003
+    2300238: B02a_GiEpWm001_Unuse
     3300000: C01a_Fnc001
     3300002: C01a_GiEpWm001
     3300004: C01a_Stair001
@@ -489,6 +492,7 @@ ModelImporter:
     3300232: B02a_SiCpWm002_Collision
     3300234: B02a_GsEbWm002
     3300236: B02a_GsEbWm003
+    3300238: B02a_GiEpWm001_Unuse
     4300000: C01a_Fnc001
     4300002: C01a_GiEpWm001
     4300004: C01a_Stair001
@@ -608,6 +612,7 @@ ModelImporter:
     4300232: B02a_SiCpWm002_Collision
     4300234: B02a_GsEbWm002
     4300236: B02a_GsEbWm003
+    4300238: B02a_GiEpWm001_Unuse
   materials:
     importMaterials: 0
     materialName: 1

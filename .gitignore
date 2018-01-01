@@ -41,30 +41,37 @@ Thumbs.db
 sysinfo.txt #Unity3D Generated File On Crash Reports
 =======
 >>>>>>> Dev
-Assets/DungeonArchitect/
-Assets/DungeonArchitect.meta
-Assets/DungeonArchitect_Samples/
-Assets/DungeonArchitect_Samples.meta
-Assets/Resources/Crevox/VolumeData/_TempBackup/
-27Resources/
-Assets/Gizmos/
-Assets/Gizmos.meta
-Assets/ArtWorks/
-Assets/ArtWorks.meta
-Assets/Lava_Flowing_Shader/
-Assets/Lava_Flowing_Shader.meta
-Assets/Plugins/Cope! Free Skybox Pack.meta
-Assets/Plugins/Cope! Free Skybox Pack/
 *.unitypackage
+27Resources/
+Assets/DungeonArchitect.meta
+Assets/DungeonArchitect/
+Assets/DungeonArchitect_Samples.meta
+Assets/DungeonArchitect_Samples/
+Assets/Gizmos/Behavior Designer Scene Icon.png.meta
+Assets/Gizmos/Behavior Designer Scene Icon.png
+Assets/Gizmos/Behavior Designer Hier Icon.png.meta
+Assets/Gizmos/Behavior Designer Hier Icon.png
+Assets/ArtWorks.meta
+Assets/ArtWorks/
 Assets/UBER.meta
 Assets/UBER/
 Assets/Standard Assets.meta
 Assets/Standard Assets/
 Assets/PostProcessing.meta
 Assets/PostProcessing/
-Assets/WillDelete/VolumeData/
-Assets/WillDelete/VolumeData.meta
+Assets/Resources/CreVox/VolumeData/_TempBackup.meta
+Assets/Resources/Crevox/VolumeData/_TempBackup/
 Assets/Resources/CreVox/VolumeData/Isaac.meta
 Assets/Resources/CreVox/VolumeData/Isaac/
 Assets/Resources/CreVox/VolumeData/TEST.meta
 Assets/Resources/CreVox/VolumeData/TEST/
+Assets/Resources/CreVox/NodeRelation.txt.meta
+Assets/Resources/CreVox/NodeRelation.txt
+Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs.meta
+Assets/EditorPlugins/CreVox/Scripts/Editor/BuiltInResourcesWindow.cs
+Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData.meta
+Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData/
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader
+Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader.meta
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes/
+Assets/Resources/CreVox/ArtResources/B02/Tex/CGIncludes.meta

@@ -1,0 +1,220 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1994934606508764}
+  m_IsPrefabParent: 1
+--- !u!1 &1341194655556044
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4970965013310772}
+  - component: {fileID: 114579428425026558}
+  m_Layer: 0
+  m_Name: SECTR Portal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1515751785557128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4248989432912736}
+  - component: {fileID: 65521399688612018}
+  - component: {fileID: 114385704335694182}
+  - component: {fileID: 114046214463473970}
+  m_Layer: 20
+  m_Name: AreaTipActor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &1994934606508764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4001290393723022}
+  - component: {fileID: 114786979064142352}
+  - component: {fileID: 114560514585902692}
+  m_Layer: 5
+  m_Name: Starting Node
+  m_TagString: Untagged
+  m_Icon: {fileID: -2349822300998112484, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &4001290393723022
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1994934606508764}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4970965013310772}
+  - {fileID: 4248989432912736}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4248989432912736
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515751785557128}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1.01, y: 1.009999, z: 1.009999}
+  m_Children: []
+  m_Father: {fileID: 4001290393723022}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4970965013310772
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1341194655556044}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 4, z: -0.5}
+  m_LocalScale: {x: 3, y: 8, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4001290393723022}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!65 &65521399688612018
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515751785557128}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 9, y: 1, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114046214463473970
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515751785557128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 195912fee7294ba43bcf487390280b80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_keyString: MessageIn
+  m_activeCount: 1
+  m_stringKey: Area_0001
+--- !u!114 &114385704335694182
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1515751785557128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a949b71bd5a9ce6469b3a3a10ef486f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114560514585902692
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1994934606508764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41acce97e7e257942bf7dcd701cb0060, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  block:
+    BlockPos:
+      x: 0
+      y: 0
+      z: 0
+  pivot: 3
+  isSolid: 000000000000
+  isHold: 0
+  holdBlocks: []
+  maxX: 0
+  minX: 0
+  maxY: 0
+  minY: 0
+  maxZ: 0
+  minZ: 0
+  eventRange: 1
+  PProperties:
+  - tActive: 0
+    tComponent: 5
+    tObject: {fileID: 1341194655556044}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  - tActive: 0
+    tComponent: 0
+    tObject: {fileID: 0}
+    tRange: 0
+  probability: 0
+--- !u!114 &114579428425026558
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1341194655556044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e94887d2fbecadb4a9d5811f629b8ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FrontSector: {fileID: 0}
+  BackSector: {fileID: 0}
+--- !u!114 &114786979064142352
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1994934606508764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f611ddee768e8f4eb0ce3e12311e179, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  category: 2
+  markType: -3
+  itemName: "\u5165\u53E3"
+  inspectedScript: {fileID: 114560514585902692}
+  assetPath: 
