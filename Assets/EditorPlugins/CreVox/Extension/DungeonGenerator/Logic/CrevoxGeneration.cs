@@ -82,14 +82,13 @@ namespace CrevoxExtend {
 			}
 
 			if (nowState != null) {
-				Debug.Log("<color=green>Completed.</color>");
+				Debug.Log("<color=green>Completed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
 				// Transform state into gameobject.
 				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
 			} else {
 				// Keep null means failed.
-				Debug.Log("<color=red>Failed.</color>");
+				Debug.Log("<color=red>Failed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
 			}
-			Debug.Log(testStopWatch.ElapsedMilliseconds + " ms");
 			testStopWatch.Stop();
 			// Return boolean.
 			return nowState != null;
@@ -159,7 +158,10 @@ namespace CrevoxExtend {
 					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
 						// Ignore used or type-error connection. 
 						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
-						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name != connection.connectionName) { continue; }
+						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name.ToLower() != connection.connectionName.ToLower()) {
+							Debug.Log(RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name + " : " + connection.connectionName);
+							continue;
+						} else{Debug.Log("success : " + connection.connectionName);}
 						// Combine.
 						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
 							// If Success, add this VData to the state
