@@ -37,7 +37,6 @@ public class TestRealTimeRun : MonoBehaviour {
 				VGlobal.Stage _s = new VGlobal.Stage ();
 				_s.artPack = "B02";
 				_s.XmlPath = XmlPath;
-				_s.vDataPath = ResourcePath;
 				_s.VGXmlPath = VGXmlPath;
 				int testTime = 0;
 				while (!succeed && testTime < 20) {

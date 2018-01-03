@@ -165,8 +165,8 @@ namespace CrevoxExtend {
 					EditorGUI.BeginChangeCheck ();
 					stage.artPack = EditorGUILayout.TextField ("ArtPack", stage.artPack);
 					stage.XmlPath = EditorGUILayout.TextField ("Mission Graph Xml", stage.XmlPath);
-					stage.vDataPath = EditorGUILayout.TextField ("VData Path", stage.vDataPath);
 					stage.SpaceXmlPath = EditorGUILayout.TextField ("Space Alphabet Xml", stage.SpaceXmlPath);
+					//stage.vDataPath = EditorGUILayout.TextField ("VData Path", stage.vDataPath);
 					stage.VGXmlPath = EditorGUILayout.TextField ("VGeneration Xml", stage.VGXmlPath);
 					if (EditorGUI.EndChangeCheck ()) {
 						Predicate<VGlobal.Stage> findStage = delegate(VGlobal.Stage s) {
@@ -201,7 +201,7 @@ namespace CrevoxExtend {
 		// Serialize
 		private static void SerializeToXML(string path){
 			XDocument xmlDocument = new XDocument();
-			xmlDocument.Add(SerializeVolumeGeneration(CrevoxGeneration.stage.vDataPath));
+            xmlDocument.Add(SerializeVolumeGeneration(CrevoxGeneration.stage.VGXmlPath));
 			xmlDocument.Save(path);
 		}
 		private static XElement SerializeVolumeGeneration(string vdataspath){
@@ -232,7 +232,7 @@ namespace CrevoxExtend {
 
 		// Deserialize
 		private static void DeserializeFromXML(string path){
-			TextAsset xmlData = Resources.Load(path.Replace(".xml", "")) as TextAsset;
+			TextAsset xmlData = Resources.Load(path) as TextAsset;
 			XDocument xmlDocument = (xmlData == null) ? XDocument.Load(path) : XDocument.Parse(xmlData.text);
 			DeserializeVolumeGeneration(xmlDocument);
 		}

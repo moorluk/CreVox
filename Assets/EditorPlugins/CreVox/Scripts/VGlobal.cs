@@ -114,7 +114,6 @@ namespace CreVox
             public int number;
             public string artPack;
             public string XmlPath;
-            public string vDataPath;
             public string SpaceXmlPath;
             public string VGXmlPath;
         }
@@ -130,7 +129,6 @@ namespace CreVox
                     artPack = _artPack,
                     XmlPath = _XmlPath,
                     SpaceXmlPath = _spaceXmlPath,
-                    vDataPath = _vDataPath,
                     VGXmlPath = _VGXmlPath
                 };
                 StageList.Add (s);

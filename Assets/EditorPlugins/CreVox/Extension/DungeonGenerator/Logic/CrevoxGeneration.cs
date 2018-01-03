@@ -234,9 +234,6 @@ namespace CrevoxExtend {
 			
 		// Realtime Level Generation II.
 		public static bool GenerateRealLevel(CreVoxNode root, VGlobal.Stage _stage, int seed){
-			if (_stage.vDataPath == string.Empty) {
-				throw new System.Exception("vDataPath in stage cannot be empty.");
-			}
 			if (_stage.VGXmlPath == string.Empty){
 				throw new System.Exception("VGXmlPath in stage cannot be empty.");
 			}
@@ -279,7 +276,6 @@ namespace CrevoxExtend {
 			List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + elementVDatasPath.Value.ToString());
 			// or like this-> GetVolumeDatasFromDir(PathCollect.save + "/" + stage.vDataPath); 
 			// vDataPath is still empty because of the order of function call
-			Debug.Log ("Load VData from " + PathCollect.save + "/" + stage.vDataPath);
 
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later.
