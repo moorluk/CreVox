@@ -100,9 +100,10 @@ namespace CreVox
         public bool LoadCompeleted ()
         {
             bool result = true;
-            for (int idx = 0; idx < m_bts.Count; ++idx) {
-                result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
-            }
+            //donot use BehaviorDesigner
+            //for (int idx = 0; idx < m_bts.Count; ++idx) {
+            //    result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
+            //}
             return (result & isPieceFin && isItemFin);
         }
 
