@@ -62,20 +62,11 @@ namespace CreVox
             if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
-            if (useStageData) {
-                GenerateDungeonByStageData ();
-            } else {
-                GenerateDungeonByChildVolumes ();
-            }
-            ClearVolumes ();
-            CreateVolumeMakers ();
-            if (!VolumeAdapter.CheckActiveComponent ("SetupDungeon")) {
-                BuildVolumes ();
-                StartCoroutine (CheckLoadCompeleted ());
-            }
         }
+
         List<VolumeMaker> vms = new List<VolumeMaker>();
-        bool loaded;
+        public bool loaded;
+
         System.Collections.IEnumerator CheckLoadCompeleted ()
         {
             while (!loaded) {
@@ -90,12 +81,22 @@ namespace CreVox
                     VolumeAdapter.UpdatePortals (gameObject);
                     yield break;
                 }
-                yield return new WaitForSeconds (0.00f);
+                yield return new WaitForSeconds (0.01f);
             }
         }
 
         void Start ()
         {
+            if (useStageData) {
+                GenerateDungeonByStageData();
+            } else {
+                GenerateDungeonByChildVolumes();
+            }
+            ClearVolumes();
+            CreateVolumeMakers();
+            BuildVolumes();
+            StartCoroutine(CheckLoadCompeleted());
+
             #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlaying && SaveBackup) {
                 BroadcastMessage ("SubscribeEvent", SendMessageOptions.RequireReceiver);
