@@ -101,7 +101,7 @@ namespace CrevoxExtend {
 		}
 
 		#region 碰撞判定
-		static float CHUNK_DISTANCE_MAXIMUM = 37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
+        static float CHUNK_DISTANCE_MAXIMUM = 100f; //37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
 
 		// Collision
 		private bool IsCollider(VolumeDataEx volumeEx) {
