@@ -44,7 +44,6 @@ public class TestRealTimeRun : MonoBehaviour {
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
 					// Load XML of space alphabet.
-					SpaceAlphabet.RuntimeGenerate(SpaceXmlPath);
 					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;
 				}

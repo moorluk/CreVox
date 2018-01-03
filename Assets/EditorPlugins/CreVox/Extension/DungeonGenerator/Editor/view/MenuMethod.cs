@@ -10,10 +10,4 @@ public class MenuMethod : EditorWindow {
 		_window = EditorWindow.GetWindow<CrevoxExtend.CrevoxGenerationWindow>("Volume generation", true);
 		_window.position = new Rect(35, 35, 300, 50);
 	}
-	[MenuItem("CrevoxExtend/SpaceAlphabet", false, 1)]
-	public static void ShowSpaceAlphabet() {
-		_window = EditorWindow.GetWindow<CrevoxExtend.SpaceAlphabetWindow>("Space Alphabet", true);
-		_window.minSize = new Vector2(35, 130);
-		_window.position = new Rect(35, 35, 300, 50);
-	}
 }

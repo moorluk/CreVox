@@ -136,10 +136,6 @@ namespace CrevoxExtend {
 					}*/
 				}
 				// [EDIT LATER] [Must modify the operations in "Generate" Button later (adding the max usage)]. In CrevoxGeneration.cs
-				// Replace connections.
-				if (GUILayout.Button("ReplaceConnection")) {
-					CrevoxGeneration.ReplaceConnection(CrevoxGeneration.stage);
-				}
 				EditorGUI.EndDisabledGroup();
 			}
 			CrevoxGeneration.generateVolume = GUILayout.Toggle(CrevoxGeneration.generateVolume, "Generate Volume");
@@ -165,7 +161,6 @@ namespace CrevoxExtend {
 					EditorGUI.BeginChangeCheck ();
 					stage.artPack = EditorGUILayout.TextField ("ArtPack", stage.artPack);
 					stage.XmlPath = EditorGUILayout.TextField ("Mission Graph Xml", stage.XmlPath);
-					stage.SpaceXmlPath = EditorGUILayout.TextField ("Space Alphabet Xml", stage.SpaceXmlPath);
 					//stage.vDataPath = EditorGUILayout.TextField ("VData Path", stage.vDataPath);
 					stage.VGXmlPath = EditorGUILayout.TextField ("VGeneration Xml", stage.VGXmlPath);
 					if (EditorGUI.EndChangeCheck ()) {
