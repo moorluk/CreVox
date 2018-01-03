@@ -197,48 +197,8 @@ namespace CrevoxExtend {
 				RecursionGetSequence(child);
 			}
 		}
-		// Replace remaining connection.
-		public static void ReplaceConnection(VGlobal.Stage _stage) {
-			var stopWatch = System.Diagnostics.Stopwatch.StartNew();
-			int counter = 0;
-			// Find all volume.
-			for (int i = 0; i < nowState.ResultVolumeDatas.Count && stopWatch.ElapsedMilliseconds < TIMEOUT_MILLISECOND; i++) {
-				// Find all connections that haven't used.
-				foreach (var connection in nowState.ResultVolumeDatas[i].ConnectionInfos.FindAll(c => !c.used && c.type == ConnectionInfoType.Connection)) {
-					bool success = false;
-					// Find all vdata replaced order by random.
-					foreach (var vdata in SpaceAlphabet.ReplacementDictionary[connection.connectionName].OrderBy(x => UnityEngine.Random.value)) {
-						CrevoxState.VolumeDataEx replaceVol = new CrevoxState.VolumeDataEx(vdata);
-						ConnectionInfo replaceStartingNode = replaceVol.ConnectionInfos.Find(x => x.type == ConnectionInfoType.StartingNode);
-						// Combine.
-						if (nowState.CombineVolumeObject(nowState.ResultVolumeDatas[i], replaceVol, connection, replaceStartingNode)) {
-							Debug.Log(connection.connectionName + " is replaced by " + vdata.name);
-							nowState.ResultVolumeDatas.Add(replaceVol);
-							connection.used = true;
-							replaceStartingNode.used = true;
-							success = true;
-							counter++;
-							break;
-						}
-					}
-					// If none can combined then alert.
-					if (!success) {
-						Debug.Log(nowState.ResultVolumeDatas[i].volumeData.name + ":" + connection.connectionName + " replace failed.");
-					}
-				}
-			}
-			// Record.
-			Debug.Log("Replace " + counter + " connections.");
-			Debug.Log(stopWatch.ElapsedMilliseconds + " ms");
-			stopWatch.Stop();
-			CrevoxOperation.TransformStateIntoObject (nowState, _stage.artPack, generateVolume);
-		}
-			
 		// Realtime Level Generation II.
 		public static bool GenerateRealLevel(CreVoxNode root, VGlobal.Stage _stage, int seed){
-			if (_stage.vDataPath == string.Empty) {
-				throw new System.Exception("vDataPath in stage cannot be empty.");
-			}
 			if (_stage.VGXmlPath == string.Empty){
 				throw new System.Exception("VGXmlPath in stage cannot be empty.");
 			}
@@ -281,7 +241,6 @@ namespace CrevoxExtend {
 			List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + elementVDatasPath.Value.ToString());
 			// or like this-> GetVolumeDatasFromDir(PathCollect.save + "/" + stage.vDataPath); 
 			// vDataPath is still empty because of the order of function call
-			Debug.Log ("Load VData from " + PathCollect.save + "/" + stage.vDataPath);
 
 			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later.

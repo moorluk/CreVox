@@ -114,7 +114,6 @@ namespace CreVox
             public int number;
             public string artPack;
             public string XmlPath;
-            public string vDataPath;
             public string SpaceXmlPath;
             public string VGXmlPath;
         }
@@ -130,7 +129,6 @@ namespace CreVox
                     artPack = _artPack,
                     XmlPath = _XmlPath,
                     SpaceXmlPath = _spaceXmlPath,
-                    vDataPath = _vDataPath,
                     VGXmlPath = _VGXmlPath
                 };
                 StageList.Add (s);
@@ -154,7 +152,6 @@ namespace CreVox
                 seed = UnityEngine.Random.Range (0, int.MaxValue);
             if (_s.XmlPath.Length > 0 && _s.VGXmlPath.Length > 0) {
                 CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, seed);
-                SpaceAlphabet.RuntimeGenerate (_s.SpaceXmlPath);
                 return CrevoxGeneration.GenerateRealLevel (root, _s, seed);
             }
             return false;

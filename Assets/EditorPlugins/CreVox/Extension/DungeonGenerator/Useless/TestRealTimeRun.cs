@@ -37,7 +37,6 @@ public class TestRealTimeRun : MonoBehaviour {
 				VGlobal.Stage _s = new VGlobal.Stage ();
 				_s.artPack = "B02";
 				_s.XmlPath = XmlPath;
-				_s.vDataPath = ResourcePath;
 				_s.VGXmlPath = VGXmlPath;
 				int testTime = 0;
 				while (!succeed && testTime < 20) {
@@ -45,7 +44,6 @@ public class TestRealTimeRun : MonoBehaviour {
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
 					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
 					// Load XML of space alphabet.
-					SpaceAlphabet.RuntimeGenerate(SpaceXmlPath);
 					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;
 				}
