@@ -1,0 +1,562 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657df76137ee14e4a997dbd2191a4b28, type: 3}
+  m_Name: 1
+  m_EditorClassIdentifier: Assembly-CSharp:CreVox:StageData
+  stageList:
+  - Name: Test
+    Dlist:
+    - volumeData: {fileID: 11400000, guid: 8e69e13d252d1454abae00a307e07679, type: 2}
+      position: {x: 3, y: 0, z: 27}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 921ed644e63ba044780a35805ef4ffd0, type: 2}
+      position: {x: -3, y: 0, z: 30}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: c2dd9327febe00844a3f5c7c0e421149, type: 2}
+      position: {x: 12, y: 0, z: 51}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 24, y: 0, z: 27}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 24, y: 0, z: 6}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 24, y: 0, z: -12}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b388d055b983d4e489c1be89ff2537b1, type: 2}
+      position: {x: 66, y: 0, z: 81}
+      rotation: {x: -0, y: 1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 9fffcd74c322aeb4db44c7ad0d667b6c, type: 2}
+      position: {x: 54, y: 0, z: 108}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 105, y: 0, z: 90}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 126, y: 0, z: 90}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 144, y: 0, z: 90}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 117, y: 0, z: 66}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 117, y: 0, z: 63}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 117, y: 0, z: 45}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 8d84e63de5b8ab24392d31d7bafd8160, type: 2}
+      position: {x: 27, y: 0, z: 99}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: f2984cd39864f2a4e81bf90a252c77c8, type: 2}
+      position: {x: 30, y: -8, z: 177}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 7d94516816b7cf649be6e1cf321a740f, type: 2}
+      position: {x: 51, y: -2, z: 168}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: e4d84bbe4d70f034aa2c66c8ea41b7ff, type: 2}
+      position: {x: 78, y: -2, z: 144}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: ad985048fef0f744f81e64cb9a4cb62f, type: 2}
+      position: {x: 78, y: -2, z: 198}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 129, y: 0, z: 207}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 150, y: 0, z: 207}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 168, y: 0, z: 207}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 141, y: 0, z: 183}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 141, y: 0, z: 180}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 141, y: 0, z: 162}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a7df5496b741c5e41b24eca30c4069dc, type: 2}
+      position: {x: 51, y: 10, z: 228}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 17126ee954565794bbb2adf6cbce4ded, type: 2}
+      position: {x: 48, y: 10, z: 222}
+      rotation: {x: -0, y: -1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: -24, y: 2, z: 240}
+      rotation: {x: -0, y: 1, z: -0, w: -0.0000015199182}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: -24, y: 2, z: 261}
+      rotation: {x: -0, y: -1, z: -0, w: 0.0000030100346}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+  - Name: 123
+    Dlist:
+    - volumeData: {fileID: 11400000, guid: 8e69e13d252d1454abae00a307e07679, type: 2}
+      position: {x: 3, y: 0, z: 27}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 921ed644e63ba044780a35805ef4ffd0, type: 2}
+      position: {x: -3, y: 0, z: 30}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: c2dd9327febe00844a3f5c7c0e421149, type: 2}
+      position: {x: 12, y: 0, z: 51}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 24, y: 0, z: 27}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 24, y: 0, z: 6}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 24, y: 0, z: -12}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b388d055b983d4e489c1be89ff2537b1, type: 2}
+      position: {x: 66, y: 0, z: 81}
+      rotation: {x: -0, y: 1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 9fffcd74c322aeb4db44c7ad0d667b6c, type: 2}
+      position: {x: 54, y: 0, z: 108}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 105, y: 0, z: 90}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 126, y: 0, z: 90}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 144, y: 0, z: 90}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 117, y: 0, z: 66}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 117, y: 0, z: 63}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 117, y: 0, z: 45}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 8d84e63de5b8ab24392d31d7bafd8160, type: 2}
+      position: {x: 27, y: 0, z: 99}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: f2984cd39864f2a4e81bf90a252c77c8, type: 2}
+      position: {x: 30, y: -8, z: 177}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 7d94516816b7cf649be6e1cf321a740f, type: 2}
+      position: {x: 51, y: -2, z: 168}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: e4d84bbe4d70f034aa2c66c8ea41b7ff, type: 2}
+      position: {x: 78, y: -2, z: 144}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: ad985048fef0f744f81e64cb9a4cb62f, type: 2}
+      position: {x: 78, y: -2, z: 198}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 17126ee954565794bbb2adf6cbce4ded, type: 2}
+      position: {x: 48, y: 10, z: 222}
+      rotation: {x: -0, y: -1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: -24, y: 2, z: 240}
+      rotation: {x: -0, y: 1, z: -0, w: -0.0000015199182}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: -24, y: 2, z: 261}
+      rotation: {x: -0, y: -1, z: -0, w: 0.0000030100346}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+  - Name: ??
+    Dlist:
+    - volumeData: {fileID: 11400000, guid: 8e69e13d252d1454abae00a307e07679, type: 2}
+      position: {x: 3, y: 0, z: 27}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 921ed644e63ba044780a35805ef4ffd0, type: 2}
+      position: {x: -3, y: 0, z: 30}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: c2dd9327febe00844a3f5c7c0e421149, type: 2}
+      position: {x: 12, y: 0, z: 51}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 24, y: 0, z: 27}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 24, y: 0, z: 6}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 24, y: 0, z: -12}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b388d055b983d4e489c1be89ff2537b1, type: 2}
+      position: {x: 66, y: 0, z: 81}
+      rotation: {x: -0, y: 1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 9fffcd74c322aeb4db44c7ad0d667b6c, type: 2}
+      position: {x: 54, y: 0, z: 108}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 105, y: 0, z: 90}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 126, y: 0, z: 90}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 144, y: 0, z: 90}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 117, y: 0, z: 66}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 117, y: 0, z: 63}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 117, y: 0, z: 45}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 8d84e63de5b8ab24392d31d7bafd8160, type: 2}
+      position: {x: 27, y: 0, z: 99}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: f2984cd39864f2a4e81bf90a252c77c8, type: 2}
+      position: {x: 30, y: -8, z: 177}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 7d94516816b7cf649be6e1cf321a740f, type: 2}
+      position: {x: 51, y: -2, z: 168}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: e4d84bbe4d70f034aa2c66c8ea41b7ff, type: 2}
+      position: {x: 78, y: -2, z: 144}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: ad985048fef0f744f81e64cb9a4cb62f, type: 2}
+      position: {x: 78, y: -2, z: 198}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: -24, y: 2, z: 261}
+      rotation: {x: -0, y: -1, z: -0, w: 0.0000030100346}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+  - Name: full
+    Dlist:
+    - volumeData: {fileID: 11400000, guid: 8e69e13d252d1454abae00a307e07679, type: 2}
+      position: {x: 3, y: 0, z: 27}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 921ed644e63ba044780a35805ef4ffd0, type: 2}
+      position: {x: -3, y: 0, z: 30}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: c2dd9327febe00844a3f5c7c0e421149, type: 2}
+      position: {x: 12, y: 0, z: 51}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 24, y: 0, z: 27}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 24, y: 0, z: 6}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 24, y: 0, z: -12}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b388d055b983d4e489c1be89ff2537b1, type: 2}
+      position: {x: 66, y: 0, z: 81}
+      rotation: {x: -0, y: 1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 9fffcd74c322aeb4db44c7ad0d667b6c, type: 2}
+      position: {x: 54, y: 0, z: 108}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 105, y: 0, z: 90}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 126, y: 0, z: 90}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 144, y: 0, z: 90}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 117, y: 0, z: 66}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 117, y: 0, z: 63}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 117, y: 0, z: 45}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 8d84e63de5b8ab24392d31d7bafd8160, type: 2}
+      position: {x: 27, y: 0, z: 99}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: f2984cd39864f2a4e81bf90a252c77c8, type: 2}
+      position: {x: 30, y: -8, z: 177}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 7d94516816b7cf649be6e1cf321a740f, type: 2}
+      position: {x: 51, y: -2, z: 168}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: e4d84bbe4d70f034aa2c66c8ea41b7ff, type: 2}
+      position: {x: 78, y: -2, z: 144}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: ad985048fef0f744f81e64cb9a4cb62f, type: 2}
+      position: {x: 78, y: -2, z: 198}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: 129, y: 0, z: 207}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 150, y: 0, z: 207}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.70710784}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: 168, y: 0, z: 207}
+      rotation: {x: -0, y: -0.7071062, z: -0, w: 0.7071075}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 141, y: 0, z: 183}
+      rotation: {x: -0, y: 0.0000014603138, z: -0, w: -1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 141, y: 0, z: 180}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 141, y: 0, z: 162}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a7df5496b741c5e41b24eca30c4069dc, type: 2}
+      position: {x: 51, y: 10, z: 228}
+      rotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 17126ee954565794bbb2adf6cbce4ded, type: 2}
+      position: {x: 48, y: 10, z: 222}
+      rotation: {x: -0, y: -1, z: -0, w: 0}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b98c5baa7c90cff4b8d7c6b7b553405a, type: 2}
+      position: {x: -24, y: 2, z: 240}
+      rotation: {x: -0, y: 1, z: -0, w: -0.0000015199182}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: -24, y: 2, z: 261}
+      rotation: {x: -0, y: -1, z: -0, w: 0.0000030100346}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b8c3074946b606e4f8e93a8b5b20e4eb, type: 2}
+      position: {x: -24, y: 2, z: 279}
+      rotation: {x: -0, y: -1, z: -0, w: 0.0000024735925}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a8707c9a734fac74983ebeb7188e23a6, type: 2}
+      position: {x: 0, y: 2, z: 252}
+      rotation: {x: -0, y: 0.70710677, z: -0, w: -0.7071069}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a09b5e09c549d19478daeb45dce3992d, type: 2}
+      position: {x: 0, y: 2, z: 252}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.7071079}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: b726e82f3d6cde943846a2fbdfec0756, type: 2}
+      position: {x: 15, y: 2, z: 252}
+      rotation: {x: -0, y: -0.70710576, z: -0, w: 0.7071079}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 916d39cb72fc7ab46b54c74f4da15c47, type: 2}
+      position: {x: -57, y: 2, z: 201}
+      rotation: {x: -0, y: -0, z: -0, w: 1}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: a819f27e5ad991c469966b5c46f2423b, type: 2}
+      position: {x: -42, y: 0, z: 156}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 6cb388769d4541e4aa074a02b13e8923, type: 2}
+      position: {x: -30, y: 0, z: 114}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
+    - volumeData: {fileID: 11400000, guid: 382214b37cfe3914296202a92e47bf6c, type: 2}
+      position: {x: 24, y: 0, z: 114}
+      rotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+      ArtPack: CreVox/VolumeArtPack/B02
+      vMaterial: CreVox/VolumeArtPack/B02/B02_voxel
