@@ -24,6 +24,7 @@ namespace CrevoxExtend {
 			}
 			// Set gameObject's connectionInfo.
 			foreach (var vdataEx in state.ResultVolumeDatas) {
+                if ( ! transformTable.ContainsKey(vdataEx)) {continue;}
 				foreach (var connection in vdataEx.ConnectionInfos) {
 					// Get original gameObject.
 					Volume vol = transformTable[vdataEx];
