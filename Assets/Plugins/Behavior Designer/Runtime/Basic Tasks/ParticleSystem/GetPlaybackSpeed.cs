@@ -31,7 +31,7 @@ namespace BehaviorDesigner.Runtime.Tasks.Basic.UnityParticleSystem
                 return TaskStatus.Failure;
             }
 
-            storeResult.Value = particleSystem.playbackSpeed;
+            storeResult.Value = particleSystem.main.simulationSpeed;
 
             return TaskStatus.Success;
         }

@@ -23,8 +23,7 @@ namespace CreVox
 			string assetPath;
 			GameObject asset;
 			List<T> assetList = new List<T>();
-			string[] guids = AssetDatabase.FindAssets("t:Prefab", new
-                                                   string[] { path });
+			string[] guids = AssetDatabase.FindAssets("t:Prefab", new string[] { path });
 			for (int i = 0; i < guids.Length; i++) {
 				assetPath = AssetDatabase.GUIDToAssetPath(guids[i]);
 				asset = AssetDatabase.LoadAssetAtPath(assetPath,

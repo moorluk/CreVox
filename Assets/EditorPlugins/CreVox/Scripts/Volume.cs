@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 using BehaviorDesigner.Runtime;
@@ -10,1021 +9,990 @@ using UnityEditor;
 
 namespace CreVox
 {
-	[SelectionBase]
-	[ExecuteInEditMode]
-	public class Volume : MonoBehaviour
-	{
-		public string ArtPack = PathCollect.pieces;
-		public string vMaterial = PathCollect.defaultVoxelMaterial;
+    [SelectionBase]
+    [ExecuteInEditMode]
+    public class Volume : MonoBehaviour
+    {
+        public static Volume focusVolume;
 
-		public Material vertexMaterial;
+        public string ArtPack = PathCollect.pieces;
+        public string vMaterial = PathCollect.defaultVoxelMaterial;
 
-		public VolumeData vd;
+        Material vertexMaterial;
 
-		void Start ()
-		{
-			if (nodes == null)
-				nodes = new Dictionary<WorldPos, Node> ();
-			if (itemNodes == null)
-				itemNodes = new Dictionary<BlockItem, GameObject> ();
-			if (chunks == null)
-				chunks = new Dictionary<WorldPos, Chunk> ();
-			LoadTempWorld ();
-		}
+        public Material VertexMaterial {
+            get {
+                if (vertexMaterial == null) {
+                    vertexMaterial = Resources.Load (vMaterial, typeof(Material)) as Material;
+                    if (vertexMaterial == null)
+                        return Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+                }
+                return vertexMaterial;
+            }
+            set { vertexMaterial = value; }
+        }
 
-		void Update ()
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			float x = transform.position.x - transform.position.x % vg.w;
-			float y = transform.position.y - transform.position.y % vg.h;
-			float z = transform.position.z - transform.position.z % vg.d;
-			transform.position = new Vector3 (x, y, z);
-			#if UNITY_EDITOR
-			if (vg.saveBackup)
-				CompileSave ();
-			#endif
-		}
+        VGlobal vg;
 
-		#region Chunk
+        public VGlobal Vg {
+            get { return vg ?? VGlobal.GetSetting (); }
+            set { vg = value; }
+        }
 
-		private GameObject chunkPrefab;
-		public Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
-		public int chunkX = 1;
-		public int chunkY = 1;
-		public int chunkZ = 1;
+        VolumeManager vm;
 
-		public void BuildVolume ()
-		{
-			if (vd == null) {
-				return;
-			}
-			Init (vd.chunkX, vd.chunkY, vd.chunkZ);
-			foreach (Chunk c in chunks.Values) {
-				c.cData = vd.GetChunk (c.cData.ChunkPos);
-			}
-			itemArray = VGlobal.GetSetting().GetItemArray (ArtPack + vd.subArtPack);
-			PlacePieces ();
-			PlaceItems ();
+        public VolumeManager Vm {
+            get { return vm ?? transform.GetComponentInParent<VolumeManager> (); }
+            set { vm = value; }
+        }
 
-			UpdateChunks ();
-		}
+        public VolumeData vd;
 
-		public void Init (int _chunkX, int _chunkY, int _chunkZ)
-		{
-			Reset ();
-			chunkPrefab = Resources.Load (PathCollect.chunk) as GameObject;
+        #region delgate
 
-			chunkX = _chunkX;
-			chunkY = _chunkY;
-			chunkZ = _chunkZ;
+        private delegate void volumeAdd (GameObject volume);
 
-			nodeRoot = new GameObject ("DecorationRoot");
-			nodeRoot.transform.parent = transform;
-			nodeRoot.transform.localPosition = Vector3.zero;
-			nodeRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+        void AddComponent ()
+        {
+            volumeAdd AfterVolumeInit = new volumeAdd (VolumeAdapter.AfterVolumeInit);
+            if (AfterVolumeInit != null)
+                AfterVolumeInit (gameObject);
+        }
 
-			itemRoot = new GameObject ("ItemRoot");
-			itemRoot.transform.parent = transform;
-			itemRoot.transform.localPosition = Vector3.zero;
-			itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+        #endregion
 
-            CreateChunks ();
+        void Awake ()
+        {
+            if (!gameObject.activeSelf)
+                return;
+            if (nodes == null)
+                nodes = new Dictionary<WorldPos, Node> ();
+            if (itemNodes == null)
+                itemNodes = new Dictionary<BlockItem, GameObject> ();
+            if (chunks == null)
+                chunks = new Dictionary<WorldPos, Chunk> ();
+        }
 
-			#if UNITY_EDITOR
-			if (!EditorApplication.isPlaying) {
-				CreateRuler ();
-				CreateLevelRuler ();
-				CreateBox ();
-				ShowRuler ();
-			}
-			#endif
-		}
+        void Start ()
+        {
+            if (isLost) {
+                Debug.Log (string.Format ("<color=purple>Volume({0}) Reload...</color>\n", gameObject.name));
+                Build ();
+            }
+        }
 
-		private void Reset ()
-		{
-			if (chunks != null) {
-				DestoryChunks ();
-				chunks.Clear ();
-			}
-			nodes.Clear ();
-//			blockItems.Clear ();
-			itemNodes.Clear ();
+        #if UNITY_EDITOR
+        void Update ()
+        {
+            if (Vm.SaveBackup)
+                CompileSave ();
+            if (Vm.SnapGrid) {
+                float x = transform.position.x - transform.position.x % Vg.w;
+                float y = transform.position.y - transform.position.y % Vg.h;
+                float z = transform.position.z - transform.position.z % Vg.d;
+                transform.position = new Vector3 (x, y, z);
+            }
+            if (nodeRoot)
+                nodeRoot.SetActive (!Vm.ShowBlockHold);
+            if (chunkRoot)
+                chunkRoot.SetActive (!Vm.ShowBlockHold);
+        }
+        #endif
 
-			for (int i = transform.childCount; i > 0; i--)
-				GameObject.DestroyImmediate (transform.GetChild (i - 1).gameObject);
+        public void Build ()
+        {
+            ClearNodes ();
+            CreateNodeRoots ();
 
-			#if UNITY_EDITOR
-			mColl = null;
-			bColl = null;
-			if (ruler)
-				GameObject.DestroyImmediate (ruler);
-			if (layerRuler)
-				GameObject.DestroyImmediate (layerRuler);
-			#endif
-		}
+            if (vd == null)
+                return;
 
-		public void UpdateChunks ()
-		{
-			foreach (Chunk chunk in chunks.Values)
-				chunk.UpdateChunk ();
-		}
+            if (vd.useFreeChunk) {
+                CreateFreeChunk ();
+            } else {
+                CreateChunks ();
+            }
+            UpdateChunks ();
 
-		void CreateChunks ()
-		{
-			int chunksize = VGlobal.GetSetting ().chunkSize;
-			for (int x = 0; x < chunkX; x++) {
-				for (int y = 0; y < chunkY; y++) {
-					for (int z = 0; z < chunkZ; z++) {
-						Chunk newChunk = CreateChunk (x * chunksize, y * chunksize, z * chunksize);
-						newChunk.Init ();
-					}
-				}
-			}
-		}
+            itemArray = Vg.GetItemArray (ArtPack, vd.subArtPack, (Vm.UseArtPack));
 
-		Chunk CreateChunk (int x, int y, int z)
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			WorldPos chunkPos = new WorldPos (x, y, z);
+            PlacePieces ();
+            PlaceItems ();
 
-			GameObject newChunkObject = Instantiate (
-				                            chunkPrefab, new Vector3 (x * vg.w, y * vg.h, z * vg.d),
-				                            Quaternion.Euler (Vector3.zero)
-			                            ) as GameObject;
-			newChunkObject.name = "Chunk(" + x + "," + y + "," + z + ")";
-			newChunkObject.transform.parent = transform;
-			newChunkObject.transform.localPosition = new Vector3 (x * vg.w, y * vg.h, z * vg.d);
-			newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
-			#if UNITY_EDITOR
-			if (vertexMaterial != null/* && EditorApplication.isPlaying*/)
-				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack ? vertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
-			newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
-			#else
-			if (vertexMaterial != null)
-				newChunkObject.GetComponent<Renderer> ().material = vg.volumeShowArtPack?vertexMaterial : Resources.Load(PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
-			newChunkObject.layer = LayerMask.NameToLayer("Floor");
-			#endif
-			Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
+            AddComponent ();
+        }
 
-			newChunk.cData.ChunkPos = chunkPos;
-			newChunk.volume = this;
+        void ClearNodes ()
+        {
+            //clear LevelPiece
+            nodes.Clear ();
+            ClearNode (nodeRoot);
 
-			chunks.Add (chunkPos, newChunk);
+            //clear Item
+            itemNodes.Clear ();
+            ClearNode (itemRoot);
 
-			return newChunk;
-		}
+            //clear Chunk
+            chunks.Clear ();
+            ClearNode (chunkRoot);
 
-		void DestoryChunks ()
-		{
-			int chunkSize = VGlobal.GetSetting ().chunkSize;
-			for (int x = 0; x < chunkX; x++) {
-				for (int y = 0; y < chunkY; y++) {
-					for (int z = 0; z < chunkZ; z++) {
-						DestroyChunk (x * chunkSize, y * chunkSize, z * chunkSize);
-					}
-				}
-			}
-		}
+            string log = "<b>Other GameObject :</b>\n";
+            for (int i = transform.childCount; i > 0; i--) {
+                log += transform.GetChild (i - 1).gameObject.name + "\n";
+                ClearNode (transform.GetChild (i - 1).gameObject);
+            }
+            Debug.Log (log);
+        }
+        void ClearNode (GameObject _node)
+        {
+            if (Application.isPlaying)
+                UnityEngine.Object.Destroy (_node);
+            else
+                UnityEngine.Object.DestroyImmediate (_node);
+        }
 
-		void DestroyChunk (int x, int y, int z)
-		{
-			WorldPos chunkPos = new WorldPos (x, y, z);
-			if (chunks.ContainsKey (chunkPos)) {
-				if (chunks [chunkPos].gameObject) {
-					#if UNITY_EDITOR
-					GameObject.DestroyImmediate (chunks [chunkPos].gameObject);
-					#else
-					UnityEngine.Object.Destroy(chunks [chunkPos].gameObject);
-					#endif
-					chunks [chunkPos].Destroy ();
-					chunks.Remove (chunkPos);
-				}
-			}
-		}
+        void CreateNodeRoots ()
+        {
+            chunkRoot = new GameObject ("ChunkRoot");
+            chunkRoot.transform.parent = transform;
+            chunkRoot.transform.localPosition = Vector3.zero;
+            chunkRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
-		public Chunk GetChunk (int x, int y, int z)
-		{
-			WorldPos pos = new WorldPos ();
-			float multiple = VGlobal.GetSetting ().chunkSize;
-			pos.x = Mathf.FloorToInt (x / multiple) * (int)multiple;
-			pos.y = Mathf.FloorToInt (y / multiple) * (int)multiple;
-			pos.z = Mathf.FloorToInt (z / multiple) * (int)multiple;
+            nodeRoot = new GameObject ("DecorationRoot");
+            nodeRoot.transform.parent = transform;
+            nodeRoot.transform.localPosition = Vector3.zero;
+            nodeRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
-			return chunks.ContainsKey (pos) ? chunks [pos] : null;
-		}
+            itemRoot = new GameObject ("ItemRoot");
+            itemRoot.transform.parent = transform;
+            itemRoot.transform.localPosition = Vector3.zero;
+            itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+        }
 
-		#endregion
+        #region Chunk
 
-		#region Node
+        GameObject chunkRoot;
+        GameObject chunkPrefab;
 
-		class Node
-		{
-			public GameObject pieceRoot;
-			public GameObject[] pieces;
-		}
+        GameObject ChunkPrefab {
+            get {
+                if (!chunkPrefab)
+                    chunkPrefab = Resources.Load (PathCollect.chunk) as GameObject;
+                return chunkPrefab;
+            }
+        }
 
-		GameObject nodeRoot;
-		Dictionary<WorldPos,Node> nodes = new Dictionary<WorldPos, Node> ();
+        Chunk freeChunk;
+        Dictionary<WorldPos,Chunk> chunks = new Dictionary<WorldPos, Chunk> ();
 
-		public GameObject GetNode (WorldPos _volumePos)
-		{
-			if (nodes.ContainsKey (_volumePos))
-				return nodes [_volumePos].pieceRoot;
-			else {
-				Debug.Log ("(" + _volumePos + ") has no Node; try another artpack !!!");
-				return null;
-			}
-		}
+        public Dictionary<WorldPos,Chunk> Chunks {
+            get {
+                if (vd.useFreeChunk) {
+                    var c = new Dictionary<WorldPos, Chunk> ();
+                    if (freeChunk == null)
+                        CreateFreeChunk ();
+                    c.Add (freeChunk.cData.ChunkPos, freeChunk);
+                    return c;
+                }
+                return chunks;
+            }
+        }
 
-		void CreateNode (WorldPos bPos)
-		{
-			Node newNode = new Node ();
+        public Chunk GetChunk (int x, int y, int z)
+        {
+            if (vd.useFreeChunk) {
+                return freeChunk;
+            } else {
+                WorldPos pos = new WorldPos (
+                    Mathf.FloorToInt (x / vd.chunkSize) * vd.chunkSize,
+                    Mathf.FloorToInt (y / vd.chunkSize) * vd.chunkSize,
+                    Mathf.FloorToInt (z / vd.chunkSize) * vd.chunkSize
+                );
+                return chunks.ContainsKey (pos) ? chunks [pos] : null;
+            }
+        }
 
-			GameObject _pieceRoot = new GameObject ();
-			_pieceRoot.name = bPos.ToString ();
-			_pieceRoot.transform.parent = nodeRoot.transform;
-			_pieceRoot.transform.localPosition = Vector3.zero;
-			_pieceRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
-			newNode.pieceRoot = _pieceRoot;
+        public void UpdateChunks ()
+        {
+            foreach (Chunk c in Chunks.Values) {
+                c.UpdateChunk ();
+            }
+        }
 
-			newNode.pieces = new GameObject[9];
+        void CreateChunks ()
+        {
+            if (vd.chunkSize == 0)
+                vd.chunkSize = Vg.chunkSize;
+            foreach (ChunkData cd in vd.chunkDatas)
+                CreateChunk (cd);
+        }
 
-			nodes.Add (bPos, newNode);
-		}
+        void CreateChunk (ChunkData cData)
+        {
+            WorldPos chunkPos = cData.ChunkPos;
+            GameObject newChunkObject = Instantiate (ChunkPrefab);
+            newChunkObject.name = "Chunk(" + chunkPos + ")";
+            newChunkObject.transform.parent = chunkRoot.transform;
+            newChunkObject.transform.localPosition = new Vector3 (chunkPos.x * Vg.w, chunkPos.y * Vg.h, chunkPos.z * Vg.d);
+            newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            newChunkObject.GetComponent<Renderer> ().material = (Vm.UseArtPack) ? VertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+            #if UNITY_EDITOR
+            newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
+            #else
+            newChunkObject.layer = LayerMask.NameToLayer("Floor");
+            #endif
+            Chunk newChunk = newChunkObject.GetComponent<Chunk> ();
+            newChunk.cData = cData;
+            newChunk.volume = this;
+            newChunk.Init ();
+            chunks.Add (chunkPos, newChunk);
+        }
 
-		bool RemoveNodeIfIsEmpty (WorldPos bPos)
-		{
-			BlockAir blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
-			bool isEmpty = true;
-			if (blockAir != null) {
-				foreach (string p in blockAir.pieceNames) {
-					if (p != null && p.Length > 0) {
-						isEmpty = false;
-						break;
-					}
-				}
-				if (isEmpty) {
-					if (nodes.ContainsKey (bPos)) {
-						GameObject.DestroyImmediate (nodes [bPos].pieceRoot);
-						nodes.Remove (bPos);
-					}
-				}
-			}
-			return isEmpty;
-		}
+        void CreateFreeChunk ()
+        {
+            GameObject newChunkObject = Instantiate (ChunkPrefab);
+            newChunkObject.name = "FreeChunk";
+            newChunkObject.transform.parent = chunkRoot.transform;
+            newChunkObject.transform.localPosition = Vector3.zero;
+            newChunkObject.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            newChunkObject.GetComponent<Renderer> ().material = (Vm.UseArtPack) ? VertexMaterial : Resources.Load (PathCollect.defaultVoxelMaterial, typeof(Material)) as Material;
+            #if UNITY_EDITOR
+            newChunkObject.layer = LayerMask.NameToLayer ((EditorApplication.isPlaying) ? "Floor" : "Editor");
+            #else
+            newChunkObject.layer = LayerMask.NameToLayer("Floor");
+            #endif
+            freeChunk = newChunkObject.GetComponent<Chunk> ();
+            freeChunk.cData = vd.freeChunk;
+            freeChunk.volume = this;
+            freeChunk.Init ();
+        }
 
-		PaletteItem[] itemArray = new PaletteItem[0];
-		GameObject itemRoot;
-		Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject>();
+        #endregion
 
-		public GameObject GetItemNode (BlockItem blockItem)
-		{
-			if (itemNodes.ContainsKey (blockItem))
-				return itemNodes [blockItem];
-			else {
-				return null;
-			}
-		}
+        #region Node
 
-		#endregion
+        class Node
+        {
+            public GameObject pieceRoot;
+            public GameObject[] pieces;
+        }
 
-		#region Block
+        GameObject nodeRoot;
+        Dictionary<WorldPos,Node> nodes = new Dictionary<WorldPos, Node> ();
 
-		public Block GetBlock (int x, int y, int z)
-		{
-			Chunk containerChunk = GetChunk (x, y, z);
-			if (containerChunk != null) {
-				Block block = containerChunk.GetBlock (
-					              x - containerChunk.cData.ChunkPos.x,
-					              y - containerChunk.cData.ChunkPos.y,
-					              z - containerChunk.cData.ChunkPos.z);
-				return block;
-			} else {
-				return null;
-			}
+        public GameObject GetNode (WorldPos _volumePos)
+        {
+            return nodes.ContainsKey (_volumePos) ? nodes [_volumePos].pieceRoot : null;
+        }
 
-		}
+        void CreateNode (WorldPos bPos)
+        {
+            Node newNode = new Node ();
 
-		public void SetBlock (int x, int y, int z, Block _block)
-		{
-			Chunk chunk = GetChunk (x, y, z);
-			Block oldBlock = GetBlock (x, y, z);
-			if (chunk != null) {
-				WorldPos chunkBlockPos = new WorldPos (x - chunk.cData.ChunkPos.x, y - chunk.cData.ChunkPos.y, z - chunk.cData.ChunkPos.z);
-				if (_block != null) {
-					_block.BlockPos = chunkBlockPos;
-					Predicate<BlockAir> sameBlockAir = delegate(BlockAir b) {
-						return b.BlockPos.Compare (chunkBlockPos);
-					};
-					switch (_block.GetType ().ToString ()) {
-					case "CreVox.BlockAir":
-						if (!chunk.cData.blockAirs.Exists (sameBlockAir)) {
-							chunk.cData.blockAirs.Add (_block as BlockAir);
-						}
-						break;
-					case "CreVox.BlockHold":
-						Predicate<BlockHold> sameBlockHold = delegate(BlockHold b) {
-							return b.BlockPos.Compare (chunkBlockPos);
-						};
-						if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
-							chunk.cData.blockHolds.Add (_block as BlockHold);
-						}
-						break;
-					case "CreVox.Block":
-						Predicate<Block> sameBlock = delegate(Block b) {
-							return b.BlockPos.Compare (chunkBlockPos);
-						};
-						if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
-							BlockAir ba = oldBlock as BlockAir;
-							for (int i = 0; i < 8; i++) {
-								PlacePiece (ba.BlockPos, new WorldPos (i % 3, 0, (int)(i / 3)), null);
-							}
-						}
-						if (!chunk.cData.blocks.Exists (sameBlock)) {
-							chunk.cData.blocks.Add (_block);
-						}
-						break;
-					}
-				} else if (oldBlock != null) {
-					switch (oldBlock.GetType ().ToString ()) {
-					case "CreVox.BlockAir":
-						List<BlockAir> bAirs = chunk.cData.blockAirs;
-						for (int i = bAirs.Count - 1; i > -1; i--) {
-							if (bAirs [i].BlockPos.Compare (chunkBlockPos))
-								bAirs.RemoveAt (i);
-						}
-						break;
-					case "CreVox.BlockHold":
-						List<BlockHold> bHolds = chunk.cData.blockHolds;
-						for (int i = bHolds.Count - 1; i > -1; i--) {
-							if (bHolds [i].BlockPos.Compare (chunkBlockPos))
-								bHolds.RemoveAt (i);
-						}
-						break;
-					case "CreVox.Block":
-						List<Block> blocks = chunk.cData.blocks;
-						for (int i = blocks.Count - 1; i > -1; i--) {
-							if (blocks [i].BlockPos.Compare (chunkBlockPos))
-								blocks.RemoveAt (i);
-						}
-						break;
-					}
-				}
-			}
-		}
+            GameObject _pieceRoot = new GameObject ();
+            _pieceRoot.name = bPos.ToString ();
+            _pieceRoot.transform.parent = nodeRoot.transform;
+            _pieceRoot.transform.localPosition = Vector3.zero;
+            _pieceRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
+            newNode.pieceRoot = _pieceRoot;
 
-		public void PlaceItem(int _id, LevelPiece _piece, Vector3 _position = default(Vector3))
-		{
+            newNode.pieces = new GameObject[9];
 
-			BlockItem blockItem;
-			if (_piece != null) {
-				if (_piece.GetComponent<PaletteItem> ().markType != PaletteItem.MarkerType.Item)
-					return;
-				
-				if (_id < vd.blockItems.Count) {
-					blockItem = vd.blockItems [_id];
+            nodes.Add (bPos, newNode);
+        }
+
+        bool RemoveNodeIfIsEmpty (WorldPos bPos)
+        {
+            BlockAir blockAir = GetBlock (bPos.x, bPos.y, bPos.z) as BlockAir;
+            bool isEmpty = true;
+            if (blockAir != null) {
+                foreach (string p in blockAir.pieceNames) {
+                    if (!String.IsNullOrEmpty (p)) {
+                        isEmpty = false;
+                        break;
+                    }
+                }
+                if (isEmpty) {
+                    if (nodes.ContainsKey (bPos)) {
+                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieceRoot);
+                        nodes.Remove (bPos);
+                    }
+                }
+            }
+            return isEmpty;
+        }
+
+        public void RemoveNode (WorldPos bPos)
+        {
+            for (int i = 0; i < vd.blockItems.Count; ++i) {
+                BlockItem blockItem = vd.blockItems [i];
+                if (blockItem.BlockPos.Equals (bPos)) {
+                    itemNodes.Remove (blockItem);
+                    vd.blockItems.RemoveAt (i);
+
+                    if (nodes.ContainsKey (bPos)) {
+                        nodes [bPos].pieces [i] = null;
+                    }
+                }
+            }
+        }
+
+        PaletteItem[] itemArray = new PaletteItem[0];
+        GameObject itemRoot;
+        Dictionary<BlockItem,GameObject> itemNodes = new Dictionary<BlockItem, GameObject> ();
+
+        public GameObject GetItemNode (BlockItem blockItem)
+        {
+            GameObject obj;
+            itemNodes.TryGetValue (blockItem, out obj);
+            return obj;
+        }
+
+        #endregion
+
+        #region Block
+
+        public Block GetBlock (int x, int y, int z)
+        {
+            Chunk containerChunk = GetChunk (x, y, z);
+            if (containerChunk != null) {
+                Block block = containerChunk.GetBlock (
+                                  x - containerChunk.cData.ChunkPos.x,
+                                  y - containerChunk.cData.ChunkPos.y,
+                                  z - containerChunk.cData.ChunkPos.z);
+                return block;
+            }
+            return null;
+        }
+
+        public void SetBlock (int x, int y, int z, Block _block)
+        {
+            Chunk chunk = GetChunk (x, y, z);
+            Block oldBlock = GetBlock (x, y, z);
+            if (chunk != null) {
+                WorldPos chunkBlockPos = new WorldPos (x - chunk.cData.ChunkPos.x, y - chunk.cData.ChunkPos.y, z - chunk.cData.ChunkPos.z);
+                if (_block != null) {
+                    _block.BlockPos = chunkBlockPos;
+                    Predicate<BlockAir> sameBlockAir = b => b.BlockPos.Compare (chunkBlockPos);
+                    switch (_block.GetType ().ToString ()) {
+                    case "CreVox.BlockAir":
+                        if (!chunk.cData.blockAirs.Exists (sameBlockAir)) {
+                            chunk.cData.blockAirs.Add (_block as BlockAir);
+                        }
+                        break;
+                    case "CreVox.BlockHold":
+                        Predicate<BlockHold> sameBlockHold = b => b.BlockPos.Compare (chunkBlockPos);
+                        if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
+                            chunk.cData.blockHolds.Add (_block as BlockHold);
+                        }
+                        break;
+                    case "CreVox.Block":
+                        Predicate<Block> sameBlock = b => b.BlockPos.Compare (chunkBlockPos);
+                        if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
+                            BlockAir ba = oldBlock as BlockAir;
+                            for (int i = 0; i < 8; i++) {
+                                PlacePiece (ba.BlockPos, new WorldPos (i % 3, 0, (i / 3)), null);
+                            }
+                        }
+                        if (!chunk.cData.blocks.Exists (sameBlock)) {
+                            chunk.cData.blocks.Add (_block);
+                        }
+                        break;
+                    }
+                } else if (oldBlock != null) {
+                    switch (oldBlock.GetType ().ToString ()) {
+                    case "CreVox.BlockAir":
+                        List<BlockAir> bAirs = chunk.cData.blockAirs;
+                        for (int i = bAirs.Count - 1; i > -1; i--) {
+                            if (bAirs [i].BlockPos.Compare (chunkBlockPos))
+                                bAirs.RemoveAt (i);
+                        }
+                        break;
+                    case "CreVox.BlockHold":
+                        List<BlockHold> bHolds = chunk.cData.blockHolds;
+                        for (int i = bHolds.Count - 1; i > -1; i--) {
+                            if (bHolds [i].BlockPos.Compare (chunkBlockPos))
+                                bHolds.RemoveAt (i);
+                        }
+                        break;
+                    case "CreVox.Block":
+                        List<Block> blocks = chunk.cData.blocks;
+                        for (int i = blocks.Count - 1; i > -1; i--) {
+                            if (blocks [i].BlockPos.Compare (chunkBlockPos))
+                                blocks.RemoveAt (i);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void PlaceItem (int _id, LevelPiece _piece, Vector3 _position = default(Vector3))
+        {
+            BlockItem blockItem;
+            if (_piece != null) {
+                if (_piece.GetComponent<PaletteItem> ().markType != PaletteItem.MarkerType.Item)
+                    return;
+                
+                if (_id < vd.blockItems.Count) {
+                    blockItem = vd.blockItems [_id];
                 } else {
-					blockItem = new BlockItem ();
-					blockItem.BlockPos = EditTerrain.GetBlockPos(_position);
-					blockItem.pieceName = _piece.gameObject.name;
-					blockItem.posX = _position.x;
-					blockItem.posY = _position.y;
-					blockItem.posZ = _position.z;
-					blockItem.rotX = _piece.transform.localRotation.x;
-					blockItem.rotY = _piece.transform.localRotation.y;
-					blockItem.rotZ = _piece.transform.localRotation.z;
-					blockItem.rotW = _piece.transform.localRotation.w;
-					vd.blockItems.Add (blockItem);
+                    blockItem = new BlockItem ();
+                    blockItem.BlockPos = EditTerrain.GetBlockPos (_position);
+                    blockItem.pieceName = _piece.gameObject.name;
+                    blockItem.posX = _position.x;
+                    blockItem.posY = _position.y;
+                    blockItem.posZ = _position.z;
+                    blockItem.rotX = _piece.transform.localRotation.x;
+                    blockItem.rotY = _piece.transform.localRotation.y;
+                    blockItem.rotZ = _piece.transform.localRotation.z;
+                    blockItem.rotW = _piece.transform.localRotation.w;
+                    vd.blockItems.Add (blockItem);
                 }
-				if (!itemNodes.ContainsKey (blockItem)) {
-					GameObject pObj;
-					#if UNITY_EDITOR
-					pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
-					#else
-					pObj = GameObject.Instantiate(_piece.gameObject);
-					#endif
-					pObj.transform.parent = itemRoot.transform;
-					pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
-					pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
-					if (_piece.name == "Missing") {
-						pObj.GetComponentInChildren<TextMesh>().text += ("\n" + vd.blockItems [_id].pieceName);
-					}
-					itemNodes.Add (blockItem, pObj);
-                    LevelPiece p = pObj.GetComponent<LevelPiece>();
-                    if (p != null)
-                        p.SetupPiece(blockItem);
+                if (!itemNodes.ContainsKey (blockItem)) {
+                    GameObject pObj;
+                    #if UNITY_EDITOR
+                    pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
+                    #else
+                    pObj = GameObject.Instantiate(_piece.gameObject);
+                    #endif
+                    pObj.transform.parent = (_piece is PrefabPiece) ? nodeRoot.transform : itemRoot.transform;
+                    pObj.transform.localPosition = new Vector3 (blockItem.posX, blockItem.posY, blockItem.posZ);
+                    pObj.transform.localRotation = new Quaternion (blockItem.rotX, blockItem.rotY, blockItem.rotZ, blockItem.rotW);
+                    if (_piece.name == "Missing") {
+                        pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + vd.blockItems [_id].pieceName);
+                    }
+                    itemNodes.Add (blockItem, pObj);
+                    LevelPiece p = pObj.GetComponent<LevelPiece> ();
+                    if (p != null) {
+                        p.block = blockItem;
+                        p.SetupPiece (blockItem);
+                    }
                 }
-			} else {
-				if (!(_id < vd.blockItems.Count))
-					return;
-				
-				blockItem = vd.blockItems [_id];
-				GameObject.DestroyImmediate (itemNodes [blockItem]);
-				itemNodes.Remove (blockItem);
-				vd.blockItems.RemoveAt (_id);
-			}
+            } else {
+                if (_id > vd.blockItems.Count - 1)
+                    return;
+                
+                blockItem = vd.blockItems [_id];
+                UnityEngine.Object.DestroyImmediate (itemNodes [blockItem]);
+                itemNodes.Remove (blockItem);
+                vd.blockItems.RemoveAt (_id);
+            }
             
         }
 
-		private void PlaceItems()
-		{
-			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
-			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
-			for (int i = 0; i < vd.blockItems.Count; i++) {
-				BlockItem bItem = vd.blockItems [i];
-				LevelPiece p = _missingP;
-				for (int k = 0; k < itemArray.Length; k++) {
-					if (bItem.pieceName == itemArray [k].name) {
-						p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-						break;
-					}
-				}
-				PlaceItem (i, p);
-			}
-		}
+        void PlaceItems ()
+        {
+            GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+            LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
+            for (int i = 0; i < vd.blockItems.Count; i++) {
+                BlockItem bItem = vd.blockItems [i];
+                LevelPiece p = _missingP;
+                for (int k = 0; k < itemArray.Length; k++) {
+                    if (bItem.pieceName == itemArray [k].name) {
+                        p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
+                        break;
+                    }
+                }
+                PlaceItem (i, p);
+            }
+        }
 
-		public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece)
-		{
-			Block block = GetBlock (bPos.x, bPos.y, bPos.z);
-			BlockAir blockAir = null;
-			int id = gPos.z * 3 + gPos.x;
-			GameObject pObj;
+        public void PlacePiece (WorldPos bPos, WorldPos gPos, LevelPiece _piece, bool isNew = true)
+        {
+            Block block = GetBlock (bPos.x, bPos.y, bPos.z);
+            BlockAir blockAir;
+            int _id = gPos.z * 3 + gPos.x;
+            GameObject pObj;
 
-			if (block != null && !(block is BlockAir))
-				return;
+            if (block != null && !(block is BlockAir))
+                return;
 
-			if (_piece != null) {
-				if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item) {
-					if (_piece.name != "Missing")
-						return;
-				}
-				
-				if (block == null) {
-					SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
-					block = GetBlock (bPos.x, bPos.y, bPos.z);
-				}
+            if (_piece != null) {
+                if (_piece.GetComponent<PaletteItem> ().markType == PaletteItem.MarkerType.Item && _piece.name != "Missing")
+                    return;
+                
+                if (block == null) {
+                    SetBlock (bPos.x, bPos.y, bPos.z, new BlockAir ());
+                    block = GetBlock (bPos.x, bPos.y, bPos.z);
+                }
 
-				if (!nodes.ContainsKey (bPos))
-					CreateNode (bPos);
-				
-				pObj = nodes [bPos].pieces [id];
-				if (pObj != null) {
-					PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
-					GameObject.DestroyImmediate (pObj);
-				}
+                if (!nodes.ContainsKey (bPos))
+                    CreateNode (bPos);
+                
+                pObj = nodes [bPos].pieces [_id];
+                if (pObj != null) {
+                    PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
+                    UnityEngine.Object.DestroyImmediate (pObj);
+                }
 
-				#if UNITY_EDITOR
-				pObj = PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject;
-				#else
-				pObj = GameObject.Instantiate(_piece.gameObject);
-				#endif
-				pObj.transform.parent = nodes [bPos].pieceRoot.transform;
-				Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
-				VGlobal vg = VGlobal.GetSetting ();
-				float x = bPos.x * vg.w + pos.x;
-				float y = bPos.y * vg.h + pos.y;
-				float z = bPos.z * vg.d + pos.z;
-				pObj.transform.localPosition = new Vector3 (x, y, z);
-				pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
-				nodes [bPos].pieces [id] = pObj;
+                #if UNITY_EDITOR
+                pObj = isNew ? PrefabUtility.InstantiatePrefab (_piece.gameObject) as GameObject : _piece.gameObject;
+                #else
+                pObj = GameObject.Instantiate(_piece.gameObject);
+                #endif
+                pObj.transform.parent = nodes [bPos].pieceRoot.transform;
+                LevelPiece p = pObj.GetComponent<LevelPiece> ();
+                if (p != null) {
+                    p.block = block;
+                }
+                Vector3 pos = GetPieceOffset (gPos.x, gPos.z);
+                float x = bPos.x * Vg.w + pos.x;
+                float y = bPos.y * Vg.h + pos.y;
+                float z = bPos.z * Vg.d + pos.z;
+                pObj.transform.localPosition = new Vector3 (x, y, z);
+                pObj.transform.localRotation = Quaternion.Euler (0, GetPieceAngle (gPos.x, gPos.z), 0);
+                nodes [bPos].pieces [_id] = pObj;
 
-				if (block is BlockAir) {
-					blockAir = block as BlockAir;
-					if (_piece.name != "Missing") {
-						blockAir.SetPiece (bPos, gPos, pObj.GetComponent<LevelPiece> ());
-						blockAir.SolidCheck (nodes [bPos].pieces);
-						SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
-					} else {
-						pObj.GetComponentInChildren<TextMesh>().text += ("\n" + blockAir.pieceNames[id]);
-					}
+                blockAir = block as BlockAir;
+                if (blockAir != null) {
+                    if (_piece.name != "Missing") {
+                        blockAir.SetPiece (gPos, pObj.GetComponent<LevelPiece> ());
+                        blockAir.SolidCheck (nodes [bPos].pieces);
+                        SetBlock (bPos.x, bPos.y, bPos.z, blockAir);
+                    } else {
+                        pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + blockAir.pieceNames [_id]);
+                    }
 
-					if (_piece.isHold == true)
-						PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), false);
-				}
-			} else {
-				if (block is BlockAir) {
-					blockAir = block as BlockAir;
-					blockAir.SetPiece (bPos, gPos, null);
-					blockAir.SolidCheck (nodes [bPos].pieces);
-				}
+                    if (_piece.isHold)
+                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), false);
+                }
+            } else {
+                blockAir = block as BlockAir;
+                if (blockAir != null) {
+                    blockAir.SetPiece (gPos, null);
+                    blockAir.SolidCheck (nodes [bPos].pieces);
+                }
 
-				if (nodes.ContainsKey (bPos)) {
-					pObj = nodes [bPos].pieces [id];
-					if (pObj != null) {
-						PlaceBlockHold (bPos, id, pObj.GetComponent<LevelPiece> (), true);
-						GameObject.DestroyImmediate (pObj);
-					}
-				}
+                if (nodes.ContainsKey (bPos)) {
+                    pObj = nodes [bPos].pieces [_id];
+                    if (pObj != null) {
+                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
+                        UnityEngine.Object.DestroyImmediate (pObj);
+                    }
+                }
 
-				if(RemoveNodeIfIsEmpty (bPos))
-					SetBlock(bPos.x, bPos.y, bPos.z, null);
-			}
-		}
+                if (RemoveNodeIfIsEmpty (bPos))
+                    SetBlock (bPos.x, bPos.y, bPos.z, null);
+            }
+        }
 
-		private void PlacePieces ()
-		{
-			GameObject _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
-			LevelPiece _missingP = _missing.GetComponent<LevelPiece> ();
-			foreach (Chunk c in chunks.Values) {
-				for (int b = 0; b < c.cData.blockAirs.Count; b++) {
-					BlockAir ba = c.cData.blockAirs [b];
-					for (int i = 0; i < ba.pieceNames.Length; i++) {
-						if (ba.pieceNames [i] != null && ba.pieceNames [i] != "") {
-							LevelPiece p = _missingP;
-							for (int k = 0; k < itemArray.Length; k++) {
-								if (ba.pieceNames [i] == itemArray [k].name) {
-									p = itemArray [k].gameObject.GetComponent<LevelPiece> ();
-								}
-							}
-							PlacePiece (
-								new WorldPos (
-									c.cData.ChunkPos.x + ba.BlockPos.x,
-									c.cData.ChunkPos.y + ba.BlockPos.y,
-									c.cData.ChunkPos.z + ba.BlockPos.z),
-								new WorldPos (i % 3, 0, (int)(i / 3)),
-								p
-							);
-						}
-					}
-				}
-			}
-			BehaviorManager _bm = this.gameObject.GetComponentInParent<BehaviorManager> ();
-			if (_bm) {
-				BehaviorTree[] _tree = this.gameObject.GetComponentsInChildren<BehaviorTree>();
-				if (_tree.Length > 0) {
-					for (int i = 0; i < _tree.Length; i++) {
-						_tree [i].EnableBehavior ();
-						_bm.EnableBehavior (_tree [i] as Behavior);
-						if (_tree [i].ExternalBehavior != null) {
-							List<SharedVariable> n = _tree [i].GetAllVariables ();
-							for (int j = 0; j < n.Count; j++) {
-								_tree [i].ExternalBehavior.SetVariable (n[j].Name,n[j]);
-							}
-						}
-						_bm.Tick (_tree [i]);
-					}
-				}
-			}
-		}
+        #if UNITY_EDITOR
+        public GameObject CopyPiece (WorldPos bPos, WorldPos gPos, bool a_cut)
+        {
+            int _id = gPos.z * 3 + gPos.x;
+            GameObject pObj = null;
 
-		private int GetBlockHoldIndex (int x, int y, int z,Chunk containerChunk)
-		{
-			WorldPos bPos = new WorldPos (x, y, z);
-			Predicate <BlockHold> checkBlockPos = delegate (BlockHold bh) {
-				return bh.BlockPos.Compare(bPos);
-			};
-			if (containerChunk != null) {
-				int _index = containerChunk.cData.blockHolds.FindIndex (checkBlockPos);
-				return _index;
-			} else {
-				return -1;
-			}
-		}
+            if (nodes.ContainsKey (bPos) && nodes [bPos].pieces.Length > _id) {
+                pObj = nodes [bPos].pieces [_id];
 
-		private void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
-		{
-//			Debug.Log ("[" + _bPos.ToString () + "](" + _id.ToString () + ")-" + (_isErase?"Delete":"Add"));
-			for (int i = 0; i < _piece.holdBlocks.Count; i++) {
-				LevelPiece.Hold bh = _piece.holdBlocks [i];
-				int x = _bPos.x + bh.offset.x;
-				int y = _bPos.y + bh.offset.y ;
-				int z = _bPos.z + bh.offset.z;
-				Chunk _chunk = GetChunk (x, y, z);
-				if (_chunk != null) {
-					x -= _chunk.cData.ChunkPos.x;
-					y -= _chunk.cData.ChunkPos.y;
-					z -= _chunk.cData.ChunkPos.z;
+                if (pObj != null) {
+                    Vector3 pos = pObj.transform.position;
+                    PaletteItem pi = pObj.GetComponent<PaletteItem> ();
+                    if (pi != null) {
+                        GameObject asset = AssetDatabase.LoadAssetAtPath (pi.assetPath,
+                                               typeof(GameObject)) as GameObject;
+                        pObj = PrefabUtility.InstantiatePrefab (asset) as GameObject;
+                        pObj.transform.parent = nodeRoot.transform;
+                        pObj.transform.position = pos;
+                    }
 
-					BlockHold.piecePos bhData = new BlockHold.piecePos ();
-					bhData.blockPos = _bPos;
-					bhData.pieceID = _id;
+                    if (a_cut) {
+                        UnityEngine.Object.DestroyImmediate (nodes [bPos].pieces [_id]);
+                        nodes [bPos].pieces [_id] = null;
+                    }
+                }
+            }
 
+            return pObj;
+        }
+        #endif
 
-					Predicate<BlockHold.piecePos> samePiecePos = delegate(BlockHold.piecePos obj) {
-						return (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
-					};
+        static GameObject _missing;
+        static LevelPiece _missingP;
 
-					BlockHold bhBlock = null;
-					int _index = GetBlockHoldIndex (x, y, z, _chunk);
-					if (_index > -1)
-						bhBlock = _chunk.cData.blockHolds [_index];
-					
-					if (_isErase) {
-						if (bhBlock != null) { 
-							if (bhBlock.roots.Exists (samePiecePos))
-								bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
-							if (bhBlock.roots.Count == 0)
-								_chunk.cData.blockHolds.Remove (bhBlock);
-						}
-					} else {
-						if (bhBlock == null) {
-							bhBlock = new BlockHold ();
-							bhBlock.BlockPos = new WorldPos (x, y, z);
-							bhBlock.roots.Add (bhData);
-							_chunk.cData.blockHolds.Add (bhBlock);
-						} else if (!bhBlock.roots.Exists (samePiecePos))
-							bhBlock.roots.Add (bhData);
-						
-						if (bh.isSolid)
-							bhBlock.SetSolid (true);
-					}
-				}
-			}
-		}
+        void PlacePieces ()
+        {
+            if (_missing == null) {
+                _missing = Resources.Load (PathCollect.resourceSubPath + "Missing", typeof(GameObject)) as GameObject;
+            }
+            if (_missingP == null) {
+                _missingP = _missing.GetComponent<LevelPiece> ();
+            }
+            foreach (Chunk c in Chunks.Values) {
+                foreach (var ba in c.cData.blockAirs) {
+                    for (int i = 0; i < ba.pieceNames.Length; i++) {
+                        if (String.IsNullOrEmpty (ba.pieceNames [i]))
+                            continue;
+                        LevelPiece p = _missingP;
+                        foreach (PaletteItem pi in itemArray) {
+                            if (ba.pieceNames [i] != pi.name)
+                                continue;
+                            p = pi.GetComponent<LevelPiece> ();
+                            break;
+                        }
+                        PlacePiece (
+                            new WorldPos (c.cData.ChunkPos.x + ba.BlockPos.x, c.cData.ChunkPos.y + ba.BlockPos.y, c.cData.ChunkPos.z + ba.BlockPos.z),
+                            new WorldPos (i % 3, 0, (i / 3)),
+                            p
+                        );
+                    }
+                }
+            }
+            BehaviorManager _bm = gameObject.GetComponentInParent<BehaviorManager> ();
+            if (_bm) {
+                BehaviorTree[] _tree = gameObject.GetComponentsInChildren<BehaviorTree> ();
+                if (_tree.Length > 0) {
+                    for (int i = 0; i < _tree.Length; i++) {
+                        _tree [i].EnableBehavior ();
+                        _bm.EnableBehavior (_tree [i]);
+                        if (_tree [i].ExternalBehavior != null) {
+                            List<SharedVariable> n = _tree [i].GetAllVariables ();
+                            for (int j = 0; j < n.Count; j++) {
+                                _tree [i].ExternalBehavior.SetVariable (n [j].Name, n [j]);
+                            }
+                        }
+                        _bm.Tick (_tree [i]);
+                    }
+                }
+            }
+        }
 
-		public static Vector3 GetPieceOffset (int x, int z)
-		{
-			Vector3 offset = Vector3.zero;
-			VGlobal vg = VGlobal.GetSetting ();
-			float hw = vg.hw;
-			float hh = vg.hh;
-			float hd = vg.hd;
+        static int GetBlockHoldIndex (int x, int y, int z, Chunk containerChunk)
+        {
+            WorldPos bPos = new WorldPos (x, y, z);
+            Predicate <BlockHold> checkBlockPos = bh => bh.BlockPos.Compare (bPos);
+            return (containerChunk != null) ? containerChunk.cData.blockHolds.FindIndex (checkBlockPos) : -1;
+        }
 
-			if (x == 0 && z == 0)
-				return new Vector3 (-hw, -hh, -hd);
-			if (x == 1 && z == 0)
-				return new Vector3 (0, -hh, -hd);
-			if (x == 2 && z == 0)
-				return new Vector3 (hw, -hh, -hd);
+        void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
+        {
+//            Debug.Log ("[" + _bPos.ToString () + "](" + _id.ToString () + ")-" + (_isErase?"Delete":"Add"));
+            foreach (LevelPiece.Hold bh in _piece.holdBlocks) {
+                int x = _bPos.x + bh.offset.x;
+                int y = _bPos.y + bh.offset.y;
+                int z = _bPos.z + bh.offset.z;
+                Chunk _chunk = GetChunk (x, y, z);
+                if (_chunk != null) {
+                    x -= _chunk.cData.ChunkPos.x;
+                    y -= _chunk.cData.ChunkPos.y;
+                    z -= _chunk.cData.ChunkPos.z;
 
-			if (x == 0 && z == 1)
-				return new Vector3 (-hw, -hh, 0);
-			if (x == 1 && z == 1)
-				return new Vector3 (0, -hh, 0);
-			if (x == 2 && z == 1)
-				return new Vector3 (hw, -hh, 0);
+                    BlockHold.piecePos bhData = new BlockHold.piecePos ();
+                    bhData.blockPos = _bPos;
+                    bhData.pieceID = _id;
 
-			if (x == 0 && z == 2)
-				return new Vector3 (-hw, -hh, hd);
-			if (x == 1 && z == 2)
-				return new Vector3 (0, -hh, hd);
-			if (x == 2 && z == 2)
-				return new Vector3 (hw, -hh, hd);
-			return offset;
-		}
+                    Predicate<BlockHold.piecePos> samePiecePos = obj => (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
 
-		public static int GetPieceAngle (int x, int z)
-		{
-			if (x == 0 && z >= 1)
-				return 90;
-			if (z == 2 && x >= 1)
-				return 180;
-			if (x == 2 && z <= 1)
-				return 270;
-			return 0;
-		}
+                    int _index = GetBlockHoldIndex (x, y, z, _chunk);
+                    BlockHold bhBlock = (_index > -1) ? _chunk.cData.blockHolds [_index] : null;
+                    
+                    if (_isErase) {
+                        if (bhBlock != null) {
+                            if (bhBlock.roots.Exists (samePiecePos))
+                                bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
+                            if (bhBlock.roots.Count == 0)
+                                _chunk.cData.blockHolds.Remove (bhBlock);
+                        }
+                    } else {
+                        if (bhBlock == null) {
+                            bhBlock = new BlockHold (x, y, z);
+                            bhBlock.roots.Add (bhData);
+                            _chunk.cData.blockHolds.Add (bhBlock);
+                        } else if (!bhBlock.roots.Exists (samePiecePos)) {
+                            bhBlock.roots.Add (bhData);
+                        }
+                        
+                        if (bh.isSolid)
+                            bhBlock.SetSolid (true);
+                    }
+                }
+            }
+        }
 
-		#endregion
+        public static Vector3 GetPieceOffset (int x, int z)
+        {
+            Vector3 offset = Vector3.zero;
+            VGlobal vg = VGlobal.GetSetting ();
+            float hw = vg.w / 2;
+            float hh = vg.h / 2;
+            float hd = vg.d / 2;
 
-		#region Temp Save & Load
+            if (x == 0 && z == 0)
+                return new Vector3 (-hw, -hh, -hd);
+            if (x == 1 && z == 0)
+                return new Vector3 (0, -hh, -hd);
+            if (x == 2 && z == 0)
+                return new Vector3 (hw, -hh, -hd);
 
-		#if UNITY_EDITOR
-		public bool compileSave;
+            if (x == 0 && z == 1)
+                return new Vector3 (-hw, -hh, 0);
+            if (x == 1 && z == 1)
+                return new Vector3 (0, -hh, 0);
+            if (x == 2 && z == 1)
+                return new Vector3 (hw, -hh, 0);
 
-		void CompileSave ()
-		{
-			if (EditorApplication.isCompiling && !compileSave) {
-				if (VGlobal.GetSetting ().saveBackup)
-					SaveTempWorld ();
-				compileSave = true;
-			}
+            if (x == 0 && z == 2)
+                return new Vector3 (-hw, -hh, hd);
+            if (x == 1 && z == 2)
+                return new Vector3 (0, -hh, hd);
+            if (x == 2 && z == 2)
+                return new Vector3 (hw, -hh, hd);
+            return offset;
+        }
 
-			if (!EditorApplication.isCompiling && compileSave) {
-				LoadTempWorld ();
-				compileSave = false;
-			}
-		}
+        public static int GetPieceAngle (int x, int z)
+        {
+            if (x == 0 && z >= 1)
+                return 90;
+            if (z == 2 && x >= 1)
+                return 180;
+            if (x == 2 && z <= 1)
+                return 270;
+            return 0;
+        }
 
-		void SubscribeEvent ()
-		{
-			EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction (OnBeforePlay);
-		}
+        #endregion
 
-		public void OnBeforePlay ()
-		{
-			if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
-				SaveTempWorld ();
-				EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction (OnBeforePlay);
-			}
-		}
+        #region Temp Save & Load
 
-		public void SaveTempWorld ()
-		{
-//			string sPath = Application.dataPath + PathCollect.resourcesPath.Substring (6) + PathCollect.save;
-//			sPath = EditorUtility.SaveFilePanel ("save vData", sPath, vd.name, "asset");
-//			if (sPath.Length < 1)
-//				return;
-//			sPath = sPath.Substring (sPath.LastIndexOf (PathCollect.resourcesPath));
-			string vdName = AssetDatabase.GetAssetPath(vd);
-			vdName = vdName.Substring (vdName.LastIndexOf ("/") + 1);
-			string date = System.DateTime.Now.ToString ("yyyyMMdd") + "-" + System.DateTime.Now.ToString ("HHmmss");
-			string backupPath = PathCollect.resourcesPath + PathCollect.save + "/_TempBackup/" + date + "_" + vdName;
+        #if UNITY_EDITOR
+        public bool compileSave;
 
-			VolumeData vdBackup = ScriptableObject.CreateInstance<VolumeData> ();
-			vdBackup.blockItems = vd.blockItems;
-			vdBackup.chunkDatas = vd.chunkDatas;
-			vdBackup.chunkX = vd.chunkX;
-			vdBackup.chunkY = vd.chunkY;
-			vdBackup.chunkZ = vd.chunkZ;
-			UnityEditor.AssetDatabase.CreateAsset (vdBackup, backupPath);
-			AssetDatabase.Refresh ();
-		}
-		#endif
-		public void LoadTempWorld ()
-		{
-			BuildVolume ();
+        void CompileSave ()
+        {
+            if (EditorApplication.isCompiling && !compileSave) {
+                SaveTempWorld ();
+                compileSave = true;
+            }
 
-			#if UNITY_EDITOR
-			SceneView.RepaintAll ();
-			#endif
-		}
+            if (!EditorApplication.isCompiling && compileSave) {
+                Build ();
+                compileSave = false;
+            }
+        }
 
-		#endregion
+        void SubscribeEvent ()
+        {
+            EditorApplication.playmodeStateChanged += new EditorApplication.CallbackFunction (OnBeforePlay);
+        }
 
-		#region Ruler
-		#if UNITY_EDITOR
-		[SerializeField]
-		private MeshCollider mColl;
-		[SerializeField]
-		private BoxCollider bColl;
-		[SerializeField]
-		private GameObject ruler;
-		[SerializeField]
-		private GameObject layerRuler;
-		public GameObject box = null;
-		public bool useBox = false;
+        public void OnBeforePlay ()
+        {
+            if (!EditorApplication.isPlaying && EditorApplication.isPlayingOrWillChangePlaymode) {
+                SaveTempWorld ();
+                EditorApplication.playmodeStateChanged -= new EditorApplication.CallbackFunction (OnBeforePlay);
+            }
+        }
 
-		void CreateRuler ()
-		{
-			ruler = new GameObject ("Ruler");
-			ruler.layer = LayerMask.NameToLayer ("Editor");
-			ruler.tag = PathCollect.rularTag;
-			ruler.transform.parent = transform;
-			mColl = ruler.AddComponent<MeshCollider> ();
+        public void SaveTempWorld ()
+        {
+            string vdName = AssetDatabase.GetAssetPath (vd);
+            vdName = vdName.Substring (vdName.LastIndexOf ("/") + 1);
+            string date = DateTime.Now.ToString ("yyyyMMdd") + "-" + DateTime.Now.ToString ("HHmmss");
+            string backupPath = PathCollect.resourcesPath + PathCollect.save + "/_TempBackup/" + date + "_" + vdName;
 
-			MeshData meshData = new MeshData ();
-			VGlobal vg = VGlobal.GetSetting ();
-			float x = -vg.hw;
-			float y = -vg.hh;
-			float z = -vg.hd;
-			float w = chunkX * vg.chunkSize * vg.w + x;
-			float d = chunkZ * vg.chunkSize * vg.d + z;
-			meshData.useRenderDataForCol = true;
-			meshData.AddVertex (new Vector3 (x, y, z));
-			meshData.AddVertex (new Vector3 (x, y, d));
-			meshData.AddVertex (new Vector3 (w, y, d));
-			meshData.AddVertex (new Vector3 (w, y, z));
-			meshData.AddQuadTriangles ();
+            VolumeData vdBackup = ScriptableObject.CreateInstance<VolumeData> ();
+            vdBackup.blockItems = vd.blockItems;
+            vdBackup.chunkDatas = vd.chunkDatas;
+            vdBackup.chunkX = vd.chunkX;
+            vdBackup.chunkY = vd.chunkY;
+            vdBackup.chunkZ = vd.chunkZ;
+            AssetDatabase.CreateAsset (vdBackup, backupPath);
+            AssetDatabase.Refresh ();
+        }
+        #endif
+        #endregion
 
-			mColl.sharedMesh = null;
-			Mesh cmesh = new Mesh ();
-			cmesh.vertices = meshData.colVertices.ToArray ();
-			cmesh.triangles = meshData.colTriangles.ToArray ();
-			cmesh.RecalculateNormals ();
+        #region Editor Scene UI
 
-			mColl.sharedMesh = cmesh;
+        public bool isLost {
+            get { return (vd == null) || (!vd.useFreeChunk && chunks.Count == 0) || (vd.useFreeChunk && freeChunk == null); }
+        }
 
-			ruler.transform.localPosition = Vector3.zero;
-			ruler.transform.localRotation = Quaternion.Euler (Vector3.zero);
-		}
+        #if UNITY_EDITOR
+        public Color YColor;
+        public bool pointer;
+        public int pointY;
+        public bool cuter;
+        public int cutY;
+        [NonSerialized]public PaletteItem _itemInspected;
 
-		void CreateLevelRuler ()
-		{
-			layerRuler = new GameObject ("LevelRuler");
-			layerRuler.layer = LayerMask.NameToLayer ("EditorLevel");
-			layerRuler.transform.parent = transform;
-			layerRuler.transform.localPosition = Vector3.zero;
-			layerRuler.transform.localRotation = Quaternion.Euler (Vector3.zero);
-			bColl = layerRuler.AddComponent<BoxCollider> ();
-			VGlobal vg = VGlobal.GetSetting ();
-			bColl.size = new Vector3 (chunkX * vg.chunkSize * vg.w, 0f, chunkZ * vg.chunkSize * vg.d);
-			ChangePointY (pointY);
-		}
+        void OnDrawGizmos ()
+        {
+            Matrix4x4 oldMatrix = Gizmos.matrix;
+            Gizmos.matrix = transform.localToWorldMatrix;
 
-		void CreateBox ()
-		{
-			if (!box) {
-				VGlobal vg = VGlobal.GetSetting ();
-				box = BoxCursorUtils.CreateBoxCursor (this.transform, new Vector3 (vg.w, vg.h, vg.d));
-			}
-		}
+            if (focusVolume == this && Vm.DebugRuler) {
+                Gizmos.color = isLost ? Color.red : new Color (YColor.r, YColor.g, YColor.b, 0.4f);
 
-		public void ActiveRuler (bool _active)
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			if (mColl) {
-				mColl.enabled = _active;
-				ruler.SetActive (_active);
-				ruler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
-			}
-			if (bColl) {
-				bColl.enabled = _active;
-				layerRuler.SetActive (_active);
-				layerRuler.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
-			}
-			if (box) {
-				box.hideFlags = vg.debugRuler ? HideFlags.None : HideFlags.HideInHierarchy;
-			}
-			pointer = _active;
-		}
+                Vector3 center, size;
+                if (vd == null) {
+                    center = Vector3.zero;
+                    size = new Vector3 (Vg.w, Vg.h, Vg.d);
+                } else {
+                    if (vd.useFreeChunk) {
+                        WorldPos c = vd.freeChunk.freeChunkSize;
+                        center = new Vector3 ((c.x - 1) * Vg.w / 2, (c.y - 1) * Vg.h / 2, (c.z - 1) * Vg.d / 2);
+                        size = new Vector3 (c.x * Vg.w, c.y * Vg.h, c.z * Vg.d);
+                    } else {
+                        int s = vd.chunkSize;
+                        center = new Vector3 ((vd.chunkX * s - 1) * Vg.w / 2, (vd.chunkY * s - 1) * Vg.h / 2, (vd.chunkZ * s - 1) * Vg.d / 2);
+                        size = new Vector3 (vd.chunkX * s * Vg.w, vd.chunkY * s * Vg.h, vd.chunkZ * s * Vg.d);
+                    }
+                }
+                Gizmos.DrawWireCube (center, size);
 
-		public void ShowRuler ()
-		{
-			bool _active = EditorApplication.isPlaying ? false : VGlobal.GetSetting ().debugRuler;
-			ActiveRuler (_active);
-		}
-		#endif
-		#endregion
+                if (vd != null) {
+                    DrawGizmoLayer ();
+                    DrawBlockItem ();
+                }
+            }
 
-		#region Editor Scene UI
-		#if UNITY_EDITOR
-		public Color YColor;
-		public bool pointer;
-		public int pointY;
-		public bool cuter;
-		public int cutY;
+            if (Vm.ShowBlockHold)
+                DrawBlockHold ();
+            
+            Gizmos.matrix = oldMatrix;
+        }
 
-		void OnDrawGizmos ()
-		{
-			Matrix4x4 oldMatrix = Gizmos.matrix;
-			VGlobal vg = VGlobal.GetSetting ();
-			Gizmos.color = (chunks.Count == 0) ? Color.red : YColor;
-			Gizmos.matrix = transform.localToWorldMatrix;
-			if (!EditorApplication.isPlaying && mColl)
-				Gizmos.DrawWireCube (
-					new Vector3 (
-						chunkX * vg.chunkSize * vg.hw - vg.hw,
-						chunkY * vg.chunkSize * vg.hh - vg.hh,
-						chunkZ * vg.chunkSize * vg.hd - vg.hd),
-					new Vector3 (
-						chunkX * vg.chunkSize * vg.w,
-						chunkY * vg.chunkSize * vg.h,
-						chunkZ * vg.chunkSize * vg.d)
-				);
+        void DrawBlockHold ()
+        {
+            foreach (Chunk c in Chunks.Values) {
+                if (c != null) {
+                    for (int i = 0; i < c.cData.blockHolds.Count; i++) {
+                        WorldPos blockHoldPos = c.cData.blockHolds [i].BlockPos;
+                        WorldPos chunkPos = c.cData.ChunkPos;
+                        Vector3 localPos = new Vector3 (
+                                               (blockHoldPos.x + chunkPos.x) * Vg.w, 
+                                               (blockHoldPos.y + chunkPos.y) * Vg.h, 
+                                               (blockHoldPos.z + chunkPos.z) * Vg.d
+                                           );
+                        Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f);
+                        Gizmos.DrawCube (localPos, new Vector3 (Vg.w, Vg.h, Vg.d));
+                    }
+                }
+            }
+        }
 
-			if (!EditorApplication.isPlaying && vg.debugRuler) {
-				DrawGizmoBoxCursor ();
-				DrawGizmoLayer ();
-				DrawBlockHold ();
-				DrawBlockItem ();
-			}
-			Gizmos.matrix = oldMatrix;
-		}
+        void DrawBlockItem ()
+        {
+            foreach (var item in vd.blockItems) {
+                Vector3 localPos = new Vector3 (
+                                       Mathf.Round (item.posX / Vg.w) * Vg.w, 
+                                       Mathf.Round (item.posY / Vg.h) * Vg.h, 
+                                       Mathf.Round (item.posZ / Vg.d) * Vg.d
+                                   );
+                Gizmos.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
+                Gizmos.DrawCube (localPos, new Vector3 (Vg.w, Vg.h, Vg.d));
+                Vector3 localPos2 = new Vector3 (
+                                        item.BlockPos.x * Vg.w, 
+                                        item.BlockPos.y * Vg.h, 
+                                        item.BlockPos.z * Vg.d
+                                    );
+                Gizmos.DrawWireCube (localPos2, new Vector3 (Vg.w, Vg.h, Vg.d));
+            }
+        }
 
-		void DrawBlockHold ()
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			foreach (Chunk chunk in chunks.Values) {
-				if (chunk != null) {
-					for (int i = 0; i < chunk.cData.blockHolds.Count; i++) {
-						WorldPos blockHoldPos = chunk.cData.blockHolds [i].BlockPos;
-						WorldPos chunkPos = chunk.cData.ChunkPos;
-						Vector3 localPos = new Vector3 (
-							                  (blockHoldPos.x + chunkPos.x) * vg.w, 
-							                  (blockHoldPos.y + chunkPos.y) * vg.h, 
-							                  (blockHoldPos.z + chunkPos.z) * vg.d
-						                  );
-						Gizmos.color = new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f);
-						Gizmos.DrawWireCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
-					}
-				}
-			}
-		}
+        void DrawGizmoLayer ()
+        {
+            if (!pointer)
+                return;
+            float wSize = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : vd.chunkX * vd.chunkSize);
+            float dSize = (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.z : vd.chunkZ * vd.chunkSize);
+            Vector3 center = new Vector3 ((wSize - 1) * Vg.w / 2, pointY * Vg.h, (dSize - 1) * Vg.d / 2);
+            Vector3 size = new Vector3 (wSize * Vg.w + 0.02f, Vg.h + 0.02f, dSize * Vg.d + 0.02f);
+            Gizmos.DrawCube (center, size);
+            for (int xi = 0; xi < wSize; xi++) {
+                for (int zi = 0; zi < dSize; zi++) {
+                    float cSize;
+                    cSize = (GetBlock (xi, pointY, zi) == null) ? 0.1f : 1.0f;
 
-		void DrawBlockItem ()
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			for (int i = 0; i < vd.blockItems.Count; i++) {
-				BlockItem item = vd.blockItems [i];
-				Vector3 localPos = new Vector3 (
-					Mathf.Round(item.posX/vg.w)*vg.w,
-					Mathf.Round(item.posY/vg.h)*vg.h,
-					Mathf.Round(item.posZ/vg.d)*vg.d
-				);
-				Gizmos.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
-				Gizmos.DrawCube (localPos, new Vector3 (vg.w, vg.h, vg.d));
-				Vector3 localPos2 = new Vector3 (
-					item.BlockPos.x*vg.w,
-					item.BlockPos.y*vg.h,
-					item.BlockPos.z*vg.d
-				);
-				Gizmos.DrawWireCube (localPos2, new Vector3 (vg.w, vg.h, vg.d));
-			}
-		}
+                    Vector3 localPos = new Vector3 (xi * Vg.w, (pointY + 0.5f) * Vg.h, zi * Vg.d);
+                    Gizmos.DrawWireCube (localPos, new Vector3 (Vg.w * cSize, Vg.h * cSize * 0, Vg.d * cSize));
+                }
+            }
+        }
 
-		void DrawGizmoLayer ()
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			if (pointer) {
-				for (int xi = 0; xi < chunkX * vg.chunkSize; xi++) {
-					for (int zi = 0; zi < chunkZ * vg.chunkSize; zi++) {
-						float cSize;
-						cSize = (GetBlock (xi, pointY, zi) == null) ? 0.3f : 1.01f;
+        public void ChangeCutY (int _y)
+        {
+            _y = Mathf.Clamp (_y, 0, (vd.useFreeChunk ? vd.freeChunk.freeChunkSize.x : (vd.chunkX * vd.chunkSize)) - 1);
+            cutY = _y;
+            UpdateChunks ();
+        }
 
-						Vector3 localPos = new Vector3 (xi * vg.w, pointY * vg.h, zi * vg.d);
-						Gizmos.DrawCube (localPos, new Vector3 (vg.w * cSize, vg.h * cSize, vg.d * cSize));
-					}
-				}
-			}
-		}
+        #endif
+        #endregion
 
-		void DrawGizmoBoxCursor ()
-		{
-			if (box != null) {
-				if (!Selection.Contains (gameObject.GetInstanceID ()) || Event.current.alt) {
-					box.SetActive (false);
-				} else {
-					box.SetActive (useBox);
-				}
-			}
-		}
+        public List<ConnectionInfo> ConnectionInfos {
+            get;
+            set;
+        }
+    }
 
-		public void ChangePointY (int _y)
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
-			pointY = _y;
-			YColor = new Color (
-				(20 + (pointY % 10) * 20) / 255f,
-				(200 - Mathf.Abs ((pointY % 10) - 5) * 20) / 255f,
-				(200 - (pointY % 10) * 20) / 255f,
-				0.4f
-			);
-			if (bColl) {
-				bColl.center = new Vector3 (
-					chunkX * vg.chunkSize * vg.hw - vg.hw,
-					pointY * vg.h + vg.hh,
-					chunkZ * vg.chunkSize * vg.hd - vg.hd
-				);
-			}
-			if (chunks != null && chunks.Count > 0)
-				UpdateChunks ();
-		}
+    public enum ConnectionInfoType
+    {
+        StartingNode,
+        Connection
+    }
 
-		public void ChangeCutY (int _y)
-		{
-			VGlobal vg = VGlobal.GetSetting ();
-			_y = Mathf.Clamp (_y, 0, chunkY * vg.chunkSize - 1);
-			cutY = _y;
-			if (chunks != null && chunks.Count > 0)
-				UpdateChunks ();
-		}
+    public class ConnectionInfo
+    {
+        public WorldPos position;
+        public Quaternion rotation;
+        public ConnectionInfoType type;
+        public string connectionName;
+        public Guid connectedObjectGuid;
+        public GameObject connectedGameObject;
+        public bool used;
+        // Just for connection.
+        public ConnectionInfo (WorldPos _position, Quaternion _rotation, ConnectionInfoType _type, string _name = "")
+        {
+            position = _position;
+            rotation = _rotation;
+            type = _type;
+            connectionName = _name;
+            used = false;
+            connectedGameObject = null;
+        }
 
-		#endif
-		#endregion
-		private List<ConnectionInfo> _connectionInfos;
-		public List<ConnectionInfo> ConnectionInfos {
-			get { return _connectionInfos; }
-			set { _connectionInfos = value; }
-		}
-	}
-	public enum ConnectionInfoType {
-		StartingNode,
-		Connection
-	}
+        public ConnectionInfo (ConnectionInfo clone)
+        {
+            position = clone.position;
+            rotation = clone.rotation;
+            type = clone.type;
+            connectionName = clone.connectionName;
+            used = clone.used;
+            connectedObjectGuid = clone.connectedObjectGuid;
+            connectedGameObject = clone.connectedGameObject;
+        }
 
-	public class ConnectionInfo {
-		public WorldPos position;
-		public Quaternion rotation;
-		public ConnectionInfoType type;
-		public string connectionName;
-		public Guid connectedObjectGuid;
-		public GameObject connectedGameObject;
-		public bool used;
-		// Just for connection.
-		public ConnectionInfo(WorldPos position, Quaternion rotation, ConnectionInfoType type, string name = "") {
-			this.position = position;
-			this.rotation = rotation;
-			this.type = type;
-			this.connectionName = name;
-			used = false;
-			connectedGameObject = null;
-		}
-		public ConnectionInfo(ConnectionInfo clone) {
-			this.position = clone.position;
-			this.rotation = clone.rotation;
-			this.type = clone.type;
-			this.connectionName = clone.connectionName;
-			this.used = clone.used;
-			connectedObjectGuid = clone.connectedObjectGuid;
-			connectedGameObject = clone.connectedGameObject;
-		}
-		public ConnectionInfo Clone() {
-			return new ConnectionInfo(this);
-		}
-		public bool Compare(ConnectionInfo obj) {
-			return this.position.Compare(obj.position) && this.rotation == obj.rotation && this.type == obj.type && this.used == obj.used && this.connectedObjectGuid == obj.connectedObjectGuid;
-		}
-		public WorldPos RelativePosition( float degree) {
-			int absoluteDegree = ((int) (degree + this.rotation.eulerAngles.y) % 360);
-			return DirectionOffset[absoluteDegree / 90];
-		}
-		// Constant array.
-		public static WorldPos[] DirectionOffset = new WorldPos[] {
-			new WorldPos(0, 0, 1),
-			new WorldPos(1, 0, 0),
-			new WorldPos(0, 0, -1),
-			new WorldPos(-1, 0, 0)
-		};
-	}
+        public ConnectionInfo Clone ()
+        {
+            return new ConnectionInfo (this);
+        }
+
+        public bool Compare (ConnectionInfo obj)
+        {
+            return (
+                position.Compare (obj.position)
+                && rotation == obj.rotation
+                && type == obj.type
+                && used == obj.used
+                && connectedObjectGuid == obj.connectedObjectGuid
+            );
+        }
+
+        public WorldPos RelativePosition (float degree)
+        {
+            int absoluteDegree = ((int)(degree + rotation.eulerAngles.y) % 360);
+            return DirectionOffset [absoluteDegree / 90];
+        }
+        // Constant array.
+        public static WorldPos[] DirectionOffset = {
+            new WorldPos (0, 0, 1),
+            new WorldPos (1, 0, 0),
+            new WorldPos (0, 0, -1),
+            new WorldPos (-1, 0, 0)
+        };
+    }
 }

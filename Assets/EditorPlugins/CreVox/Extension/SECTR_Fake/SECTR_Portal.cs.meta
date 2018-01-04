@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: e94887d2fbecadb4a9d5811f629b8ad6
+labels:
+- Sector
+- Portal
+- OpenWorld
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: 0d5d671d4478cab4c975f4b0efe780c2, type: 3}
+  userData: 
