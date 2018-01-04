@@ -53,8 +53,8 @@ namespace CrevoxExtend {
 			_d.position = vdataEx.position;
 			_d.rotation = vdataEx.rotation;
 			_d.volumeData = vdataEx.volumeData;
-			_d.ArtPack = PathCollect.artPack + "/" + artPack;
-			_d.vMaterial = _d.ArtPack + "/" + artPack + "_voxel" ;
+			_d.ArtPack = PathCollect.artPack + artPack;
+			_d.vMaterial = _d.ArtPack + artPack + "_voxel" ;
 			resultVolumeManager.dungeons.Add (_d);
 		}
 		// Destroy all volume.
