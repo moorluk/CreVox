@@ -160,7 +160,7 @@ namespace CrevoxExtend {
 					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
 						// Ignore used or type-error connection. 
 						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
-						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name != connection.connectionName) { continue; }
+						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name.ToLower() != connection.connectionName.ToLower()) { continue; }
 						// Combine.
 						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
 							// If Success, add this VData to the state
