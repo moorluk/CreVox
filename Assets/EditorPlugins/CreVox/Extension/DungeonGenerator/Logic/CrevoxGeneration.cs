@@ -135,6 +135,7 @@ namespace CrevoxExtend {
 			}
 				
 			// Find mapping VDataAndMaxV in table that ordered randomly. 
+            string log = "<b>Compare connection : </b>\n";
 			foreach (var mappingvdataAndmaxv in feasibleVDataAndMaxVs.OrderBy(x => UnityEngine.Random.value)) {
 				// Debug.Log("Mapping vData : " + mappingvdataAndmaxv.vData.name + " has " + mappingvdataAndmaxv.maxVData + "vData.");
 				// Set the end node.
@@ -148,7 +149,7 @@ namespace CrevoxExtend {
 				List<ConnectionInfo> newConnections = new List<ConnectionInfo>();
 				if (startingNode != null) {
 					newConnections.Add (startingNode);
-					// Debug.Log (startingNode.connectionName);
+					log += startingNode.connectionName + "\n";
 				} else {
 					// If there is no starting node then find connections. 
 					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
@@ -159,9 +160,11 @@ namespace CrevoxExtend {
 						// Ignore used or type-error connection. 
 						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
 						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name.ToLower() != connection.connectionName.ToLower()) {
-							Debug.Log(RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name + " : " + connection.connectionName);
+                            log += RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name + " : " + connection.connectionName + "\n";
 							continue;
-						} else{Debug.Log("success : " + connection.connectionName);}
+                        } else{
+                            log += "<color=green>success</color> : " + connection.connectionName + "\n";
+                            }
 						// Combine.
 						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
 							// If Success, add this VData to the state
@@ -172,6 +175,7 @@ namespace CrevoxExtend {
 								state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.Find(x => x.Compare(connection)).connectedObjectGuid = edge.end.SymbolID;
 								state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => x.Compare(newConnection)).connectedObjectGuid = edge.start.SymbolID;
 								// Success then return.
+                                Debug.Log (log);
 								return true;
 							} else {
 								// If next level has problem then remove the VData that has been added before
@@ -183,7 +187,7 @@ namespace CrevoxExtend {
 			}
 			// If none is success then restore the state.
 			state.VolumeDatasByID.Remove(edge.end.SymbolID);
-
+            Debug.Log (log + "<color=red>Failed</color>");
 			return false;
 		}
 		// Dfs get sequence.
