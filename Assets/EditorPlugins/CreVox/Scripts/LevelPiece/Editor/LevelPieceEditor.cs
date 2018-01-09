@@ -68,6 +68,7 @@ namespace CreVox
 
         public virtual void OnEditorGUI(ref BlockItem item)
 		{
+            lp = (LevelPiece)target;
 			EditorGUI.BeginChangeCheck ();
 			using (var v = new EditorGUILayout.VerticalScope ("box")) {
 				lp.PProperties [0].tComponent = FocalComponent.DefaultEventRange;
