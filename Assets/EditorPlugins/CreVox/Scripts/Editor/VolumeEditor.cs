@@ -196,58 +196,24 @@ namespace CreVox
             if (volume.vd == null)
                 return;
 
-            EventHandler ();
-            ModeHandler ();
-
+            DrawMarkers ();
             Handles.BeginGUI ();
             DrawSelected ();
             DrawModeGUI ();
             DrawLayerModeGUI ();
             DrawModifyGUI ();
             Handles.EndGUI ();
-
             if (volume._itemInspected != null && volume._itemInspected.inspectedScript is PropertyPiece)
                 ((PropertyPiece)volume._itemInspected.inspectedScript).DrawPatrolPoints ();
+            
+            EventHandler ();
+            ModeHandler ();
         }
 
-        public enum EditMode
-        {
-            View,
-            VoxelLayer,
-            Voxel,
-            ObjectLayer,
-            Object,
-            Item
-        }
-
-        EditMode selectedEditMode;
-        EditMode currentEditMode;
-
-        void ModeHandler ()
-        {
-            switch (selectedEditMode) {
-            case EditMode.Voxel:
-            case EditMode.VoxelLayer:
-            case EditMode.Object:
-            case EditMode.ObjectLayer:
-                Tools.current = Tool.None;
-                break;
-
-            case EditMode.View:
-            case EditMode.Item:
-                break;
-            }
-            if (selectedEditMode != currentEditMode) {
-                currentEditMode = selectedEditMode;
-                volume._itemInspected = null;
-                Repaint ();
-            }
-        }
-
-        int fixPointY;
-        int fixCutY;
         static float editDis = 999;
         const float ButtonW = 80;
+        const float blockW = 85f;
+        bool isItemSnap;
 
         void DrawModeGUI ()
         {
@@ -263,23 +229,27 @@ namespace CreVox
                 selectedEditMode = (EditMode)GUILayout.Toolbar ((int)selectedEditMode, modeLabels.ToArray (), GUILayout.ExpandHeight (true));
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     EditorGUILayout.LabelField ("Editable Distance", GUILayout.Width (105));
-                    EditorGUI.BeginChangeCheck ();
-                    editDis = GUILayout.HorizontalSlider (editDis, 99f, 999f);
-                    if (EditorGUI.EndChangeCheck ())
-                        EditorUtility.SetDirty (vg);
+                    using (var c = new EditorGUI.ChangeCheckScope ()) {
+                        editDis = GUILayout.HorizontalSlider (editDis, 99f, 999f);
+                        if (c.changed)
+                            EditorUtility.SetDirty (vg);
+                    }
                     EditorGUILayout.LabelField (((int)editDis).ToString (), GUILayout.Width (25));
-//                    if (selectedEditMode == EditMode.Item)
+                    if (selectedEditMode == EditMode.Item)
                     isItemSnap = EditorGUILayout.ToggleLeft ("Snap Item", isItemSnap, GUILayout.Width (ButtonW));
                 }
             }
         }
 
-        const float blockW = 85f;
-
         void DrawLayerModeGUI ()
         {
-            int tile = (_pieceSelected == null) ? 3 : 4;
-            using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (blockW + 3f) * tile, 65f), "")) {
+            int tile = 2;
+            if (_pieceSelected != null)
+                tile++;
+            GameObject itemObj = selectedItemID > -1 ? volume.GetItemNode (volume.vd.blockItems [selectedItemID]) : null;
+            if(itemObj)
+                tile++;
+            using (var a = new GUILayout.AreaScope (new Rect (10f, 65f, (blockW + 7f) * tile, 65f), "")) {
                 using (var h = new GUILayout.HorizontalScope ()) {
                     bool _hotkey = currentEditMode != EditMode.View && currentEditMode != EditMode.Item;
 
@@ -323,11 +293,24 @@ namespace CreVox
                         GUI.color = volume.YColor;
                         using (var v = new GUILayout.VerticalScope (EditorStyles.textArea, GUILayout.Width (blockW))) {
                             GUI.color = Color.white;
-                            if (_pieceSelected != null) {
-                                GUILayout.Label (new GUIContent (_itemPreview), GUILayout.Height (63), GUILayout.Width (63));
-                                GUILayout.Space (-20);
-                                GUILayout.Label (_itemSelected.itemName, GUILayout.Width (blockW));
-                            }
+                            GUILayout.Space (0);
+                            Rect pr = new Rect (GUILayoutUtility.GetLastRect ().position, new Vector2 (63, 63));
+                            GUI.DrawTexture (pr, _itemPreview);
+                            GUILayout.Label ("Marker", EditorStyles.boldLabel, GUILayout.Width (blockW));
+                            GUILayout.Space (26);
+                            GUILayout.Label (_pieceSelected.GetComponent<PaletteItem> ().itemName, GUILayout.Width (blockW));
+                        }
+                    }
+
+                    if (itemObj) {
+                        using (var v = new GUILayout.VerticalScope (EditorStyles.textArea, GUILayout.Width (blockW))) {
+                            GUILayout.Space (0);
+                            Texture2D _prev = AssetPreview.GetAssetPreview (PrefabUtility.GetPrefabParent (itemObj)) ?? AssetPreview.GetMiniTypeThumbnail (typeof(GameObject));
+                            Rect pr = new Rect (GUILayoutUtility.GetLastRect ().position, new Vector2 (63, 63));
+                            GUI.DrawTexture (pr, _prev);
+                            GUILayout.Label ("Editing Item",EditorStyles.boldLabel, GUILayout.Width (blockW));
+                            GUILayout.Space (26);
+                            GUILayout.Label (itemObj.GetComponent<PaletteItem>().itemName ?? "", GUILayout.Width (blockW));
                         }
                     }
                 }
@@ -353,20 +336,20 @@ namespace CreVox
                     EditorGUILayout.LabelField ("Offset All", EditorStyles.boldLabel);
                     using (var h = new GUILayout.HorizontalScope ()) {
                         GUILayout.Space (40);
-                        if (GUILayout.Button ("X+"))
+                        if (GUILayout.Button ("Ｘ＋"))
                             OffsetBlock (new WorldPos (1, 0, 0));
-                        if (GUILayout.Button ("Y+"))
+                        if (GUILayout.Button ("Ｙ＋"))
                             OffsetBlock (new WorldPos (0, 1, 0));
-                        if (GUILayout.Button ("Z+"))
+                        if (GUILayout.Button ("Ｚ＋"))
                             OffsetBlock (new WorldPos (0, 0, 1));
                     }
                     using (var h = new GUILayout.HorizontalScope ()) {
                         GUILayout.Space (40);
-                        if (GUILayout.Button ("X-"))
+                        if (GUILayout.Button ("Ｘ－"))
                             OffsetBlock (new WorldPos (-1, 0, 0));
-                        if (GUILayout.Button ("Y-"))
+                        if (GUILayout.Button ("Ｙ－"))
                             OffsetBlock (new WorldPos (0, -1, 0));
-                        if (GUILayout.Button ("Z-"))
+                        if (GUILayout.Button ("Ｚ－"))
                             OffsetBlock (new WorldPos (0, 0, -1));
                     }
                 }
@@ -415,8 +398,10 @@ namespace CreVox
         #endregion
 
         #region Draw Marker
+        int button;
+        bool selected;
 
-        void EventHandler ()
+        void DrawMarkers ()
         {
             if (Event.current.alt) {
                 BoxCursor.visible = false;
@@ -431,93 +416,34 @@ namespace CreVox
             if (currentEditMode == EditMode.View)
                 return; 
 
-            int button = -1;
-            if (currentEditMode != EditMode.Item) {
-                button = Event.current.button;
-            }
-            if (Event.current.type == EventType.MouseUp && Event.current.button < 2) {
-                button = Event.current.button;
-                if (Event.current.button == 1)
-                    Event.current.button = 0;
-            }
+            button = Event.current.button;
             HandleUtility.AddDefaultControl (GUIUtility.GetControlID (FocusType.Passive));
-
-//            switch (currentEditMode) {
-//            case EditMode.View:
-//            case EditMode.Item:
-//                BoxCursor.visible = false;
-//                break;
-//
-//            default:
-//                BoxCursor.visible = true;
-//                break;
-//            }
 
             switch (currentEditMode) {
             case EditMode.Voxel:
                 if (button == 0)
-                    DrawMarker (false);
+                    DrawMarkerVoxel (false);
                 else if (button == 1) {
-                    DrawMarker (true);
-                }
-
-                if (Event.current.type == EventType.MouseDown) {
-                    if (button == 0)
-                        Paint (false);
-                    else if (button == 1) {
-                        Paint (true);
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use ();
-                    }
+                    DrawMarkerVoxel (true);
                 }
                 break;
 
             case EditMode.VoxelLayer: 
-                DrawMarkerLayer ();
-
-                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-                    if (button == 0)
-                        PaintLayer (false);
-                    else if (button == 1) {
-                        PaintLayer (true);
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use ();
-                    }
-                }
+                DrawMarkerVoxelLayer ();
                 break;
 
             case EditMode.Object:
             case EditMode.ObjectLayer:
-                DrawMarkerGrid ();
-
-                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
-                    if (button == 0)
-                        PaintPiece (false);
-                    else if (button == 1) {
-                        PaintPiece (true);
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use ();
-                    }
-                }
+                DrawMarkerObject ();
                 break;
 
             case EditMode.Item:
-                if (Event.current.type == EventType.MouseDown) {
-                    if (button == 1) {
-                        Tools.viewTool = ViewTool.None;
-                        Event.current.Use ();
-                    }
-                }
-                DrawMarkerEdit (ref button);
+                DrawMarkerItem ();
                 break;
-            }
-
-            if (Event.current.type == EventType.MouseUp) {
-                UpdateDirtyChunks ();
             }
         }
 
-        void DrawMarker (bool isErase)
+        void DrawMarkerVoxel (bool isErase)
         {
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -529,10 +455,11 @@ namespace CreVox
                 WorldPos pos = EditTerrain.GetBlockPos (hitFix, !isErase);
                 hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
 
-                Handles.DrawLine (hit.point, hit.point + hit.normal);
                 if (hit.collider.gameObject.tag == PathCollect.rularTag) {
                     hit.normal = Vector3.zero;
                 }
+                Handles.RectangleCap (0, hitFix.point - new Vector3 (0, vg.h / 2, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
+                Handles.DrawLine (hit.point, hitFix.point);
                 BoxCursor.Update (hitFix.point, hit.normal);
                 BoxCursor.visible = true;
             } else {
@@ -541,7 +468,7 @@ namespace CreVox
             SceneView.RepaintAll ();
         }
 
-        void DrawMarkerLayer ()
+        void DrawMarkerVoxelLayer ()
         {
             RaycastHit hit;
             Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
@@ -550,12 +477,12 @@ namespace CreVox
 
             if (isHit && hit.collider.GetComponentInParent<Volume> () == volume) {
                 RaycastHit hitFix = hit;
-                WorldPos pos = EditTerrain.GetBlockPos (hitFix);
+                WorldPos pos = EditTerrain.GetBlockPos (hitFix, false);
                 hitFix.point = new Vector3 (pos.x * vg.w, pos.y * vg.h, pos.z * vg.d);
-				
+
                 Handles.RectangleCap (0, hitFix.point + new Vector3 (0, vg.h / 2, 0), Quaternion.Euler (90, 0, 0), vg.w / 2);
                 Handles.DrawLine (hit.point, hitFix.point);
-                BoxCursor.Update (hitFix.point, Vector3.zero);
+                BoxCursor.Update (hitFix.point, hit.normal);
                 BoxCursor.visible = true;
             } else {
                 BoxCursor.visible = false;
@@ -563,7 +490,7 @@ namespace CreVox
             SceneView.RepaintAll ();
         }
 
-        void DrawMarkerGrid ()
+        void DrawMarkerObject ()
         {
             if (_pieceSelected == null)
                 return;
@@ -612,113 +539,82 @@ namespace CreVox
 
         int workItemId = -1;
         int selectedItemID = -1;
-        bool isItemSnap;
 
-        void DrawMarkerEdit (ref int button)
+        void DrawMarkerItem ()
         {
-            Matrix4x4 defMatrix = Handles.matrix;
             Color defColor = Handles.color;
             Quaternion facingCamera;
-            bool selected = false;
-            string log = "";
 
-            // if no item selected, draw handle 'can paint item'.
-            if (selectedItemID == -1) {
+                //draw handle 'can paint item'.
                 RaycastHit hit;
                 Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
                 LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
                 bool isHit = Physics.Raycast (worldRay, out hit, editDis, _mask);
                 if (isHit && hit.collider.GetComponentInParent<Volume> () == volume && hit.normal.y > 0) {
                     Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.3f);
-                    Handles.DrawSolidDisc (hit.point, hit.normal, 0.5f);
+                    Handles.DrawWireDisc (hit.point, hit.normal, 0.5f);
+                }
+
+            if (selectedItemID != -1) {
+                // draw move & rotate handle.
+                BlockItem blockItem = volume.vd.blockItems [selectedItemID];
+                GameObject itemObj = volume.GetItemNode (blockItem);
+                if (itemObj != null) {
+                    Transform ItemNode = itemObj.transform;
+                    Vector3 pos = ItemNode.position;
+                    Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.h / 2, 0) : pos;
+                    handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
+
+                    if (isItemSnap) {
+                        float fixedX = Mathf.Round (handlePos.x * 2) / 2;
+                        float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.h / 2 - 0.01f);
+                        float fixedZ = Mathf.Round (handlePos.z * 2) / 2;
+                        pos = new Vector3 (fixedX, fixedY, fixedZ);
+                    } else {
+                        pos = handlePos;
+                    }
+                    ItemNode.position = pos;
+                    blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
+                    blockItem.posX = ItemNode.localPosition.x;
+                    blockItem.posY = ItemNode.localPosition.y;
+                    blockItem.posZ = ItemNode.localPosition.z;
+
+                    ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
+                    Quaternion tmp = ItemNode.localRotation;
+                    Vector3 rot = tmp.eulerAngles;
+                    rot.x = Mathf.Round (rot.x / 15f) * 15f;
+                    rot.y = Mathf.Round (rot.y / 15f) * 15f;
+                    rot.z = Mathf.Round (rot.z / 15f) * 15f;
+                    tmp.eulerAngles = rot;
+                    ItemNode.localRotation = tmp;
+                    blockItem.rotX = ItemNode.localRotation.x;
+                    blockItem.rotY = ItemNode.localRotation.y;
+                    blockItem.rotZ = ItemNode.localRotation.z;
+                    blockItem.rotW = ItemNode.localRotation.w;
+
+                    EditorUtility.SetDirty (volume.vd);
                 }
             }
-            // detect item select.
+
             for (int i = 0; i < volume.vd.blockItems.Count; i++) {
                 BlockItem blockItem = volume.vd.blockItems [i];
                 GameObject itemObj = volume.GetItemNode (blockItem);
                 if (itemObj != null) {
                     Transform ItemNode = itemObj.transform;
                     Vector3 pos = ItemNode.position;
-                    Vector3 handlePos = isItemSnap ? pos + new Vector3 (0, vg.h / 2, 0) : pos;
-                    // draw move & rotate handle.
-                    if (selectedItemID == i) {
-                        handlePos = Handles.DoPositionHandle (handlePos, ItemNode.rotation);
-
-                        if (isItemSnap) {
-                            float fixedX = Mathf.Round (handlePos.x * 2) / 2;
-                            float fixedY = Mathf.Round (handlePos.y / vg.h) * vg.h - (vg.h / 2 - 0.01f);
-                            float fixedZ = Mathf.Round (handlePos.z * 2) / 2;
-                            pos = new Vector3 (fixedX, fixedY, fixedZ);
-                        } else {
-                            pos = handlePos;
-                        }
-                        ItemNode.position = pos;
-                        blockItem.BlockPos = EditTerrain.GetBlockPos (ItemNode.localPosition);
-                        blockItem.posX = ItemNode.localPosition.x;
-                        blockItem.posY = ItemNode.localPosition.y;
-                        blockItem.posZ = ItemNode.localPosition.z;
-
-                        ItemNode.localRotation = Handles.RotationHandle (ItemNode.localRotation, pos);
-                        Quaternion tmp = ItemNode.localRotation;
-                        Vector3 rot = tmp.eulerAngles;
-                        rot.x = Mathf.Round (rot.x / 15f) * 15f;
-                        rot.y = Mathf.Round (rot.y / 15f) * 15f;
-                        rot.z = Mathf.Round (rot.z / 15f) * 15f;
-                        tmp.eulerAngles = rot;
-                        ItemNode.localRotation = tmp;
-                        blockItem.rotX = ItemNode.localRotation.x;
-                        blockItem.rotY = ItemNode.localRotation.y;
-                        blockItem.rotZ = ItemNode.localRotation.z;
-                        blockItem.rotW = ItemNode.localRotation.w;
-
-                        EditorUtility.SetDirty (volume.vd);
-                    }
                     // draw button.
                     float handleSize = HandleUtility.GetHandleSize (pos) * 0.15f;
                     Handles.color = new Color (0f / 255f, 202f / 255f, 255f / 255f, 0.1f);
                     facingCamera = Camera.current.transform.rotation * Quaternion.Euler (0, 0, 180);
-                    selected = Handles.Button (pos, facingCamera, handleSize, handleSize, Handles.SphereCap);
+                    selected = Handles.Button (pos, facingCamera, handleSize, handleSize, Handles.SphereHandleCap);
                     Handles.color = defColor;
                     //compare selectedItemID.
-                    if (selected && button > -1 && button < 2) {
-                        log += "[Before Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
+                    if (selected) {
                         workItemId = i;
                         break;
                     }
                 }
             }
-            // check mouse event & select item
-            switch (button) {
-            case 0:
-				// check if is selected item.
-                if (workItemId != -1) {
-                    // toggle item selection.
-                    selectedItemID = (selectedItemID == workItemId) ? -1 : workItemId;
-                } else if (!selected && selectedItemID == -1) {
-                    // add new item.
-                    int oldcount = volume.vd.blockItems.Count;
-                    PaintItem (false);
-                    if (volume.vd.blockItems.Count != oldcount)
-                        selectedItemID = volume.vd.blockItems.Count - 1;
-                }
-                UpdateInapectedItem (selectedItemID);
-                log += "\n[After Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
-                break;
-            case 1:
-                if (workItemId != -1 && selectedItemID == workItemId) {
-                    // delette selected item
-                    PaintItem (true);
-                    selectedItemID = -1;
-                }
-                UpdateInapectedItem (selectedItemID);
-                log += "\n[After Button]Btn:<b>" + button + "</b> Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>";
-                break;
-            }
-            workItemId = -1;
-            if (log.Length > 0)
-                Debug.Log (log);
-            Handles.matrix = defMatrix;
             SceneView.RepaintAll ();
         }
 
@@ -739,6 +635,126 @@ namespace CreVox
             }
 
             Handles.color = old;
+        }
+
+        #endregion
+
+        #region Handlar
+
+        public enum EditMode
+        {
+            View,
+            VoxelLayer,
+            Voxel,
+            ObjectLayer,
+            Object,
+            Item
+        }
+
+        EditMode selectedEditMode;
+        EditMode currentEditMode;
+
+        void ModeHandler ()
+        {
+            switch (selectedEditMode) {
+            case EditMode.Voxel:
+            case EditMode.VoxelLayer:
+            case EditMode.Object:
+            case EditMode.ObjectLayer:
+                Tools.current = Tool.None;
+                break;
+
+            case EditMode.View:
+            case EditMode.Item:
+                break;
+            }
+            if (selectedEditMode != currentEditMode) {
+                currentEditMode = selectedEditMode;
+                volume._itemInspected = null;
+                selectedItemID = -1;
+                Repaint ();
+            }
+        }
+
+        void EventHandler ()
+        {
+            if (Event.current.alt) {
+                BoxCursor.visible = false;
+                return;
+            }
+
+            if (Event.current.type == EventType.KeyDown) {
+                HotkeyFunction (Event.current.keyCode.ToString (), true);
+                return;
+            } 
+
+            if (currentEditMode == EditMode.View)
+                return;
+
+            switch (currentEditMode) {
+            case EditMode.Voxel:
+                if (Event.current.type == EventType.MouseDown) {
+                    if (button == 0)
+                        Paint (false);
+                    else if (button == 1) {
+                        Paint (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
+                }
+                break;
+
+            case EditMode.VoxelLayer:
+                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+                    if (button == 0)
+                        PaintLayer (false);
+                    else if (button == 1) {
+                        PaintLayer (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
+                }
+                break;
+
+            case EditMode.Object:
+            case EditMode.ObjectLayer:
+                if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseDrag) {
+                    if (button == 0)
+                        PaintPiece (false);
+                    else if (button == 1) {
+                        PaintPiece (true);
+                        Tools.viewTool = ViewTool.None;
+                        Event.current.Use ();
+                    }
+                }
+                break;
+
+            case EditMode.Item:
+                if (selected) {
+                    if (workItemId != -1) {
+                        // toggle item selection.
+                        selectedItemID = (selectedItemID != workItemId) ? workItemId : -1;
+                        Debug.Log ("[Sel]Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>");
+                        UpdateInapectedItem (selectedItemID);
+                        workItemId = -1;
+                    }
+                    selected = false;
+                } else if (Event.current.type == EventType.MouseDown && button == 0) {
+                    if (workItemId == -1 && selectedItemID == -1) {
+                        // add new item.
+                        PaintItem (false);
+                        selectedItemID = -1;
+                        Debug.Log ("[Add]Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>");
+                        UpdateInapectedItem (selectedItemID);
+                        workItemId = -1;
+                    }
+                }
+                break;
+            }
+
+            if (Event.current.type == EventType.MouseUp) {
+                UpdateDirtyChunks ();
+            }
         }
 
         #endregion
@@ -850,24 +866,24 @@ namespace CreVox
         {
             if (_pieceSelected == null)
                 return;
-			
+
             if (isErase) {
-                volume.PlaceItem (workItemId, null);
+                volume.PlaceItem (selectedItemID, null);
+                workItemId = -1;
+                selectedItemID = -1;
+                UpdateInapectedItem (selectedItemID);
             } else {
                 RaycastHit gHit;
                 Ray worldRay = HandleUtility.GUIPointToWorldRay (Event.current.mousePosition);
                 LayerMask _mask = 1 << LayerMask.NameToLayer ("Editor");
                 bool isHit = Physics.Raycast (worldRay, out gHit, editDis, _mask);
 
-                if (isHit && gHit.collider.GetComponentInParent<Volume> () == volume) {
-                    if (gHit.normal.y <= 0)
-                        return;
-
-                    gHit.point = volume.transform.InverseTransformPoint (gHit.point);
-                    volume.PlaceItem (volume.vd.blockItems.Count, _pieceSelected, gHit.point);
-                    SceneView.RepaintAll ();
-                }
+                if (!isHit || gHit.collider.GetComponentInParent<Volume> () != volume || gHit.normal.y <= 0)
+                    return;
+                gHit.point = volume.transform.InverseTransformPoint (gHit.point);
+                volume.PlaceItem (volume.vd.blockItems.Count, _pieceSelected, gHit.point);
             }
+            SceneView.RepaintAll ();
             EditorUtility.SetDirty (volume.vd);
         }
 
@@ -1301,7 +1317,6 @@ namespace CreVox
 
         #region SubscribeEvents
 
-        //        private PaletteItem _itemInspected;
         PaletteItem _itemSelected;
         Texture2D _itemPreview;
         LevelPiece _pieceSelected;
@@ -1314,7 +1329,14 @@ namespace CreVox
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
                 string _label2 = "[" + selectedItemID + "] " + volume._itemInspected.name + " (" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") ";
-                GUILayout.Label (_label2, EditorStyles.miniLabel);
+
+                using (var h = new EditorGUILayout.HorizontalScope ()) {
+                    GUILayout.Label (_label2, EditorStyles.miniLabel);
+                    if (GUILayout.Button ("Delete", GUILayout.Width (60))) {
+                        PaintItem (true);
+                        return;
+                    }
+                }
 
                 if (volume._itemInspected.inspectedScript != null) {
                     LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (volume._itemInspected.inspectedScript));
