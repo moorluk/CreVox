@@ -100,9 +100,10 @@ namespace CreVox
         public bool LoadCompeleted ()
         {
             bool result = true;
-            for (int idx = 0; idx < m_bts.Count; ++idx) {
-                result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
-            }
+            //donot use BehaviorDesigner
+            //for (int idx = 0; idx < m_bts.Count; ++idx) {
+            //    result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
+            //}
             return (result & isPieceFin && isItemFin);
         }
 
@@ -155,7 +156,7 @@ namespace CreVox
                     }
                 }
                 time = Time.deltaTime - time;
-                log += (string.Format ("<color={0}>{1} : {2}</color>\n", ((time > 0.2f) ? "red" : "black"), pi.name, time));
+                log += (string.Format ("{0}{1} : {2}{3}\n", ((time > 0.2f) ? "<color=red>" : ""), pi.name, time, (time > 0.2f) ? "</color>" : ""));
                 yield return new WaitForSeconds (0.00f);
             }
             Debug.Log (log);
@@ -188,7 +189,7 @@ namespace CreVox
         {
             while (!isPieceFin)
                 yield return new WaitForSeconds (0.01f);
-            string log = gameObject.name + "<b>Create Items :</B>\n";
+            string log = gameObject.name + "<b> Create Items :</B>\n";
             float time = Time.deltaTime;
             foreach (BlockItem bi in _vData.blockItems) {
                 foreach (PaletteItem pi in itemArray) {
@@ -197,7 +198,7 @@ namespace CreVox
                     if (bi.pieceName == pi.name) {
                         CreateItem (bi, pi);
                         time = Time.deltaTime - time;
-                        log += (string.Format ("<color={0}>{1} : {2}</color>\n", ((time > 0.2f) ? "red" : "black"), pi.name, time));
+                        log += (string.Format ("{0}{1} : {2}{3}\n", (time > 0.2f) ? "<color=red>" : "", pi.name, time,(time > 0.2f) ? "</color>" : ""));
                         break;
                     }
                 }

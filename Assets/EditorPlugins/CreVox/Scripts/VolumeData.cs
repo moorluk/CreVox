@@ -3,51 +3,63 @@ using System.Collections.Generic;
 
 namespace CreVox
 {
-	[CreateAssetMenu (menuName = "CreVox/Volume Data")]
-	public class VolumeData : ScriptableObject
-	{
-		// free chunk
-		public bool useFreeChunk;
-		public ChunkData freeChunk = new ChunkData {isFreeChunk = true};
-		// ==============
+    [CreateAssetMenu (menuName = "CreVox/Volume Data")]
+    public class VolumeData : ScriptableObject
+    {
+        // free chunk
+        public bool useFreeChunk;
+        public ChunkData freeChunk = new ChunkData { isFreeChunk = true };
+        // ==============
         public int chunkSize;
-		public int chunkX = 1;
-		public int chunkY = 1;
-		public int chunkZ = 1;
-		public List <ChunkData> chunkDatas = new List<ChunkData> ();
-		public List<BlockItem> blockItems = new List<BlockItem> ();
-		public string subArtPack = "";
+        public int chunkX = 1;
+        public int chunkY = 1;
+        public int chunkZ = 1;
+        public List <ChunkData> chunkDatas = new List<ChunkData> ();
+        public List<BlockItem> blockItems = new List<BlockItem> ();
+        public string subArtPack = "";
 
-		// [XAOCX add]
-		public VolumeData()
-        { }
-        public VolumeData(VolumeData clone)
+        // [XAOCX add]
+        public VolumeData ()
+        {
+        }
+
+        public VolumeData (VolumeData clone)
         {
             useFreeChunk = clone.useFreeChunk;
             freeChunk = clone.freeChunk;
             chunkSize = clone.chunkSize;
-			chunkX = clone.chunkX;
-			chunkY = clone.chunkY;
-			chunkZ = clone.chunkZ;
-			chunkDatas = new List<ChunkData> ();
-			foreach (var chunkData in clone.chunkDatas) {
-				chunkDatas.Add(new ChunkData(chunkData));
-			}
-			blockItems = new List<BlockItem> ();
-			foreach (var blockItem in clone.blockItems) {
-				blockItems.Add(new BlockItem(blockItem));
-			}
+            chunkX = clone.chunkX;
+            chunkY = clone.chunkY;
+            chunkZ = clone.chunkZ;
+            chunkDatas = new List<ChunkData> ();
+            foreach (var chunkData in clone.chunkDatas) {
+                chunkDatas.Add (new ChunkData (chunkData));
+            }
+            blockItems = new List<BlockItem> ();
+            foreach (var blockItem in clone.blockItems) {
+                blockItems.Add (new BlockItem (blockItem));
+            }
             subArtPack = clone.subArtPack;
-		}
-		// ==============
+        }
+        // ==============
 
-		public void Awake()
-		{
-			if (chunkDatas.Count < 1)
-				chunkDatas.Add (new ChunkData ());
-		}
+        public void Awake ()
+        {
+            if (chunkDatas.Count < 1)
+                chunkDatas.Add (new ChunkData ());
+        }
 
-		ChunkData GetChunkData (WorldPos _pos)
+        public List<ChunkData> GetChunkDatas ()
+        {
+            if (useFreeChunk) {
+                List<ChunkData> freeChunkDatas = new List<ChunkData> ();
+                freeChunkDatas.Add (freeChunk);
+                return freeChunkDatas;
+            }
+            return chunkDatas;
+        }
+
+        ChunkData GetChunkData (WorldPos _pos)
         {
             if (useFreeChunk) {
                 if (freeChunk == null)
