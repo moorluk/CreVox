@@ -18,7 +18,7 @@ namespace CreVox
 		public static string box = "CreVox/BoxCursor";
 		public static string save = "CreVox/VolumeData";
 		public static string gram = "CreVox/Grammar";
-		public static string artDeco = "CreVox/ArtResources";
+		public static string artDeco = "CreVox/DecoPrefabs";
 		public static string artPack = "CreVox/VolumeArtPack/";
 		public static string pieces = artPack + "LevelPieces";
 		public static string defaultVoxelMaterial = pieces + "/LevelPieces_Voxel";

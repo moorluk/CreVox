@@ -66,8 +66,8 @@ namespace CreVox
                 }
             }
 
-            EditorGUILayout.HelpBox (PathCollect.artDeco + "/" + pp.artPack + "/ArtPrefab/" + item.attributes [0], MessageType.None);
-            EditorGUILayout.LabelField ("Path:", PathCollect.artDeco + "/(ArtPack)/ArtPrefab", EditorStyles.miniLabel);
+            EditorGUILayout.HelpBox (PathCollect.artDeco + "/" + pp.artPack + "/" + item.attributes [0], MessageType.None);
+            EditorGUILayout.LabelField ("Path:", PathCollect.artDeco + "/(ArtPack)/", EditorStyles.miniLabel);
             EditorGUILayout.LabelField ("ArtPack:", pp.artPack, EditorStyles.miniLabel);
             EditorGUILayout.LabelField ("Prefab Name:", item.attributes [0], EditorStyles.miniLabel);
         }
