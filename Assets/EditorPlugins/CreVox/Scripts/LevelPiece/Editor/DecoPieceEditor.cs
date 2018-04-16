@@ -57,6 +57,10 @@ namespace CreVox
                     if (EditorUtility.DisplayDialog ("", "Sort All Tree Element's Index ?", "Yes", "No"))
                         Sort ();
                 }
+                if (GUILayout.Button("Update", "prebutton")) {
+                    if (EditorUtility.DisplayDialog("", "Update All Tree Element's Transform ?", "Yes", "No"))
+                        UpdateNode();
+                }
             }
 
             // trees
@@ -123,7 +127,11 @@ namespace CreVox
                                     }
                                 }
                             }
-                            GUI.color = _color;
+                                if (instanceProp.objectReferenceValue != null)
+                                {
+                                    EditorGUILayout.ObjectField(instanceProp.objectReferenceValue, typeof(GameObject), true);
+                                }
+                                GUI.color = _color;
                             break;
                         case (int)DecoType.RandomOne:
                         case (int)DecoType.RandomAll:
@@ -225,7 +233,7 @@ namespace CreVox
             InitTree ();
 
             //clean other tree
-            var _trees = dp.root.GetComponentsInChildren<DecoPiece> (false);
+            var _trees = dp.Root.GetComponentsInChildren<DecoPiece> (false);
             foreach (var t in _trees) {
                 if (t.Equals (dp))
                     continue;
@@ -233,7 +241,7 @@ namespace CreVox
             }
 
             //search prefab
-            Transform[] _all = dp.root.GetComponentsInChildren<Transform> (false);
+            Transform[] _all = dp.Root.GetComponentsInChildren<Transform> (false);
             List<GameObject> _allPrefab = new List<GameObject> ();
             foreach (Transform t in _all) {
                 if (t == null)
@@ -283,6 +291,18 @@ namespace CreVox
                 _newTree.Add (dp.tree [_te.childs [i].FindListByNode (dp.tree)]);
             for (int i = 0; i < _te.childs.Count; i++)
                 SortChild (dp.tree [_te.childs [i].FindListByNode (dp.tree)], _newTree);
+        }
+
+        void UpdateNode ()
+        {
+            for (int i = 0; i < dp.tree.Count; i++) {
+                if (dp.tree[i].self.instance != null) {
+                    Transform n = dp.tree[i].self.instance.transform;
+                    dp.tree[i].self.pos = n.localPosition;
+                    dp.tree[i].self.rot = n.localEulerAngles;
+                    dp.tree[i].self.scl = n.localScale;
+                }
+            }
         }
 
         void AddElement (TreeElement _parent)
