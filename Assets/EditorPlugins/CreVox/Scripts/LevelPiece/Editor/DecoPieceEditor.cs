@@ -57,9 +57,9 @@ namespace CreVox
                     if (EditorUtility.DisplayDialog ("", "Sort All Tree Element's Index ?", "Yes", "No"))
                         Sort ();
                 }
-                if (GUILayout.Button("Update", "prebutton")) {
-                    if (EditorUtility.DisplayDialog("", "Update All Tree Element's Transform ?", "Yes", "No"))
-                        UpdateNode();
+                if (GUILayout.Button ("Update", "prebutton")) {
+                    if (EditorUtility.DisplayDialog ("", "Update All Tree Element's Transform ?", "Yes", "No"))
+                        UpdateNode ();
                 }
             }
 
@@ -127,11 +127,11 @@ namespace CreVox
                                     }
                                 }
                             }
-                                if (instanceProp.objectReferenceValue != null)
-                                {
-                                    EditorGUILayout.ObjectField(instanceProp.objectReferenceValue, typeof(GameObject), true);
-                                }
-                                GUI.color = _color;
+                            if (instanceProp.objectReferenceValue != null) {
+                                if(GUILayout.Button("景",GUILayout.Width(23),GUILayout.Height(16)))
+                                    Selection.activeGameObject = instanceProp.objectReferenceValue as GameObject;
+                            }
+                            GUI.color = _color;
                             break;
                         case (int)DecoType.RandomOne:
                         case (int)DecoType.RandomAll:
@@ -296,11 +296,11 @@ namespace CreVox
         void UpdateNode ()
         {
             for (int i = 0; i < dp.tree.Count; i++) {
-                if (dp.tree[i].self.instance != null) {
-                    Transform n = dp.tree[i].self.instance.transform;
-                    dp.tree[i].self.pos = n.localPosition;
-                    dp.tree[i].self.rot = n.localEulerAngles;
-                    dp.tree[i].self.scl = n.localScale;
+                if (dp.tree [i].self.instance != null) {
+                    Transform n = dp.tree [i].self.instance.transform;
+                    dp.tree [i].self.pos = n.localPosition;
+                    dp.tree [i].self.rot = n.localEulerAngles;
+                    dp.tree [i].self.scl = n.localScale;
                 }
             }
         }

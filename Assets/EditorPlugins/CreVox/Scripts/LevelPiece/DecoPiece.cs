@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System;
 
@@ -12,30 +11,30 @@ namespace CreVox
         public List<TreeElement> tree = new List<TreeElement> ();
         [SerializeField]
         GameObject root;
-        public GameObject Root
-        {
-            get
-            {
-                root = root ?? transform.Find("Root").gameObject;
+
+        public GameObject Root {
+            get {
+                root = root ?? transform.Find ("Root").gameObject;
                 root = root ?? gameObject;
                 return root;
             }
-            set
-            {
+            set {
                 root = value;
             }
         }
 
-        void Awake()
+        void Awake ()
         {
-            if (Application.isPlaying)
-                SetupPiece(null);
+//            if (Application.isPlaying)
+            SetupPiece (null);
         }
 
-        private void OnValidate()
+        void OnValidate ()
         {
-            if (tree[0].self.instance != null && !Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += () => { DestroyImmediate(tree[0].self.instance); };
+            if (tree [0].self.instance != null && !Application.isPlaying)
+                UnityEditor.EditorApplication.delayCall += delegate {
+                    DestroyImmediate (tree [0].self.instance);
+                };
         }
 
         public override void SetupPiece (BlockItem item)
@@ -53,9 +52,9 @@ namespace CreVox
         {
             for (int i = Root.transform.childCount; i > 0; i--) {
                 if (Application.isPlaying)
-                    Destroy(Root.transform.GetChild(i - 1).gameObject);
+                    Destroy (Root.transform.GetChild (i - 1).gameObject);
                 else
-                    DestroyImmediate(Root.transform.GetChild(i - 1).gameObject);
+                    DestroyImmediate (Root.transform.GetChild (i - 1).gameObject);
             }
         }
     }
