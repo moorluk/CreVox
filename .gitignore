@@ -75,3 +75,5 @@ Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData.meta
 Assets/EditorPlugins/CreVox/Extension/DungeonGenerator/VolumeData/
 Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader.meta
 Assets/EditorPlugins/CreVox/Shader/Anisotropic/Kajiya Kay.shader
+Assets/Resources/builtin_shaders/
+Assets/Resources/builtin_shaders.meta
