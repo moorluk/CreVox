@@ -38,7 +38,7 @@ namespace CreVox
 		{
 			if (item.attributes [0] != null && item.attributes [0].Length > 0) {
 				if(artPrefab == null)
-					artPrefab = (GameObject)Resources.Load (PathCollect.artDeco + "/" + artPack + "/ArtPrefab/" + item.attributes [0]);
+					artPrefab = (GameObject)Resources.Load (PathCollect.artDeco + "/" + artPack + "/" + item.attributes [0]);
 			}
 			if (artPrefab && !artInstance) {
 				#if UNITY_EDITOR
