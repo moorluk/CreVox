@@ -110,18 +110,18 @@ namespace CreVox
         Dictionary<WorldPos,GameObject> doorObjs = new Dictionary<WorldPos, GameObject> ();
         GameObject doorClosedObj;
 
-        public void FixDoor (PropertyPiece pp)
+        public string FixDoor (PropertyPiece pp)
         {
             if (pp == null || doorClosedObj == null)
-                return;
+                return "";
             var _pos = pp.block.BlockPos;
             if (!doorObjs.ContainsKey (_pos))
-                return;
+                return "";
             var cDoor = doorObjs [_pos].transform;
-            GameObject.Instantiate (doorClosedObj, cDoor.position, cDoor.rotation, cDoor.parent);
-            GameObject.Destroy (doorObjs [_pos]);
+            Instantiate (doorClosedObj, cDoor.position, cDoor.rotation, cDoor.parent);
+            Destroy (doorObjs [_pos]);
             doorObjs.Remove (_pos);
-            Debug.Log ("<b>Replace Door : </b>\n" + _pos);
+            return "(" + _pos + ")\n";
         }
 
         IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)

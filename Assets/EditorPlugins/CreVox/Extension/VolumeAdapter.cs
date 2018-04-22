@@ -97,9 +97,9 @@ public static class VolumeAdapter
                 );
             } else {
                 var pp = _portals [i].GetComponentInParent<PropertyPiece> ();
-                _rooms [_portals [i].gameObject].GetComponent<VolumeMaker> ().FixDoor (pp);
+                log2 += string.Format ("{0}<size=8>.{1}</size> ", _rooms [_portals [i].gameObject].name, _portals [i].transform.parent.name);
+                log2 += _rooms [_portals [i].gameObject].GetComponent<VolumeMaker> ().FixDoor (pp);
 //                GameObject.Destroy (pp.gameObject);
-                log2 += string.Format ("{0}<size=8>.{1}</size>\n", _rooms [_portals [i].gameObject].name, _portals [i].transform.parent.name);
             }
         }
 
