@@ -59,14 +59,13 @@ namespace CreVox
             using (var ch1 = new EditorGUI.ChangeCheckScope ()) {
                 DrawInsArtPack ();
                 DrawInsSetting ();
-                if (selectedItemID != -1)
-                    DrawPieceInspectedGUI ();
 
                 if (ch1.changed) {
                     EditorUtility.SetDirty (volume);
                     BuildVolume ();
                 }
             }
+            DrawPieceInspectedGUI ();
         }
 
         void DrawInsVData ()
@@ -105,9 +104,9 @@ namespace CreVox
                         using (var h = new EditorGUILayout.HorizontalScope ()) {
                             EditorGUIUtility.labelWidth = 15;
                             EditorGUILayout.LabelField ("Chunk Size");
-                            c.freeChunkSize.x = EditorGUILayout.IntField ("X", c.freeChunkSize.x, GUILayout.Width (intW));
-                            c.freeChunkSize.y = EditorGUILayout.IntField ("Y", c.freeChunkSize.y, GUILayout.Width (intW));
-                            c.freeChunkSize.z = EditorGUILayout.IntField ("Z", c.freeChunkSize.z, GUILayout.Width (intW));
+                            c.freeChunkSize.x = EditorGUILayout.DelayedIntField ("X", c.freeChunkSize.x, GUILayout.Width (intW));
+                            c.freeChunkSize.y = EditorGUILayout.DelayedIntField ("Y", c.freeChunkSize.y, GUILayout.Width (intW));
+                            c.freeChunkSize.z = EditorGUILayout.DelayedIntField ("Z", c.freeChunkSize.z, GUILayout.Width (intW));
                             EditorGUIUtility.labelWidth = defLabelWidth;
                         }
                         if (GUILayout.Button ("Convert to Voxel Chunk")) {
@@ -743,7 +742,6 @@ namespace CreVox
                     if (workItemId == -1 && selectedItemID == -1) {
                         // add new item.
                         PaintItem (false);
-                        selectedItemID = -1;
                         Debug.Log ("[Add]Wrk:<b>" + workItemId + "</b> Slt:<b>" + selectedItemID + "</b>");
                         UpdateInapectedItem (selectedItemID);
                         workItemId = -1;
@@ -1323,9 +1321,6 @@ namespace CreVox
 
         void DrawPieceInspectedGUI ()
         {
-            if (currentEditMode != EditMode.Item || volume._itemInspected == null)
-                return;
-            
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
                 string _label2 = "[" + selectedItemID + "] " + volume._itemInspected.name + " (" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") ";
@@ -1338,14 +1333,18 @@ namespace CreVox
                     }
                 }
 
-                if (volume._itemInspected.inspectedScript != null) {
-                    LevelPieceEditor e = (LevelPieceEditor)(Editor.CreateEditor (volume._itemInspected.inspectedScript));
-                    BlockItem item = volume.vd.blockItems [selectedItemID];
+                if (currentEditMode == EditMode.Item && volume._itemInspected != null) {
+                    if (volume._itemInspected.inspectedScript != null) {
+                        LevelPieceEditor e = (LevelPieceEditor)(CreateEditor (volume._itemInspected.inspectedScript));
+                        BlockItem item = volume.vd.blockItems [selectedItemID];
 
-                    if (e != null)
-                        e.OnEditorGUI (ref item);
-                } else {
-                    EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
+                        if (e != null)
+                            e.OnEditorGUI (ref item);
+                        else
+                            EditorGUILayout.HelpBox ("Something Wrong...!", MessageType.Info);
+                    } else {
+                        EditorGUILayout.HelpBox ("Item doesn't have inspectedScript !", MessageType.Info);
+                    }
                 }
             }
         }

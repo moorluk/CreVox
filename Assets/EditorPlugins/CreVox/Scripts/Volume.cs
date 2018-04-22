@@ -816,7 +816,7 @@ namespace CreVox
         public int pointY;
         public bool cuter;
         public int cutY;
-        [NonSerialized]public PaletteItem _itemInspected;
+        public PaletteItem _itemInspected;
 
         void OnDrawGizmos ()
         {
