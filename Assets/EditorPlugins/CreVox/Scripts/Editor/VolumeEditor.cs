@@ -1323,7 +1323,9 @@ namespace CreVox
         {
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 EditorGUILayout.LabelField ("Piece Edited", EditorStyles.boldLabel);
-                string _label2 = "[" + selectedItemID + "] " + volume._itemInspected.name + " (" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") ";
+                string _label2 = "[" + selectedItemID + "] ";
+                if(volume._itemInspected != null)
+                    _label2 += volume._itemInspected.name + " (" + volume._itemInspected.GetComponent<LevelPiece> ().GetType ().Name + ") ";
 
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     GUILayout.Label (_label2, EditorStyles.miniLabel);

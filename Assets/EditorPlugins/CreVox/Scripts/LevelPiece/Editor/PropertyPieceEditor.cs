@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace CreVox
 {
@@ -102,7 +98,7 @@ namespace CreVox
                 EditorUtility.SetDirty (pp);
         }
 
-        private void DrawInsUnknown (int _index, bool isIns = true)
+        void DrawInsUnknown (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -115,7 +111,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsTransform (int _index, bool isIns = true)
+        void DrawInsTransform (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -124,8 +120,8 @@ namespace CreVox
             if (pp.PProperties [_index].tObject != null) {
                 GameObject obj = (GameObject)pp.PProperties [_index].tObject;
                 EditorGUILayout.LabelField ("Modifiable Field : ",
-                    "Position　(" + obj.transform.localPosition.ToString () + ")\n" +
-                    "Scale   　(" + obj.transform.localScale.ToString () + ")",
+                    "Position　(" + obj.transform.localPosition + ")\n" +
+                    "Scale   　(" + obj.transform.localScale + ")",
                     EditorStyles.miniLabel,
                     GUILayout.Height (30));
             } else {
@@ -133,7 +129,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsTriggerKeyString (int _index, bool isIns = true)
+        void DrawInsTriggerKeyString (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -149,7 +145,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsActorKeyString (int _index, bool isIns = true)
+        void DrawInsActorKeyString (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -165,7 +161,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsMessageActor (int _index, bool isIns = true)
+        void DrawInsMessageActor (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -183,7 +179,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsAddLootActor (int _index, bool isIns = true)
+        void DrawInsAddLootActor (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -193,7 +189,7 @@ namespace CreVox
                 AddLootActor obj = (AddLootActor)pp.PProperties [_index].tObject;
                 EditorGUILayout.LabelField ("Modifiable Field : ",
                     "Key String　(" + obj.m_keyString + ")\n" +
-                    "Loot ID　(" + obj.m_lootID.ToString () + ")",
+                    "Loot ID　(" + obj.m_lootID + ")",
                     EditorStyles.miniLabel,
                     GUILayout.Height (12 * 3));
             } else {
@@ -201,7 +197,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsAreaTipActor (int _index, bool isIns = true)
+        void DrawInsAreaTipActor (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -219,7 +215,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsCounterActor (int _index, bool isIns = true)
+        void DrawInsCounterActor (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -229,7 +225,7 @@ namespace CreVox
                 CounterActor obj = (CounterActor)pp.PProperties [_index].tObject;
                 EditorGUILayout.LabelField ("Modifiable Field : ",
                     "Key String　(" + obj.m_keyString + ")\n" +
-                    "Active Count　(" + obj.m_activeCount.ToString () + ")",
+                    "Active Count　(" + obj.m_activeCount + ")",
                     EditorStyles.miniLabel,
                     GUILayout.Height (12 * 3));
             } else {
@@ -237,7 +233,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsEnemySpawner (int _index, bool isIns = true)
+        void DrawInsEnemySpawner (int _index, bool isIns = true)
         {
             if (isIns) {
                 pp.PProperties [_index].tObject = EditorGUILayout.ObjectField (
@@ -247,22 +243,23 @@ namespace CreVox
                 EnemySpawner obj = (EnemySpawner)pp.PProperties [_index].tObject;
                 pp.CheckAiData (obj);
                 EditorGUILayout.LabelField ("Modifiable Field : ",
-                    "Enemy Type　(" + obj.m_enemyType.ToString () + ")\n" +
+                    "Enemy ID  (" + obj.m_enemyId + ")\n" +
+                    "Enemy Type　(" + obj.m_enemyType + ")\n" +
                     "Spawner Data\n" +
-                    "　├─ Total Qty　(" + obj.m_spawnerData.m_totalQty.ToString () + ")\n" +
-                    "　├─ Max Live Qty　(" + obj.m_spawnerData.m_maxLiveQty.ToString () + ")\n" +
-                    "　├─ Spwn Count Per Time　(" + obj.m_spawnerData.m_spwnCountPerTime.ToString () + ")\n" +
-                    "　├─ Random Spawn X　(" + obj.m_spawnerData.m_randomSpawn.x.ToString () + ")\n" +
-                    "　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y.ToString () + ")\n" +
+                    "　├─ Total Qty　(" + obj.m_spawnerData.m_totalQty + ")\n" +
+                    "　├─ Max Live Qty　(" + obj.m_spawnerData.m_maxLiveQty + ")\n" +
+                    "　├─ Spwn Count Per Time　(" + obj.m_spawnerData.m_spwnCountPerTime + ")\n" +
+                    "　├─ Random Spawn X　(" + obj.m_spawnerData.m_randomSpawn.x + ")\n" +
+                    "　└─ Random Spawn Y　(" + obj.m_spawnerData.m_randomSpawn.y + ")\n" +
                     "AI Data\n" +
-                    "　├─ Toggle　(" + obj.m_AiData.toggle.ToString () + ")\n" +
-                    "　├─ Eye　(" + obj.m_AiData.eye.ToString () + ")\n" +
-                    "　├─ Ear　(" + obj.m_AiData.ear.ToString () + ")\n" +
-                    "　└─ Toggle Offsets　(" + obj.m_AiData.toggleOffsets.Length.ToString () + ")\n" +
+                    "　├─ Toggle　(" + obj.m_AiData.toggle + ")\n" +
+                    "　├─ Eye　(" + obj.m_AiData.eye + ")\n" +
+                    "　├─ Ear　(" + obj.m_AiData.ear + ")\n" +
+                    "　└─ Toggle Offsets　(" + obj.m_AiData.toggleOffsets.Length + ")\n" +
                     "　　　└─ Offsets　(x,y,z,w(range))\n" +
                     "Patrol Points\u3000(x,y,z)",
                     EditorStyles.miniLabel,
-                    GUILayout.Height (165));
+                    GUILayout.Height (170));
                 if (!Application.isPlaying)
                     ((EnemySpawner)pp.PProperties [_index].tObject).m_isStart = false;
             } else {
@@ -270,7 +267,7 @@ namespace CreVox
             }
         }
 
-        private void DrawInsDragFirst ()
+        static void DrawInsDragFirst ()
         {
             EditorGUILayout.HelpBox ("↗ Drag a component into object field...", MessageType.None, true);
         }
@@ -278,40 +275,41 @@ namespace CreVox
         #endregion
 
         #region EditorGUI
+
         public override void OnEditorGUI (ref BlockItem item)
         {
-            PropertyPiece pp = (PropertyPiece)target;
+            PropertyPiece _pp = (PropertyPiece)target;
             Color def = GUI.contentColor;
             EditorGUI.BeginChangeCheck ();
-            for (int i = 0; i < pp.PProperties.Length; i++) {
-                EditorGUI.BeginDisabledGroup (pp.PProperties [i].tComponent == FocalComponent.Unused);
+            for (int i = 0; i < _pp.PProperties.Length; i++) {
+                EditorGUI.BeginDisabledGroup (_pp.PProperties [i].tComponent == FocalComponent.Unused);
                 using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
-                    pp.PProperties [i].tActive = EditorGUILayout.ToggleLeft (pp.PProperties [i].tComponent.ToString (), pp.PProperties [i].tActive, EditorStyles.boldLabel);
-                    if (pp.PProperties [i].tActive) {
-                        pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", pp.PProperties [i].tRange);
-                        switch (pp.PProperties [i].tComponent) {
+                    _pp.PProperties [i].tActive = EditorGUILayout.ToggleLeft (_pp.PProperties [i].tComponent.ToString (), _pp.PProperties [i].tActive, EditorStyles.boldLabel);
+                    if (_pp.PProperties [i].tActive) {
+                        _pp.PProperties [i].tRange = (LevelPiece.EventRange)EditorGUILayout.EnumPopup ("Event Range", _pp.PProperties [i].tRange);
+                        switch (_pp.PProperties [i].tComponent) {
                         case FocalComponent.Unknown:
-                            if (pp.PProperties [i].tObject != null) {
+                            if (_pp.PProperties [i].tObject != null) {
 
                             }
                             break;
 
                         case FocalComponent.Probability:
-                            pp.probability = EditorGUILayout.Slider (pp.probability, 0, 1.0f);
-                            item.attributes [i] = "true," + pp.PProperties [i].tComponent + "," + pp.probability;
+                            _pp.probability = EditorGUILayout.Slider (_pp.probability, 0, 1.0f);
+                            item.attributes [i] = "true," + _pp.PProperties [i].tComponent + "," + _pp.probability;
                             break;
 
                         case FocalComponent.DefaultEventRange:
-                            item.attributes [i] = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
+                            item.attributes [i] = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange;
                             break;
 
                         case FocalComponent.Transform:
-                            if (pp.PProperties [i].tObject != null) {
-                                GameObject obj = (GameObject)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                GameObject obj = (GameObject)_pp.PProperties [i].tObject;
                                 obj.transform.localPosition = EditorGUILayout.Vector3Field ("Position", obj.transform.localPosition);
                                 obj.transform.localScale = EditorGUILayout.Vector3Field ("Scale", obj.transform.localScale);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.transform.localPosition.x + "," + obj.transform.localPosition.y + "," + obj.transform.localPosition.z + ";" +
                                                obj.transform.localScale.x + "," + obj.transform.localScale.y + "," + obj.transform.localScale.z;
                                 item.attributes [i] = _code;
@@ -319,34 +317,34 @@ namespace CreVox
                             break;
 
                         case FocalComponent.TriggerKeyString:
-                            if (pp.PProperties [i].tObject != null) {
-                                TriggerEvent obj = (TriggerEvent)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                TriggerEvent obj = (TriggerEvent)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString;
                                 item.attributes [i] = _code;
                             }
                             break;
 
                         case FocalComponent.ActorKeyString:
-                            if (pp.PProperties [i].tObject != null) {
-                                EventActor obj = (EventActor)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                EventActor obj = (EventActor)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString;
                                 item.attributes [i] = _code;
                             }
                             break;
 
                         case FocalComponent.MessageActor:
-                            if (pp.PProperties [i].tObject != null) {
-                                MessageActor obj = (MessageActor)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                MessageActor obj = (MessageActor)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
                                 obj.m_message = EditorGUILayout.TextField ("Message", obj.m_message);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString + ";" +
                                                obj.m_message;
                                 item.attributes [i] = _code;
@@ -354,25 +352,25 @@ namespace CreVox
                             break;
 
                         case FocalComponent.AddLootActor:
-                            if (pp.PProperties [i].tObject != null) {
-                                AddLootActor obj = (AddLootActor)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                AddLootActor obj = (AddLootActor)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
-                                obj.m_lootID = EditorGUILayout.IntField ("Loot ID", obj.m_lootID);
+                                obj.m_lootID = EditorGUILayout.DelayedIntField ("Loot ID", obj.m_lootID);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString + ";" +
-                                               obj.m_lootID.ToString ();
+                                               obj.m_lootID;
                                 item.attributes [i] = _code;
                             }
                             break;
 
                         case FocalComponent.AreaTipActor:
-                            if (pp.PProperties [i].tObject != null) {
-                                AreaTipActor obj = (AreaTipActor)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                AreaTipActor obj = (AreaTipActor)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
                                 obj.m_stringKey = EditorGUILayout.TextField ("String Key(Tip ID)", obj.m_stringKey);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString + ";" +
                                                obj.m_stringKey;
                                 item.attributes [i] = _code;
@@ -380,49 +378,50 @@ namespace CreVox
                             break;
 
                         case FocalComponent.CounterActor:
-                            if (pp.PProperties [i].tObject != null) {
-                                CounterActor obj = (CounterActor)pp.PProperties [i].tObject;
+                            if (_pp.PProperties [i].tObject != null) {
+                                CounterActor obj = (CounterActor)_pp.PProperties [i].tObject;
                                 obj.m_keyString = EditorGUILayout.TextField ("Key String", obj.m_keyString);
-                                obj.m_activeCount = EditorGUILayout.IntField ("Loot ID", obj.m_activeCount);
+                                obj.m_activeCount = EditorGUILayout.DelayedIntField ("Count", obj.m_activeCount);
 
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";" +
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";" +
                                                obj.m_keyString + ";" +
-                                               obj.m_activeCount.ToString ();
+                                               obj.m_activeCount;
                                 item.attributes [i] = _code;
                             }
                             break;
 
                         case FocalComponent.EnemySpawner:
-                            if (pp.PProperties [i].tObject != null) {
-                                EnemySpawner obj = (EnemySpawner)pp.PProperties [i].tObject;
-                                pp.CheckAiData (obj);
+                            if (_pp.PProperties [i].tObject != null) {
+                                EnemySpawner obj = (EnemySpawner)_pp.PProperties [i].tObject;
+                                _pp.CheckAiData (obj);
                                 AiData _ai = obj.m_AiData;
                                 //_code 0
-                                string _code = "true," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange + ";"; 
+                                string _code = "true," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange + ";"; 
 
                                 //_code 1
+                                obj.m_enemyId = EditorGUILayout.DelayedIntField ("Enemy Id", obj.m_enemyId);
                                 obj.m_enemyType = (EnemyType)EditorGUILayout.EnumPopup ("Enemy Type", obj.m_enemyType);
-                                _code += obj.m_enemyType.ToString () + ";";
+                                _code += obj.m_enemyId + "," + obj.m_enemyType + ";";
 
                                 //_code (2 ~ 5) spawnerData
                                 EditorGUILayout.LabelField ("Spawner Data");
                                 EditorGUI.indentLevel++;
 
                                 //_code 2
-                                obj.m_spawnerData.m_totalQty = EditorGUILayout.IntField ("Total Qty", obj.m_spawnerData.m_totalQty);
-                                _code += obj.m_spawnerData.m_totalQty.ToString () + ";" ;
+                                obj.m_spawnerData.m_totalQty = EditorGUILayout.DelayedIntField ("Total Qty", obj.m_spawnerData.m_totalQty);
+                                _code += obj.m_spawnerData.m_totalQty + ";";
 
                                 //_code 3
-                                obj.m_spawnerData.m_maxLiveQty = EditorGUILayout.IntField ("Max Live Qty", obj.m_spawnerData.m_maxLiveQty);
-                                _code += obj.m_spawnerData.m_maxLiveQty.ToString () + ";" ;
+                                obj.m_spawnerData.m_maxLiveQty = EditorGUILayout.DelayedIntField ("Max Live Qty", obj.m_spawnerData.m_maxLiveQty);
+                                _code += obj.m_spawnerData.m_maxLiveQty + ";";
 
                                 //_code 4
-                                obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.IntField ("Spawn Count", obj.m_spawnerData.m_spwnCountPerTime);
-                                _code += obj.m_spawnerData.m_spwnCountPerTime.ToString () + ";" ;
+                                obj.m_spawnerData.m_spwnCountPerTime = EditorGUILayout.DelayedIntField ("Spawn Count", obj.m_spawnerData.m_spwnCountPerTime);
+                                _code += obj.m_spawnerData.m_spwnCountPerTime + ";";
 
                                 //_code 5
                                 obj.m_spawnerData.m_randomSpawn = EditorGUILayout.Vector2Field ("Random Spawn", obj.m_spawnerData.m_randomSpawn);
-                                _code += obj.m_spawnerData.m_randomSpawn.x.ToString () + "," + obj.m_spawnerData.m_randomSpawn.y.ToString () + ";" ;
+                                _code += obj.m_spawnerData.m_randomSpawn.x + "," + obj.m_spawnerData.m_randomSpawn.y + ";";
 
                                 EditorGUI.indentLevel--;
 
@@ -431,16 +430,16 @@ namespace CreVox
                                 EditorGUI.indentLevel++;
 
                                 //_code 6
-                                _ai.eye = EditorGUILayout.FloatField ("Eye Range", _ai.eye);
-                                _ai.ear = EditorGUILayout.FloatField ("Ear Range", _ai.ear);
-                                _code += _ai.eye.ToString () + "," + _ai.ear.ToString () + ";";
+                                _ai.eye = EditorGUILayout.DelayedFloatField ("Eye Range", _ai.eye);
+                                _ai.ear = EditorGUILayout.DelayedFloatField ("Ear Range", _ai.ear);
+                                _code += _ai.eye + "," + _ai.ear + ";";
 
                                 //_code 7
                                 using (var ch = new EditorGUI.ChangeCheckScope ()) {
                                     Vector4 t = new Vector4 (_ai.toggleOffset.x, _ai.toggleOffset.y, _ai.toggleOffset.z, _ai.toggle);
                                     EditorGUILayout.LabelField ("Toggle");
                                     using (var h = new GUILayout.HorizontalScope ()) {
-                                        EditorGUILayout.LabelField ("", GUILayout.Width(30));
+                                        EditorGUILayout.LabelField ("", GUILayout.Width (30));
                                         t = EditorGUILayout.Vector4Field ("", t);
                                     }
                                     if (ch.changed) {
@@ -456,7 +455,7 @@ namespace CreVox
                                     if (ch.changed && oCount != _ai.toggleOffsets.Length) {
                                         Vector4[] newOffsets = new Vector4[oCount];
                                         for (int o = 0; o < newOffsets.Length; o++)
-                                            newOffsets [o] = (o < _ai.toggleOffsets.Length) ? _ai.toggleOffsets [o] : new Vector4 (0.0f, o+1, 0.0f, 1.0f);
+                                            newOffsets [o] = (o < _ai.toggleOffsets.Length) ? _ai.toggleOffsets [o] : new Vector4 (0.0f, o + 1, 0.0f, 1.0f);
                                         _ai.toggleOffsets = newOffsets;
                                     }
                                 }
@@ -479,7 +478,7 @@ namespace CreVox
                                     if (ch.changed) {
                                         Vector3[] newOffsets = new Vector3[pCount];
                                         for (int p = 0; p < newOffsets.Length; p++)
-                                            newOffsets [p] = (p < obj.m_patrolPoints.Length) ? obj.m_patrolPoints [p] : new Vector3 (0.0f, 0.0f, p*2);
+                                            newOffsets [p] = (p < obj.m_patrolPoints.Length) ? obj.m_patrolPoints [p] : new Vector3 (0.0f, 0.0f, p * 2);
                                         obj.m_patrolPoints = newOffsets;
                                     }
                                 }
@@ -508,19 +507,19 @@ namespace CreVox
                         }
                         EditorGUILayout.LabelField (item.attributes [i], EditorStyles.miniTextField);
                     } else {
-                        item.attributes [i] = "false," + pp.PProperties [i].tComponent + "," + pp.PProperties [i].tRange;
-                        switch (pp.PProperties [i].tComponent) {
+                        item.attributes [i] = "false," + _pp.PProperties [i].tComponent + "," + _pp.PProperties [i].tRange;
+                        switch (_pp.PProperties [i].tComponent) {
                         case FocalComponent.Unknown:
                             DrawInsUnknown (i, false);
                             break;
 
                         case FocalComponent.Probability:
-                            pp.PProperties [i].tObject = pp;
+                            _pp.PProperties [i].tObject = _pp;
                             EditorGUILayout.HelpBox ("Control Marker's Active Probability", MessageType.Info, true);
                             break;
 
                         case FocalComponent.DefaultEventRange:
-                            pp.PProperties [i].tObject = pp;
+                            _pp.PProperties [i].tObject = _pp;
                             EditorGUILayout.HelpBox ("Modify each item's Default Event Range", MessageType.Info, true);
                             break;
 
@@ -564,7 +563,7 @@ namespace CreVox
                 EditorGUI.EndDisabledGroup ();
             }
             if (EditorGUI.EndChangeCheck ())
-                EditorUtility.SetDirty (pp);
+                EditorUtility.SetDirty (_pp);
         }
 
         #endregion

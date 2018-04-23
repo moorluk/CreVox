@@ -62,24 +62,24 @@ namespace CreVox
                         break;
 
                     case "DefaultEventRange":
-                        eventRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                        eventRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                         break;
 
                     case "Transform":
                         if (obj is GameObject && _code.Length == 3) {
-                            GameObject es = (GameObject)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            Transform tr = ((GameObject)obj).transform;
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             string[] _p = _code [1].Split (breakChar, StringSplitOptions.None);
                             string[] _s = _code [2].Split (breakChar, StringSplitOptions.None);
-                            es.transform.localPosition = new Vector3 (float.Parse (_p [0]), float.Parse (_p [1]), float.Parse (_p [2]));
-                            es.transform.localScale = new Vector3 (float.Parse (_s [0]), float.Parse (_s [1]), float.Parse (_s [2]));
+                            tr.localPosition = new Vector3 (float.Parse (_p [0]), float.Parse (_p [1]), float.Parse (_p [2]));
+                            tr.localScale = new Vector3 (float.Parse (_s [0]), float.Parse (_s [1]), float.Parse (_s [2]));
                         }
                         break;
 
                     case "TriggerKeyString":
                         if (obj is TriggerEvent && _code.Length == 2) {
                             TriggerEvent te = (TriggerEvent)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             te.m_keyString = _code [1];
                         }
                         break;
@@ -87,7 +87,7 @@ namespace CreVox
                     case "ActorKeyString":
                         if (obj is EventActor && _code.Length == 2) {
                             EventActor ea = (EventActor)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             ea.m_keyString = _code [1];
                         }
                         break;
@@ -95,7 +95,7 @@ namespace CreVox
                     case "MessageActor":
                         if (obj is MessageActor && _code.Length == 3) {
                             MessageActor ma = (MessageActor)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             ma.m_keyString = _code [1];
                             ma.m_message = _code [2];
                         }
@@ -104,7 +104,7 @@ namespace CreVox
                     case "AddLootActor":
                         if (obj is AddLootActor && _code.Length == 3) {
                             AddLootActor ala = (AddLootActor)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             ala.m_keyString = _code [1];
                             ala.m_lootID = int.Parse (_code [2]);
                         }
@@ -113,7 +113,7 @@ namespace CreVox
                     case "AreaTipActor":
                         if (obj is AreaTipActor && _code.Length == 3) {
                             AreaTipActor ma = (AreaTipActor)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             ma.m_keyString = _code [1];
                             ma.m_stringKey = _code [2];
                         }
@@ -122,17 +122,21 @@ namespace CreVox
                     case "CounterActor":
                         if (obj is CounterActor && _code.Length == 3) {
                             CounterActor ca = (CounterActor)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
                             ca.m_keyString = _code [1];
                             ca.m_activeCount = int.Parse (_code [2]);
                         }
                         break;
 
                     case "EnemySpawner":
-                        if (obj is EnemySpawner) {
-                            EnemySpawner es = (EnemySpawner)obj;
-                            PProperties [i].tRange = (LevelPiece.EventRange)Enum.Parse (typeof(LevelPiece.EventRange), t [2]);
-                            es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _code [1]);
+                        EnemySpawner es = (EnemySpawner)obj;
+                        if (es != null) {
+                            PProperties [i].tRange = (EventRange)Enum.Parse (typeof(EventRange), t [2]);
+                            // support enemy ID
+                            string[] _r1 = _code [1].Split (breakChar, StringSplitOptions.None);
+                            if (_r1.Length > 1)
+                                es.m_enemyId = int.Parse (_r1 [0]);
+                            es.m_enemyType = (EnemyType)Enum.Parse (typeof(EnemyType), _r1 [_r1.Length - 1]);
                             // support spawnerData
                             if (_code.Length > 5) {
                                 es.m_spawnerData.m_totalQty = int.Parse (_code [2]);
@@ -157,12 +161,7 @@ namespace CreVox
                                 es.m_AiData.toggleOffsets = new Vector4[_r7.Length - 1];
                                 for (int o = 0; o < es.m_AiData.toggleOffsets.Length; o++) {
                                     string[] v4 = _r7 [o + 1].Split (breakCharSub, StringSplitOptions.None);
-                                    es.m_AiData.toggleOffsets [o] = new Vector4 (
-                                        float.Parse (v4 [0]),
-                                        float.Parse (v4 [1]),
-                                        float.Parse (v4 [2]),
-                                        float.Parse (v4 [3])
-                                    );
+                                    es.m_AiData.toggleOffsets [o] = new Vector4 (float.Parse (v4 [0]), float.Parse (v4 [1]), float.Parse (v4 [2]), float.Parse (v4 [3]));
                                 }
                             }
                             // support patrolPoints[]
@@ -172,11 +171,7 @@ namespace CreVox
                                 for (int p = 0; p < es.m_patrolPoints.Length; p++) {
                                     string[] v3 = _r8 [p].Split (breakCharSub, StringSplitOptions.None);
                                     if (v3.Length == 3)
-                                        es.m_patrolPoints [p] = new Vector3 (
-                                            float.Parse (v3 [0]),
-                                            float.Parse (v3 [1]),
-                                            float.Parse (v3 [2])
-                                        );
+                                        es.m_patrolPoints [p] = new Vector3 (float.Parse (v3 [0]), float.Parse (v3 [1]), float.Parse (v3 [2]));
                                 }
                             }
                             if (!es.m_isStart)
