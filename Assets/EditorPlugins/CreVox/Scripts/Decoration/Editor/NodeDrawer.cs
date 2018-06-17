@@ -89,19 +89,19 @@ namespace CreVox
 
             EditorGUIUtility.labelWidth = labelW;
             Rect r1 = new Rect (p.x, p.y, axisW, row);
-            EditorGUI.PropertyField (r1, x, new GUIContent ("X"));
+            EditorGUI.DelayedFloatField (r1, x, new GUIContent ("X"));
             r1.x += axisW;
-            EditorGUI.PropertyField (r1, y, new GUIContent ("Y"));
+            EditorGUI.DelayedFloatField (r1, y, new GUIContent ("Y"));
             r1.x += axisW;
-            EditorGUI.PropertyField (r1, z, new GUIContent ("Z"));
+            EditorGUI.DelayedFloatField (r1, z, new GUIContent ("Z"));
 
             EditorGUIUtility.labelWidth += 5;
             Rect r2 = new Rect (p.x + 5, p.y + row, axisW - 5, row);
-            EditorGUI.PropertyField (r2, rx, new GUIContent ("  ±"));
+            EditorGUI.DelayedFloatField (r2, rx, new GUIContent ("  ±"));
             r2.x += axisW;
-            EditorGUI.PropertyField (r2, ry, new GUIContent ("  ±"));
+            EditorGUI.DelayedFloatField (r2, ry, new GUIContent ("  ±"));
             r2.x += axisW;
-            EditorGUI.PropertyField (r2, rz, new GUIContent ("  ±"));
+            EditorGUI.DelayedFloatField (r2, rz, new GUIContent ("  ±"));
             EditorGUIUtility.labelWidth = labelWdef;
         }
 

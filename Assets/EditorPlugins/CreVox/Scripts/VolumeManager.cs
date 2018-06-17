@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CreVox
 {
@@ -19,35 +20,37 @@ namespace CreVox
         #region LocalSetting
 
         public bool useLocalSetting;
-
-        [SerializeField]bool saveBackup;
+        public VGlobal.VGSetting setting;
+        
         public bool SaveBackup {
-            get { return useLocalSetting ? saveBackup : false; }
-            set { saveBackup = useLocalSetting ? value : saveBackup; }
+            get { return useLocalSetting ? setting.saveBackup : VGlobal.GetSetting().setting.saveBackup; }
+            set { setting.saveBackup = useLocalSetting ? value : setting.saveBackup; }
         }
-
-        [SerializeField]bool useArtPack;
+        
         public bool UseArtPack {
-            get { return useLocalSetting ? useArtPack : true; }
-            set { useArtPack = useLocalSetting ? value : useArtPack; }
+            get { return useLocalSetting ? setting.useArtPack : VGlobal.GetSetting().setting.useArtPack; }
+            set { setting.useArtPack = useLocalSetting ? value : setting.useArtPack; }
         }
-
-        [SerializeField]bool snapGridL;
+        
         public bool SnapGrid {
-            get { return useLocalSetting ? snapGridL : false; }
-            set { snapGridL = useLocalSetting ? value : snapGridL; }
+            get { return useLocalSetting ? setting.snapGridL : VGlobal.GetSetting().setting.snapGridL; }
+            set { setting.snapGridL = useLocalSetting ? value : setting.snapGridL; }
         }
-
-        [SerializeField]bool debugRulerL;
+        
         public bool DebugRuler {
-            get { return useLocalSetting ? debugRulerL : false; }
-            set { debugRulerL = useLocalSetting ? value : debugRulerL; }
+            get { return useLocalSetting ? setting.debugRulerL : VGlobal.GetSetting().setting.debugRulerL; }
+            set { setting.debugRulerL = useLocalSetting ? value : setting.debugRulerL; }
+        }
+        
+        public bool ShowBlockHold {
+            get { return useLocalSetting ? setting.showBlockHoldL : VGlobal.GetSetting().setting.showBlockHoldL; }
+            set { setting.showBlockHoldL = useLocalSetting ? value : setting.showBlockHoldL; }
         }
 
-        [SerializeField]bool showBlockHoldL;
-        public bool ShowBlockHold {
-            get { return useLocalSetting ? showBlockHoldL : false; }
-            set { showBlockHoldL = useLocalSetting ? value : showBlockHoldL; }
+        public bool DebugLog
+        {
+            get { return useLocalSetting ? setting.debugLog : VGlobal.GetSetting().setting.debugLog; }
+            set { setting.debugLog = useLocalSetting ? value : setting.debugLog; }
         }
 
         #endregion
@@ -59,6 +62,7 @@ namespace CreVox
 
         void Awake ()
         {
+            ClearVolumes();
             if (gameObject.GetComponent (typeof(GlobalDriver)) == null) {
                 gameObject.AddComponent (typeof(GlobalDriver));
             }
@@ -67,21 +71,28 @@ namespace CreVox
         List<VolumeMaker> vms = new List<VolumeMaker>();
         public bool loaded;
 
-        System.Collections.IEnumerator CheckLoadCompeleted ()
+        IEnumerator CheckLoadCompeleted ()
         {
             while (!loaded) {
                 loaded = true;
                 foreach (var vm in vms) {
-                    if (!vm.LoadCompeleted ()) {
+                    if (!vm.IsLoadCompeleted ()) {
                         loaded = false;
                         break;
                     }
                 }
                 if (loaded) {
                     VolumeAdapter.UpdatePortals (gameObject);
+                    yield return null;
+                    BroadcastMessage("CollectMiniMap");
+                    var sectrs = GetComponentsInChildren<SECTR_Sector>();
+                    for (int i = 0; i < sectrs.Length; i++)
+                        sectrs[i].enabled = true;
+                    VolumeAdapter.AfterLoadComplete();
+                    if (VGlobal.GetSetting().setting.debugLog) Debug.Log("<color=teal>Load volumes complete</color> time: " + Time.realtimeSinceStartup);
                     yield break;
                 }
-                yield return new WaitForSeconds (0.01f);
+                yield return null;
             }
         }
 
@@ -92,9 +103,8 @@ namespace CreVox
             } else {
                 GenerateDungeonByChildVolumes();
             }
-            ClearVolumes();
             CreateVolumeMakers();
-            BuildVolumes();
+            BuildVms();
             StartCoroutine(CheckLoadCompeleted());
 
             #if UNITY_EDITOR
@@ -115,13 +125,24 @@ namespace CreVox
         {
             Volume[] vs = transform.GetComponentsInChildren<Volume> (false);
             foreach (Volume v in vs) {
-                UnityEngine.Object.DestroyImmediate (v.gameObject, false);
+                DestroyImmediate (v.gameObject, false);
             }
         }
 
-        public void BuildVolumes ()
+        public void BuildVolumes()
         {
-            BroadcastMessage ("Build", SendMessageOptions.DontRequireReceiver);
+            Debug.Log("Many Volume Build !!!");
+            Volume[] vs = transform.GetComponentsInChildren<Volume>(false);
+            foreach (Volume v in vs)
+            {
+                v.SendMessage("Build", SendMessageOptions.DontRequireReceiver);
+            }
+        }
+
+        void BuildVms ()
+        {
+            foreach (var v in vms)
+                v.SendMessage ("Build", SendMessageOptions.DontRequireReceiver);
         }
 
         void CreateVolumeMakers ()

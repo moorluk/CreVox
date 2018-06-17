@@ -36,13 +36,13 @@ public class TestRealTimeRun : MonoBehaviour {
 				bool succeed = false;
 				VGlobal.Stage _s = new VGlobal.Stage ();
 				_s.artPack = "B02";
-				_s.XmlPath = XmlPath;
+				_s.GrammarXmlPath = XmlPath;
 				_s.VGXmlPath = VGXmlPath;
 				int testTime = 0;
 				while (!succeed && testTime < 20) {
 					randomSeed = UnityEngine.Random.Range (0, int.MaxValue);
 					Debug.Log ("[" + testTime +"]Random Seed : " + randomSeed);
-					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, randomSeed);
+					CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.GrammarXmlPath, randomSeed);
 					// Load XML of space alphabet.
 					succeed = CrevoxGeneration.GenerateRealLevel(root, _s, randomSeed);
 					testTime++;

@@ -140,7 +140,7 @@ namespace CreVox
 		Volume GetVolume(Vector3 _pos)
 		{
 			RaycastHit hit;
-			LayerMask _mask = 1 << LayerMask.NameToLayer("Floor");
+			LayerMask _mask = 1 << LayerMask.NameToLayer("LightScene");
 			bool isHit = Physics.Raycast (
 				             /*origin: */_pos, 
 				             /*direction: */Vector3.down,

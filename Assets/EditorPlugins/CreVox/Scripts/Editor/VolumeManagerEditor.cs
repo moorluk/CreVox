@@ -72,6 +72,7 @@ namespace CreVox
                 _vm.SnapGrid      = EditorGUILayout.ToggleLeft (new GUIContent ("Snap Grid", "???"),        _vm.SnapGrid);
                 _vm.DebugRuler    = EditorGUILayout.ToggleLeft (new GUIContent ("Show Ruler", "???"),       _vm.DebugRuler);
                 _vm.ShowBlockHold = EditorGUILayout.ToggleLeft (new GUIContent ("Show BlockHold", "???"),   _vm.ShowBlockHold);
+                _vm.DebugLog      = EditorGUILayout.ToggleLeft(new GUIContent("Show Debug Log", "???"),     _vm.DebugLog);
                 EditorGUI.indentLevel--;
                 EditorGUI.EndDisabledGroup ();
                 if (GUI.changed && local)
@@ -123,6 +124,8 @@ namespace CreVox
                     Button_Build ();
                 if (GUILayout.Button ("Generate"))
                     Button_Generate ();
+                if (GUILayout.Button("Clear"))
+                    Button_Clear ();
                 if (GUILayout.Button ("Update Portal"))
                     Button_UpdatePortal ();
             }
@@ -227,10 +230,14 @@ namespace CreVox
         {
             vm.BuildVolumes ();
         }
+        void Button_Clear ()
+        {
+            vm.ClearVolumes ();
+        }
 
         void Button_Generate ()
         {
-            vm.ClearVolumes ();
+            Button_Clear ();
             foreach (Dungeon d in vm.dungeons) {
                 GameObject volume = new GameObject (d.volumeData.name);
                 volume.transform.parent = vm.transform;

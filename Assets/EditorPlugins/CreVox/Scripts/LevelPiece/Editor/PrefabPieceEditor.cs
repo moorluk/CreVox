@@ -62,9 +62,9 @@ namespace CreVox
                 if (ch.changed) {
                     item.attributes [1] = pp.isRoot.ToString ();
                     EditorUtility.SetDirty (pp);
-                    pp.SetupPiece (item);
                 }
             }
+            pp.UpdatePos();
 
             EditorGUILayout.HelpBox (PathCollect.artDeco + "/" + pp.artPack + "/" + item.attributes [0], MessageType.None);
             EditorGUILayout.LabelField ("Path:", PathCollect.artDeco + "/(ArtPack)/", EditorStyles.miniLabel);

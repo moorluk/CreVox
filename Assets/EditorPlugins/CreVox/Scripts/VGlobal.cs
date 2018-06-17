@@ -28,6 +28,18 @@ namespace CreVox
 
         public List<APItemPath> APItemPathList;
 
+        [System.Serializable]
+        public class VGSetting
+        {
+            public bool saveBackup;
+            public bool useArtPack = true;
+            public bool snapGridL;
+            public bool debugRulerL;
+            public bool showBlockHoldL;
+            public bool debugLog;
+        }
+        public VGSetting setting = new VGSetting();
+
         public float editDis;
 
         public int chunkSize = 16;
@@ -38,11 +50,12 @@ namespace CreVox
 
         #region Static Function
 
+        static VGlobal instance;
         public static VGlobal GetSetting (string _settingPath = "")
         {
-            VGlobal vg;
-            vg = (VGlobal)Resources.Load ((_settingPath != "") ? _settingPath : PathCollect.setting, typeof(VGlobal));
-            return vg;
+            if (instance == null)
+                instance = (VGlobal)Resources.Load((_settingPath != "") ? _settingPath : PathCollect.setting, typeof(VGlobal));
+            return instance;
         }
 
         public static List<string> GetArtPacks ()
@@ -50,15 +63,15 @@ namespace CreVox
             List<string> _result = new List<string> (0);
             _result.Add (Path.GetFileName (PathCollect.pieces));
             string[] _artPacksTemp = Directory.GetDirectories (
-                                PathCollect.resourcesPath + PathCollect.artPack,
-                                "*",
-                                SearchOption.TopDirectoryOnly
-                            );
+                                    PathCollect.resourcesPath + PathCollect.artPack,
+                                    "*",
+                                    SearchOption.TopDirectoryOnly
+                                );
             for (int a = 0; a < _artPacksTemp.Length; a++) {
                 _artPacksTemp [a] = Path.GetFileName (_artPacksTemp [a]);
                 if (_artPacksTemp [a] != _result [0])
                     _result.Add (_artPacksTemp [a]);
-            }
+                }
             return _result;
         }
 
@@ -113,22 +126,22 @@ namespace CreVox
         {
             public int number;
             public string artPack;
-            public string XmlPath;
-            public string SpaceXmlPath;
+            public string GrammarXmlPath;
+            //public string SpaceXmlPath;
             public string VGXmlPath;
         }
 
         public List<Stage> StageList;
 
-        public void AddStage (int _stageNumber, string _artPack, string _spaceXmlPath, string _XmlPath, string _vDataPath, string _VGXmlPath)
+        public void AddStage (int _stageNumber, string _artPack/*, string _spaceXmlPath*/, string _XmlPath, string _vDataPath, string _VGXmlPath)
         {
             Predicate<Stage> findStage = s => s.number == _stageNumber;
             if (!StageList.Exists (findStage)) {
                 Stage s = new Stage {
                     number = _stageNumber,
                     artPack = _artPack,
-                    XmlPath = _XmlPath,
-                    SpaceXmlPath = _spaceXmlPath,
+                    GrammarXmlPath = _XmlPath,
+                    //SpaceXmlPath = _spaceXmlPath,
                     VGXmlPath = _VGXmlPath
                 };
                 StageList.Add (s);
@@ -150,8 +163,8 @@ namespace CreVox
             Stage _s = GetStageSetting (_stageNumber);
             if (seed == 0)
                 seed = UnityEngine.Random.Range (0, int.MaxValue);
-            if (_s.XmlPath.Length > 0 && _s.VGXmlPath.Length > 0) {
-                CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.XmlPath, seed);
+            if (_s.GrammarXmlPath.Length > 0 && _s.VGXmlPath.Length > 0) {
+                CreVoxNode root = CreVoxAttach.GenerateMissionGraph (PathCollect.gram + "/" + _s.GrammarXmlPath, seed);
                 return CrevoxGeneration.GenerateRealLevel (root, _s, seed);
             }
             return false;

@@ -76,7 +76,6 @@ namespace CrevoxExtend {
 		// Combine both volumeDataEx.
 		public bool CombineVolumeObject(VolumeDataEx originVolumeEx, VolumeDataEx newVolumeEx, ConnectionInfo originConnection, ConnectionInfo newConnection) {
 			Quaternion rotationOfVolume1 = originVolumeEx.rotation;
-			Quaternion rotationOfVolume2 = newVolumeEx.rotation;
 			// If new connection is not starting node.
 			int connectionRotationOffset = newConnection.type == ConnectionInfoType.Connection ? 180 : 0;
 			// Added vdata need to rotate for matching  origin vdata.
@@ -115,14 +114,10 @@ namespace CrevoxExtend {
 					Vector3 chunkPosition = volumeEx.position + AbsolutePosition(chunkdata.ChunkPos, rotateAngle).ToRealPosition();
                     foreach (var compareChunkData in compareVolumeEx.volumeData.GetChunkDatas()) {
 						Vector3 compareChunkPosition = compareVolumeEx.position + AbsolutePosition(compareChunkData.ChunkPos, compareRotateAngle).ToRealPosition();
-						// Calculate both distance. If it is out of maximum distance of interact then ignore it. 
-						if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) {
-							continue;
-						}
-						// Chunk interact.
-						if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, rotateAngle, compareRotateAngle)) {
-							return true;
-						}
+                        // Calculate both distance. If it is out of maximum distance of interact then ignore it. 
+                        if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) { continue; }
+                        // Chunk interact.
+                        if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, rotateAngle, compareRotateAngle)) { return true; }
 					}
 				}
 			}

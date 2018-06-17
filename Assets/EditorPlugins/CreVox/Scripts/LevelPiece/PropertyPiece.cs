@@ -57,8 +57,19 @@ namespace CreVox
 
                     case "Probability":
                         probability = float.Parse (t [2]);
-                        if (!(UnityEngine.Random.value > probability))
-                            gameObject.SetActive (false);
+                        float rndvalue = UnityEngine.Random.value;
+                        if (VGlobal.GetSetting().setting.debugLog)
+                        {
+                            string log = "probability : " + probability + "\n";
+                            for (int r = 0; r < 100; r++)
+                            {
+                                rndvalue = UnityEngine.Random.value;
+                                log += "<color=" + (rndvalue > probability ? "red>" : "green>") + rndvalue.ToString() + "</color>\n";
+                            }
+                            Debug.Log(log);
+                        }
+                        if (rndvalue > probability)
+                            gameObject.SetActive(false);
                         break;
 
                     case "DefaultEventRange":
@@ -205,7 +216,7 @@ namespace CreVox
                     }
                 }
                 if (notPP) {
-                    Debug.Log ("<b>" + name + "</b> send <b> " + a.name + "</b> to <b>range(" + eventRange + ")</b>\n");
+                    if (VGlobal.GetSetting().setting.debugLog) Debug.Log ("<b>" + name + "</b> send <b> " + a.name + "</b> to <b>range(" + eventRange + ")</b>\n");
                     SendActorUpward (a, eventRange);
                 }
             }

@@ -19,9 +19,10 @@ namespace CreVox
         public string ArtPack = PathCollect.pieces;
         public string vMaterial = PathCollect.defaultVoxelMaterial;
         List<Chunk> m_cs = new List<Chunk> ();
-        List<BehaviorTree> m_bts = new List<BehaviorTree> (1024);
+        //List<BehaviorTree> m_bts = new List<BehaviorTree> (1024);
         GameObject nodeRoot;
         GameObject itemRoot;
+        GameObject miniRoot;
 
         #region delgate
 
@@ -50,6 +51,11 @@ namespace CreVox
             itemRoot.transform.localPosition = Vector3.zero;
             itemRoot.transform.localRotation = Quaternion.Euler (Vector3.zero);
 
+            miniRoot = new GameObject("MiniMaps");
+            miniRoot.transform.parent = transform;
+            miniRoot.transform.localPosition = Vector3.zero;
+            miniRoot.transform.localRotation = Quaternion.Euler(Vector3.zero);
+
             List<ChunkData> cd = new List<ChunkData> ();
             if (m_vd.useFreeChunk) {
                 cd.Add (m_vd.freeChunk);
@@ -67,7 +73,7 @@ namespace CreVox
                 chunk.transform.localRotation = Quaternion.Euler (Vector3.zero);
                 Material vMat = Resources.Load (vMaterial, typeof(Material)) as Material ?? defMat;
                 chunk.GetComponent<Renderer> ().sharedMaterial = vMat;
-                chunk.layer = LayerMask.NameToLayer ("Floor");
+                chunk.layer = LayerMask.NameToLayer ("LightScene");
                 Chunk c = chunk.GetComponent<Chunk> ();
                 c.cData = cData;
                 c.Init ();
@@ -96,37 +102,49 @@ namespace CreVox
 
         bool isPieceFin;
         bool isItemFin;
+        bool isLoadFin;
 
-        public bool LoadCompeleted ()
+        public bool IsLoadCompeleted()
         {
-            bool result = true;
-            //donot use BehaviorDesigner
-            //for (int idx = 0; idx < m_bts.Count; ++idx) {
-            //    result &= m_bts [idx].ExecutionStatus != BehaviorDesigner.Runtime.Tasks.TaskStatus.Running;
-            //}
-            return (result & isPieceFin && isItemFin);
+            if (!isLoadFin)
+            {
+                bool result = (isPieceFin && isItemFin);
+                if (result)
+                {
+                    isLoadFin = true;
+                    if (VGlobal.GetSetting().setting.debugLog) Debug.Log("<color=teal>" + gameObject.name + " load complete</color> time: " + Time.realtimeSinceStartup);
+                }
+            }
+            return isLoadFin;
         }
 
         Dictionary<WorldPos,GameObject> doorObjs = new Dictionary<WorldPos, GameObject> ();
         GameObject doorClosedObj;
-
         public string FixDoor (PropertyPiece pp)
         {
-            if (pp == null || doorClosedObj == null)
-                return "";
-            var _pos = pp.block.BlockPos;
-            if (!doorObjs.ContainsKey (_pos))
-                return "";
-            var cDoor = doorObjs [_pos].transform;
+            if (pp == null || doorClosedObj == null) return "";
+            WorldPos _pos = pp.block.BlockPos;
+            if (!doorObjs.ContainsKey (_pos)) return "";
+
+            Transform cDoor = doorObjs [_pos].transform;
             Instantiate (doorClosedObj, cDoor.position, cDoor.rotation, cDoor.parent);
             Destroy (doorObjs [_pos]);
             doorObjs.Remove (_pos);
+
+            Destroy(pp.gameObject);
             return "(" + _pos + ")\n";
+        }
+
+        public void CollectMiniMap()
+        {
+            Transform[] ts = GetComponentsInChildren<Transform>();
+            foreach (var t in ts)
+                if (t.gameObject.layer == LayerMask.NameToLayer("UI") && t.name.ToLower() == "minimap") t.SetParent(miniRoot.transform);
         }
 
         IEnumerator PlacePieces (Chunk _chunk, PaletteItem[] itemArray)
         {
-            string log = gameObject.name + "<b> Create Pieces :</B>\n";
+            string log = "";
             float time = Time.deltaTime;
 
             ChunkData cData = _chunk.cData;
@@ -159,7 +177,7 @@ namespace CreVox
                 log += (string.Format ("{0}{1} : {2}{3}\n", ((time > 0.2f) ? "<color=red>" : ""), pi.name, time, (time > 0.2f) ? "</color>" : ""));
                 yield return new WaitForSeconds (0.00f);
             }
-            Debug.Log (log);
+            if (VGlobal.GetSetting().setting.debugLog) Debug.Log(gameObject.name + "<b> Create Pieces :</B> time: " + Time.realtimeSinceStartup + "\n" + log);
             isPieceFin = true;
         }
 
@@ -176,10 +194,10 @@ namespace CreVox
                 pObj.transform.parent = _parent;
                 pObj.transform.localPosition = new Vector3 (x, y, z);
                 pObj.transform.localRotation = Quaternion.Euler (0, Volume.GetPieceAngle (gPos.x, gPos.z), 0);
-                BehaviorTree bt = pObj.GetComponent<BehaviorTree> ();
-                if (bt != null) {
-                    m_bts.Add (bt);
-                }
+                //BehaviorTree bt = pObj.GetComponent<BehaviorTree> ();
+                //if (bt != null) {
+                //    m_bts.Add (bt);
+                //}
                 return pObj;
             }
             return null;
@@ -188,8 +206,8 @@ namespace CreVox
         IEnumerator CreateItems (VolumeData _vData, PaletteItem[] itemArray)
         {
             while (!isPieceFin)
-                yield return new WaitForSeconds (0.01f);
-            string log = gameObject.name + "<b> Create Items :</B>\n";
+                yield return new WaitForSeconds (0.05f);
+            string log = "";
             float time = Time.deltaTime;
             foreach (BlockItem bi in _vData.blockItems) {
                 foreach (PaletteItem pi in itemArray) {
@@ -202,9 +220,9 @@ namespace CreVox
                         break;
                     }
                 }
-                yield return new WaitForSeconds (0.00f);
+                yield return new WaitForSeconds (0.01f);
             }
-            Debug.Log (log);
+            if (VGlobal.GetSetting().setting.debugLog) Debug.Log (gameObject.name + "<b> Create Items :</B> time: " + Time.realtimeSinceStartup + "\n" + log);
             isItemFin = true;
         }
 

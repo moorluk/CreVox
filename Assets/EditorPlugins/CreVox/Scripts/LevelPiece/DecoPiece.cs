@@ -25,30 +25,38 @@ namespace CreVox
 
         void Awake ()
         {
-//            if (Application.isPlaying)
-            SetupPiece (null);
-        }
-
-        void OnValidate ()
-        {
-            if (tree [0].self.instance != null && !Application.isPlaying)
-                UnityEditor.EditorApplication.delayCall += delegate {
-                    DestroyImmediate (tree [0].self.instance);
-                };
-        }
-
-        public override void SetupPiece (BlockItem item)
-        {
+            enabled = true;
             if (tree.Count > 0) {
                 ClearRoot ();
                 foreach (TreeElement te in tree) {
                     te.self.instance = null;
                 }
             }
+        }
+
+        void Start ()
+        {
             tree [0].Generate (Root, this);
         }
 
-        public void ClearRoot ()
+        public override void SetupPiece(BlockItem item)
+        {
+        }
+
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (tree[0].self.instance == null || Application.isPlaying || gameObject.scene.IsValid()) return;
+            UnityEditor.EditorApplication.delayCall += delegate
+            {
+                if (!root) return;
+                for (int i = root.transform.childCount; i > 0; i--)
+                    DestroyImmediate(root.transform.GetChild(i - 1).gameObject, true);
+            };
+        }
+#endif
+
+        void ClearRoot ()
         {
             for (int i = Root.transform.childCount; i > 0; i--) {
                 if (Application.isPlaying)

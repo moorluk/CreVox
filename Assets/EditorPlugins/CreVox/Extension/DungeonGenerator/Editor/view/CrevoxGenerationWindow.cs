@@ -36,12 +36,13 @@ namespace CrevoxExtend {
 		void Awake() {
 			Initialize();
 		}
-		// On focus on the window.
+        // On focus on the window.
 		void OnFocus() {
 			if (ReferenceTableVMax == null) {
 				Initialize();
-			} else if(IsChanged()) {
-				Initialize();
+			} else {
+                IsChanged();
+				//Initialize();
 			}
 		}
 		// If the alphabet changed, update the list of nodes.
@@ -51,12 +52,25 @@ namespace CrevoxExtend {
 			var latestNodes = Alphabet.Nodes.Where(n => (n != Alphabet.AnyNode && n.Terminal != NodeTerminalType.NonTerminal)).Select(n => n.Name).ToList();
 			var firstNotSecond = currentNodes.Except(latestNodes).ToList();
 			var secondNotFirst = latestNodes.Except(currentNodes).ToList();
-			// return changed == true if there is any different from the dictionary and alphabet's nodes
-			return (firstNotSecond.Any() || secondNotFirst.Any());
+            foreach(var nName in firstNotSecond)
+            {
+                var nodes = ReferenceTableVMax.Where(nx => (nx.Key.Name == nName)).ToList();
+                foreach (var node in nodes) ReferenceTableVMax.Remove(node.Key);
+            }
+            foreach (var nName in secondNotFirst)
+            {
+                var nodes = Alphabet.Nodes.Where(nx => (nx.Name == nName)).ToList();
+                foreach (var node in nodes) ReferenceTableVMax.Add(node,new List<VDataAndMaxV>());
+            }
+            // return changed == true if there is any different from the dictionary and alphabet's nodes
+            return (firstNotSecond.Any() || secondNotFirst.Any());
 		}
 
+        string[] texts= { "Open Folder", "Save", "Load" ,"Refresh"};
 		void OnGUI() {
-			if (GUILayout.Button("Open Folder")) {
+            int id = -1;
+            id = GUILayout.Toolbar(id, texts);
+			if (id==0) {
 				// First, clear all volume list.
 				ReferenceTableVMax.Values.ToList().ForEach(vd => vd.Clear());
 
@@ -86,10 +100,10 @@ namespace CrevoxExtend {
 					}
 				}
 			}
-			if (GUILayout.Button("Save")) {
+			if (id==1) {
 				SaveToXML();
 			}
-			if (GUILayout.Button("Load")) {
+			if (id==2) {
 				LoadFromXML();
 			}
 
@@ -160,7 +174,7 @@ namespace CrevoxExtend {
 					stage = vg.GetStageSetting (stageID);
 					EditorGUI.BeginChangeCheck ();
 					stage.artPack = EditorGUILayout.TextField ("ArtPack", stage.artPack);
-					stage.XmlPath = EditorGUILayout.TextField ("Mission Graph Xml", stage.XmlPath);
+					stage.GrammarXmlPath = EditorGUILayout.TextField ("Mission Graph Xml", stage.GrammarXmlPath);
 					//stage.vDataPath = EditorGUILayout.TextField ("VData Path", stage.vDataPath);
 					stage.VGXmlPath = EditorGUILayout.TextField ("VGeneration Xml", stage.VGXmlPath);
 					if (EditorGUI.EndChangeCheck ()) {
@@ -239,20 +253,20 @@ namespace CrevoxExtend {
 			ReferenceTableVMax = RefTabVMax;
 		}
 		private static Dictionary<GraphGrammarNode, List<VDataAndMaxV>> DeserializeSymbols(XElement element){
-			Dictionary<GraphGrammarNode, List<VDataAndMaxV>> RefTableVMax = new Dictionary<GraphGrammarNode, List<VDataAndMaxV>>();
+			Dictionary<GraphGrammarNode, List<VDataAndMaxV>> result = new Dictionary<GraphGrammarNode, List<VDataAndMaxV>>();
 			XElement elementSymbols = element.Element("Symbols");
 			XElement elementVDatasPath = element.Element("VDatasPath");
 			// This was a bug before
 			List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + elementVDatasPath.Value.ToString());
-			// List<VolumeData> VDatas = GetVolumeDatasFromDir(PathCollect.save + "/" + stage.vDataPath);
-			foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
+            foreach (var elementSymbol in elementSymbols.Elements("Symbol")) {
 				// Find node in Alphabet to be added to dictionary later
 				GraphGrammarNode node = new GraphGrammarNode(); 
 				node = Alphabet.Nodes.Find(n => n.Name == elementSymbol.Element("Name").Value.ToString());
-				// Debug.Log("Node Name: "+node.Name+", Element Symbol: "+elementSymbol.Element("Name").Value + 
-				//	". Same? "+ (node.Name == elementSymbol.Element("Name").Value.ToString() ? true : false));
+                //Debug.Log("Node Name: " + node.Name +
+                //    ", Element Symbol: " + elementSymbol.Element("Name").Value +
+                //   ". Same? " + (node.Name == elementSymbol.Element("Name").Value.ToString() ? true : false));
 
-				List<VDataAndMaxV> VDataAndMaxVs = new List<VDataAndMaxV>();
+                List<VDataAndMaxV> VDataAndMaxVs = new List<VDataAndMaxV>();
 
 				XElement elementVolumeDatas = elementSymbol.Element("VolumeDatas");
 				// In here volumeData means VolumeDataAndMaxV.
@@ -264,11 +278,11 @@ namespace CrevoxExtend {
 					// Add the current volumeData (based on Name and maxV) to the List.
 					VDataAndMaxVs.Add(vdataAndMax);
 				}
-				// Add node and vdataAndmaxv to dictionary
-				RefTableVMax.Add(node, VDataAndMaxVs);
+                // Add node and vdataAndmaxv to dictionary
+                if (node != null && VDataAndMaxVs != null) result.Add(node, VDataAndMaxVs);
 			}
-			// Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + RefTableVMax.Count + " symbols");
-			return RefTableVMax;
+			//Debug.Log("VolumeData from " + elementVDatasPath.Value + " are mapped to " + result.Count + " symbols");
+			return result;
 		}
 
 		// Get All VolumeDatas from the directory

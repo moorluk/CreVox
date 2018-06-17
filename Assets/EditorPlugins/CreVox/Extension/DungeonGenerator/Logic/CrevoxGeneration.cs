@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using CreVox;
+﻿using CreVox;
 using MissionGrammarSystem;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using UnityEngine;
 
-namespace CrevoxExtend {
-	public class CrevoxGeneration {
+namespace CrevoxExtend
+{
+    public class CrevoxGeneration {
 		private const int TIMEOUT_MILLISECOND = 5000;
 		// Members.
 		private static Dictionary<Guid, List<VDataAndMaxV>> _referenceTableVMax;
@@ -38,8 +36,8 @@ namespace CrevoxExtend {
 			public CreVoxNode start;
 			public CreVoxNode end;
 			public Edge(CreVoxNode s, CreVoxNode e) {
-				this.start = s;
-				this.end = e;
+				start = s;
+				end = e;
 			}
 		}
 		// All edges from graph.
@@ -82,114 +80,101 @@ namespace CrevoxExtend {
 			}
 
 			if (nowState != null) {
-				Debug.Log("<color=green>Completed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
+                if (VGlobal.GetSetting().setting.debugLog) Debug.Log("<color=green>Completed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
 				// Transform state into gameobject.
 				CrevoxOperation.TransformStateIntoObject(nowState, _stage.artPack, generateVolume);
 			} else {
-				// Keep null means failed.
-				Debug.Log("<color=red>Failed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
+                // Keep null means failed.
+                if (VGlobal.GetSetting().setting.debugLog) Debug.Log("<color=red>Failed.</color> (" + testStopWatch.ElapsedMilliseconds + " ms)");
 			}
 			testStopWatch.Stop();
 			// Return boolean.
 			return nowState != null;
 		}
+
 		// Dfs the sequence.
 		private static bool Recursion(CrevoxState state, int edgeIndex) {
-			// If time over then return true. (Cuz true can break the recursion early.) 
 			if (testStopWatch.ElapsedMilliseconds > TIMEOUT_MILLISECOND) { return true; }
-			// If it is end of sequence then return true.
 			if (edgeIndex >= edgeList.Count) { return true; }
-			// Get the edge in this recursion.
+
 			Edge edge = edgeList[edgeIndex];
-			// If the end node is used.
-			if (state.VolumeDatasByID.ContainsKey(edge.end.SymbolID)) {
-				// Ignore.
-				if (Recursion(state, edgeIndex + 1)) {
-					return true;
-				}
+            Guid sSID = edge.start.SymbolID;
+            Guid eSID = edge.end.SymbolID;
+
+            // If the end node is used,skip it and recursion next node.
+            if (state.VolumeDatasByID.ContainsKey(eSID)) { if (Recursion(state, edgeIndex + 1)) { return true; } }
+
+            // Find all match vDatas.
+			List<VDataAndMaxV> matchTable = new List<VDataAndMaxV>();
+            List<VDataAndMaxV> refTable = ReferenceTableVMax[edge.end.AlphabetID];// 
+			foreach (VDataAndMaxV vdv in refTable) {
+				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdv.vData);
+                int usedCount = state.ResultVolumeDatas.Count(v => v.volumeData.name == vdv.vData.name);
+                if (vdv.maxVData < 0 || vdv.maxVData > usedCount) {
+                    if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
+                        matchTable.Add(vdv);
+                    }
+                }
 			}
-				
-			List<VDataAndMaxV> feasibleVDataAndMaxVs = new List<VDataAndMaxV>();
-			// Find the suitable vdata via the connection amount and the children of node in graph.
-			foreach (var vdataAndmaxv in ReferenceTableVMax[edge.end.AlphabetID]) {
-				CrevoxState.VolumeDataEx newVolumeEx = new CrevoxState.VolumeDataEx(vdataAndmaxv.vData);
-				if (newVolumeEx.ConnectionInfos.Count - 1 >= edge.end.Children.Count) {
-					// Get clone.
-					feasibleVDataAndMaxVs.Add(vdataAndmaxv);
-					//Debug.Log ("Feasible VData: " + vdataAndmaxv.vData.name + ", MaxV: " + vdataAndmaxv.maxVData);
-				}
-			}
-			// Reduce the maxV of vData. Use tolist to modify the enumerating list
-			foreach (VDataAndMaxV vdataAndmaxv in feasibleVDataAndMaxVs.ToArray()) {
-				// Count.
-				int vdataCount = state.ResultVolumeDatas.Count(v => v.volumeData.name == vdataAndmaxv.vData.name);
-				if(vdataAndmaxv.maxVData != -1 && vdataCount >= vdataAndmaxv.maxVData) {
-					feasibleVDataAndMaxVs.Remove(vdataAndmaxv);
-					//Debug.Log(vdataAndmaxv.vData.name + " Over");
-				}
-			}
-			// If none of VData have enough connection, return false. 
-			if (feasibleVDataAndMaxVs.Count == 0) {
-				Debug.Log ("There is no vdata that have enough connection in <color=red>" + ReferenceTableVMax[edge.end.AlphabetID][0].vData.name + "</color>. It means this graph doesn't match with vdata.");
-				return false;
-			}
-				
-			// Find mapping VDataAndMaxV in table that ordered randomly. 
-            string log = "<b>Compare connection : </b>\n";
-			foreach (var mappingvdataAndmaxv in feasibleVDataAndMaxVs.OrderBy(x => UnityEngine.Random.value)) {
-				// Debug.Log("Mapping vData : " + mappingvdataAndmaxv.vData.name + " has " + mappingvdataAndmaxv.maxVData + "vData.");
+            if (matchTable.Count == 0) { return false; }
+
+            // Find mapping VDataAndMaxV in table that ordered randomly. 
+            string log = "<b>Compare connection : </b>" + edgeIndex + "\n";
+			foreach (var matchVdV in matchTable.OrderBy(x => UnityEngine.Random.value)) {
+				log += matchVdV.vData.name + " (" + matchVdV.maxVData + ")\n";
+
 				// Set the end node.
-				if (state.VolumeDatasByID.ContainsKey(edge.end.SymbolID)) {
-					state.VolumeDatasByID[edge.end.SymbolID] = new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData);
-				} else {
-					state.VolumeDatasByID.Add(edge.end.SymbolID, new CrevoxState.VolumeDataEx(mappingvdataAndmaxv.vData));
-				}
+				if (state.VolumeDatasByID.ContainsKey(eSID))
+					state.VolumeDatasByID[eSID] = new CrevoxState.VolumeDataEx(matchVdV.vData);
+				else
+					state.VolumeDatasByID.Add(eSID, new CrevoxState.VolumeDataEx(matchVdV.vData));
+
 				// Get starting node from the end node.
-				ConnectionInfo startingNode = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+                // If there is no starting node then find connections. 
 				List<ConnectionInfo> newConnections = new List<ConnectionInfo>();
-				if (startingNode != null) {
-					newConnections.Add (startingNode);
-					log += startingNode.connectionName + "\n";
-				} else {
-					// If there is no starting node then find connections. 
-					newConnections = state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
-				}
-				foreach (var newConnection in newConnections.OrderBy(c => UnityEngine.Random.value)) {
-					// Get connection from the start node
-					foreach (var connection in state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
+                newConnections = state.VolumeDatasByID[eSID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.StartingNode);
+                if (newConnections.Count == 0)
+                    newConnections = state.VolumeDatasByID[eSID].ConnectionInfos.FindAll(x => !x.used && x.type == ConnectionInfoType.Connection);
+
+				// Get connection from the start node
+				foreach (var connection in state.VolumeDatasByID[sSID].ConnectionInfos.OrderBy(x => UnityEngine.Random.value)) {
+                    string cName = RewriteSystem.ResultGraph.GetConnectionByNodeID(sSID, eSID).Name.ToLower();
+				    foreach (var newConnection in newConnections.OrderBy(c => UnityEngine.Random.value)) {
 						// Ignore used or type-error connection. 
 						if (connection.used || connection.type != ConnectionInfoType.Connection) { continue; }
-						if (RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name.ToLower() != connection.connectionName.ToLower()) {
-                            log += RewriteSystem.ResultGraph.GetConnectionByNodeID(edge.start.SymbolID, edge.end.SymbolID).Name + " : " + connection.connectionName + "\n";
-							continue;
-                        } else{
-                            log += "<color=green>success</color> : " + connection.connectionName + "\n";
-                            }
+                        if (connection.connectionName.ToLower() == cName && newConnection.connectionName.ToLower() == cName) {
+                            log += "    <color=green>success</color> : " + cName + "\n";
+                        }
+                        else {
+                            log += "    " + cName + " : " + connection.connectionName + "\n"; continue;
+                        }
+
 						// Combine.
-						if (state.CombineVolumeObject(state.VolumeDatasByID[edge.start.SymbolID], state.VolumeDatasByID[edge.end.SymbolID], connection, newConnection)) {
+						if (state.CombineVolumeObject(state.VolumeDatasByID[sSID], state.VolumeDatasByID[eSID], connection, newConnection)) {
 							// If Success, add this VData to the state
-							state.ResultVolumeDatas.Add(state.VolumeDatasByID[edge.end.SymbolID]);
+							state.ResultVolumeDatas.Add(state.VolumeDatasByID[eSID]);
 							// Recursion next level. 
 							if (Recursion (state, edgeIndex + 1)) {
 								// Save connection info.
-								state.VolumeDatasByID[edge.start.SymbolID].ConnectionInfos.Find(x => x.Compare(connection)).connectedObjectGuid = edge.end.SymbolID;
-								state.VolumeDatasByID[edge.end.SymbolID].ConnectionInfos.Find(x => x.Compare(newConnection)).connectedObjectGuid = edge.start.SymbolID;
-								// Success then return.
-                                Debug.Log (log);
+								state.VolumeDatasByID[sSID].ConnectionInfos.Find(x => x.Compare(connection)).connectedObjectGuid = eSID;
+								state.VolumeDatasByID[eSID].ConnectionInfos.Find(x => x.Compare(newConnection)).connectedObjectGuid = sSID;
+                                // Success then return.
+                                if (VGlobal.GetSetting().setting.debugLog) Debug.Log (log);
 								return true;
 							} else {
 								// If next level has problem then remove the VData that has been added before
-								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[edge.end.SymbolID]);
+								state.ResultVolumeDatas.Remove(state.VolumeDatasByID[eSID]);
 							}
 						}
 					}
 				}
 			}
 			// If none is success then restore the state.
-			state.VolumeDatasByID.Remove(edge.end.SymbolID);
-            Debug.Log (log + "<color=red>Failed</color>");
+			state.VolumeDatasByID.Remove(eSID);
+            if (VGlobal.GetSetting().setting.debugLog) Debug.Log (log + "<color=red>Failed</color>");
 			return false;
 		}
+
 		// Dfs get sequence.
 		private static void RecursionGetSequence(CreVoxNode node) {
 			foreach (var child in node.Children.OrderBy(x=> UnityEngine.Random.value)) {

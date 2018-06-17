@@ -27,7 +27,7 @@ namespace CreVox
         public static void Create (Transform _Parent, VGlobal vg)
         {
             Destroy ();
-            Box = GameObject.Instantiate (Resources.Load<GameObject> (PathCollect.box));
+            Box = Instantiate (Resources.Load<GameObject> (PathCollect.box));
             Box.transform.SetParent (_Parent);
             Box.transform.localScale = new Vector3 (vg.w, vg.h, vg.d);
             Box.transform.localRotation = Quaternion.Inverse (_Parent.rotation);

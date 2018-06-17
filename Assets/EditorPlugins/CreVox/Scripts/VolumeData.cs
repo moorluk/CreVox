@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CreVox
 {
-    [CreateAssetMenu (menuName = "CreVox/Volume Data")]
+    [CreateAssetMenu (menuName = "CreVox/Volume Data"),System.Serializable]
     public class VolumeData : ScriptableObject
     {
         // free chunk

@@ -35,10 +35,11 @@ namespace CreVox
                 EditorGUILayout.LabelField ("Decoration Tree", EditorStyles.boldLabel, GUILayout.Width (screenW - 120));
                 GUILayout.FlexibleSpace ();
                 if (GUILayout.Button ("Test", GUILayout.Width (45))) {
-                    dp.SetupPiece (null);
+                    dp.SendMessage("ClearRoot");
+                    dp.SendMessage("Start");
                 }
                 if (GUILayout.Button ("Clear", GUILayout.Width (45))) {
-                    dp.ClearRoot ();
+                    dp.SendMessage("ClearRoot");
                 }
             }
             // Root
@@ -237,7 +238,7 @@ namespace CreVox
             foreach (var t in _trees) {
                 if (t.Equals (dp))
                     continue;
-                t.ClearRoot ();
+                t.SendMessage("ClearRoot");
             }
 
             //search prefab
@@ -385,9 +386,9 @@ namespace CreVox
             if (showSetParentTool) {
                 using (var h = new GUILayout.HorizontalScope (EditorStyles.helpBox)) {
                     EditorGUILayout.LabelField ("Child", GUILayout.Width (35));
-                    ChildIndex = EditorGUILayout.IntField (ChildIndex, GUILayout.Width (25));
+                    ChildIndex = EditorGUILayout.DelayedIntField (ChildIndex, GUILayout.Width (25));
                     EditorGUILayout.LabelField (": Parent (" + dp.tree [ChildIndex].parent.treeIndex + ") →", GUILayout.Width (90));
-                    ParentIndex = EditorGUILayout.IntField (ParentIndex, GUILayout.Width (25));
+                    ParentIndex = EditorGUILayout.DelayedIntField (ParentIndex, GUILayout.Width (25));
                     EditorGUILayout.Space ();
                     if (GUILayout.Button ("Set", GUILayout.Width (50))) {
                         SetParent ();

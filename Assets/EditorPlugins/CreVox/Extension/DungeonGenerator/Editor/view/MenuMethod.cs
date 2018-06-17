@@ -5,9 +5,9 @@ using UnityEditor;
 
 public class MenuMethod : EditorWindow {
 	private static EditorWindow _window;
-	[MenuItem("CrevoxExtend/Volume generation", false, 1)]
+	[MenuItem("Dungeon/Generation/Volume generation", false, 32)]
 	public static void ShowWindow() {
-		_window = EditorWindow.GetWindow<CrevoxExtend.CrevoxGenerationWindow>("Volume generation", true);
+		_window = GetWindow<CrevoxExtend.CrevoxGenerationWindow>("Volume generation", true);
 		_window.position = new Rect(35, 35, 300, 50);
 	}
 }
