@@ -849,8 +849,30 @@ namespace CreVox
 
             if (Vm.ShowBlockHold)
                 DrawBlockHold ();
+            else
+                DrawBlockBound ();
             
             Gizmos.matrix = oldMatrix;
+            DrawBBPoint ();
+        }
+
+        void DrawBlockBound ()
+        {
+            for (int i = 0; i < vd.blockBounds.Count; i++) {
+                BlockBound b = vd.blockBounds [i];
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireCube (b.Center, b.Size);
+            }
+        }
+        void DrawBBPoint()
+        {
+            for (int i = 0; i < vd.blockBounds.Count; i++) {
+                BlockBound b = vd.blockBounds [i];
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere (b.GetMin (transform), 0.1f);
+                Gizmos.DrawLine (b.GetMin (transform), b.GetMax (transform));
+                Gizmos.DrawWireSphere (b.GetMax(transform), 0.1f);
+            }
         }
 
         void DrawBlockHold ()

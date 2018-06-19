@@ -6,16 +6,21 @@ namespace CreVox
     [CreateAssetMenu (menuName = "CreVox/Volume Data"),System.Serializable]
     public class VolumeData : ScriptableObject
     {
-        // free chunk
-        public bool useFreeChunk;
-        public ChunkData freeChunk = new ChunkData { isFreeChunk = true };
-        // ==============
         public int chunkSize;
         public int chunkX = 1;
         public int chunkY = 1;
         public int chunkZ = 1;
+
+        // free chunk
+        [Space()]
+        public bool useFreeChunk;
+        public ChunkData freeChunk = new ChunkData { isFreeChunk = true };
+        // ==============
+
+        [Space()]
         public List <ChunkData> chunkDatas = new List<ChunkData> ();
         public List<BlockItem> blockItems = new List<BlockItem> ();
+        public List<BlockBound> blockBounds = new List<BlockBound> (); 
         public string subArtPack = "";
 
         // [XAOCX add]

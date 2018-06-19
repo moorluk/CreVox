@@ -4,7 +4,7 @@ using System;
 
 namespace CreVox
 {
-    [System.Serializable]
+    [Serializable]
     public class ChunkData
     {
         // free chunk

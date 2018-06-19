@@ -22,7 +22,8 @@ namespace CreVox
 			public float layerMax;
 		}
 		BlockBool[] bbool;
-		public bool[] blockItems;
+        public bool[] blockItems;
+        public bool[] blockBounds;
 		BlockBool fbool;
 		BlockBool workbbool;
 		ChunkData workCData;
@@ -53,7 +54,8 @@ namespace CreVox
 			fbool.layerMin = 0;
 			fbool.layerMax = vd.freeChunk.freeChunkSize.y;
 
-			blockItems = new bool[vd.blockItems.Count];
+            blockItems = new bool[vd.blockItems.Count];
+            blockBounds = new bool[vd.blockBounds.Count];
 
 			UpdateList ();
 		}
@@ -62,30 +64,21 @@ namespace CreVox
 		{
 			if (blockItems.Length != vd.blockItems.Count) {
 				blockItems = new bool[vd.blockItems.Count];
-				for (int j = 0; j < blockItems.Length; j++) {
-					blockItems [j] = false;
-				}
-			}
+            }
+            if (blockBounds.Length != vd.blockBounds.Count) {
+                blockBounds = new bool[vd.blockBounds.Count];
+            }
 			for(int i = 0; i < bbool.Length; i++) {
 				if (bbool[i].blocks.Length != vd.chunkDatas[i].blocks.Count) {
 					bbool[i].blocks = new bool[vd.chunkDatas[i].blocks.Count];
-					for (int j = 0; j < bbool[i].blocks.Length; j++) {
-						bbool[i].blocks [j] = false;
-					}
 				}
 
 				if (bbool[i].blockAirs.Length != vd.chunkDatas[i].blockAirs.Count) {
 					bbool[i].blockAirs = new bool[vd.chunkDatas[i].blockAirs.Count];
-					for (int j = 0; j < bbool[i].blockAirs.Length; j++) {
-						bbool[i].blockAirs [j] = false;
-					}
 				}
 
 				if (bbool[i].blockHolds.Length != vd.chunkDatas[i].blockHolds.Count) {
 					bbool[i].blockHolds = new bool[vd.chunkDatas[i].blockHolds.Count];
-					for (int j = 0; j < bbool[i].blockHolds.Length; j++) {
-						bbool[i].blockHolds [j] = false;
-					}
 				}
 			}
 		}
@@ -96,6 +89,7 @@ namespace CreVox
 			UpdateList ();
 
 			EditorGUI.BeginChangeCheck ();
+            DrawBlockBounds ();
 			DrawBlockItems ();
 			if (vd.useFreeChunk) {
 				ChunkEditor.DrawChunkData (vd.freeChunk, ref fbool);
@@ -115,6 +109,53 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (vd);
 		}
+
+        void DrawBlockBounds()
+        {
+            using (var v = new EditorGUILayout.VerticalScope ("Box")) {
+                float labelDefW = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 70f;
+                GUI.color = ChunkEditor.volColor;
+                using (var h1 = new EditorGUILayout.HorizontalScope (EditorStyles.helpBox)) {
+                    GUI.color = defColor;
+                    EditorGUILayout.LabelField ("Bounds", EditorStyles.boldLabel, GUILayout.Width (45));
+                }
+
+                EditorGUI.indentLevel++;
+                EditorGUIUtility.labelWidth = 15f;
+                for (int i = 0; i < vd.blockBounds.Count; i++) {
+                    DrawBlockBound (i);
+                }
+                EditorGUI.indentLevel--;
+                EditorGUIUtility.labelWidth = labelDefW;
+            }
+        }
+
+        void DrawBlockBound(int i)
+        {
+            BlockBound b = vd.blockBounds [i];
+            int idl = EditorGUI.indentLevel;
+            blockBounds [i] = EditorGUILayout.Foldout (blockBounds [i], i.ToString ());
+            if (blockBounds [i]) {
+                using (var h = new EditorGUILayout.HorizontalScope ()) {
+                    EditorGUILayout.LabelField ("Min", EditorStyles.boldLabel, GUILayout.Width (60));
+                    EditorGUI.indentLevel = 0;
+                    b.min.x = EditorGUILayout.IntField ("X", b.min.x, GUILayout.Width (40));
+                    b.min.y = EditorGUILayout.IntField ("Y", b.min.y, GUILayout.Width (40));
+                    b.min.z = EditorGUILayout.IntField ("Z", b.min.z, GUILayout.Width (40));
+                    EditorGUI.indentLevel = idl;
+                }
+                using (var h = new EditorGUILayout.HorizontalScope ()) {
+                    EditorGUILayout.LabelField ("Max", EditorStyles.boldLabel, GUILayout.Width (60));
+                    EditorGUI.indentLevel = 0;
+                    b.max.x = EditorGUILayout.IntField ("X", b.max.x, GUILayout.Width (40));
+                    b.max.y = EditorGUILayout.IntField ("Y", b.max.y, GUILayout.Width (40));
+                    b.max.z = EditorGUILayout.IntField ("Z", b.max.z, GUILayout.Width (40));
+                    EditorGUI.indentLevel = idl;
+                }
+            }
+            EditorGUILayout.Space ();
+        }
 
 		void DrawBlockItems()
 		{
