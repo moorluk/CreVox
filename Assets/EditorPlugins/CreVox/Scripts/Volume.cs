@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using BehaviorDesigner.Runtime;
+using CrevoxExtend;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -868,10 +869,15 @@ namespace CreVox
         {
             for (int i = 0; i < vd.blockBounds.Count; i++) {
                 BlockBound b = vd.blockBounds [i];
+                //get points by transform
                 Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere (b.GetMin (transform), 0.1f);
-                Gizmos.DrawLine (b.GetMin (transform), b.GetMax (transform));
-                Gizmos.DrawWireSphere (b.GetMax(transform), 0.1f);
+                Gizmos.DrawWireSphere (b.GetMin (transform), 0.15f);
+                Gizmos.DrawWireSphere (b.GetMax (transform), 0.15f);
+                //get points by calculate
+                Gizmos.color = Color.red;
+                float angle = transform.eulerAngles.y;
+                Gizmos.DrawSphere (transform.position + CrevoxState.AbsolutePosition(b.GetMin (),angle), 0.1f);
+                Gizmos.DrawSphere (transform.position + CrevoxState.AbsolutePosition(b.GetMax (),angle), 0.1f);
             }
         }
 
