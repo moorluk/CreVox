@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VolumeGeneration>
+  <Symbols>
+    <Symbol>
+      <Name>bb</Name>
+      <VolumeDatas>
+        <VolumeData>
+          <VDataName>Straight_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+        <VolumeData>
+          <VDataName>Corner_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+      </VolumeDatas>
+    </Symbol>
+    <Symbol>
+      <Name>entrance</Name>
+      <VolumeDatas>
+        <VolumeData>
+          <VDataName>Start_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+      </VolumeDatas>
+    </Symbol>
+    <Symbol>
+      <Name>goal</Name>
+      <VolumeDatas>
+        <VolumeData>
+          <VDataName>End_01_vData</VDataName>
+          <MaxVData>-1</MaxVData>
+        </VolumeData>
+      </VolumeDatas>
+    </Symbol>
+  </Symbols>
+  <VDatasPath />
+</VolumeGeneration>

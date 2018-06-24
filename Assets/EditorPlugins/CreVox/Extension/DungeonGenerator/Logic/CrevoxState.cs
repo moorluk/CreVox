@@ -36,7 +36,7 @@ namespace CrevoxExtend {
             );
 		}
 		// Get the list that contains postisions and directions of door(conntection) via volumedata.
-		private static List<ConnectionInfo> GetConnectionPosition(VolumeData vdata) {
+		static List<ConnectionInfo> GetConnectionPosition(VolumeData vdata) {
 			const string regex = @"Connection_(\w+)$";
 			List<ConnectionInfo> connections = new List<ConnectionInfo>();
 			// All chunk.
@@ -53,24 +53,23 @@ namespace CrevoxExtend {
 		}
 
 		// Volume List
-		private List<VolumeDataEx> _resultVolumeDatas;
 		public Dictionary<Guid, VolumeDataEx> VolumeDatasByID;
 		public List<VolumeDataEx> ResultVolumeDatas {
-			get { return _resultVolumeDatas; }
-			set { _resultVolumeDatas = value; }
-		}
+            get;
+            set;
+        }
 		// Constructor.
 		public CrevoxState() {
-			_resultVolumeDatas = new List<VolumeDataEx>();
+			ResultVolumeDatas = new List<VolumeDataEx>();
 			VolumeDatasByID = new Dictionary<Guid, VolumeDataEx>();
 		}
 		public CrevoxState(VolumeData vdata) {
-			_resultVolumeDatas = new List<VolumeDataEx>();
-			_resultVolumeDatas.Add(new VolumeDataEx(vdata));
+			ResultVolumeDatas = new List<VolumeDataEx>();
+			ResultVolumeDatas.Add(new VolumeDataEx(vdata));
 			VolumeDatasByID = new Dictionary<Guid, VolumeDataEx>();
 		}
 		public CrevoxState(CrevoxState clone) {
-			_resultVolumeDatas = new List<VolumeDataEx>(clone._resultVolumeDatas.Select(x => new VolumeDataEx(x)).ToArray());
+			ResultVolumeDatas = new List<VolumeDataEx>(clone.ResultVolumeDatas.Select(x => new VolumeDataEx(x)).ToArray());
 			VolumeDatasByID = clone.VolumeDatasByID;
 		}
 		public CrevoxState Clone() {
@@ -94,16 +93,11 @@ namespace CrevoxExtend {
 			newVolumeEx.rotation.eulerAngles = new Vector3(0, rotateAngle, 0);
 			// Absolute position.
 			newVolumeEx.position = originVolumeEx.position + relativePosition.ToRealPosition();
-			if (!IsBoundCollider(newVolumeEx)) {
-				//Debug.Log("Combine finish.");
-				return true;
-			}
-			//Debug.Log("No door can combine.");
-			return false;
+			return !IsBoundCollider (newVolumeEx);
 		}
 
         #region 碰撞判定
-        private bool IsBoundCollider(VolumeDataEx volumeEx) {
+        bool IsBoundCollider(VolumeDataEx volumeEx) {
             foreach (var bb in volumeEx.volumeData.blockBounds) {
                 float r = volumeEx.rotation.eulerAngles.y;
                 r = r >= 0 ? r : r + 360;
@@ -116,8 +110,10 @@ namespace CrevoxExtend {
                 float minZ = Mathf.Min (min.z, max.z);
                 float maxZ = Mathf.Max (min.z, max.z);
 
-                foreach (var compareVolumeEx in _resultVolumeDatas) {
-                    foreach (var cbb in compareVolumeEx.volumeData.blockBounds) {
+                for (int i = 0; i < ResultVolumeDatas.Count;i++) {
+                    var compareVolumeEx = ResultVolumeDatas [i];
+                    for (int j = 0;j < compareVolumeEx.volumeData.blockBounds.Count;j++) {
+                        var cbb = compareVolumeEx.volumeData.blockBounds[j];
                         if (ReferenceEquals (volumeEx, compareVolumeEx))
                             continue;
 
@@ -125,30 +121,34 @@ namespace CrevoxExtend {
                         cr = cr >= 0 ? cr : cr + 360;
                         Vector3 cMin = compareVolumeEx.position + AbsolutePosition (cbb.GetMin (), cr);
                         Vector3 cMax = compareVolumeEx.position + AbsolutePosition (cbb.GetMax (), cr);
+
                         float cMinX = Mathf.Min (cMin.x, cMax.x);
                         float cMaxX = Mathf.Max (cMin.x, cMax.x);
-                        if (cMinX < maxX || cMaxX > minX)
-                            return true;
-                        float cMinZ = Mathf.Min (cMin.z, cMax.z);
-                        float cMaxZ = Mathf.Max (cMin.z, cMax.z);
-                        if (cMinZ < maxZ || cMaxZ > minZ)
-                            return true;
-                        float cMinY = Mathf.Min (cMin.y, cMax.y);
-                        float cMaxY = Mathf.Max (cMin.y, cMax.y);
-                        if (cMinY < maxY || cMaxY > minY)
-                            return true;
+                        if (!(cMinX >= maxX || minX >= cMaxX)) {
+                            float cMinZ = Mathf.Min (cMin.z, cMax.z);
+                            float cMaxZ = Mathf.Max (cMin.z, cMax.z);
+                            if (!(cMinZ >= maxZ || minZ >= cMaxZ)) {
+                                float cMinY = Mathf.Min (cMin.y, cMax.y);
+                                float cMaxY = Mathf.Max (cMin.y, cMax.y);
+                                if (!(cMinY >= maxY || minY >= cMaxY)) {
+                                    string log = string.Format ("{0} collide {1}({2},{3}) failed.\n", volumeEx.volumeData.name, compareVolumeEx.volumeData.name, i, j);
+                                    Debug.Log (log += min + max + cMin + cMax);
+                                    return true;
+                                }
+                            }
+                        }
                     }
                 }
             }
             return false;
         }
 
-        static float CHUNK_DISTANCE_MAXIMUM = 100f; //37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
+        const float CHUNK_DISTANCE_MAXIMUM = 100f; //37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
 
         // Collision
-		private bool IsCollider(VolumeDataEx volumeEx) {
+		bool IsCollider(VolumeDataEx volumeEx) {
             foreach (var chunkdata in volumeEx.volumeData.GetChunkDatas()) {
-				foreach (var compareVolumeEx in _resultVolumeDatas) {
+				foreach (var compareVolumeEx in ResultVolumeDatas) {
 					if (ReferenceEquals(volumeEx, compareVolumeEx)) {
 						continue;
 					}
@@ -167,7 +167,7 @@ namespace CrevoxExtend {
 			return false;
         }
 		// Chunk interact.
-		private bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
+		static bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
 			// Get all of BlockHolds.
 			foreach (var blockHold in chunkData.blockHolds) {
 				Vector3 blockPosition = chunkPosition + AbsolutePosition(blockHold.BlockPos, rotateAngle).ToRealPosition();
@@ -189,31 +189,30 @@ namespace CrevoxExtend {
 			public Vector3 position;
 			public Quaternion rotation;
 			public VolumeData volumeData;
-			private List<ConnectionInfo> _connectionInfos;
 			public List<ConnectionInfo> ConnectionInfos {
-				get { return _connectionInfos; }
-				set { _connectionInfos = value; }
-			}
+                get;
+                set;
+            }
 			public VolumeDataEx() {
-				this.position = Vector3.zero;
-				this.rotation = Quaternion.identity;
-				this.volumeData = null;
-				this._connectionInfos = null;
+				position = Vector3.zero;
+				rotation = Quaternion.identity;
+				volumeData = null;
+				ConnectionInfos = null;
 			}
 			public VolumeDataEx(VolumeData vdata) {
-				this.position = Vector3.zero;
-				this.rotation = Quaternion.identity;
-				this.volumeData = vdata;
+				position = Vector3.zero;
+				rotation = Quaternion.identity;
+				volumeData = vdata;
 				if (!ConnectionInfoVdataTable.ContainsKey(vdata)) {
 					ConnectionInfoVdataTable[vdata] = GetConnectionPosition(vdata);
 				}
-				this._connectionInfos = new List<ConnectionInfo>(ConnectionInfoVdataTable[vdata].Select(x => x.Clone()).ToArray());
+				ConnectionInfos = new List<ConnectionInfo> (ConnectionInfoVdataTable [vdata].Select (x => x.Clone ()).ToArray ());
 			}
 			public VolumeDataEx(VolumeDataEx clone) {
-				this.position = clone.position;
-				this.rotation = clone.rotation;
-				this.volumeData = clone.volumeData;
-				this._connectionInfos = new List<ConnectionInfo>(clone._connectionInfos.Select(x => x.Clone()).ToArray());
+				position = clone.position;
+				rotation = clone.rotation;
+				volumeData = clone.volumeData;
+				ConnectionInfos = new List<ConnectionInfo> (clone.ConnectionInfos.Select (x => x.Clone ()).ToArray ());
 			}
 		}
 	}
