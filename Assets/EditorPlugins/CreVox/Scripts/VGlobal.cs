@@ -60,8 +60,7 @@ namespace CreVox
 
         public static List<string> GetArtPacks ()
         {
-            List<string> _result = new List<string> (0);
-            _result.Add (Path.GetFileName (PathCollect.pieces));
+            List<string> _result = new List<string>() { Path.GetFileName(PathCollect.pieces) };
             string[] _artPacksTemp = Directory.GetDirectories (
                                     PathCollect.resourcesPath + PathCollect.artPack,
                                     "*",
@@ -76,9 +75,13 @@ namespace CreVox
         }
 
         #endregion
+        Dictionary<string, PaletteItem[]> itemArrays = new Dictionary<string, PaletteItem[]>();
         public PaletteItem[] GetItemArray (string _artPackPath, string _subArtPack, bool _showArtPack = true)
         {
             String _artPackName = Path.GetFileName (_artPackPath);
+
+            if (itemArrays.ContainsKey(_artPackName + _subArtPack))
+                return itemArrays[_artPackName + _subArtPack];
 
             if (artPackParentList.Exists (a => a.pack == _artPackName + _subArtPack))
                 _artPackName += _subArtPack;
@@ -106,6 +109,8 @@ namespace CreVox
                 result = Resources.LoadAll<PaletteItem> (PathCollect.pieces);
             }
             Array.Sort<PaletteItem> (result, (x, y) => x.markType.CompareTo (y.markType));
+            if (!itemArrays.ContainsKey(_artPackName + _subArtPack))
+                itemArrays.Add(_artPackName + _subArtPack, result);
             return result;
         }
 
