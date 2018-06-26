@@ -53,23 +53,24 @@ namespace CrevoxExtend {
 		}
 
 		// Volume List
+		private List<VolumeDataEx> _resultVolumeDatas;
 		public Dictionary<Guid, VolumeDataEx> VolumeDatasByID;
 		public List<VolumeDataEx> ResultVolumeDatas {
-            get;
-            set;
+			get { return _resultVolumeDatas; }
+			set { _resultVolumeDatas = value; }
         }
 		// Constructor.
 		public CrevoxState() {
-			ResultVolumeDatas = new List<VolumeDataEx>();
+			_resultVolumeDatas = new List<VolumeDataEx>();
 			VolumeDatasByID = new Dictionary<Guid, VolumeDataEx>();
 		}
 		public CrevoxState(VolumeData vdata) {
-			ResultVolumeDatas = new List<VolumeDataEx>();
-			ResultVolumeDatas.Add(new VolumeDataEx(vdata));
+			_resultVolumeDatas = new List<VolumeDataEx>();
+			_resultVolumeDatas.Add(new VolumeDataEx(vdata));
 			VolumeDatasByID = new Dictionary<Guid, VolumeDataEx>();
 		}
 		public CrevoxState(CrevoxState clone) {
-			ResultVolumeDatas = new List<VolumeDataEx>(clone.ResultVolumeDatas.Select(x => new VolumeDataEx(x)).ToArray());
+			_resultVolumeDatas = new List<VolumeDataEx>(clone._resultVolumeDatas.Select(x => new VolumeDataEx(x)).ToArray());
 			VolumeDatasByID = clone.VolumeDatasByID;
 		}
 		public CrevoxState Clone() {
@@ -131,8 +132,8 @@ namespace CrevoxExtend {
                                 float cMinY = Mathf.Min (cMin.y, cMax.y);
                                 float cMaxY = Mathf.Max (cMin.y, cMax.y);
                                 if (!(cMinY >= maxY || minY >= cMaxY)) {
-                                    string log = string.Format ("{0} collide {1}({2},{3}) failed.\n", volumeEx.volumeData.name, compareVolumeEx.volumeData.name, i, j);
-                                    Debug.Log (log += min + max + cMin + cMax);
+                                    //string log = string.Format ("{0} collide {1}({2},{3}) failed.\n", volumeEx.volumeData.name, compareVolumeEx.volumeData.name, i, j);
+                                    //Debug.Log (log += min + max + cMin + cMax);
                                     return true;
                                 }
                             }
@@ -148,7 +149,7 @@ namespace CrevoxExtend {
         // Collision
 		bool IsCollider(VolumeDataEx volumeEx) {
             foreach (var chunkdata in volumeEx.volumeData.GetChunkDatas()) {
-				foreach (var compareVolumeEx in ResultVolumeDatas) {
+				foreach (var compareVolumeEx in _resultVolumeDatas) {
 					if (ReferenceEquals(volumeEx, compareVolumeEx)) {
 						continue;
 					}
@@ -189,15 +190,16 @@ namespace CrevoxExtend {
 			public Vector3 position;
 			public Quaternion rotation;
 			public VolumeData volumeData;
+			private List<ConnectionInfo> _connectionInfos;
 			public List<ConnectionInfo> ConnectionInfos {
-                get;
-                set;
+				get { return _connectionInfos; }
+				set { _connectionInfos = value; }
             }
 			public VolumeDataEx() {
 				position = Vector3.zero;
 				rotation = Quaternion.identity;
 				volumeData = null;
-				ConnectionInfos = null;
+				_connectionInfos = null;
 			}
 			public VolumeDataEx(VolumeData vdata) {
 				position = Vector3.zero;
@@ -206,13 +208,13 @@ namespace CrevoxExtend {
 				if (!ConnectionInfoVdataTable.ContainsKey(vdata)) {
 					ConnectionInfoVdataTable[vdata] = GetConnectionPosition(vdata);
 				}
-				ConnectionInfos = new List<ConnectionInfo> (ConnectionInfoVdataTable [vdata].Select (x => x.Clone ()).ToArray ());
+				_connectionInfos = new List<ConnectionInfo> (ConnectionInfoVdataTable [vdata].Select (x => x.Clone ()).ToArray ());
 			}
 			public VolumeDataEx(VolumeDataEx clone) {
 				position = clone.position;
 				rotation = clone.rotation;
 				volumeData = clone.volumeData;
-				ConnectionInfos = new List<ConnectionInfo> (clone.ConnectionInfos.Select (x => x.Clone ()).ToArray ());
+				_connectionInfos = new List<ConnectionInfo> (clone._connectionInfos.Select (x => x.Clone ()).ToArray ());
 			}
 		}
 	}

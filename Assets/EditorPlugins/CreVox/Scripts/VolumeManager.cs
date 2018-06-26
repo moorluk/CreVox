@@ -174,12 +174,14 @@ namespace CreVox
                 return;
             dungeons.Clear ();
             foreach (Volume v in vs) {
-                Dungeon newDungeon = new Dungeon ();
-                newDungeon.volumeData = v.vd;
-                newDungeon.position = v.transform.position;
-                newDungeon.rotation = v.transform.rotation;
-                newDungeon.ArtPack = v.ArtPack;
-                newDungeon.vMaterial = v.vMaterial;
+                Dungeon newDungeon = new Dungeon
+                {
+                    volumeData = v.vd,
+                    position = v.transform.position,
+                    rotation = v.transform.rotation,
+                    ArtPack = v.ArtPack,
+                    vMaterial = v.vMaterial
+                };
                 dungeons.Add (newDungeon);
             }
         }
