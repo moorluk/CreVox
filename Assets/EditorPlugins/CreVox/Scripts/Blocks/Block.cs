@@ -76,7 +76,7 @@ namespace CreVox
             Block b = chunk.GetBlock (x, y, z);
             if (b == null)
                 return true;
-            if (b is BlockAir || b is BlockHold)
+            if (b is BlockAir)
                 return true;
             return false;
         }

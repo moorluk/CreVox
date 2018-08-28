@@ -143,47 +143,6 @@ namespace CrevoxExtend {
             }
             return false;
         }
-
-        const float CHUNK_DISTANCE_MAXIMUM = 100f; //37.5233f; // Vector3.Magnitude(new Vector3(24, 16, 24))
-
-        // Collision
-		bool IsCollider(VolumeDataEx volumeEx) {
-            foreach (var chunkdata in volumeEx.volumeData.GetChunkDatas()) {
-				foreach (var compareVolumeEx in _resultVolumeDatas) {
-					if (ReferenceEquals(volumeEx, compareVolumeEx)) {
-						continue;
-					}
-					float rotateAngle = volumeEx.rotation.eulerAngles.y >= 0 ? volumeEx.rotation.eulerAngles.y : volumeEx.rotation.eulerAngles.y + 360;
-					float compareRotateAngle = compareVolumeEx.rotation.eulerAngles.y >= 0 ? compareVolumeEx.rotation.eulerAngles.y : compareVolumeEx.rotation.eulerAngles.y + 360;
-					Vector3 chunkPosition = volumeEx.position + AbsolutePosition(chunkdata.ChunkPos, rotateAngle).ToRealPosition();
-                    foreach (var compareChunkData in compareVolumeEx.volumeData.GetChunkDatas()) {
-						Vector3 compareChunkPosition = compareVolumeEx.position + AbsolutePosition(compareChunkData.ChunkPos, compareRotateAngle).ToRealPosition();
-                        // Calculate both distance. If it is out of maximum distance of interact then ignore it. 
-                        if (Vector3.Distance(chunkPosition, compareChunkPosition) > CHUNK_DISTANCE_MAXIMUM) { continue; }
-                        // Chunk interact.
-                        if (ChunkInteract(chunkdata, compareChunkData, chunkPosition, compareChunkPosition, rotateAngle, compareRotateAngle)) { return true; }
-					}
-				}
-			}
-			return false;
-        }
-		// Chunk interact.
-		static bool ChunkInteract(ChunkData chunkData, ChunkData compareChunkData, Vector3 chunkPosition, Vector3 compareChunkPosition, float rotateAngle, float compareRotateAngle) {
-			// Get all of BlockHolds.
-			foreach (var blockHold in chunkData.blockHolds) {
-				Vector3 blockPosition = chunkPosition + AbsolutePosition(blockHold.BlockPos, rotateAngle).ToRealPosition();
-				// Get all of compared BlockHolds.
-				foreach (var compareBlockHold in compareChunkData.blockHolds) {
-					Vector3 compareBlockPosition = compareChunkPosition + AbsolutePosition(compareBlockHold.BlockPos, compareRotateAngle).ToRealPosition();
-					// Both postition interact.
-					if (blockPosition == compareBlockPosition) {
-						return true;
-					}
-				}
-			}
-			// No interact then return false.
-			return false;
-		}
 		#endregion
 		
 		public class VolumeDataEx {

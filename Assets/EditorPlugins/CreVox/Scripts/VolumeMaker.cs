@@ -151,7 +151,7 @@ namespace CreVox
             foreach (PaletteItem pi in itemArray) {
                 if (pi.markType == PaletteItem.MarkerType.Item)
                     continue;
-                if (doorClosedObj == null && pi.gameObject.name == "Door.Closed")
+                if (doorClosedObj == null && pi.gameObject.name == VGlobal.GetSetting().doorCloseName)
                     doorClosedObj = pi.gameObject;
                 foreach (BlockAir bAir in cData.blockAirs) {
                     for (int i = 0; i < bAir.pieceNames.Length; i++) {

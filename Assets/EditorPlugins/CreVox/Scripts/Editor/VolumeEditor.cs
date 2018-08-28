@@ -72,14 +72,9 @@ namespace CreVox
             using (var v = new EditorGUILayout.VerticalScope (EditorStyles.helpBox)) {
                 GUI.backgroundColor = Color.white;
                 GUILayout.Label ("VolumeData", EditorStyles.boldLabel);
-                using (var h = new EditorGUILayout.HorizontalScope ()) {
-                    if (GUILayout.Button ("Refresh")) {
-                        BuildVolume ();
-                    }
-                    if (GUILayout.Button ("Calculate BlockHold")) {
-                        CalculateBlockHold ();
-                    }
-                }
+                if (GUILayout.Button("Refresh"))
+                    BuildVolume();
+
                 using (var h = new EditorGUILayout.HorizontalScope ()) {
                     using (var ch = new EditorGUI.ChangeCheckScope ()) {
                         vol.vd = (VolumeData)EditorGUILayout.ObjectField (vol.vd, typeof(VolumeData), false);
@@ -107,10 +102,7 @@ namespace CreVox
                             c.freeChunkSize.z = EditorGUILayout.DelayedIntField ("Z", c.freeChunkSize.z, GUILayout.Width (intW));
                             EditorGUIUtility.labelWidth = defLabelWidth;
                         }
-                        if (GUILayout.Button ("Convert to Voxel Chunk")) {
-                            vol.vd.ConvertToVoxelChunk ();
-                            CalculateBlockHold ();
-                        }
+                        if (GUILayout.Button("Convert to Voxel Chunk")) vol.vd.ConvertToVoxelChunk();
                     } else {
                         using (var h = new EditorGUILayout.HorizontalScope ()) {
                             EditorGUIUtility.labelWidth = 15;
@@ -122,10 +114,7 @@ namespace CreVox
                                 WriteVData (vol);
                             }
                         }
-                        if (GUILayout.Button ("Convert to FreeSize Chunk")) {
-                            vol.vd.ConvertToFreeChunk ();
-                            CalculateBlockHold ();
-                        }
+                        if (GUILayout.Button ("Convert to FreeSize Chunk")) vol.vd.ConvertToFreeChunk ();
                     }
                     if (ch.changed) {
                         EditorUtility.SetDirty (vol.vd);
@@ -967,23 +956,6 @@ namespace CreVox
                 Event.current.Use ();
         }
 
-        void CalculateBlockHold ()
-        {
-            if (vol.vd.useFreeChunk) {
-                vol.vd.freeChunk.blockHolds.Clear ();
-            } else {
-                foreach (ChunkData bh in vol.vd.chunkDatas) {
-                    bh.blockHolds.Clear ();
-                }
-            }
-            string apOld = vol.ArtPack;
-            vol.ArtPack = PathCollect.pieces;
-            BuildVolume ();
-            vol.ArtPack = apOld;
-            BuildVolume ();
-            EditorUtility.SetDirty (vol);
-        }
-
         void BuildVolume ()
         {
             selectedItemID = -1;
@@ -1105,7 +1077,6 @@ namespace CreVox
             vol.vd.freeChunk = newc;
             if (!isFreeChunk)
                 vol.vd.ConvertToVoxelChunk ();
-            CalculateBlockHold ();
             EditorUtility.SetDirty (vol.vd);
             BuildVolume ();
             SceneView.RepaintAll ();
@@ -1164,13 +1135,6 @@ namespace CreVox
                                         bAirs.RemoveAt (j);
                                 }
                                 break;
-                            case "CreVox.BlockHold":
-                                List<BlockHold> bHolds = chunk.cData.blockHolds;
-                                for (int j = bHolds.Count - 1; j > -1; j--) {
-                                    if (bHolds [j].BlockPos.Compare (chunkBlockPos))
-                                        bHolds.RemoveAt (j);
-                                }
-                                break;
                             case "CreVox.Block":
                                 List<Block> blocks = chunk.cData.blocks;
                                 for (int j = blocks.Count - 1; j > -1; j--) {
@@ -1217,12 +1181,6 @@ namespace CreVox
                                 chunk.cData.blockAirs.Add (_block as BlockAir);
                             }
                             break;
-                        case "CreVox.BlockHold":
-                            Predicate<BlockHold> sameBlockHold = blockHold => blockHold.BlockPos.Compare (chunkBlockPos);
-                            if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
-                                chunk.cData.blockHolds.Add (_block as BlockHold);
-                            }
-                            break;
                         case "CreVox.Block":
                             Predicate<Block> sameBlock = block => block.BlockPos.Compare (chunkBlockPos);
                             if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
@@ -1243,13 +1201,6 @@ namespace CreVox
                             for (int j = bAirs.Count - 1; j > -1; j--) {
                                 if (bAirs [j].BlockPos.Compare (chunkBlockPos))
                                     bAirs.RemoveAt (j);
-                            }
-                            break;
-                        case "CreVox.BlockHold":
-                            List<BlockHold> bHolds = chunk.cData.blockHolds;
-                            for (int j = bHolds.Count - 1; j > -1; j--) {
-                                if (bHolds [j].BlockPos.Compare (chunkBlockPos))
-                                    bHolds.RemoveAt (j);
                             }
                             break;
                         case "CreVox.Block":

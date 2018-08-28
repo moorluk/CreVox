@@ -381,12 +381,6 @@ namespace CreVox
                             chunk.cData.blockAirs.Add (_block as BlockAir);
                         }
                         break;
-                    case "CreVox.BlockHold":
-                        Predicate<BlockHold> sameBlockHold = b => b.BlockPos.Compare (chunkBlockPos);
-                        if (!chunk.cData.blockHolds.Exists (sameBlockHold)) {
-                            chunk.cData.blockHolds.Add (_block as BlockHold);
-                        }
-                        break;
                     case "CreVox.Block":
                         Predicate<Block> sameBlock = b => b.BlockPos.Compare (chunkBlockPos);
                         if (chunk.cData.blockAirs.Exists (sameBlockAir)) {
@@ -407,13 +401,6 @@ namespace CreVox
                         for (int i = bAirs.Count - 1; i > -1; i--) {
                             if (bAirs [i].BlockPos.Compare (chunkBlockPos))
                                 bAirs.RemoveAt (i);
-                        }
-                        break;
-                    case "CreVox.BlockHold":
-                        List<BlockHold> bHolds = chunk.cData.blockHolds;
-                        for (int i = bHolds.Count - 1; i > -1; i--) {
-                            if (bHolds [i].BlockPos.Compare (chunkBlockPos))
-                                bHolds.RemoveAt (i);
                         }
                         break;
                     case "CreVox.Block":
@@ -523,8 +510,7 @@ namespace CreVox
                 
                 pObj = Nodes [bPos].pieces [_id];
                 if (pObj != null) {
-                    PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
-                    UnityEngine.Object.DestroyImmediate (pObj);
+                    DestroyImmediate (pObj);
                 }
 
                 #if UNITY_EDITOR
@@ -554,9 +540,6 @@ namespace CreVox
                     } else {
                         pObj.GetComponentInChildren<TextMesh> ().text += ("\n" + blockAir.pieceNames [_id]);
                     }
-
-                    if (_piece.isHold)
-                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), false);
                 }
             } else {
                 blockAir = block as BlockAir;
@@ -568,7 +551,6 @@ namespace CreVox
                 if (Nodes.ContainsKey (bPos)) {
                     pObj = Nodes [bPos].pieces [_id];
                     if (pObj != null) {
-                        PlaceBlockHold (bPos, _id, pObj.GetComponent<LevelPiece> (), true);
                         UnityEngine.Object.DestroyImmediate (pObj);
                     }
                 }
@@ -654,58 +636,6 @@ namespace CreVox
                             }
                         }
                         _bm.Tick (_tree [i]);
-                    }
-                }
-            }
-        }
-
-        static int GetBlockHoldIndex (int x, int y, int z, Chunk containerChunk)
-        {
-            WorldPos bPos = new WorldPos (x, y, z);
-            Predicate <BlockHold> checkBlockPos = bh => bh.BlockPos.Compare (bPos);
-            return (containerChunk != null) ? containerChunk.cData.blockHolds.FindIndex (checkBlockPos) : -1;
-        }
-
-        void PlaceBlockHold (WorldPos _bPos, int _id, LevelPiece _piece, bool _isErase)
-        {
-//            Debug.Log ("[" + _bPos.ToString () + "](" + _id.ToString () + ")-" + (_isErase?"Delete":"Add"));
-            foreach (LevelPiece.Hold bh in _piece.holdBlocks) {
-                int x = _bPos.x + bh.offset.x;
-                int y = _bPos.y + bh.offset.y;
-                int z = _bPos.z + bh.offset.z;
-                Chunk _chunk = GetChunk (x, y, z);
-                if (_chunk != null) {
-                    x -= _chunk.cData.ChunkPos.x;
-                    y -= _chunk.cData.ChunkPos.y;
-                    z -= _chunk.cData.ChunkPos.z;
-
-                    BlockHold.piecePos bhData = new BlockHold.piecePos ();
-                    bhData.blockPos = _bPos;
-                    bhData.pieceID = _id;
-
-                    Predicate<BlockHold.piecePos> samePiecePos = obj => (obj.blockPos.Compare (bhData.blockPos) && obj.pieceID == bhData.pieceID);
-
-                    int _index = GetBlockHoldIndex (x, y, z, _chunk);
-                    BlockHold bhBlock = (_index > -1) ? _chunk.cData.blockHolds [_index] : null;
-                    
-                    if (_isErase) {
-                        if (bhBlock != null) {
-                            if (bhBlock.roots.Exists (samePiecePos))
-                                bhBlock.roots.RemoveAt (bhBlock.roots.FindIndex (samePiecePos));
-                            if (bhBlock.roots.Count == 0)
-                                _chunk.cData.blockHolds.Remove (bhBlock);
-                        }
-                    } else {
-                        if (bhBlock == null) {
-                            bhBlock = new BlockHold (x, y, z);
-                            bhBlock.roots.Add (bhData);
-                            _chunk.cData.blockHolds.Add (bhBlock);
-                        } else if (!bhBlock.roots.Exists (samePiecePos)) {
-                            bhBlock.roots.Add (bhData);
-                        }
-                        
-                        if (bh.isSolid)
-                            bhBlock.SetSolid (true);
                     }
                 }
             }
@@ -848,10 +778,7 @@ namespace CreVox
                 }
             }
 
-            if (Vm.ShowBlockHold)
-                DrawBlockHold ();
-            else
-                DrawBlockBound ();
+            if (Vm.ShowBlockHold) DrawBlockBound ();
             
             Gizmos.matrix = oldMatrix;
             DrawBBPoint ();
@@ -878,25 +805,6 @@ namespace CreVox
                 float angle = transform.eulerAngles.y;
                 Gizmos.DrawSphere (transform.position + CrevoxState.AbsolutePosition(b.GetMin (),angle), 0.1f);
                 Gizmos.DrawSphere (transform.position + CrevoxState.AbsolutePosition(b.GetMax (),angle), 0.1f);
-            }
-        }
-
-        void DrawBlockHold ()
-        {
-            foreach (Chunk c in Chunks.Values) {
-                if (c != null) {
-                    for (int i = 0; i < c.cData.blockHolds.Count; i++) {
-                        WorldPos blockHoldPos = c.cData.blockHolds [i].BlockPos;
-                        WorldPos chunkPos = c.cData.ChunkPos;
-                        Vector3 localPos = new Vector3 (
-                                               (blockHoldPos.x + chunkPos.x) * Vg.w, 
-                                               (blockHoldPos.y + chunkPos.y) * Vg.h, 
-                                               (blockHoldPos.z + chunkPos.z) * Vg.d
-                                           );
-                        Gizmos.color = Color.gray/*new Color (255f / 255f, 244f / 255f, 228f / 255f, 0.05f)*/;
-                        Gizmos.DrawWireCube (localPos, new Vector3 (Vg.w, Vg.h, Vg.d));
-                    }
-                }
             }
         }
 

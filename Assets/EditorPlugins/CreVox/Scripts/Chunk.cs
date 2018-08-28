@@ -14,7 +14,6 @@ namespace CreVox
         public WorldPos ChunkPos;
         public List<Block> blocks = new List<Block> ();
         public List<BlockAir> blockAirs = new List<BlockAir> ();
-        public List<BlockHold> blockHolds = new List<BlockHold> ();
         // [XAOCX add]
         public ChunkData ()
         {
@@ -34,10 +33,6 @@ namespace CreVox
             blockAirs = new List<BlockAir> ();
             foreach (var blockAir in clone.blockAirs) {
                 blockAirs.Add (new BlockAir (blockAir));
-            }
-            blockHolds = new List<BlockHold> ();
-            foreach (var blockHold in clone.blockHolds) {
-                blockHolds.Add (new BlockHold (blockHold));
             }
         }
         // ==============

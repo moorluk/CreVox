@@ -21,7 +21,6 @@ namespace CreVox
 			workbbool.layerMax = chunk.cData.isFreeChunk ? chunk.cData.freeChunkSize.y : Chunk.chunkSize;
 
 			workbbool.blockAirs = new bool[chunk.cData.blockAirs.Count];
-			workbbool.blockHolds = new bool[chunk.cData.blockHolds.Count];
 		}
 
 		public override void OnInspectorGUI ()
@@ -74,7 +73,6 @@ namespace CreVox
 
 				DrawBlock (ref cd, ref workbbool);
 				DrawBlockAir (ref cd, ref workbbool);
-				DrawBlockHold (ref cd, ref workbbool);
 
 				EditorGUI.indentLevel--;
 			}
@@ -117,33 +115,6 @@ namespace CreVox
 								GUILayout.SelectionGrid (-1, workAir.pieceNames, 3
 									, EditorStyles.miniButton
 									, GUILayout.Width(Screen.width-45));
-							}
-						}
-					}
-				}
-				EditorGUI.indentLevel--;
-			}
-		}
-		static void DrawBlockHold (ref ChunkData cd, ref VolumeDataEditor.BlockBool workbbool)
-		{
-			workbbool.showBlockHolds = EditorGUILayout.Foldout (workbbool.showBlockHolds, " BlockHold(" + cd.blockHolds.Count);
-			if (workbbool.showBlockHolds) {
-				EditorGUI.indentLevel++;
-				for (int i = 0; i < cd.blockHolds.Count; i++) {
-					BlockHold workHold = cd.blockHolds [i];
-					if (workbbool.filter ? (workHold.BlockPos.y >= workbbool.layerMin && workHold.BlockPos.y <= workbbool.layerMax) : true) {
-						if (workHold.roots.Count > 0) {
-							workbbool.blockHolds [i] = EditorGUILayout.Foldout (workbbool.blockHolds [i],
-								"[" + workHold.BlockPos.x +
-								"," + workHold.BlockPos.y +
-								"," + workHold.BlockPos.z +
-								"]" + ((workHold.IsSolid (Direction.south)) ? "(Solid)" : "")
-							);
-							if (workbbool.blockHolds [i]) {
-								for (int j = 0; j < workHold.roots.Count; j++)
-									EditorGUILayout.LabelField ("[" + workHold.roots [j].blockPos.ToString () + "]" +
-										" Marker(" + workHold.roots [j].pieceID + ")",
-										EditorStyles.helpBox);
 							}
 						}
 					}

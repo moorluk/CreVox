@@ -491,6 +491,13 @@ MonoBehaviour:
     - CreVox/VolumeArtPack/LevelPieces/7_Obstacle/Obst.X1Y1Z1CwatMd
     - CreVox/VolumeArtPack/LevelPieces/7_Obstacle/Obst.X1Y2Z1CfatMd
     - CreVox/VolumeArtPack/LevelPieces/7_Obstacle/Obst.X1Y2Z1CwatMd
+  setting:
+    saveBackup: 0
+    useArtPack: 1
+    snapGridL: 0
+    debugRulerL: 0
+    showBlockHoldL: 0
+    debugLog: 0
   editDis: 529.67334
   chunkSize: 9
   tileSize: 0.5
@@ -500,37 +507,25 @@ MonoBehaviour:
   StageList:
   - number: 1
     artPack: B02
-    XmlPath: Issac.xml
-    vDataPath: IsaacNew
-    SpaceXmlPath: 
+    GrammarXmlPath: 
     VGXmlPath: IssacVolumeGeneration.xml
   - number: 2
     artPack: B02
-    XmlPath: 1706_B2_27test.xml
-    vDataPath: Ken\0631-3
-    SpaceXmlPath: Ken\0631-3\SpaceAlphabet.xml
+    GrammarXmlPath: 
     VGXmlPath: Ken\0631-3\VolumeGeneration.xml
   - number: 3
     artPack: B02
-    XmlPath: 
-    vDataPath: 
-    SpaceXmlPath: 
+    GrammarXmlPath: 
     VGXmlPath: 
   - number: 4
     artPack: B01
-    XmlPath: 
-    vDataPath: 
-    SpaceXmlPath: 
+    GrammarXmlPath: 
     VGXmlPath: 
   - number: 5
     artPack: B01
-    XmlPath: 
-    vDataPath: 
-    SpaceXmlPath: 
+    GrammarXmlPath: 
     VGXmlPath: 
   - number: 6
     artPack: B01
-    XmlPath: 
-    vDataPath: 
-    SpaceXmlPath: 
+    GrammarXmlPath: 
     VGXmlPath: 

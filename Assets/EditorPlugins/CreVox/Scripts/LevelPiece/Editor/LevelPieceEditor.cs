@@ -8,7 +8,6 @@ namespace CreVox
 	{
 		LevelPiece lp;
         bool drawIsSolid;
-        bool drawHold;
         bool drawDef;
 
 		public override void OnInspectorGUI ()
@@ -51,17 +50,8 @@ namespace CreVox
                         EditorGUI.indentLevel--;
                     }
                 }
-
-                drawHold = EditorGUILayout.Foldout (drawHold, "BlockHold");
+                
                 EditorGUI.indentLevel--;
-                if (drawHold) {
-                    lp.isHold = EditorGUILayout.Toggle ("Hold other Block", lp.isHold);
-                    EditorGUI.BeginDisabledGroup (!lp.isHold);
-                    DrawInit ();
-                    if (lp.holdBlocks.Count > 0)
-                        DrawList ();
-                    EditorGUI.EndDisabledGroup ();
-                }
             }
             EditorGUILayout.Separator ();
 		}
@@ -85,67 +75,5 @@ namespace CreVox
 			if (EditorGUI.EndChangeCheck ())
 				EditorUtility.SetDirty (lp);
         }
-
-        void DrawInit ()
-		{
-            using (var h = new EditorGUILayout.HorizontalScope ("HelpBox")) {
-                GUILayout.BeginVertical ();
-				GUILayout.Label ("MaxX", "miniLabel");
-                lp.maxX = EditorGUILayout.IntField (lp.maxX);
-				GUILayout.Label ("MinX", "miniLabel");
-                lp.minX = EditorGUILayout.IntField (lp.minX);
-				GUILayout.EndVertical ();
-
-                GUILayout.BeginVertical ();
-				GUILayout.Label ("MaxY", "miniLabel");
-				lp.maxY = EditorGUILayout.IntField (lp.maxY);
-				GUILayout.Label ("MinY", "miniLabel");
-                lp.minY = EditorGUILayout.IntField (lp.minY);
-				GUILayout.EndVertical ();
-
-                GUILayout.BeginVertical ();
-				GUILayout.Label ("MaxZ", "miniLabel");
-				lp.maxZ = EditorGUILayout.IntField (lp.maxZ);
-				GUILayout.Label ("MinZ", "miniLabel");
-                lp.minZ = EditorGUILayout.IntField (lp.minZ);
-                GUILayout.EndVertical ();
-
-                if (GUILayout.Button ("init", GUILayout.ExpandHeight(true),GUILayout.Height (80), GUILayout.Width (50))) {
-					CreateHoldBlockList ();
-				}
-			}
-		}
-
-		void DrawList ()
-		{
-			using (var v = new EditorGUILayout.VerticalScope ("HelpBox")) {
-                foreach (var holdBlock in lp.holdBlocks) {
-					using (var h = new EditorGUILayout.HorizontalScope ("textfield")) {
-                        GUILayout.Label (" (" + holdBlock.offset.x + "," + holdBlock.offset.y + "," + holdBlock.offset.z + ")", "In TitleText", GUILayout.Width (Screen.width - 160));
-						GUILayout.Label ("Solid", "miniLabel");
-						holdBlock.isSolid = EditorGUILayout.Toggle (holdBlock.isSolid);
-						if (GUILayout.Button ("Remove","miniButton"))
-							lp.holdBlocks.Remove(holdBlock);
-					}
-				}
-			}
-		}
-
-		void CreateHoldBlockList ()
-		{
-			lp.holdBlocks.Clear ();
-			for (int y = lp.minY; y < lp.maxY + 1; y++) {
-				for (int x = lp.minX; x < lp.maxX + 1; x++) {
-					for (int z = lp.minZ; z < lp.maxZ + 1; z++) {
-						LevelPiece.Hold newHold = new LevelPiece.Hold ();
-						newHold.offset.x = x;
-						newHold.offset.y = y;
-						newHold.offset.z = z;
-						newHold.isSolid = false;
-						lp.holdBlocks.Add (newHold);
-					}
-				}
-			}
-		}
 	}
 }

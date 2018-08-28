@@ -43,14 +43,12 @@ namespace CreVox
 			for (int i = 0; i < bbool.Length; i++) {
 				bbool [i].blocks = new bool[vd.chunkDatas [i].blocks.Count];
 				bbool [i].blockAirs = new bool[vd.chunkDatas [i].blockAirs.Count];
-				bbool [i].blockHolds = new bool[vd.chunkDatas [i].blockHolds.Count];
 				bbool [i].layerMin = 0;
 				bbool [i].layerMax = Chunk.chunkSize;
 			}
 			fbool = new BlockBool ();
 			fbool.blocks = new bool[vd.freeChunk.blocks.Count];
 			fbool.blockAirs = new bool[vd.freeChunk.blockAirs.Count];
-			fbool.blockHolds = new bool[vd.freeChunk.blockHolds.Count];
 			fbool.layerMin = 0;
 			fbool.layerMax = vd.freeChunk.freeChunkSize.y;
 
@@ -75,10 +73,6 @@ namespace CreVox
 
 				if (bbool[i].blockAirs.Length != vd.chunkDatas[i].blockAirs.Count) {
 					bbool[i].blockAirs = new bool[vd.chunkDatas[i].blockAirs.Count];
-				}
-
-				if (bbool[i].blockHolds.Length != vd.chunkDatas[i].blockHolds.Count) {
-					bbool[i].blockHolds = new bool[vd.chunkDatas[i].blockHolds.Count];
 				}
 			}
 		}

@@ -42,9 +42,6 @@ namespace CreVox
         public Block block;
         public PivotType pivot;
         public bool[] isSolid = new bool[6];
-        public bool isHold;
-        public List<Hold> holdBlocks;
-        public int maxX, minX, maxY, minY, maxZ, minZ;
 
         public EventRange eventRange = EventRange.Free;
         public PProperty[] PProperties = new PProperty[5];

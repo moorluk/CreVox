@@ -1,20 +1,38 @@
 ﻿using UnityEngine;
+using System;
 
 namespace CreVox
 {
 
     public class PaletteItem : MonoBehaviour
     {
-        public enum Category
+        [Flags]
+        public enum Set
         {
-            Build,
-            Deco,
-            System,
+            InDoor = 1 << 0,
+            OutDoor = 1 << 1,
+            Rise = 1 << 2,
+            Sink = 1 << 3,
+            Pass = 1 << 4,
+        }
+
+        public enum Module
+        {
+            Door,
+            Wall, //WallPillar,
+            Fence, //FencePillar,
+            Ground,
+            Ceiling,
+            Stair, //StairPlatform,StairConstructure,
+            Block,
+
+            System = 50,
+            Charac,
             Trap,
-            Sign,
-            Movement,
-            Chara,
-            Obstacle
+            Drop,
+            Break,
+
+            Unuse = 99
         }
 
         public enum MarkerType
@@ -27,14 +45,12 @@ namespace CreVox
             WallSeparator,
             Fence,
             FenceSeparator,
-            Roof,
-            //Stairhalf,
-            //WallHalf,
-            //WallHalfSeparator,
+            Roof
         }
-
-        public Category category = Category.System;
+        
         public MarkerType markType = MarkerType.Item;
+        public int m_set;
+        public Module m_module;
         public string itemName = "";
         public LevelPiece inspectedScript;
         public string assetPath;

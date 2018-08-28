@@ -10,7 +10,7 @@ namespace CreVox
     [CreateAssetMenu (menuName = "CreVox/Global Setting")]
     public class VGlobal : ScriptableObject
     {
-        [System.Serializable]
+        [Serializable]
         public struct ArtPackParent
         {
             public string pack;
@@ -19,7 +19,7 @@ namespace CreVox
 
         public List<ArtPackParent> artPackParentList;
 
-        [System.Serializable]
+        [Serializable]
         public struct APItemPath
         {
             public string name;
@@ -28,7 +28,7 @@ namespace CreVox
 
         public List<APItemPath> APItemPathList;
 
-        [System.Serializable]
+        [Serializable]
         public class VGSetting
         {
             public bool saveBackup;
@@ -44,6 +44,7 @@ namespace CreVox
 
         public int chunkSize = 16;
         public float tileSize = 0.5f;
+        public string doorCloseName = "Door.Closed";
         public float w = 3f;
         public float h = 2f;
         public float d = 3f;
@@ -126,7 +127,7 @@ namespace CreVox
             return parent;
         }
 
-        [System.Serializable]
+        [Serializable]
         public struct Stage
         {
             public int number;
